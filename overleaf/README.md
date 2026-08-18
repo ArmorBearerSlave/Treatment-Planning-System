@@ -7,9 +7,10 @@ controlled Word artifacts in the repository root:
 - `NL_TPS_High_Level_Requirements.tex` - High-Level Requirements
 
 Both documents use `nl_tps_common.sty`. The ConOps also uses the images in
-`figures/`. For reliable compilation from the repository root, use the two
+`figures/`. For reliable compilation from the repository root, use these
 top-level Overleaf entry points:
 
+- `main.tex` - default entry point for the ConOps
 - `NL_TPS_ConOps_Overleaf.tex`
 - `NL_TPS_High_Level_Requirements_Overleaf.tex`
 
@@ -17,11 +18,11 @@ top-level Overleaf entry points:
 
 1. In the connected Overleaf project, open **Integrations -> GitHub** and pull
    the latest GitHub changes.
-2. Open **Settings -> Compiler -> Main document**.
-3. Select either `NL_TPS_ConOps_Overleaf.tex` or
+2. The default `main.tex` compiles the ConOps. To compile the requirements
+   baseline, open **Settings -> Compiler -> Main document** and select
    `NL_TPS_High_Level_Requirements_Overleaf.tex`.
-4. Use pdfLaTeX as the compiler.
-5. Recompile twice after changing headings, page counts, or the table of
+3. Use pdfLaTeX as the compiler.
+4. Recompile twice after changing headings, page counts, or the table of
    contents.
 
 The two files are intentionally separate controlled documents. Select one as
