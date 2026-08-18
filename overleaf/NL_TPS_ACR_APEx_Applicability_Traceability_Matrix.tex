@@ -1,0 +1,393 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage{nl_tps_common}
+\hypersetup{pdftitle={NL-TPS ACR and APEx Applicability and Traceability Matrix},pdfsubject={NL-TPS controlled documentation}}
+\begin{document}
+\NLSetPageStyle{NL-TPS ACR/APEx APPLICABILITY MATRIX}{ACR ROPA, ASTRO APEx, and ACR--AAPM technical profiles}
+\NLTitleBlock{ACCREDITATION AND PRACTICE-QUALITY PROFILE}{ACR and APEx Applicability and Traceability Matrix}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
+\NLMeta{Source baseline}{NL-TPS controlled documentation suite v0.1; ACR ROPA; ASTRO APEx 2024; applicable ACR--AAPM technical standards}
+\NLMeta{Profile version}{0.1 - Proposed baseline}
+\NLMeta{Date}{18 August 2026}
+\NLMeta{Status}{Discussion Draft - Not for clinical use}
+\NLMeta{Coverage}{67 ACR ROPA records; 54 APEx indicators; 47 proton-profile records; 8 ACC high-level requirements}
+\end{minipage}}{This document controls applicability and traceability. It is not an accreditation decision, survey result, clinical protocol, commissioning report, regulatory determination, or authorization for patient use. Only the applicable accrediting organization determines accreditation status.}
+
+\tableofcontents
+\clearpage
+\ifdefined\NLTPSCombinedDocument\else\pagenumbering{arabic}\fi
+
+\NLFrontMatterSection{Document control}
+
+\begin{small}
+\begin{longtable}{@{}L{0.18\textwidth}L{0.74\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Value} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Value} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Document owner & NL-TPS Program with Radiation Oncology Medical Director and Qualified Medical Physicist approval \\
+\addlinespace[2pt]
+Source corpus & Controlled private ACR/APEx corpus at \texttt{Documents/GitHub/ACR}; public repository shall not redistribute the source PDFs or aggregate verbatim extracts \\
+\addlinespace[2pt]
+Authority boundary & ACR ROPA, ASTRO APEx, technical guidance, institutional policy, and patient-specific signed intent remain distinct authority classes \\
+\addlinespace[2pt]
+Change authority & Clinical governance, quality management, and document control \\
+\addlinespace[2pt]
+Review trigger & Source revision; accreditation-program change; new modality or site; policy change; TPS, model, or interface change; survey finding; incident; or scheduled periodic review \\
+\addlinespace[2pt]
+Supersession & None \\
+\end{longtable}
+\end{small}
+
+\NLFrontMatterSection{Executive summary}
+
+The NL-TPS shall implement ACR and APEx material as approved deployment profiles, not as an undifferentiated set of universal software commands. The profile layer has two outputs: a signed runtime snapshot containing the controls that are appropriate for automated enforcement, and a separate accreditation-readiness crosswalk containing workflow-supporting and organizational evidence. The accreditation workspace may identify missing, stale, or conflicting evidence; it shall not assert that a facility is compliant or accredited.
+
+The source review identified 168 structured records: 67 ACR ROPA program records, 54 ASTRO APEx Evidence Indicators, and 47 proton-profile records. Multi-element source indicators are parent records. Their elements shall be decomposed into atomic assertions before verification while retaining the published parent identifier and source location.
+
+\begin{nlnotice}{CLINICAL AND ACCREDITATION AUTHORITY}
+The signed prescription and physician-approved patient intent remain the highest patient-specific authority. ACR ROPA and ASTRO APEx are separate accreditation programs. ACR--AAPM Technical Standards and AAPM guidance substantiate safe practice but do not automatically become ROPA or APEx survey criteria. The NL-TPS shall never use an automated score, checklist state, or model response as an accreditation decision.
+\end{nlnotice}
+
+\section{1. Purpose and scope}
+
+This matrix establishes the controlled method for selecting, tracing, implementing, and verifying ACR ROPA, ASTRO APEx, and applicable ACR--AAPM technical controls in the NL-TPS. It covers source governance, applicability, documentation completeness, review timing, TPS and AI lifecycle quality assurance, accreditation evidence, de-identification, and proton-specific planning and QA.
+
+The matrix does not make the NL-TPS responsible for professional licensure, staffing adequacy, radiation shielding, direct patient evaluation, informed-consent conversations, treatment delivery, or accreditation adjudication. For those obligations, the system may validate status, route tasks, preserve evidence, or identify an unresolved condition only when authorized by institutional policy.
+
+\section{2. Source and authority model}
+
+\begin{small}
+\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.32\textwidth}L{0.22\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Class} & \textbf{Examples} & \textbf{Permitted system use} & \textbf{Prohibited interpretation} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Class} & \textbf{Examples} & \textbf{Permitted system use} & \textbf{Prohibited interpretation} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Patient authority & Signed prescription, approved planning directive, documented physician intent & Control patient-specific planning intent, approval prerequisites, and conflict escalation & Automated substitution, prescription, signature, or silent reconciliation \\
+\addlinespace[2pt]
+Institutional authority & Approved policies, SOPs, staffing plans, QA schedules, credential rules, and release decisions & Create local executable controls within their approved scope and effective dates & Claim that local policy is published accreditation text \\
+\addlinespace[2pt]
+Accreditation program & ACR ROPA articles and facility instructions; ASTRO APEx Standards Guide & Readiness crosswalk, applicable workflow gates, evidence status, deficiency tracking, and survey preparation & Merge programs into one hierarchy or declare accreditation \\
+\addlinespace[2pt]
+Technical guidance & ACR--AAPM Technical Standards, AAPM TG reports and MPPGs & Substantiate technical controls, commissioning, QA, and validation & Treat every \emph{shall} as an accreditation criterion \\
+\addlinespace[2pt]
+Local operational control & Approved controls addressing a site hazard or operational need & Enforce after risk assessment, approval, validation, and release & Attribute the control to ACR, ASTRO, or AAPM without a source \\
+\end{longtable}
+\end{small}
+
+Each source record shall contain the program, authority class, title, publisher, edition or revision, effective date when stated, exact source location, retrieval date, integrity value, verbatim-or-restated status, scope, modality, applicability decision, owner, review date, supersession state, and links to atomic assertions. A global numeric tier shall not resolve conflicts between separate accreditation programs.
+
+\section{3. Applicability classes}
+
+\begin{small}
+\begin{longtable}{@{}L{0.14\textwidth}L{0.42\textwidth}L{0.36\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Code} & \textbf{Meaning} & \textbf{Required disposition} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Code} & \textbf{Meaning} & \textbf{Required disposition} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+ENF & Product-enforceable clinical or technical control & Implement as a deterministic rule or lifecycle gate; verify positive, negative, stale, conflict, and recovery behavior \\
+\addlinespace[2pt]
+SUP & Workflow-supporting obligation performed by authorized people or external systems & Route, remind, display, reconcile, and retain attributable completion evidence without substituting for the professional act \\
+\addlinespace[2pt]
+EVD & Evidence-only accreditation or organizational obligation & Track applicability, owner, source, evidence pointer, review, deficiency, and approval; do not make it a clinical runtime dependency \\
+\addlinespace[2pt]
+ORG & Facility responsibility outside the product boundary & Document the boundary and authoritative system; optionally consume a status or evidence pointer \\
+\addlinespace[2pt]
+N/A & Not applicable to the approved site, modality, technique, or program & Require rationale, authorized approval, effective scope, review date, and re-evaluation trigger \\
+\end{longtable}
+\end{small}
+
+\section{4. ACR ROPA program crosswalk}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.20\textwidth}L{0.07\textwidth}L{0.20\textwidth}L{0.20\textwidth}L{0.25\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{ROPA category} & \textbf{Records} & \textbf{Primary class} & \textbf{NL-TPS allocation} & \textbf{Implementation disposition} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{ROPA category} & \textbf{Records} & \textbf{Primary class} & \textbf{NL-TPS allocation} & \textbf{Implementation disposition} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Chart and documentation & 13 & SUP/EVD & ACC-003, ACC-004, ACC-007; C-DOC-01; C-ACC-02 & Validate required fields and signatures where authoritative data are available; preserve evidence and survey-case linkage \\
+\addlinespace[2pt]
+Patient safety and consent & 5 & SUP/ORG & ACC-004, ACC-005; C-DOC-01; C-QA-01 & Consume consent status and patient-safety evidence; never perform consent or replace the timeout \\
+\addlinespace[2pt]
+Treatment planning and dosimetry & 3 & ENF/SUP & ACC-004, ACC-005; C-PLAN-01; C-DICOM-02; C-QA-01 & Enforce completeness, identity, plan-goal, DVH, approval, independent-check, and transfer prerequisites \\
+\addlinespace[2pt]
+Physics QA and equipment & 18 & ENF/SUP/EVD & ACC-005, ACC-006, ACC-008; C-QA-01; C-VV-01; C-PBT-01 & Gate clinical use on current QA and return-to-service state while preserving QMP ownership \\
+\addlinespace[2pt]
+Personnel and qualifications & 11 & SUP/ORG & ACC-002, ACC-007; C-HFE-01; C-IAM-01; C-ACC-02 & Consume authoritative credentials and competency; facility owns staffing and licensure decisions \\
+\addlinespace[2pt]
+Quality improvement and peer review & 14 & SUP/EVD/ORG & ACC-007; C-QMS-01; C-INC-01; C-ACC-02 & Route and retain CQI, peer-review, event, meeting, CAPA, and closure evidence \\
+\addlinespace[2pt]
+Communication and reporting & 3 & SUP/EVD & ACC-003, ACC-007; C-ACC-02; C-AUD-01 & Preserve attributable, time-ordered reports and controlled external transmission evidence \\
+\end{longtable}
+\end{scriptsize}
+
+Application fees, survey scheduling, room arrangements, staffing levels, shielding, licenses, and the accreditor's final decision are evidence or organizational functions. They shall not be introduced as patient-planning runtime dependencies.
+
+\section{5. ASTRO APEx Standards 1--14 crosswalk}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.07\textwidth}L{0.25\textwidth}L{0.08\textwidth}L{0.24\textwidth}L{0.28\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Std.} & \textbf{Subject} & \textbf{Indicators} & \textbf{Primary allocation} & \textbf{Applicability disposition} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Std.} & \textbf{Subject} & \textbf{Indicators} & \textbf{Primary allocation} & \textbf{Applicability disposition} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+1 & Patient evaluation, care coordination, and follow-up & 7 & ACC-004, ACC-007; C-CASE-01; C-DOC-01 & SUP/ORG: validate availability and route follow-up; physician retains evaluation and care authority \\
+\addlinespace[2pt]
+2 & Treatment planning & 4 & ACC-004; C-PLAN-01; C-DICOM-02; C-DOC-01 & ENF/SUP: simulation directive, positioning, localization, transfer verification, planning directive, prescription, DVH/isodose, and approval \\
+\addlinespace[2pt]
+3 & Patient-specific safety and safe practices & 6 & ACC-005; C-SAFE-01; C-QA-01; C-STATE-01 & ENF/SUP: identity, timeout evidence, SOP applicability, pre/replan checks, periodic chart checks, and end-of-treatment review \\
+\addlinespace[2pt]
+4 & Roles and responsibilities & 2 & ACC-002, ACC-007; C-GOV-01; C-IAM-01 & SUP/ORG: facility defines job descriptions and medical-director authority; system enforces approved roles \\
+\addlinespace[2pt]
+5 & Qualifications and ongoing training & 4 & ACC-007; C-HFE-01; C-IAM-01 & SUP/ORG: consume authoritative credential, training, competency, and expiration state \\
+\addlinespace[2pt]
+6 & Safe staffing plan & 2 & ACC-002, ACC-007; C-ACC-02 & ORG/EVD: record the approved staffing plan and evidence; do not infer safe staffing from logged-in users \\
+\addlinespace[2pt]
+7 & Culture of safety & 3 & ACC-007; C-INC-01; C-QMS-01 & SUP/ORG: reporting, investigation, interdisciplinary review, action, and closure evidence; institution owns non-retaliation culture \\
+\addlinespace[2pt]
+8 & Radiation safety & 4 & ACC-002, ACC-007; C-ACC-02 & ORG/EVD: radiation-safety evidence pointer only unless a separately commissioned interface is approved \\
+\addlinespace[2pt]
+9 & Emergency preparation and planning & 2 & ACC-007; C-RES-01; C-INC-01 & ENF/SUP/ORG: information-system continuity and recovery are in product scope; patient and facility emergencies remain institutional \\
+\addlinespace[2pt]
+10 & Facility and equipment & 3 & ACC-002, ACC-007; C-ACC-02 & ORG/EVD: shielding, workload, surveys, AV, and infection-control evidence remain facility responsibilities \\
+\addlinespace[2pt]
+11 & Information management and integration & 2 & ACC-004, ACC-006; C-IAM-01; C-DICOM-02; C-VV-01 & ENF: access control, change tracking, TPS commissioning, beam-model verification, and ongoing TPS QA \\
+\addlinespace[2pt]
+12 & Quality management of procedures and modalities & 6 & ACC-005, ACC-006, ACC-008; C-QA-01; C-VV-01; C-PBT-01 & ENF/SUP/EVD: applicable equipment QA, external validation, annual E2E, secondary checks, and return to service \\
+\addlinespace[2pt]
+13 & Peer review of clinical processes & 2 & ACC-007; C-QMS-01; C-ACC-02 & SUP/ORG: schedule and retain discipline-specific and multidisciplinary peer-review evidence \\
+\addlinespace[2pt]
+14 & Patient education and health management & 7 & ACC-004, ACC-007; C-DOC-01; C-ACC-02 & SUP/ORG: consume consent and education status and route unmet needs; clinical team retains communication authority \\
+\end{longtable}
+\end{scriptsize}
+
+\section{6. Proton technical profile}
+
+The proton profile applies only to sites, beamlines, delivery modes, treatment-planning systems, algorithms, and workflows included in the approved deployment scope. Pencil-beam-scanning and scattering requirements shall be independently selectable. The profile shall cover, as applicable:
+
+\begin{itemize}
+\item proton-specific QMP qualifications, responsibilities, and treatment-readiness review;
+\item beamline commissioning, annual reports, independent validation, calibration, and post-change release;
+\item CT acquisition configuration, CT-number-to-relative-stopping-power data, annual consistency, artifacts, high-density material, and implanted-device considerations;
+\item physical-dose and RBE-weighted-dose representation, biological assumptions, dose-to-water or dose-to-tissue basis, and limitations;
+\item setup, range, motion, interplay, anatomic-change, and robustness scenarios with approved tolerances;
+\item algorithm validation in complex geometry and high-atomic-number interfaces;
+\item PBS or scattering patient-specific QA, independent dose or MU verification, logs when used, and acceptance criteria;
+\item chart checklist, weekly or policy-defined review, end-of-treatment review, deviations, and retrievable records.
+\end{itemize}
+
+The collision/clearance and room-downtime items in the local proton seed shall remain explicitly labeled as institutional controls unless an authoritative external source is approved.
+
+\section{7. ACC high-level requirement baseline}
+
+\begin{small}
+\begin{longtable}{@{}L{0.09\textwidth}L{0.60\textwidth}L{0.13\textwidth}L{0.10\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Requirement} & \textbf{Primary class} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Requirement} & \textbf{Primary class} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+ACC-001 & The NL-TPS shall maintain separately versioned ACR ROPA, ASTRO APEx, technical-guidance, institutional, and modality-specific profiles with explicit authority, applicability, effective status, and supersession. & ENF/EVD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+ACC-002 & The NL-TPS shall require authorized human approval of every profile applicability decision, distinguish product-enforceable, workflow-supporting, evidence-only, organizational, and not-applicable controls, and shall not represent readiness status as accreditation or compliance. & ENF/ORG & I\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+ACC-003 & The NL-TPS shall maintain atomic bidirectional traceability from each applicable source element through requirements, risks, interfaces, components, tests, evidence, deficiencies, approvals, releases, and supersession. & ENF/EVD & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+ACC-004 & The NL-TPS shall validate the completeness, consistency, signature, effective time, and authoritative source of required patient-evaluation status, prior-treatment information, simulation directive, planning directive, prescription, consent status, planning documentation, and transfer verification before the associated clinical transition. & ENF/SUP & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+ACC-005 & The NL-TPS shall enforce institution-approved prerequisites and schedules for patient identity verification, timeout evidence, pretreatment and replan physics checks, independent dose or MU verification, patient-specific QA, periodic chart review, end-of-treatment review, and affected-approval invalidation. & ENF/SUP & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+ACC-006 & The NL-TPS shall require QMP-owned acceptance, commissioning, limitation documentation, periodic TPS QA, postservice and upgrade assessment, annual and change-triggered end-to-end testing, and return-to-service authorization for the TPS and all clinically used support software, scripts, models, and interfaces. & ENF/SUP & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+ACC-007 & The NL-TPS shall maintain attributable, time-ordered, privacy-controlled evidence for credentials, competency, SOPs, staffing plans, safety events, CQI, peer review, patient education and follow-up status, deficiencies, CAPA, and survey preparation without replacing the responsible professional or facility process. & SUP/EVD/ORG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+ACC-008 & The NL-TPS shall apply proton-specific planning, dose, robustness, calibration, patient-specific QA, independent verification, beamline, readiness, and periodic-review controls only to the commissioned proton scope and delivery mode identified by the active release profile. & ENF/SUP & I\slash\allowbreak{}T \\
+\end{longtable}
+\end{small}
+
+\section{8. Component and interface allocation}
+
+\begin{small}
+\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.46\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Component} & \textbf{Responsibility} & \textbf{Lead} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Component} & \textbf{Responsibility} & \textbf{Lead} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+C-ACC-01 & Accreditation Profile and Applicability Registry & Controls source identity, program, authority, edition, integrity, atomic assertions, applicability, supersession, approval, and runtime-profile publication. & T-EVD \\
+\addlinespace[2pt]
+C-DOC-01 & Clinical Documentation Completeness and Temporal Gate & Evaluates required fields, status, signatures, effective time, source, dependencies, and schedule without authoring professional findings or signatures. & T-SYS \\
+\addlinespace[2pt]
+C-ACC-02 & Accreditation Evidence, Deficiency, and Export Workspace & Links privacy-controlled evidence pointers and hashes to controls; manages attestations, deficiencies, CAPA, review, and authorized de-identified exports. & T-GOV \\
+\addlinespace[2pt]
+C-PBT-01 & Proton Planning and QA Profile Adapter & Binds commissioned proton modes, machines, CT configurations, algorithms, robustness, QA, external validation, beamline, readiness, and review requirements to the active case and release. & T-PLAN \\
+\end{longtable}
+\end{small}
+
+\textbf{New interface family: }\texttt{IF-ACC-01 Accreditation and Quality Evidence Exchange}. This family exchanges approved source-profile snapshots, applicability decisions, evidence pointers, attestations, deficiencies, CAPA state, credential or training status, and survey-export packages. It shall never transport treatment commands or act as an approval identity. DICOM and DICOM-RT remain the required clinical-object boundary; enterprise QMS, document-control, HR, and incident systems use separately approved contracts.
+
+\section{9. Evidence, privacy, and public-repository controls}
+
+The authoritative standards corpus and aggregate verbatim extracts shall remain in approved private storage. The public NL-TPS repository may contain controlled paraphrases, identifiers, source metadata, integrity values, applicability decisions, and trace links. Patient-bearing evidence shall remain in the authoritative clinical or approved local evidence system. Synchronization shall send only the minimum approved pointer, label, size, timestamp, and integrity value; filenames or excerpts flagged as identifying shall not leave the approved boundary.
+
+An evidence proposal is not evidence acceptance. Candidate matches shall remain proposed until an authorized reviewer confirms the requirement, source, patient or equipment scope, time period, completeness, and evidentiary sufficiency. Editing an accepted control, evidence link, owner, status, applicability, or source version shall invalidate dependent approval and require re-review.
+
+\section{10. Principal risks and required mitigations}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.28\textwidth}L{0.38\textwidth}L{0.10\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Risk} & \textbf{Failure consequence} & \textbf{Required mitigation} & \textbf{Owner} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Risk} & \textbf{Failure consequence} & \textbf{Required mitigation} & \textbf{Owner} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Authority collapse & Technical guidance is misreported as an accreditation criterion or one program silently overrides another & Separate program and authority fields; human-approved conflict disposition; no global tier resolver; regression tests for conflicting controls & T-EVD \\
+\addlinespace[2pt]
+Stale source & A changed article or standard leaves an obsolete executable control & Edition, retrieval date, integrity, review date, revision monitoring, emergency suspension, impact assessment, and signed republishing & T-GOV \\
+\addlinespace[2pt]
+False accreditation claim & Users or leadership treat a readiness score as an accreditation determination & Prohibited-claim labeling, no pass/fail accreditation output, evidence-status language, human-factors testing, and governance review & T-GOV \\
+\addlinespace[2pt]
+Checklist without evidence & A completed checkbox masks absent, wrong-period, incomplete, or inapplicable evidence & Evidence sufficiency fields, source linkage, independent approval, expiry, sampling, negative tests, and survey-ready exception report & T-QA \\
+\addlinespace[2pt]
+Timing error & Review cadence is computed from the wrong fraction, treatment, replan, interruption, or completion event & Authoritative treatment-event feed, explicit policy basis, trusted time, reconciliation, missed-deadline escalation, and boundary tests & T-SYS \\
+\addlinespace[2pt]
+Circular independence & The same model, data, service, or person satisfies incompatible checks & Independence record, dependency analysis, role separation, non-AI approval, common-cause testing, and compensating controls & T-VV \\
+\addlinespace[2pt]
+PHI disclosure & Survey or evidence functions expose patient identifiers or clinical content outside an approved boundary & Local indexing, deny-by-default egress, de-identification, two-person export review, recipient and purpose binding, audit, and re-identification testing & T-SEC \\
+\addlinespace[2pt]
+Change without invalidation & A source, prescription, plan, TPS, model, interface, or evidence change leaves prior approval effective & Dependency graph, signed versions, deterministic invalidation, change-impact analysis, and reapproval before promotion & T-DATA \\
+\addlinespace[2pt]
+Proton-mode mismatch & Scattering, PBS, CT calibration, algorithm, machine, or robustness controls are applied to the wrong configuration & Active commissioned profile, runtime attestation, mode-specific allowlist, fail-closed mismatch, and site acceptance tests & T-PLAN \\
+\end{longtable}
+\end{scriptsize}
+
+\section{11. Trade-off decisions}
+
+\begin{small}
+\begin{longtable}{@{}L{0.22\textwidth}L{0.22\textwidth}L{0.22\textwidth}L{0.26\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Decision} & \textbf{Alternative A} & \textbf{Alternative B} & \textbf{Selected baseline and rationale} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Decision} & \textbf{Alternative A} & \textbf{Alternative B} & \textbf{Selected baseline and rationale} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Source incorporation & Copy all source text and PDFs into the product repository & Store only metadata and rely on uncontrolled external links & Private controlled corpus plus public metadata, paraphrase, integrity, and trace. Preserves reviewability while reducing copyright, drift, and disclosure risk. \\
+\addlinespace[2pt]
+Runtime architecture & Make the accreditation database a synchronous clinical dependency & Copy controls manually into each workflow & Publish a signed, versioned runtime profile from C-ACC-01; keep the readiness workspace asynchronous. This preserves deterministic availability and source traceability. \\
+\addlinespace[2pt]
+Program resolution & Automatically union ACR and APEx and apply the strictest wording & Select only one program and ignore shared controls & Maintain separate program profiles with an institution-approved combined operational policy where desired. Prevents false hierarchy while permitting one safe local process. \\
+\addlinespace[2pt]
+Evidence storage & Centralize all source and patient evidence in a hosted service & Store no evidence links & Keep patient-bearing evidence local or in authoritative systems; synchronize minimal pointers, hashes, status, and approvals. \\
+\addlinespace[2pt]
+Clinical enforcement & Convert every accreditation indicator into a hard stop & Treat every indicator as an optional dashboard item & Enforce only approved ENF controls; route SUP controls; track EVD/ORG controls separately. Avoids both unsafe omission and inappropriate software authority. \\
+\end{longtable}
+\end{small}
+
+\section{12. Verification and release gates}
+
+The ACC profile shall not enter clinical use until all of the following are complete:
+
+\begin{enumerate}
+\item Every applicable source element has a stable identifier, source location, edition, integrity value, authority class, applicability decision, owner, and review date.
+\item Multi-element APEx and ACR records are decomposed into atomic assertions with complete parent-child trace.
+\item Each ENF assertion has positive, negative, missing, stale, conflict, not-applicable, change, invalidation, recovery, and audit tests as appropriate.
+\item Temporal tests cover fraction counting, treatment interruptions, replans, short courses, end-of-treatment determination, late events, time synchronization, and reconciliation.
+\item Independence tests demonstrate that AI, shared inputs, shared services, or one actor cannot satisfy incompatible approval or verification roles.
+\item TPS and support-software tests cover acceptance, commissioning, annual QA, reference cases, postservice and post-upgrade checks, E2E data transfer, return to service, rollback, and known limitations.
+\item Proton tests cover each commissioned delivery mode, machine, beamline, CT acquisition configuration, algorithm, robustness policy, QA path, and external-validation obligation.
+\item Privacy testing demonstrates that prohibited identifiers, excerpts, filenames, images, and evidence content cannot cross an unapproved boundary or enter a survey export.
+\item Representative users can distinguish a source quotation from a restatement, a readiness status from accreditation, a missing evidence item from noncompliance, and an organizational responsibility from a clinical hard stop.
+\item The Radiation Oncology Medical Director, QMP, quality, security/privacy, informatics, and governance authorities approve the profile and residual risks for the released scope.
+\end{enumerate}
+
+\section{13. Controlled implementation sequence}
+
+\begin{enumerate}
+\item Baseline this matrix and the eight ACC high-level requirements.
+\item Revalidate current ACR program articles and the APEx guide; record source integrity and retrieval date.
+\item Complete atomic decomposition and human applicability review.
+\item Implement C-ACC-01 and read-only crosswalk queries before any clinical hard stop.
+\item Implement C-DOC-01 and ACC-004/005 gates using authoritative EHR, OIS, TPS, DICOM, and treatment-event sources.
+\item Implement C-ACC-02 with local evidence pointers, independent approval, deficiency/CAPA workflows, and de-identified export.
+\item Implement C-PBT-01 only for the commissioned proton slice selected for the release.
+\item Execute verification, shadow operation, site acceptance, commissioning, and governance release.
+\item Monitor source revisions, overdue controls, evidence quality, user burden, exceptions, incidents, and false-positive or false-negative gate behavior.
+\end{enumerate}
+
+\textbf{Bottom line. }ACR and APEx enter the NL-TPS as controlled, separately versioned profiles that strengthen clinical workflow and quality evidence while preserving professional authority, accreditation independence, DICOM boundaries, privacy, and site-specific commissioning.
+
+\end{document}

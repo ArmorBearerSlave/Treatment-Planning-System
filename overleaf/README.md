@@ -1,9 +1,10 @@
 # NL-TPS Overleaf sources
 
-This directory contains twelve independent LaTeX documents derived from the
+This directory contains thirteen independent LaTeX documents derived from the
 controlled requirements artifacts in the repository:
 
 - `NL_TPS_ConOps.tex` - Concept of Operations
+- `NL_TPS_ACR_APEx_Applicability_Traceability_Matrix.tex` - controlled ACR ROPA and ASTRO APEx applicability, traceability, and proton implementation profile
 - `NL_TPS_High_Level_Requirements.tex` - High-Level Requirements
 - `NL_TPS_High_Level_Functional_Non_Functional_Operational_Requirements.tex` - categorized High-Level Functional, Non-Functional, and Operational Requirements
 - `NL_TPS_High_Level_Interface_Requirements.tex` - High-Level Interface Requirements
@@ -16,13 +17,14 @@ controlled requirements artifacts in the repository:
 - `NL_TPS_Risk_and_Mitigation_Register.tex` - requirement- and component-level Risk and Mitigation Register
 - `NL_TPS_Trade_Off_Analysis_Matrices.tex` - requirement- and component-level Trade-Off Analysis Matrices
 
-All twelve documents use `nl_tps_common.sty`. The ConOps also uses the images in
+All thirteen documents use `nl_tps_common.sty`. The ConOps also uses the images in
 `figures/`. For reliable compilation from the repository root, use these
 top-level Overleaf entry points:
 
-- `main.tex` - default combined review copy containing all twelve documents
+- `main.tex` - default combined review copy containing all thirteen documents
 - `NL_TPS_Document_Suite_Overleaf.tex` - explicit entry point for the combined review copy
 - `NL_TPS_ConOps_Overleaf.tex`
+- `NL_TPS_ACR_APEx_Applicability_Traceability_Matrix_Overleaf.tex`
 - `NL_TPS_High_Level_Requirements_Overleaf.tex`
 - `NL_TPS_High_Level_Functional_Non_Functional_Operational_Requirements_Overleaf.tex`
 - `NL_TPS_High_Level_Interface_Requirements_Overleaf.tex`
@@ -39,7 +41,8 @@ top-level Overleaf entry points:
 
 1. In the connected Overleaf project, open **Integrations -> GitHub** and pull
    the latest GitHub changes.
-2. The default `main.tex` compiles all twelve documents in trace order: ConOps,
+2. The default `main.tex` compiles all thirteen documents in trace order: ConOps,
+   the controlled ACR ROPA and ASTRO APEx applicability and traceability profile,
    High-Level Requirements, categorized High-Level Functional, Non-Functional,
    and Operational Requirements, High-Level Interface Requirements, Sub-Interface
    Requirements, Interface Component and Team Realization, categorized Functional,
@@ -49,6 +52,7 @@ top-level Overleaf entry points:
    To compile one controlled document by itself, open
    **Settings -> Compiler -> Main document** and select
    `NL_TPS_ConOps_Overleaf.tex`,
+   `NL_TPS_ACR_APEx_Applicability_Traceability_Matrix_Overleaf.tex`,
    `NL_TPS_High_Level_Requirements_Overleaf.tex`,
    `NL_TPS_High_Level_Functional_Non_Functional_Operational_Requirements_Overleaf.tex`,
    `NL_TPS_High_Level_Interface_Requirements_Overleaf.tex`,
@@ -64,7 +68,7 @@ top-level Overleaf entry points:
 4. Recompile twice after changing headings, page counts, or the table of
    contents.
 
-The twelve files remain separate controlled documents. The combined suite is a
+The thirteen files remain separate controlled documents. The combined suite is a
 review convenience and does not merge their document-control identities. The
 `.docx` files remain the source artifacts used for the initial conversion;
 future substantive changes should be reconciled through document control so

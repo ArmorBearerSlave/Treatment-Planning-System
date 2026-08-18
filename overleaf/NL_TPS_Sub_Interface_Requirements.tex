@@ -12,7 +12,7 @@
 \NLMeta{Requirements version}{0.1 - Proposed sub-interface baseline}
 \NLMeta{Date}{18 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
-\NLMeta{Coverage}{333 parent HLIRs; 999 sub-interface requirements; 18 interface families; 7 realization packages; 15 teams}
+\NLMeta{Coverage}{357 parent HLIRs; 1071 sub-interface requirements; 19 interface families; 7 realization packages; 15 teams}
 \end{minipage}}{This document defines proposed sub-interface requirements for detailed architecture, interface-control, implementation, integration, verification, and commissioning planning. It is not a released interface-control document, DICOM conformance claim, clinical protocol, regulatory determination, product release, or authorization for patient use.}
 
 \tableofcontents
@@ -41,9 +41,9 @@ Source document & NL-TPS High-Level Interface Requirements, Version 0.1, 18 Augu
 \addlinespace[2pt]
 Baseline status & Proposed sub-interface requirements; not an approved design, implementation, conformance claim, commissioning result, or clinical release \\
 \addlinespace[2pt]
-Trace coverage & 999 of 999 sub-interface requirements mapped to 333 HLIR parents, 111 HLR ancestors, interface families, realization packages, owners, and verification methods \\
+Trace coverage & 1071 of 1071 sub-interface requirements mapped to 357 HLIR parents, 119 HLR ancestors, interface families, realization packages, owners, and verification methods \\
 \addlinespace[2pt]
-Interface family count & 18 \\
+Interface family count & 19 \\
 \addlinespace[2pt]
 Realization package classes & 7 \\
 \addlinespace[2pt]
@@ -57,16 +57,16 @@ Supersession & None \\
 
 \NLFrontMatterSection{Executive summary}
 
-This specification decomposes every one of the 333 NL-TPS high-level interface requirements (HLIRs) into three implementation-facing obligations. Contract HLIRs become a controlled boundary definition, an executable schema and semantic profile, and an activation and change record. Runtime HLIRs become an ingress validation and safety gate, a deterministic transaction and outcome controller, and an observable reconciliation and recovery path. Evidence HLIRs become an objective verification protocol, retained integrated and commissioning results, and a release and lifecycle control. The resulting 999 sub-interface requirements define the minimum work needed to bring each HLIR into being without selecting a vendor, deployment topology, or clinical threshold prematurely.
+This specification decomposes every one of the 357 NL-TPS high-level interface requirements (HLIRs) into three implementation-facing obligations. Contract HLIRs become a controlled boundary definition, an executable schema and semantic profile, and an activation and change record. Runtime HLIRs become an ingress validation and safety gate, a deterministic transaction and outcome controller, and an observable reconciliation and recovery path. Evidence HLIRs become an objective verification protocol, retained integrated and commissioning results, and a release and lifecycle control. The resulting 1071 sub-interface requirements define the minimum work needed to bring each HLIR into being without selecting a vendor, deployment topology, or clinical threshold prematurely.
 
 The NL-TPS remains a human-supervised team-of-teams environment. Existing commissioned TPS, PACS, OIS, imaging, dose, QA, and delivery systems remain authoritative within their approved roles. Generative or inference models may create bounded drafts and decision support but receive no independent authority to approve, export, or authorize treatment. DICOM and DICOM-RT remain the minimum portable external exchange foundation; optional vendor APIs, IHE-RO profiles, FHIR, or CodeX exchanges are bounded supplements that require their own controlled contracts and cannot bypass DICOM reconciliation, human approval, physics review, independent QA, or site commissioning.
 
 \section{1. Purpose, scope, and derivation}
 The controlled interface trace path addressed by this specification is:
 \begin{center}
-\textbf{ConOps} $\rightarrow$ \textbf{111 HLRs} $\rightarrow$ \textbf{333 HLIRs} $\rightarrow$ \textbf{999 sub-interface requirements} $\rightarrow$ \textbf{57 interface components and 15 teams} $\rightarrow$ \textbf{verified routes and released capability}
+\textbf{ConOps} $\rightarrow$ \textbf{119 HLRs} $\rightarrow$ \textbf{357 HLIRs} $\rightarrow$ \textbf{1071 sub-interface requirements} $\rightarrow$ \textbf{61 interface components and 15 teams} $\rightarrow$ \textbf{verified routes and released capability}
 \end{center}
-The 333 detailed functional sub-requirements and their component allocations form a parallel branch beneath the HLR baseline. A capability is complete only when its functional behavior, interface behavior, components, people, procedures, evidence, and operational controls are integrated and accepted together. This document refines interface obligations only; it does not replace clinical procedures, hazard analysis, component specifications, DICOM conformance statements, verification protocols, commissioning reports, model cards, cybersecurity plans, or site-specific release records.
+The 357 detailed sub-requirements and their component allocations form a parallel branch beneath the HLR baseline. A capability is complete only when its functional behavior, interface behavior, components, people, procedures, evidence, and operational controls are integrated and accepted together. This document refines interface obligations only; it does not replace clinical procedures, hazard analysis, component specifications, DICOM conformance statements, verification protocols, commissioning reports, model cards, cybersecurity plans, or site-specific release records.
 
 \section{2. Requirement identifiers and decomposition rules}
 Sub-interface identifiers use \texttt{SIR-DOM-NNN-HH-SS}. \texttt{DOM-NNN} identifies the HLR ancestor, \texttt{HH} identifies its \texttt{IF-} child, and \texttt{SS} identifies one of three sub-interface children. For example, \texttt{SIR-PLN-004-02-03} is the third sub-interface child of \texttt{IF-PLN-004-02}. The words \textit{shall}, \textit{should}, and \textit{may} mean mandatory, recommended, and permitted.
@@ -177,6 +177,8 @@ IF-IAM-01 & Identity, Role, and Approval; T-SEC & human and service identity; ro
 IF-SAF-01 & Intent, Safety Kernel, Workflow, and State; T-SYS & typed intent; case and object state; preconditions; deterministic guard result; permitted transition; hard stop; invalidation; override prohibition; reason code & state-transition, guard, stale-state, race, invalidation, forbidden-transition, and fail-closed testing \\
 \addlinespace[2pt]
 IF-EVD-01 & Evidence Repository and Computable Rules; T-EVD & source authority; version; effective date; applicability; computable rule; terminology; unit; conflict; exception; citation; review and expiry state & authority, applicability, conflict, exception, update, expiry, unit, citation, and no-applicable-rule testing \\
+\addlinespace[2pt]
+IF-ACC-01 & Accreditation and Quality Evidence Exchange; T-GOV & source profile and edition; applicability; local interpretation; criterion; evidence pointer; attestation; deficiency; corrective action; credential and training status; export manifest; claim limitation & provenance, applicability, human authority, role, privacy, evidence integrity, deficiency lifecycle, export, historical reconstruction, and prohibited-claim testing \\
 \addlinespace[2pt]
 IF-CTX-01 & Patient and Case Context; T-IMG & patient; course; study; series; instance; frame; prescription; anatomy; prior treatment; task; destination; source; freshness; approval state & wrong-patient, wrong-course, wrong-study, wrong-frame, stale-context, incomplete-context, and destination-reconciliation testing \\
 \addlinespace[2pt]
@@ -3185,6 +3187,217 @@ Each shaded parent row reproduces the authoritative HLIR, its assigned interface
 \end{longtable}
 \end{scriptsize}
 
+\subsection{Accreditation, quality, and proton profile sub-interface requirements (ACC)}
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.17\textwidth}L{0.55\textwidth}L{0.10\textwidth}L{0.12\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Normative sub-interface requirement} & \textbf{Package} & \textbf{Owner; V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Normative sub-interface requirement} & \textbf{Package} & \textbf{Owner; V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-001-01.} The versioned ACR ROPA and ASTRO APEx source-profile contract shall define controlled boundary, schema, provenance, authority, version, and activation semantics for source identity, edition, locator, applicability class, rationale, local mapping, effective and review dates, approval, supersession, and historical-case binding. \textit{Assigned families: IF-ACC-01; IF-EVD-01; IF-CFG-01; IF-DATA-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-01-01} & To realize IF-ACC-001-01, T-GOV with the assigned family leads shall approve one version-controlled RP-ICD boundary record for every producer-consumer route. The record shall identify actors, endpoints, authority, trust zone, direction, trigger, preconditions, lifecycle states, data ownership, normal and degraded responsibilities, and explicit non-authority limitations for the versioned ACR ROPA and ASTRO APEx source-profile. & RP-ICD & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-01-02} & For every IF-ACC-001-01 route, the owners shall publish an executable RP-SCH contract with field type, cardinality, controlled terminology, identifiers, references, dates, states, reason codes, security markings, provenance, audit content, valid examples, and invalid examples. It shall encode source identity, edition, locator, applicability class, rationale, local mapping, effective and review dates, approval, supersession, and historical-case binding, and automated validation shall reject malformed, incompatible, stale, or unapproved content before state mutation. & RP-SCH & T-GOV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-01-03} & Before activation of IF-ACC-001-01, the release authority shall approve an RP-RLS record binding the interface and schema versions to accountable owners, applicability, limitations, training, monitoring, retention, change triggers, migration, rollback, and retirement. Superseded routes shall remain available only for authorized historical reconstruction. & RP-RLS & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-001-02.} The versioned ACR ROPA and ASTRO APEx source-profile runtime route shall validate identity, authorization, context, applicability, integrity, lifecycle state, and configured scope; it shall fail closed and return an explicit outcome without silent substitution. \textit{Assigned families: IF-ACC-01; IF-EVD-01; IF-CFG-01; IF-DATA-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-02-01} & To realize IF-ACC-001-02, T-GOV with the assigned family leads shall implement an RP-VAL ingress gate that validates endpoint and actor identity, role and purpose, patient and case context where applicable, profile and schema version, references, terminology and units, integrity, freshness, lifecycle state, applicability, and configured scope. Rejection shall yield a correlated reason and no clinical or compliance-state mutation. & RP-VAL & T-GOV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-02-02} & The RP-TRX controller for IF-ACC-001-02 shall recheck authorization at commit, execute an atomic and idempotent approved transition, preserve human decision authority, and return exactly one accepted, rejected, canceled, partial, failed, or degraded result. It shall detect duplicate, stale, conflicting, out-of-order, timed-out, incomplete, and unavailable conditions without expanding authority or making an accreditation claim. & RP-TRX & T-GOV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-02-03} & The RP-OBS path for IF-ACC-001-02 shall record immutable request, decision, configuration, object identities, integrity values, state transition, result, actor, timing, exception, and destination acknowledgment; reconcile authoritative sources; quarantine orphaned or partial outputs; alert the accountable team; and support safe retry, correction, rollback, recovery, and incident linkage. & RP-OBS & T-GOV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-001-03.} The versioned ACR ROPA and ASTRO APEx source-profile owners shall retain objective conformance, integrated-workflow, negative-case, commissioning, anomaly, and release evidence and shall prevent release when trace or safety evidence is incomplete. \textit{Assigned families: IF-ACC-01; IF-EVD-01; IF-CFG-01; IF-DATA-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-03-01} & To realize IF-ACC-001-03, T-GOV with T-VV and the assigned family leads shall maintain an RP-VVP trace matrix decomposing every shall-clause and family subprofile into objective inspection, analysis, demonstration, or test cases. Each case shall identify controlled data, preconditions, environment, versions, procedure, expected result, tolerance source, independence, retained evidence, and positive, negative, boundary, stale, wrong-context, outage, recovery, and misuse coverage. & RP-VVP & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-03-02} & The IF-ACC-001-03 verification owner shall execute and retain producer, consumer, integrated-workflow, failure-injection, historical-reconstruction, privacy, human-authority, and commissioned-site evidence across the approved compatibility matrix. Signed results shall identify actual outputs, logs, captures, semantic differences, anomalies, deviations, reviewers, and a reproducible environment; failures require disposition and retest. & RP-VVP & T-GOV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-03-03} & The release authority for IF-ACC-001-03 shall use RP-RLS to block activation or continued availability when trace coverage is incomplete, required results fail, a route or version is uncommissioned, provenance or applicability is unresolved, a safety-significant anomaly remains open, or residual risk is unacceptable. Release shall bind limitations, monitoring thresholds, review intervals, change triggers, rollback, support, and retirement. & RP-RLS & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-002-01.} The human authority and prohibited-accreditation-claim contract shall define controlled boundary, schema, provenance, authority, version, and activation semantics for actor, role, decision type, evidence reviewed, signature purpose, separation of duties, limitation text, attestation, and decision time. \textit{Assigned families: IF-ACC-01; IF-IAM-01; IF-UI-01; IF-SAF-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-01-01} & To realize IF-ACC-002-01, T-GOV with the assigned family leads shall approve one version-controlled RP-ICD boundary record for every producer-consumer route. The record shall identify actors, endpoints, authority, trust zone, direction, trigger, preconditions, lifecycle states, data ownership, normal and degraded responsibilities, and explicit non-authority limitations for the human authority and prohibited-accreditation-claim. & RP-ICD & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-01-02} & For every IF-ACC-002-01 route, the owners shall publish an executable RP-SCH contract with field type, cardinality, controlled terminology, identifiers, references, dates, states, reason codes, security markings, provenance, audit content, valid examples, and invalid examples. It shall encode actor, role, decision type, evidence reviewed, signature purpose, separation of duties, limitation text, attestation, and decision time, and automated validation shall reject malformed, incompatible, stale, or unapproved content before state mutation. & RP-SCH & T-GOV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-01-03} & Before activation of IF-ACC-002-01, the release authority shall approve an RP-RLS record binding the interface and schema versions to accountable owners, applicability, limitations, training, monitoring, retention, change triggers, migration, rollback, and retirement. Superseded routes shall remain available only for authorized historical reconstruction. & RP-RLS & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-002-02.} The human authority and prohibited-accreditation-claim runtime route shall validate identity, authorization, context, applicability, integrity, lifecycle state, and configured scope; it shall fail closed and return an explicit outcome without silent substitution. \textit{Assigned families: IF-ACC-01; IF-IAM-01; IF-UI-01; IF-SAF-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-02-01} & To realize IF-ACC-002-02, T-GOV with the assigned family leads shall implement an RP-VAL ingress gate that validates endpoint and actor identity, role and purpose, patient and case context where applicable, profile and schema version, references, terminology and units, integrity, freshness, lifecycle state, applicability, and configured scope. Rejection shall yield a correlated reason and no clinical or compliance-state mutation. & RP-VAL & T-GOV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-02-02} & The RP-TRX controller for IF-ACC-002-02 shall recheck authorization at commit, execute an atomic and idempotent approved transition, preserve human decision authority, and return exactly one accepted, rejected, canceled, partial, failed, or degraded result. It shall detect duplicate, stale, conflicting, out-of-order, timed-out, incomplete, and unavailable conditions without expanding authority or making an accreditation claim. & RP-TRX & T-GOV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-02-03} & The RP-OBS path for IF-ACC-002-02 shall record immutable request, decision, configuration, object identities, integrity values, state transition, result, actor, timing, exception, and destination acknowledgment; reconcile authoritative sources; quarantine orphaned or partial outputs; alert the accountable team; and support safe retry, correction, rollback, recovery, and incident linkage. & RP-OBS & T-GOV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-002-03.} The human authority and prohibited-accreditation-claim owners shall retain objective conformance, integrated-workflow, negative-case, commissioning, anomaly, and release evidence and shall prevent release when trace or safety evidence is incomplete. \textit{Assigned families: IF-ACC-01; IF-IAM-01; IF-UI-01; IF-SAF-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-03-01} & To realize IF-ACC-002-03, T-GOV with T-VV and the assigned family leads shall maintain an RP-VVP trace matrix decomposing every shall-clause and family subprofile into objective inspection, analysis, demonstration, or test cases. Each case shall identify controlled data, preconditions, environment, versions, procedure, expected result, tolerance source, independence, retained evidence, and positive, negative, boundary, stale, wrong-context, outage, recovery, and misuse coverage. & RP-VVP & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-03-02} & The IF-ACC-002-03 verification owner shall execute and retain producer, consumer, integrated-workflow, failure-injection, historical-reconstruction, privacy, human-authority, and commissioned-site evidence across the approved compatibility matrix. Signed results shall identify actual outputs, logs, captures, semantic differences, anomalies, deviations, reviewers, and a reproducible environment; failures require disposition and retest. & RP-VVP & T-GOV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-03-03} & The release authority for IF-ACC-002-03 shall use RP-RLS to block activation or continued availability when trace coverage is incomplete, required results fail, a route or version is uncommissioned, provenance or applicability is unresolved, a safety-significant anomaly remains open, or residual risk is unacceptable. Release shall bind limitations, monitoring thresholds, review intervals, change triggers, rollback, support, and retirement. & RP-RLS & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-003-01.} The atomic accreditation trace contract shall define controlled boundary, schema, provenance, authority, version, and activation semantics for stable identity, typed relation, version, state, owner, evidence pointer, integrity value, waiver, exception, deficiency, corrective action, closure, and supersession. \textit{Assigned families: IF-ACC-01; IF-DATA-01; IF-CFG-01; IF-VV-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-01-01} & To realize IF-ACC-003-01, T-GOV with the assigned family leads shall approve one version-controlled RP-ICD boundary record for every producer-consumer route. The record shall identify actors, endpoints, authority, trust zone, direction, trigger, preconditions, lifecycle states, data ownership, normal and degraded responsibilities, and explicit non-authority limitations for the atomic accreditation trace. & RP-ICD & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-01-02} & For every IF-ACC-003-01 route, the owners shall publish an executable RP-SCH contract with field type, cardinality, controlled terminology, identifiers, references, dates, states, reason codes, security markings, provenance, audit content, valid examples, and invalid examples. It shall encode stable identity, typed relation, version, state, owner, evidence pointer, integrity value, waiver, exception, deficiency, corrective action, closure, and supersession, and automated validation shall reject malformed, incompatible, stale, or unapproved content before state mutation. & RP-SCH & T-GOV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-01-03} & Before activation of IF-ACC-003-01, the release authority shall approve an RP-RLS record binding the interface and schema versions to accountable owners, applicability, limitations, training, monitoring, retention, change triggers, migration, rollback, and retirement. Superseded routes shall remain available only for authorized historical reconstruction. & RP-RLS & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-003-02.} The atomic accreditation trace runtime route shall validate identity, authorization, context, applicability, integrity, lifecycle state, and configured scope; it shall fail closed and return an explicit outcome without silent substitution. \textit{Assigned families: IF-ACC-01; IF-DATA-01; IF-CFG-01; IF-VV-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-02-01} & To realize IF-ACC-003-02, T-GOV with the assigned family leads shall implement an RP-VAL ingress gate that validates endpoint and actor identity, role and purpose, patient and case context where applicable, profile and schema version, references, terminology and units, integrity, freshness, lifecycle state, applicability, and configured scope. Rejection shall yield a correlated reason and no clinical or compliance-state mutation. & RP-VAL & T-GOV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-02-02} & The RP-TRX controller for IF-ACC-003-02 shall recheck authorization at commit, execute an atomic and idempotent approved transition, preserve human decision authority, and return exactly one accepted, rejected, canceled, partial, failed, or degraded result. It shall detect duplicate, stale, conflicting, out-of-order, timed-out, incomplete, and unavailable conditions without expanding authority or making an accreditation claim. & RP-TRX & T-GOV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-02-03} & The RP-OBS path for IF-ACC-003-02 shall record immutable request, decision, configuration, object identities, integrity values, state transition, result, actor, timing, exception, and destination acknowledgment; reconcile authoritative sources; quarantine orphaned or partial outputs; alert the accountable team; and support safe retry, correction, rollback, recovery, and incident linkage. & RP-OBS & T-GOV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-003-03.} The atomic accreditation trace owners shall retain objective conformance, integrated-workflow, negative-case, commissioning, anomaly, and release evidence and shall prevent release when trace or safety evidence is incomplete. \textit{Assigned families: IF-ACC-01; IF-DATA-01; IF-CFG-01; IF-VV-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-03-01} & To realize IF-ACC-003-03, T-GOV with T-VV and the assigned family leads shall maintain an RP-VVP trace matrix decomposing every shall-clause and family subprofile into objective inspection, analysis, demonstration, or test cases. Each case shall identify controlled data, preconditions, environment, versions, procedure, expected result, tolerance source, independence, retained evidence, and positive, negative, boundary, stale, wrong-context, outage, recovery, and misuse coverage. & RP-VVP & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-03-02} & The IF-ACC-003-03 verification owner shall execute and retain producer, consumer, integrated-workflow, failure-injection, historical-reconstruction, privacy, human-authority, and commissioned-site evidence across the approved compatibility matrix. Signed results shall identify actual outputs, logs, captures, semantic differences, anomalies, deviations, reviewers, and a reproducible environment; failures require disposition and retest. & RP-VVP & T-GOV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-03-03} & The release authority for IF-ACC-003-03 shall use RP-RLS to block activation or continued availability when trace coverage is incomplete, required results fail, a route or version is uncommissioned, provenance or applicability is unresolved, a safety-significant anomaly remains open, or residual risk is unacceptable. Release shall bind limitations, monitoring thresholds, review intervals, change triggers, rollback, support, and retirement. & RP-RLS & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-004-01.} The clinical documentation completeness and temporal-gate contract shall define controlled boundary, schema, provenance, authority, version, and activation semantics for patient and course identity, artifact type, authoritative source, author, approval state, effective time, expiry, amendment, dependency, exception, and resolving role. \textit{Assigned families: IF-ACC-01; IF-CTX-01; IF-IHE-01; IF-DICOM-01; IF-TPS-01; IF-SAF-01; parent owner: T-REV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-01-01} & To realize IF-ACC-004-01, T-REV with the assigned family leads shall approve one version-controlled RP-ICD boundary record for every producer-consumer route. The record shall identify actors, endpoints, authority, trust zone, direction, trigger, preconditions, lifecycle states, data ownership, normal and degraded responsibilities, and explicit non-authority limitations for the clinical documentation completeness and temporal-gate. & RP-ICD & T-REV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-01-02} & For every IF-ACC-004-01 route, the owners shall publish an executable RP-SCH contract with field type, cardinality, controlled terminology, identifiers, references, dates, states, reason codes, security markings, provenance, audit content, valid examples, and invalid examples. It shall encode patient and course identity, artifact type, authoritative source, author, approval state, effective time, expiry, amendment, dependency, exception, and resolving role, and automated validation shall reject malformed, incompatible, stale, or unapproved content before state mutation. & RP-SCH & T-REV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-01-03} & Before activation of IF-ACC-004-01, the release authority shall approve an RP-RLS record binding the interface and schema versions to accountable owners, applicability, limitations, training, monitoring, retention, change triggers, migration, rollback, and retirement. Superseded routes shall remain available only for authorized historical reconstruction. & RP-RLS & T-REV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-004-02.} The clinical documentation completeness and temporal-gate runtime route shall validate identity, authorization, context, applicability, integrity, lifecycle state, and configured scope; it shall fail closed and return an explicit outcome without silent substitution. \textit{Assigned families: IF-ACC-01; IF-CTX-01; IF-IHE-01; IF-DICOM-01; IF-TPS-01; IF-SAF-01; parent owner: T-REV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-02-01} & To realize IF-ACC-004-02, T-REV with the assigned family leads shall implement an RP-VAL ingress gate that validates endpoint and actor identity, role and purpose, patient and case context where applicable, profile and schema version, references, terminology and units, integrity, freshness, lifecycle state, applicability, and configured scope. Rejection shall yield a correlated reason and no clinical or compliance-state mutation. & RP-VAL & T-REV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-02-02} & The RP-TRX controller for IF-ACC-004-02 shall recheck authorization at commit, execute an atomic and idempotent approved transition, preserve human decision authority, and return exactly one accepted, rejected, canceled, partial, failed, or degraded result. It shall detect duplicate, stale, conflicting, out-of-order, timed-out, incomplete, and unavailable conditions without expanding authority or making an accreditation claim. & RP-TRX & T-REV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-02-03} & The RP-OBS path for IF-ACC-004-02 shall record immutable request, decision, configuration, object identities, integrity values, state transition, result, actor, timing, exception, and destination acknowledgment; reconcile authoritative sources; quarantine orphaned or partial outputs; alert the accountable team; and support safe retry, correction, rollback, recovery, and incident linkage. & RP-OBS & T-REV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-004-03.} The clinical documentation completeness and temporal-gate owners shall retain objective conformance, integrated-workflow, negative-case, commissioning, anomaly, and release evidence and shall prevent release when trace or safety evidence is incomplete. \textit{Assigned families: IF-ACC-01; IF-CTX-01; IF-IHE-01; IF-DICOM-01; IF-TPS-01; IF-SAF-01; parent owner: T-REV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-03-01} & To realize IF-ACC-004-03, T-REV with T-VV and the assigned family leads shall maintain an RP-VVP trace matrix decomposing every shall-clause and family subprofile into objective inspection, analysis, demonstration, or test cases. Each case shall identify controlled data, preconditions, environment, versions, procedure, expected result, tolerance source, independence, retained evidence, and positive, negative, boundary, stale, wrong-context, outage, recovery, and misuse coverage. & RP-VVP & T-REV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-03-02} & The IF-ACC-004-03 verification owner shall execute and retain producer, consumer, integrated-workflow, failure-injection, historical-reconstruction, privacy, human-authority, and commissioned-site evidence across the approved compatibility matrix. Signed results shall identify actual outputs, logs, captures, semantic differences, anomalies, deviations, reviewers, and a reproducible environment; failures require disposition and retest. & RP-VVP & T-REV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-03-03} & The release authority for IF-ACC-004-03 shall use RP-RLS to block activation or continued availability when trace coverage is incomplete, required results fail, a route or version is uncommissioned, provenance or applicability is unresolved, a safety-significant anomaly remains open, or residual risk is unacceptable. Release shall bind limitations, monitoring thresholds, review intervals, change triggers, rollback, support, and retirement. & RP-RLS & T-REV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-005-01.} The clinical review and QA schedule contract shall define controlled boundary, schema, provenance, authority, version, and activation semantics for review type, applicability, due event or interval, required role and independence, artifact scope, completion state, finding, exception authority, and downstream gate. \textit{Assigned families: IF-ACC-01; IF-CTX-01; IF-REV-01; IF-DICOM-01; IF-OPS-01; IF-SAF-01; parent owner: T-REV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-01-01} & To realize IF-ACC-005-01, T-REV with the assigned family leads shall approve one version-controlled RP-ICD boundary record for every producer-consumer route. The record shall identify actors, endpoints, authority, trust zone, direction, trigger, preconditions, lifecycle states, data ownership, normal and degraded responsibilities, and explicit non-authority limitations for the clinical review and QA schedule. & RP-ICD & T-REV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-01-02} & For every IF-ACC-005-01 route, the owners shall publish an executable RP-SCH contract with field type, cardinality, controlled terminology, identifiers, references, dates, states, reason codes, security markings, provenance, audit content, valid examples, and invalid examples. It shall encode review type, applicability, due event or interval, required role and independence, artifact scope, completion state, finding, exception authority, and downstream gate, and automated validation shall reject malformed, incompatible, stale, or unapproved content before state mutation. & RP-SCH & T-REV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-01-03} & Before activation of IF-ACC-005-01, the release authority shall approve an RP-RLS record binding the interface and schema versions to accountable owners, applicability, limitations, training, monitoring, retention, change triggers, migration, rollback, and retirement. Superseded routes shall remain available only for authorized historical reconstruction. & RP-RLS & T-REV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-005-02.} The clinical review and QA schedule runtime route shall validate identity, authorization, context, applicability, integrity, lifecycle state, and configured scope; it shall fail closed and return an explicit outcome without silent substitution. \textit{Assigned families: IF-ACC-01; IF-CTX-01; IF-REV-01; IF-DICOM-01; IF-OPS-01; IF-SAF-01; parent owner: T-REV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-02-01} & To realize IF-ACC-005-02, T-REV with the assigned family leads shall implement an RP-VAL ingress gate that validates endpoint and actor identity, role and purpose, patient and case context where applicable, profile and schema version, references, terminology and units, integrity, freshness, lifecycle state, applicability, and configured scope. Rejection shall yield a correlated reason and no clinical or compliance-state mutation. & RP-VAL & T-REV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-02-02} & The RP-TRX controller for IF-ACC-005-02 shall recheck authorization at commit, execute an atomic and idempotent approved transition, preserve human decision authority, and return exactly one accepted, rejected, canceled, partial, failed, or degraded result. It shall detect duplicate, stale, conflicting, out-of-order, timed-out, incomplete, and unavailable conditions without expanding authority or making an accreditation claim. & RP-TRX & T-REV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-02-03} & The RP-OBS path for IF-ACC-005-02 shall record immutable request, decision, configuration, object identities, integrity values, state transition, result, actor, timing, exception, and destination acknowledgment; reconcile authoritative sources; quarantine orphaned or partial outputs; alert the accountable team; and support safe retry, correction, rollback, recovery, and incident linkage. & RP-OBS & T-REV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-005-03.} The clinical review and QA schedule owners shall retain objective conformance, integrated-workflow, negative-case, commissioning, anomaly, and release evidence and shall prevent release when trace or safety evidence is incomplete. \textit{Assigned families: IF-ACC-01; IF-CTX-01; IF-REV-01; IF-DICOM-01; IF-OPS-01; IF-SAF-01; parent owner: T-REV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-03-01} & To realize IF-ACC-005-03, T-REV with T-VV and the assigned family leads shall maintain an RP-VVP trace matrix decomposing every shall-clause and family subprofile into objective inspection, analysis, demonstration, or test cases. Each case shall identify controlled data, preconditions, environment, versions, procedure, expected result, tolerance source, independence, retained evidence, and positive, negative, boundary, stale, wrong-context, outage, recovery, and misuse coverage. & RP-VVP & T-REV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-03-02} & The IF-ACC-005-03 verification owner shall execute and retain producer, consumer, integrated-workflow, failure-injection, historical-reconstruction, privacy, human-authority, and commissioned-site evidence across the approved compatibility matrix. Signed results shall identify actual outputs, logs, captures, semantic differences, anomalies, deviations, reviewers, and a reproducible environment; failures require disposition and retest. & RP-VVP & T-REV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-03-03} & The release authority for IF-ACC-005-03 shall use RP-RLS to block activation or continued availability when trace coverage is incomplete, required results fail, a route or version is uncommissioned, provenance or applicability is unresolved, a safety-significant anomaly remains open, or residual risk is unacceptable. Release shall bind limitations, monitoring thresholds, review intervals, change triggers, rollback, support, and retirement. & RP-RLS & T-REV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-006-01.} The qualified-medical-physicist TPS and model lifecycle contract shall define controlled boundary, schema, provenance, authority, version, and activation semantics for commissioned scope, TPS, model, beam and machine version, baseline, protocol, tolerance source, result, anomaly, rollback target, approver, and return-to-service state. \textit{Assigned families: IF-ACC-01; IF-CFG-01; IF-VV-01; IF-TPS-01; IF-DICOM-01; IF-AI-01; parent owner: T-VV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-01-01} & To realize IF-ACC-006-01, T-VV with the assigned family leads shall approve one version-controlled RP-ICD boundary record for every producer-consumer route. The record shall identify actors, endpoints, authority, trust zone, direction, trigger, preconditions, lifecycle states, data ownership, normal and degraded responsibilities, and explicit non-authority limitations for the qualified-medical-physicist TPS and model lifecycle. & RP-ICD & T-VV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-01-02} & For every IF-ACC-006-01 route, the owners shall publish an executable RP-SCH contract with field type, cardinality, controlled terminology, identifiers, references, dates, states, reason codes, security markings, provenance, audit content, valid examples, and invalid examples. It shall encode commissioned scope, TPS, model, beam and machine version, baseline, protocol, tolerance source, result, anomaly, rollback target, approver, and return-to-service state, and automated validation shall reject malformed, incompatible, stale, or unapproved content before state mutation. & RP-SCH & T-VV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-01-03} & Before activation of IF-ACC-006-01, the release authority shall approve an RP-RLS record binding the interface and schema versions to accountable owners, applicability, limitations, training, monitoring, retention, change triggers, migration, rollback, and retirement. Superseded routes shall remain available only for authorized historical reconstruction. & RP-RLS & T-VV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-006-02.} The qualified-medical-physicist TPS and model lifecycle runtime route shall validate identity, authorization, context, applicability, integrity, lifecycle state, and configured scope; it shall fail closed and return an explicit outcome without silent substitution. \textit{Assigned families: IF-ACC-01; IF-CFG-01; IF-VV-01; IF-TPS-01; IF-DICOM-01; IF-AI-01; parent owner: T-VV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-02-01} & To realize IF-ACC-006-02, T-VV with the assigned family leads shall implement an RP-VAL ingress gate that validates endpoint and actor identity, role and purpose, patient and case context where applicable, profile and schema version, references, terminology and units, integrity, freshness, lifecycle state, applicability, and configured scope. Rejection shall yield a correlated reason and no clinical or compliance-state mutation. & RP-VAL & T-VV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-02-02} & The RP-TRX controller for IF-ACC-006-02 shall recheck authorization at commit, execute an atomic and idempotent approved transition, preserve human decision authority, and return exactly one accepted, rejected, canceled, partial, failed, or degraded result. It shall detect duplicate, stale, conflicting, out-of-order, timed-out, incomplete, and unavailable conditions without expanding authority or making an accreditation claim. & RP-TRX & T-VV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-02-03} & The RP-OBS path for IF-ACC-006-02 shall record immutable request, decision, configuration, object identities, integrity values, state transition, result, actor, timing, exception, and destination acknowledgment; reconcile authoritative sources; quarantine orphaned or partial outputs; alert the accountable team; and support safe retry, correction, rollback, recovery, and incident linkage. & RP-OBS & T-VV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-006-03.} The qualified-medical-physicist TPS and model lifecycle owners shall retain objective conformance, integrated-workflow, negative-case, commissioning, anomaly, and release evidence and shall prevent release when trace or safety evidence is incomplete. \textit{Assigned families: IF-ACC-01; IF-CFG-01; IF-VV-01; IF-TPS-01; IF-DICOM-01; IF-AI-01; parent owner: T-VV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-03-01} & To realize IF-ACC-006-03, T-VV with T-VV and the assigned family leads shall maintain an RP-VVP trace matrix decomposing every shall-clause and family subprofile into objective inspection, analysis, demonstration, or test cases. Each case shall identify controlled data, preconditions, environment, versions, procedure, expected result, tolerance source, independence, retained evidence, and positive, negative, boundary, stale, wrong-context, outage, recovery, and misuse coverage. & RP-VVP & T-VV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-03-02} & The IF-ACC-006-03 verification owner shall execute and retain producer, consumer, integrated-workflow, failure-injection, historical-reconstruction, privacy, human-authority, and commissioned-site evidence across the approved compatibility matrix. Signed results shall identify actual outputs, logs, captures, semantic differences, anomalies, deviations, reviewers, and a reproducible environment; failures require disposition and retest. & RP-VVP & T-VV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-03-03} & The release authority for IF-ACC-006-03 shall use RP-RLS to block activation or continued availability when trace coverage is incomplete, required results fail, a route or version is uncommissioned, provenance or applicability is unresolved, a safety-significant anomaly remains open, or residual risk is unacceptable. Release shall bind limitations, monitoring thresholds, review intervals, change triggers, rollback, support, and retirement. & RP-RLS & T-VV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-007-01.} The organizational accreditation evidence and corrective-action contract shall define controlled boundary, schema, provenance, authority, version, and activation semantics for criterion, owner, evidence pointer, period, attestation, deficiency, severity, corrective action, due date, verification, retention, disclosure, redaction, and export manifest. \textit{Assigned families: IF-ACC-01; IF-IAM-01; IF-DATA-01; IF-SEC-01; IF-OPS-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-01-01} & To realize IF-ACC-007-01, T-GOV with the assigned family leads shall approve one version-controlled RP-ICD boundary record for every producer-consumer route. The record shall identify actors, endpoints, authority, trust zone, direction, trigger, preconditions, lifecycle states, data ownership, normal and degraded responsibilities, and explicit non-authority limitations for the organizational accreditation evidence and corrective-action. & RP-ICD & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-01-02} & For every IF-ACC-007-01 route, the owners shall publish an executable RP-SCH contract with field type, cardinality, controlled terminology, identifiers, references, dates, states, reason codes, security markings, provenance, audit content, valid examples, and invalid examples. It shall encode criterion, owner, evidence pointer, period, attestation, deficiency, severity, corrective action, due date, verification, retention, disclosure, redaction, and export manifest, and automated validation shall reject malformed, incompatible, stale, or unapproved content before state mutation. & RP-SCH & T-GOV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-01-03} & Before activation of IF-ACC-007-01, the release authority shall approve an RP-RLS record binding the interface and schema versions to accountable owners, applicability, limitations, training, monitoring, retention, change triggers, migration, rollback, and retirement. Superseded routes shall remain available only for authorized historical reconstruction. & RP-RLS & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-007-02.} The organizational accreditation evidence and corrective-action runtime route shall validate identity, authorization, context, applicability, integrity, lifecycle state, and configured scope; it shall fail closed and return an explicit outcome without silent substitution. \textit{Assigned families: IF-ACC-01; IF-IAM-01; IF-DATA-01; IF-SEC-01; IF-OPS-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-02-01} & To realize IF-ACC-007-02, T-GOV with the assigned family leads shall implement an RP-VAL ingress gate that validates endpoint and actor identity, role and purpose, patient and case context where applicable, profile and schema version, references, terminology and units, integrity, freshness, lifecycle state, applicability, and configured scope. Rejection shall yield a correlated reason and no clinical or compliance-state mutation. & RP-VAL & T-GOV; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-02-02} & The RP-TRX controller for IF-ACC-007-02 shall recheck authorization at commit, execute an atomic and idempotent approved transition, preserve human decision authority, and return exactly one accepted, rejected, canceled, partial, failed, or degraded result. It shall detect duplicate, stale, conflicting, out-of-order, timed-out, incomplete, and unavailable conditions without expanding authority or making an accreditation claim. & RP-TRX & T-GOV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-02-03} & The RP-OBS path for IF-ACC-007-02 shall record immutable request, decision, configuration, object identities, integrity values, state transition, result, actor, timing, exception, and destination acknowledgment; reconcile authoritative sources; quarantine orphaned or partial outputs; alert the accountable team; and support safe retry, correction, rollback, recovery, and incident linkage. & RP-OBS & T-GOV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-007-03.} The organizational accreditation evidence and corrective-action owners shall retain objective conformance, integrated-workflow, negative-case, commissioning, anomaly, and release evidence and shall prevent release when trace or safety evidence is incomplete. \textit{Assigned families: IF-ACC-01; IF-IAM-01; IF-DATA-01; IF-SEC-01; IF-OPS-01; parent owner: T-GOV.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-03-01} & To realize IF-ACC-007-03, T-GOV with T-VV and the assigned family leads shall maintain an RP-VVP trace matrix decomposing every shall-clause and family subprofile into objective inspection, analysis, demonstration, or test cases. Each case shall identify controlled data, preconditions, environment, versions, procedure, expected result, tolerance source, independence, retained evidence, and positive, negative, boundary, stale, wrong-context, outage, recovery, and misuse coverage. & RP-VVP & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-03-02} & The IF-ACC-007-03 verification owner shall execute and retain producer, consumer, integrated-workflow, failure-injection, historical-reconstruction, privacy, human-authority, and commissioned-site evidence across the approved compatibility matrix. Signed results shall identify actual outputs, logs, captures, semantic differences, anomalies, deviations, reviewers, and a reproducible environment; failures require disposition and retest. & RP-VVP & T-GOV; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-03-03} & The release authority for IF-ACC-007-03 shall use RP-RLS to block activation or continued availability when trace coverage is incomplete, required results fail, a route or version is uncommissioned, provenance or applicability is unresolved, a safety-significant anomaly remains open, or residual risk is unacceptable. Release shall bind limitations, monitoring thresholds, review intervals, change triggers, rollback, support, and retirement. & RP-RLS & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-008-01.} The proton planning, delivery-compatibility, and QA profile contract shall define controlled boundary, schema, provenance, authority, version, and activation semantics for technique, beam and nozzle capability, range and setup uncertainty, robust scenario, motion strategy, image guidance, dose and biological assumptions, delivery constraint, patient-specific QA, and evidence source. \textit{Assigned families: IF-ACC-01; IF-CTX-01; IF-PLN-01; IF-TPS-01; IF-DICOM-01; IF-REV-01; IF-VV-01; parent owner: T-PLAN.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-01-01} & To realize IF-ACC-008-01, T-PLAN with the assigned family leads shall approve one version-controlled RP-ICD boundary record for every producer-consumer route. The record shall identify actors, endpoints, authority, trust zone, direction, trigger, preconditions, lifecycle states, data ownership, normal and degraded responsibilities, and explicit non-authority limitations for the proton planning, delivery-compatibility, and QA profile. & RP-ICD & T-PLAN; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-01-02} & For every IF-ACC-008-01 route, the owners shall publish an executable RP-SCH contract with field type, cardinality, controlled terminology, identifiers, references, dates, states, reason codes, security markings, provenance, audit content, valid examples, and invalid examples. It shall encode technique, beam and nozzle capability, range and setup uncertainty, robust scenario, motion strategy, image guidance, dose and biological assumptions, delivery constraint, patient-specific QA, and evidence source, and automated validation shall reject malformed, incompatible, stale, or unapproved content before state mutation. & RP-SCH & T-PLAN; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-01-03} & Before activation of IF-ACC-008-01, the release authority shall approve an RP-RLS record binding the interface and schema versions to accountable owners, applicability, limitations, training, monitoring, retention, change triggers, migration, rollback, and retirement. Superseded routes shall remain available only for authorized historical reconstruction. & RP-RLS & T-PLAN; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-008-02.} The proton planning, delivery-compatibility, and QA profile runtime route shall validate identity, authorization, context, applicability, integrity, lifecycle state, and configured scope; it shall fail closed and return an explicit outcome without silent substitution. \textit{Assigned families: IF-ACC-01; IF-CTX-01; IF-PLN-01; IF-TPS-01; IF-DICOM-01; IF-REV-01; IF-VV-01; parent owner: T-PLAN.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-02-01} & To realize IF-ACC-008-02, T-PLAN with the assigned family leads shall implement an RP-VAL ingress gate that validates endpoint and actor identity, role and purpose, patient and case context where applicable, profile and schema version, references, terminology and units, integrity, freshness, lifecycle state, applicability, and configured scope. Rejection shall yield a correlated reason and no clinical or compliance-state mutation. & RP-VAL & T-PLAN; I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-02-02} & The RP-TRX controller for IF-ACC-008-02 shall recheck authorization at commit, execute an atomic and idempotent approved transition, preserve human decision authority, and return exactly one accepted, rejected, canceled, partial, failed, or degraded result. It shall detect duplicate, stale, conflicting, out-of-order, timed-out, incomplete, and unavailable conditions without expanding authority or making an accreditation claim. & RP-TRX & T-PLAN; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-02-03} & The RP-OBS path for IF-ACC-008-02 shall record immutable request, decision, configuration, object identities, integrity values, state transition, result, actor, timing, exception, and destination acknowledgment; reconcile authoritative sources; quarantine orphaned or partial outputs; alert the accountable team; and support safe retry, correction, rollback, recovery, and incident linkage. & RP-OBS & T-PLAN; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent IF-ACC-008-03.} The proton planning, delivery-compatibility, and QA profile owners shall retain objective conformance, integrated-workflow, negative-case, commissioning, anomaly, and release evidence and shall prevent release when trace or safety evidence is incomplete. \textit{Assigned families: IF-ACC-01; IF-CTX-01; IF-PLN-01; IF-TPS-01; IF-DICOM-01; IF-REV-01; IF-VV-01; parent owner: T-PLAN.}} \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-03-01} & To realize IF-ACC-008-03, T-PLAN with T-VV and the assigned family leads shall maintain an RP-VVP trace matrix decomposing every shall-clause and family subprofile into objective inspection, analysis, demonstration, or test cases. Each case shall identify controlled data, preconditions, environment, versions, procedure, expected result, tolerance source, independence, retained evidence, and positive, negative, boundary, stale, wrong-context, outage, recovery, and misuse coverage. & RP-VVP & T-PLAN; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-03-02} & The IF-ACC-008-03 verification owner shall execute and retain producer, consumer, integrated-workflow, failure-injection, historical-reconstruction, privacy, human-authority, and commissioned-site evidence across the approved compatibility matrix. Signed results shall identify actual outputs, logs, captures, semantic differences, anomalies, deviations, reviewers, and a reproducible environment; failures require disposition and retest. & RP-VVP & T-PLAN; T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-03-03} & The release authority for IF-ACC-008-03 shall use RP-RLS to block activation or continued availability when trace coverage is incomplete, required results fail, a route or version is uncommissioned, provenance or applicability is unresolved, a safety-significant anomaly remains open, or residual risk is unacceptable. Release shall bind limitations, monitoring thresholds, review intervals, change triggers, rollback, support, and retirement. & RP-RLS & T-PLAN; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
 \section{8. External TPS, DICOM, and IHE-RO realization minimum}
 Every route assigned IF-DICOM-01 or IF-TPS-01 shall produce one site- and version-specific RP-ICD, RP-SCH, RP-VAL, RP-TRX, RP-OBS, RP-VVP, and RP-RLS chain as applicable. The chain shall include:
 \begin{itemize}
@@ -3254,7 +3467,9 @@ OPS & Clinical operations, monitoring, and resilience & 21 & 63 & 9 \\
 \addlinespace[2pt]
 VAL & Verification, commissioning, release, and change control & 27 & 81 & 18 \\
 \addlinespace[2pt]
-\textbf{TOTAL} & \textbf{Complete sub-interface baseline} & \textbf{333} & \textbf{999} & \textbf{513} \\
+ACC & Accreditation, quality, and proton profiles & 24 & 72 & 36 \\
+\addlinespace[2pt]
+\textbf{TOTAL} & \textbf{Complete sub-interface baseline} & \textbf{357} & \textbf{1071} & \textbf{549} \\
 \end{longtable}
 \end{small}
 
@@ -3274,41 +3489,43 @@ VAL & Verification, commissioning, release, and change control & 27 & 81 & 18 \\
 \endfoot
 \bottomrule
 \endlastfoot
-IF-UI-01 & Clinical User Interaction & 324 \\
+IF-UI-01 & Clinical User Interaction & 333 \\
 \addlinespace[2pt]
 IF-NLI-01 & Speech, Text, and Typed Intent & 99 \\
 \addlinespace[2pt]
-IF-IAM-01 & Identity, Role, and Approval & 459 \\
+IF-IAM-01 & Identity, Role, and Approval & 477 \\
 \addlinespace[2pt]
-IF-SAF-01 & Intent, Safety Kernel, Workflow, and State & 486 \\
+IF-SAF-01 & Intent, Safety Kernel, Workflow, and State & 513 \\
 \addlinespace[2pt]
-IF-EVD-01 & Evidence Repository and Computable Rules & 288 \\
+IF-EVD-01 & Evidence Repository and Computable Rules & 297 \\
 \addlinespace[2pt]
-IF-CTX-01 & Patient and Case Context & 261 \\
+IF-ACC-01 & Accreditation and Quality Evidence Exchange & 72 \\
+\addlinespace[2pt]
+IF-CTX-01 & Patient and Case Context & 288 \\
 \addlinespace[2pt]
 IF-IMG-01 & Imaging, Registration, and Contouring & 207 \\
 \addlinespace[2pt]
-IF-PLN-01 & Planning, Optimization, Robustness, and Dose & 243 \\
+IF-PLN-01 & Planning, Optimization, Robustness, and Dose & 252 \\
 \addlinespace[2pt]
-IF-REV-01 & Plan Review, QA, Approval, and Transfer & 288 \\
+IF-REV-01 & Plan Review, QA, Approval, and Transfer & 306 \\
 \addlinespace[2pt]
-IF-DICOM-01 & DICOM and DICOM-RT Exchange & 513 \\
+IF-DICOM-01 & DICOM and DICOM-RT Exchange & 549 \\
 \addlinespace[2pt]
-IF-TPS-01 & Commissioned External TPS Adapter & 342 \\
+IF-TPS-01 & Commissioned External TPS Adapter & 369 \\
 \addlinespace[2pt]
-IF-IHE-01 & IHE-RO and Optional Clinical API Profiles & 9 \\
+IF-IHE-01 & IHE-RO and Optional Clinical API Profiles & 18 \\
 \addlinespace[2pt]
-IF-AI-01 & Model Registry, Gateway, and Runtime & 252 \\
+IF-AI-01 & Model Registry, Gateway, and Runtime & 261 \\
 \addlinespace[2pt]
-IF-DATA-01 & Clinical Objects, Provenance, and Audit & 486 \\
+IF-DATA-01 & Clinical Objects, Provenance, and Audit & 513 \\
 \addlinespace[2pt]
-IF-CFG-01 & Configuration, QMS, Governance, and Release & 279 \\
+IF-CFG-01 & Configuration, QMS, Governance, and Release & 306 \\
 \addlinespace[2pt]
-IF-OPS-01 & Jobs, Monitoring, Incident, and Recovery & 279 \\
+IF-OPS-01 & Jobs, Monitoring, Incident, and Recovery & 297 \\
 \addlinespace[2pt]
-IF-SEC-01 & Cybersecurity and Privacy Control & 252 \\
+IF-SEC-01 & Cybersecurity and Privacy Control & 261 \\
 \addlinespace[2pt]
-IF-VV-01 & Verification, Commissioning, and Acceptance & 288 \\
+IF-VV-01 & Verification, Commissioning, and Acceptance & 315 \\
 \addlinespace[2pt]
 \end{longtable}
 \end{small}

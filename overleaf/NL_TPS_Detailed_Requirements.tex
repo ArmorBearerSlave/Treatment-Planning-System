@@ -8,7 +8,7 @@
 \NLMeta{Requirements version}{0.1 - Proposed detailed baseline}
 \NLMeta{Date}{18 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
-\NLMeta{Coverage}{111 parent requirements; 333 child requirements}
+\NLMeta{Coverage}{119 parent requirements; 357 child requirements}
 \end{minipage}}{This document proposes lower-level requirements for architecture, design, implementation, and verification planning. It is not a clinical protocol, commissioning report, regulatory determination, released product specification, or authorization for patient use.}
 
 \tableofcontents
@@ -37,9 +37,9 @@ Source document & NL-TPS High-Level Requirements, Version 0.1, 17 August 2026 \\
 \addlinespace[2pt]
 Baseline status & Proposed detailed requirements; not approved, implemented, commissioned, or allocated to a clinical release \\
 \addlinespace[2pt]
-Parent requirement count & 111 \\
+Parent requirement count & 119 \\
 \addlinespace[2pt]
-Child requirement count & 333 \\
+Child requirement count & 357 \\
 \addlinespace[2pt]
 Change authority & Clinical governance and quality-system change control \\
 \addlinespace[2pt]
@@ -115,7 +115,9 @@ OPS & Clinical operations, monitoring, and resilience & 7 & 21 \\
 \addlinespace[2pt]
 VAL & Verification, commissioning, release, and change control & 9 & 27 \\
 \addlinespace[2pt]
-\textbf{TOTAL} & \textbf{Proposed detailed baseline} & \textbf{111} & \textbf{333} \\
+ACC & Accreditation and practice-quality profiles & 8 & 24 \\
+\addlinespace[2pt]
+\textbf{TOTAL} & \textbf{Proposed detailed baseline} & \textbf{119} & \textbf{357} \\
 \end{longtable}
 \end{small}
 
@@ -1297,6 +1299,91 @@ VAL-009-03 & Emergency suspension and re-entry shall require containment, affect
 \end{longtable}
 \end{small}
 
+\subsection{Accreditation and practice-quality profiles (ACC)}
+
+Primary allocation families: ACCP \slash\allowbreak{} DOCG \slash\allowbreak{} QMS \slash\allowbreak{} PBT. Final applicability and professional responsibility require clinical-governance approval.
+
+\begin{small}
+\begin{longtable}{@{}L{0.135\textwidth}L{0.565\textwidth}L{0.125\textwidth}L{0.095\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Child ID} & \textbf{Detailed sub-requirement} & \textbf{Allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Child ID} & \textbf{Detailed sub-requirement} & \textbf{Allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-001.} The NL-TPS shall maintain separately versioned ACR ROPA, ASTRO APEx, technical-guidance, institutional, and modality-specific profiles with explicit authority, applicability, effective status, and supersession.} \\
+\addlinespace[2pt]
+ACC-001-01 & The accreditation-profile registry shall record program, authority class, publisher, title, edition or revision, effective date, source location, retrieval date, integrity value, scope, modality, applicability, owner, approval, review date, and supersession for each source and atomic assertion. & ACCP\slash\allowbreak{}EVD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+ACC-001-02 & The resolver shall select only the approved profiles applicable to the active institution, accreditation program, modality, machine, technique, task, and release and shall not use a global tier to make one accreditation program override another. & ACCP\slash\allowbreak{}CFG & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+ACC-001-03 & A source revision, withdrawal, integrity change, review expiry, or program change shall suspend affected executable controls until change impact, human review, approval, republishing, and dependent regression are complete. & ACCP\slash\allowbreak{}QMS & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-002.} The NL-TPS shall require authorized human approval of every profile applicability decision, distinguish product-enforceable, workflow-supporting, evidence-only, organizational, and not-applicable controls, and shall not represent readiness status as accreditation or compliance.} \\
+\addlinespace[2pt]
+ACC-002-01 & Each source assertion shall be assigned one of the controlled applicability classes ENF, SUP, EVD, ORG, or N/A with rationale, scope, owner, approver, effective date, review date, and re-evaluation trigger. & ACCP\slash\allowbreak{}QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+ACC-002-02 & Applicability and not-applicable decisions shall require authenticated approval by the institutionally designated clinical, physics, quality, or administrative authority and shall not be created or approved by an AI service. & IAM\slash\allowbreak{}ACCP & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+ACC-002-03 & User interfaces, reports, dashboards, and exports shall label results as requirement, evidence, readiness, deficiency, or review status and shall not state or imply that the NL-TPS has determined accreditation or compliance. & HFE\slash\allowbreak{}ACCP & HFE\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-003.} The NL-TPS shall maintain atomic bidirectional traceability from each applicable source element through requirements, risks, interfaces, components, tests, evidence, deficiencies, approvals, releases, and supersession.} \\
+\addlinespace[2pt]
+ACC-003-01 & A multi-element source indicator shall be represented by a stable parent record and atomic child assertions preserving the published numbering, exact source location, verbatim-or-restated status, and parent-child relationship. & ACCP\slash\allowbreak{}DATA & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+ACC-003-02 & Automated trace analysis shall identify missing, orphaned, duplicate, conflicting, stale, untested, unevidenced, or unapproved links and shall prevent publication of an incomplete executable profile. & ACCP\slash\allowbreak{}VVP & A\slash\allowbreak{}T \\
+\addlinespace[2pt]
+ACC-003-03 & A change to source, wording, authority, applicability, implementation, evidence, owner, or release shall invalidate affected approvals and shall retain the prior version, impact assessment, disposition, and reapproval. & DATA\slash\allowbreak{}QMS & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-004.} The NL-TPS shall validate the completeness, consistency, signature, effective time, and authoritative source of required patient-evaluation status, prior-treatment information, simulation directive, planning directive, prescription, consent status, planning documentation, and transfer verification before the associated clinical transition.} \\
+\addlinespace[2pt]
+ACC-004-01 & The clinical-documentation schema shall define the required and conditional fields, status, author or signer role, effective-time rule, authoritative source, and applicability for patient evaluation, prior treatment, simulation, planning directive, prescription, consent status, plan documentation, and transfer verification. & DOCG\slash\allowbreak{}DATA & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+ACC-004-02 & Before the configured transition, the documentation gate shall query approved authoritative sources and shall classify missing, unsigned, stale, inconsistent, wrong-patient, wrong-course, or inapplicable content without generating a professional finding or signature. & DOCG\slash\allowbreak{}SK & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+ACC-004-03 & The gate shall present the unmet element, source, affected transition, responsible role, permitted correction path, and escalation and shall retain the evaluated versions, result, user action, and reconciliation evidence. & DOCG\slash\allowbreak{}AUD & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-005.} The NL-TPS shall enforce institution-approved prerequisites and schedules for patient identity verification, timeout evidence, pretreatment and replan physics checks, independent dose or MU verification, patient-specific QA, periodic chart review, end-of-treatment review, and affected-approval invalidation.} \\
+\addlinespace[2pt]
+ACC-005-01 & The temporal-policy service shall calculate required review and QA due states from authoritative simulation, plan, approval, fraction, treatment, replan, interruption, completion, and policy events using trusted time and the approved program and institutional basis. & DOCG\slash\allowbreak{}QMS & A\slash\allowbreak{}T \\
+\addlinespace[2pt]
+ACC-005-02 & The lifecycle engine shall prevent treatment-eligible export or promotion when a required identity, timeout, physics, independent check, patient-specific QA, chart-review, or end-of-treatment prerequisite is missing, failed, expired, inconsistent, or invalidated by change. & SK\slash\allowbreak{}QA & T \\
+\addlinespace[2pt]
+ACC-005-03 & The system shall reconcile scheduled and received events, notify and escalate an approaching or missed deadline, preserve authorized emergency-workflow distinctions, and retain resolution and exception approval. & OPS\slash\allowbreak{}AUD & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-006.} The NL-TPS shall require QMP-owned acceptance, commissioning, limitation documentation, periodic TPS QA, postservice and upgrade assessment, annual and change-triggered end-to-end testing, and return-to-service authorization for the TPS and all clinically used support software, scripts, models, and interfaces.} \\
+\addlinespace[2pt]
+ACC-006-01 & The asset and validation registry shall identify the QMP owner, intended scope, acceptance, commissioning baseline, limitations, reference tests, service history, dependencies, current QA state, and clinical-release state for each TPS and support item. & QMS\slash\allowbreak{}VVP & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+ACC-006-02 & Clinical use shall remain disabled after installation, repair, service, upgrade, configuration change, failed QA, or expired periodic review until the prescribed impact assessment, testing, end-to-end evaluation, anomaly disposition, and QMP return-to-service approval are complete. & CFG\slash\allowbreak{}VVP & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+ACC-006-03 & Commissioning and periodic QA shall include every clinically used script, autosegmentation tool, knowledge-based planning model, adaptive-planning method, AI planning tool, dose or check service, and data interface within the approved treatment-planning process. & VVP\slash\allowbreak{}MLOPS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-007.} The NL-TPS shall maintain attributable, time-ordered, privacy-controlled evidence for credentials, competency, SOPs, staffing plans, safety events, CQI, peer review, patient education and follow-up status, deficiencies, CAPA, and survey preparation without replacing the responsible professional or facility process.} \\
+\addlinespace[2pt]
+ACC-007-01 & Each evidence link shall identify the requirement or atomic assertion, authoritative system, evidence type, pointer, integrity value, responsible owner, applicable scope and period, review state, reviewer, approval time, expiration, and limitations. & ACCP\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+ACC-007-02 & Evidence capture, synchronization, review, and export shall apply minimum-necessary access, approved local handling of patient-bearing evidence, de-identification, recipient and purpose binding, independent export review, and tamper-evident audit. & SEC\slash\allowbreak{}ACCP & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+ACC-007-03 & The accreditation workspace shall manage proposed, accepted, rejected, incomplete, expired, deficient, corrective-action, effectiveness-review, and closed states and shall preserve facility and professional ownership of the underlying activity. & ACCP\slash\allowbreak{}QMS & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-008.} The NL-TPS shall apply proton-specific planning, dose, robustness, calibration, patient-specific QA, independent verification, beamline, readiness, and periodic-review controls only to the commissioned proton scope and delivery mode identified by the active release profile.} \\
+\addlinespace[2pt]
+ACC-008-01 & The proton profile shall bind institution, room, beamline, delivery mode, machine, energy, CT acquisition and stopping-power configuration, algorithm, dose and RBE basis, robustness policy, motion method, QA path, and release version to the active case. & PBT\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+ACC-008-02 & The planning and QA workflow shall require the approved proton uncertainty, robustness, algorithm-validation, CT-consistency, patient-specific QA, independent-verification, external-validation, readiness, chart-review, and annual-report evidence applicable to the bound profile. & PBT\slash\allowbreak{}QA & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+ACC-008-03 & A mismatch, unknown value, expired calibration or validation, unsupported delivery mode, failed QA, unresolved deviation, or absent return-to-service state shall fail closed and route to the QMP-controlled workflow. & PBT\slash\allowbreak{}SK & T\slash\allowbreak{}D \\
+\end{longtable}
+\end{small}
+
 \section{5. Allocation legend}
 
 \begin{small}
@@ -1314,6 +1401,12 @@ VAL-009-03 & Emergency suspension and re-entry shall require containment, affect
 \endfoot
 \bottomrule
 \endlastfoot
+ACCP & Accreditation-profile, applicability, evidence, deficiency, and survey-readiness services \\
+\addlinespace[2pt]
+DOCG & Clinical-documentation completeness and temporal-gate services \\
+\addlinespace[2pt]
+PBT & Proton planning and QA profile services \\
+\addlinespace[2pt]
 ARCH & System architecture and service-boundary design \\
 \addlinespace[2pt]
 AUD & Audit, event, and reconstruction service \\
@@ -1603,6 +1696,22 @@ VAL-007 & VAL-007-01 through VAL-007-03 & 3 & Draft \\
 VAL-008 & VAL-008-01 through VAL-008-03 & 3 & Draft \\
 \addlinespace[2pt]
 VAL-009 & VAL-009-01 through VAL-009-03 & 3 & Draft \\
+\addlinespace[2pt]
+ACC-001 & ACC-001-01 through ACC-001-03 & 3 & Draft \\
+\addlinespace[2pt]
+ACC-002 & ACC-002-01 through ACC-002-03 & 3 & Draft \\
+\addlinespace[2pt]
+ACC-003 & ACC-003-01 through ACC-003-03 & 3 & Draft \\
+\addlinespace[2pt]
+ACC-004 & ACC-004-01 through ACC-004-03 & 3 & Draft \\
+\addlinespace[2pt]
+ACC-005 & ACC-005-01 through ACC-005-03 & 3 & Draft \\
+\addlinespace[2pt]
+ACC-006 & ACC-006-01 through ACC-006-03 & 3 & Draft \\
+\addlinespace[2pt]
+ACC-007 & ACC-007-01 through ACC-007-03 & 3 & Draft \\
+\addlinespace[2pt]
+ACC-008 & ACC-008-01 through ACC-008-03 & 3 & Draft \\
 \addlinespace[2pt]
 \end{longtable}
 \end{small}

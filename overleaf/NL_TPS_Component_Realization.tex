@@ -8,7 +8,7 @@
 \NLMeta{Architecture version}{0.1 - Proposed component allocation}
 \NLMeta{Date}{18 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
-\NLMeta{Coverage}{111 high-level parents; 333 sub-requirements; 41 components; 15 teams}
+\NLMeta{Coverage}{119 high-level parents; 357 sub-requirements; 45 components; 15 teams}
 \end{minipage}}{This document proposes components, team ownership, and interface responsibilities needed to realize the NL-TPS requirements. It is not a detailed design, DICOM conformance statement, commissioning report, regulatory determination, or authorization for patient use.}
 
 \tableofcontents
@@ -37,9 +37,9 @@ Source document & NL-TPS Detailed and Subsystem Requirements, Version 0.1, 18 Au
 \addlinespace[2pt]
 Baseline status & Proposed component realization and team allocation; not an approved design or clinical release \\
 \addlinespace[2pt]
-Trace coverage & 333 of 333 sub-requirements mapped to a universal realization stack, direct components, and teams \\
+Trace coverage & 357 of 357 sub-requirements mapped to a universal realization stack, direct components, and teams \\
 \addlinespace[2pt]
-Component count & 41 \\
+Component count & 45 \\
 \addlinespace[2pt]
 Team count & 15 \\
 \addlinespace[2pt]
@@ -52,7 +52,7 @@ Supersession & None \\
 
 \NLFrontMatterSection{Executive summary}
 
-This specification identifies the minimum candidate technical and program components needed to make each of the 333 NL-TPS sub-requirements real. Together, those sub-requirements realize the 111 high-level requirements; the high-level requirements in turn realize the Concept of Operations. The document therefore provides the first complete allocation bridge from operational intent to buildable and verifiable system elements.
+This specification identifies the minimum candidate technical and program components needed to make each of the 357 NL-TPS sub-requirements real. Together, those sub-requirements realize the 119 high-level requirements; the high-level requirements in turn realize the Concept of Operations. The document therefore provides the first complete allocation bridge from operational intent to buildable and verifiable system elements.
 
 The NL-TPS is intentionally a team-of-teams system. Clinical governance, radiation oncologists, dosimetrists, medical physicists, therapists, human-factors specialists, evidence reviewers, imaging and planning engineers, DICOM and TPS integration engineers, model-lifecycle teams, security, operations, and independent V\&V must work through controlled interfaces and shared release evidence. No single model or engineering team owns the clinical outcome.
 
@@ -139,6 +139,14 @@ C-WF-01 & Orchestration & Clinical Workflow Orchestrator & Coordinates governed 
 C-EVID-01 & Clinical service & Approved Evidence Repository and Retrieval Service & Stores and retrieves institution-approved, versioned, applicable evidence without unrestricted clinical-mode internet retrieval. & T-EVD \\
 \addlinespace[2pt]
 C-RULE-01 & Clinical service & Computable Rule and Authority Resolver & Evaluates rule applicability, units, authority order, conflicts, lifecycle state, and no-applicable-rule outcomes. & T-EVD \\
+\addlinespace[2pt]
+C-ACC-01 & Clinical service & Accreditation Profile and Applicability Registry & Controls source program, authority, edition, integrity, atomic assertions, applicability, supersession, approval, and signed runtime-profile publication. & T-EVD \\
+\addlinespace[2pt]
+C-DOC-01 & Control & Clinical Documentation Completeness and Temporal Gate & Evaluates required fields, signatures, status, effective time, authoritative source, prerequisites, and review schedules without creating professional findings or signatures. & T-SYS \\
+\addlinespace[2pt]
+C-ACC-02 & Program & Accreditation Evidence, Deficiency, and Export Workspace & Links privacy-controlled evidence to controls and manages attestation, deficiency, CAPA, review, readiness reporting, and authorized export without deciding accreditation. & T-GOV \\
+\addlinespace[2pt]
+C-PBT-01 & Clinical service & Proton Planning and QA Profile Adapter & Binds commissioned proton modes, machines, CT configurations, algorithms, robustness, QA, external validation, beamline, readiness, and review controls to the active case and release. & T-PLAN \\
 \addlinespace[2pt]
 C-CASE-01 & Clinical service & Clinical Context and Case Manifest Service & Binds patient, course, studies, frames, prescriptions, anatomy, prior treatment, task, mode, and destination into an immutable case context. & T-IMG \\
 \addlinespace[2pt]
@@ -1401,6 +1409,89 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \end{longtable}
 \end{scriptsize}
 
+\subsection{Accreditation and practice-quality profiles (ACC)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.14\textwidth}L{0.43\textwidth}L{0.25\textwidth}L{0.16\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Child} & \textbf{Requirement} & \textbf{Realization} & \textbf{Ownership} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Child} & \textbf{Requirement} & \textbf{Realization} & \textbf{Ownership} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-001.} Maintain separately versioned ACR ROPA, ASTRO APEx, technical-guidance, institutional, and modality profiles.} \\
+\addlinespace[2pt]
+\mbox{ACC-001-01} & Record complete source, authority, integrity, scope, applicability, lifecycle, owner, and approval metadata for sources and atomic assertions. & U-STACK + C-ACC-01; C-EVID-01; C-OBJ-01; C-PROV-01 & Lead: T-EVD; partners: T-GOV\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{ACC-001-02} & Resolve only profiles approved for the active institution, program, modality, machine, technique, task, and release without cross-program tier override. & U-STACK + C-ACC-01; C-RULE-01; C-CFG-01; C-SAFE-01 & Lead: T-EVD; partners: T-SYS\slash\allowbreak{}T-GOV\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-001-03} & Suspend affected executable controls after source revision, withdrawal, integrity change, expiry, or program change until impact and reapproval complete. & U-STACK + C-ACC-01; C-QMS-01; C-STATE-01; C-TEST-01 & Lead: T-GOV; partners: T-EVD\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-002.} Require human-approved applicability and prohibit automated accreditation or compliance determinations.} \\
+\addlinespace[2pt]
+\mbox{ACC-002-01} & Classify each assertion as ENF, SUP, EVD, ORG, or N/A with rationale, scope, ownership, review, and trigger. & U-STACK + C-ACC-01; C-QMS-01; C-REQ-01 & Lead: T-GOV; partners: T-EVD\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{ACC-002-02} & Require authenticated authorized approval and prohibit AI or service-account applicability approval. & U-STACK + C-ACC-01; C-IAM-01; C-SAFE-01; C-STATE-01 & Lead: T-SEC; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-002-03} & Present readiness and evidence status without stating or implying accreditation or compliance. & U-STACK + C-ACC-02; C-UX-01; C-HFE-01; C-GOV-01 & Lead: T-UX; partners: T-GOV\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-003.} Maintain atomic bidirectional source-to-release traceability.} \\
+\addlinespace[2pt]
+\mbox{ACC-003-01} & Preserve stable source parent and atomic-child records, numbering, location, wording status, and parent-child trace. & U-STACK + C-ACC-01; C-REQ-01; C-OBJ-01; C-PROV-01 & Lead: T-DATA; partners: T-EVD\slash\allowbreak{}T-GOV\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{ACC-003-02} & Detect missing, orphaned, duplicate, conflicting, stale, untested, unevidenced, or unapproved links and block incomplete profile publication. & U-STACK + C-ACC-01; C-REQ-01; C-VV-01; C-TEST-01; C-SAFE-01 & Lead: T-VV; partners: T-DATA\slash\allowbreak{}T-EVD\slash\allowbreak{}T-SYS \\
+\addlinespace[2pt]
+\mbox{ACC-003-03} & Invalidate dependent approvals after source, applicability, implementation, evidence, owner, or release change and retain impact and reapproval. & U-STACK + C-ACC-01; C-QMS-01; C-PROV-01; C-AUD-01; C-STATE-01 & Lead: T-DATA; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-004.} Validate required patient, simulation, planning, prescription, consent-status, documentation, and transfer evidence before transition.} \\
+\addlinespace[2pt]
+\mbox{ACC-004-01} & Define required and conditional fields, status, authorized role, effective time, source, and applicability. & U-STACK + C-DOC-01; C-CASE-01; C-TERM-01; C-OBJ-01 & Lead: T-SYS; partners: T-IMG\slash\allowbreak{}T-DATA\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-004-02} & Query approved sources and classify missing, unsigned, stale, inconsistent, wrong-patient, wrong-course, or inapplicable content without creating a professional finding. & U-STACK + C-DOC-01; C-CASE-01; C-DICOM-02; C-FHIR-01; C-SAFE-01 & Lead: T-SYS; partners: T-IMG\slash\allowbreak{}T-INT\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-004-03} & Present and retain unmet element, source, affected transition, responsible role, correction, escalation, versions, result, and reconciliation. & U-STACK + C-DOC-01; C-UX-01; C-AUD-01; C-STATE-01 & Lead: T-UX; partners: T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-005.} Enforce approved patient-verification, QA, review, and invalidation prerequisites and schedules.} \\
+\addlinespace[2pt]
+\mbox{ACC-005-01} & Calculate due states from authoritative simulation, plan, approval, fraction, treatment, replan, interruption, completion, and policy events with trusted time. & U-STACK + C-DOC-01; C-QA-01; C-RULE-01; C-AUD-01 & Lead: T-SYS; partners: T-REV\slash\allowbreak{}T-EVD\slash\allowbreak{}T-DATA\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-005-02} & Block treatment-eligible export or promotion when required identity, timeout, physics, independent-check, PSQA, chart, or EOT evidence is unresolved. & U-STACK + C-DOC-01; C-QA-01; C-SAFE-01; C-STATE-01; C-DICOM-01 & Lead: T-SYS; partners: T-REV\slash\allowbreak{}T-INT\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-005-03} & Reconcile events, escalate deadlines, preserve approved emergency distinctions, and retain resolution and exception approval. & U-STACK + C-DOC-01; C-MON-01; C-INC-01; C-AUD-01; C-IAM-01 & Lead: T-OPS; partners: T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-006.} Require QMP-owned TPS and support-software lifecycle QA and return to service.} \\
+\addlinespace[2pt]
+\mbox{ACC-006-01} & Register QMP ownership, intended scope, acceptance, commissioning, limitations, reference tests, service, QA, dependencies, and release state. & U-STACK + C-QMS-01; C-CFG-01; C-VV-01; C-MREG-01; C-TPS-01 & Lead: T-VV; partners: T-GOV\slash\allowbreak{}T-AI\slash\allowbreak{}T-INT\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-006-02} & Disable clinical use after installation, repair, service, upgrade, change, failed QA, or expiry until assessment, testing, E2E, disposition, and QMP return-to-service approval. & U-STACK + C-SAFE-01; C-STATE-01; C-CFG-01; C-VV-01; C-TEST-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-GOV\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-006-03} & Include all clinically used scripts, autosegmentation, KBP, adaptive, AI, dose/check, and interface tools in commissioning and periodic QA. & U-STACK + C-VV-01; C-TEST-01; C-MGW-01; C-MREG-01; C-MVAL-01; C-TPS-01 & Lead: T-VV; partners: T-AI\slash\allowbreak{}T-PLAN\slash\allowbreak{}T-INT\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-007.} Maintain attributable, time-ordered, privacy-controlled organizational and accreditation evidence without replacing the responsible process.} \\
+\addlinespace[2pt]
+\mbox{ACC-007-01} & Record assertion, authoritative system, evidence type, pointer, integrity, owner, scope, period, review, approval, expiration, and limitations. & U-STACK + C-ACC-01; C-ACC-02; C-OBJ-01; C-PROV-01; C-AUD-01 & Lead: T-DATA; partners: T-GOV\slash\allowbreak{}T-EVD\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-007-02} & Apply minimum necessary access, local patient-evidence handling, de-identification, recipient/purpose binding, independent export review, and audit. & U-STACK + C-ACC-02; C-SEC-01; C-IAM-01; C-AUD-01 & Lead: T-SEC; partners: T-GOV\slash\allowbreak{}T-DATA\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-007-03} & Manage proposal, acceptance, rejection, deficiency, CAPA, effectiveness, and closure states while preserving facility and professional ownership. & U-STACK + C-ACC-02; C-QMS-01; C-INC-01; C-STATE-01 & Lead: T-GOV; partners: T-OPS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-008.} Apply proton controls only to the active commissioned proton scope and mode.} \\
+\addlinespace[2pt]
+\mbox{ACC-008-01} & Bind room, beamline, mode, machine, energy, CT/stopping-power configuration, algorithm, dose/RBE basis, robustness, motion, QA, and release to the case. & U-STACK + C-PBT-01; C-CASE-01; C-PLAN-01; C-TPS-01; C-CFG-01 & Lead: T-PLAN; partners: T-IMG\slash\allowbreak{}T-INT\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-008-02} & Require applicable uncertainty, robustness, algorithm, CT, PSQA, independent, external-validation, readiness, chart-review, and annual-report evidence. & U-STACK + C-PBT-01; C-QA-01; C-VV-01; C-TEST-01; C-DICOM-02 & Lead: T-VV; partners: T-PLAN\slash\allowbreak{}T-REV\slash\allowbreak{}T-INT\slash\allowbreak{}T-CLIN \\
+\addlinespace[2pt]
+\mbox{ACC-008-03} & Fail closed on profile mismatch, unknown value, expiry, unsupported mode, failed QA, deviation, or absent return-to-service and route to QMP control. & U-STACK + C-PBT-01; C-SAFE-01; C-STATE-01; C-QA-01; C-IAM-01 & Lead: T-SYS; partners: T-PLAN\slash\allowbreak{}T-REV\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\end{longtable}
+\end{scriptsize}
+
 \section{7. Required interface-control packages}
 
 \begin{small}
@@ -1503,7 +1594,9 @@ OPS & Clinical operations, monitoring, and resilience & 7 & 21 & 1 \\
 \addlinespace[2pt]
 VAL & Verification, commissioning, release, and change control & 9 & 27 & 2 \\
 \addlinespace[2pt]
-\textbf{TOTAL} & \textbf{Complete allocation baseline} & \textbf{111} & \textbf{333} & \textbf{103} \\
+ACC & Accreditation and practice-quality profiles & 8 & 24 & 13 \\
+\addlinespace[2pt]
+\textbf{TOTAL} & \textbf{Complete allocation baseline} & \textbf{119} & \textbf{357} & \textbf{116} \\
 \end{longtable}
 \end{small}
 
@@ -1524,23 +1617,23 @@ VAL & Verification, commissioning, release, and change control & 9 & 27 & 2 \\
 \endfoot
 \bottomrule
 \endlastfoot
-C-GOV-01 & Clinical Governance and Release Authority & 55 \\
+C-GOV-01 & Clinical Governance and Release Authority & 56 \\
 \addlinespace[2pt]
-C-QMS-01 & Quality, Change, Document, and CAPA System & 55 \\
+C-QMS-01 & Quality, Change, Document, and CAPA System & 60 \\
 \addlinespace[2pt]
-C-REQ-01 & Requirements, Risk, and Traceability Repository & 0 \\
+C-REQ-01 & Requirements, Risk, and Traceability Repository & 3 \\
 \addlinespace[2pt]
 C-ARCH-01 & Architecture and Interface Contract Registry & 0 \\
 \addlinespace[2pt]
-C-IAM-01 & Identity, Role, and Approval Service & 111 \\
+C-IAM-01 & Identity, Role, and Approval Service & 115 \\
 \addlinespace[2pt]
-C-SAFE-01 & Deterministic Safety Kernel & 139 \\
+C-SAFE-01 & Deterministic Safety Kernel & 146 \\
 \addlinespace[2pt]
-C-STATE-01 & Clinical Lifecycle and Workflow State Engine & 137 \\
+C-STATE-01 & Clinical Lifecycle and Workflow State Engine & 145 \\
 \addlinespace[2pt]
-C-UX-01 & Clinical Command, Review, and Confirmation Workspace & 63 \\
+C-UX-01 & Clinical Command, Review, and Confirmation Workspace & 65 \\
 \addlinespace[2pt]
-C-HFE-01 & Human-Factors, Training, and Competency Program & 12 \\
+C-HFE-01 & Human-Factors, Training, and Competency Program & 13 \\
 \addlinespace[2pt]
 C-VOICE-01 & Push-to-Talk and Transcript Confirmation Service & 17 \\
 \addlinespace[2pt]
@@ -1548,61 +1641,69 @@ C-INTENT-01 & Typed Intent Compiler and Deterministic Validator & 12 \\
 \addlinespace[2pt]
 C-WF-01 & Clinical Workflow Orchestrator & 54 \\
 \addlinespace[2pt]
-C-EVID-01 & Approved Evidence Repository and Retrieval Service & 59 \\
+C-EVID-01 & Approved Evidence Repository and Retrieval Service & 60 \\
 \addlinespace[2pt]
-C-RULE-01 & Computable Rule and Authority Resolver & 59 \\
+C-RULE-01 & Computable Rule and Authority Resolver & 61 \\
 \addlinespace[2pt]
-C-CASE-01 & Clinical Context and Case Manifest Service & 7 \\
+C-ACC-01 & Accreditation Profile and Applicability Registry & 10 \\
+\addlinespace[2pt]
+C-DOC-01 & Clinical Documentation Completeness and Temporal Gate & 6 \\
+\addlinespace[2pt]
+C-ACC-02 & Accreditation Evidence, Deficiency, and Export Workspace & 5 \\
+\addlinespace[2pt]
+C-PBT-01 & Proton Planning and QA Profile Adapter & 3 \\
+\addlinespace[2pt]
+C-CASE-01 & Clinical Context and Case Manifest Service & 10 \\
 \addlinespace[2pt]
 C-REG-01 & Registration and Derived-Dose Service & 3 \\
 \addlinespace[2pt]
 C-SEG-01 & Contouring Gateway and Anatomy Review Service & 6 \\
 \addlinespace[2pt]
-C-PLAN-01 & Planning Intent and Candidate Orchestrator & 19 \\
+C-PLAN-01 & Planning Intent and Candidate Orchestrator & 20 \\
 \addlinespace[2pt]
 C-DOSE-01 & Commissioned Optimizer and Dose-Service Adapter & 1 \\
 \addlinespace[2pt]
 C-REV-01 & Plan Comparison, Selection, and Approval Workspace & 17 \\
 \addlinespace[2pt]
-C-QA-01 & QA Routing and Independent Verification Coordinator & 17 \\
+C-QA-01 & QA Routing and Independent Verification Coordinator & 21 \\
 \addlinespace[2pt]
-C-DICOM-01 & DICOM and DICOM-RT Exchange Gateway & 82 \\
+C-DICOM-01 & DICOM and DICOM-RT Exchange Gateway & 83 \\
 \addlinespace[2pt]
-C-DICOM-02 & DICOM Conformance, Validation, and Reconciliation Service & 42 \\
+C-DICOM-02 & DICOM Conformance, Validation, and Reconciliation Service & 44 \\
 \addlinespace[2pt]
-C-TPS-01 & Existing TPS Adapter Framework & 75 \\
+C-TPS-01 & Existing TPS Adapter Framework & 78 \\
 \addlinespace[2pt]
-C-FHIR-01 & IHE-RO, FHIR, and CodeX Adapter & 0 \\
+C-FHIR-01 & IHE-RO, FHIR, and CodeX Adapter & 1 \\
 \addlinespace[2pt]
-C-TERM-01 & Terminology, Units, Coordinates, and Nomenclature Service & 39 \\
+C-TERM-01 & Terminology, Units, Coordinates, and Nomenclature Service & 40 \\
 \addlinespace[2pt]
-C-OBJ-01 & Versioned Clinical Object Repository & 53 \\
+C-OBJ-01 & Versioned Clinical Object Repository & 57 \\
 \addlinespace[2pt]
-C-PROV-01 & Provenance and Dependency Graph & 0 \\
+C-PROV-01 & Provenance and Dependency Graph & 4 \\
 \addlinespace[2pt]
-C-AUD-01 & Tamper-Evident Audit Ledger & 7 \\
+C-AUD-01 & Tamper-Evident Audit Ledger & 13 \\
 \addlinespace[2pt]
-C-CFG-01 & Configuration, Policy, and Release Registry & 0 \\
+C-CFG-01 & Configuration, Policy, and Release Registry & 4 \\
 \addlinespace[2pt]
-C-MGW-01 & Clinical Model Gateway and Runtime Contract Validator & 59 \\
+C-MGW-01 & Clinical Model Gateway and Runtime Contract Validator & 60 \\
 \addlinespace[2pt]
-C-MREG-01 & Model and Dependency Registry & 58 \\
+C-MREG-01 & Model and Dependency Registry & 60 \\
 \addlinespace[2pt]
-C-MVAL-01 & Model Validation and Production Monitoring Service & 11 \\
+C-MVAL-01 & Model Validation and Production Monitoring Service & 12 \\
 \addlinespace[2pt]
-C-SEC-01 & Security and Privacy Control Plane & 23 \\
+C-SEC-01 & Security and Privacy Control Plane & 24 \\
 \addlinespace[2pt]
-C-MON-01 & Monitoring, Alerting, and Service-Level Service & 42 \\
+C-MON-01 & Monitoring, Alerting, and Service-Level Service & 43 \\
 \addlinespace[2pt]
 C-JOB-01 & Atomic Job and Transaction Coordinator & 38 \\
 \addlinespace[2pt]
 C-RES-01 & Backup, Recovery, and Degraded Operations Service & 38 \\
 \addlinespace[2pt]
-C-INC-01 & Incident, Near-Miss, and CAPA Workflow & 37 \\
+C-INC-01 & Incident, Near-Miss, and CAPA Workflow & 39 \\
 \addlinespace[2pt]
-C-VV-01 & Verification, Validation, and Commissioning Harness & 0 \\
+C-VV-01 & Verification, Validation, and Commissioning Harness & 5 \\
 \addlinespace[2pt]
-C-TEST-01 & Locked Reference and Challenge Case Library & 40 \\
+C-TEST-01 & Locked Reference and Challenge Case Library & 45 \\
 \addlinespace[2pt]
 C-SBX-01 & Segregated Sandbox and Mode Environment & 47 \\
 \addlinespace[2pt]

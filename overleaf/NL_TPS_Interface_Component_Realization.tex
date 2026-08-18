@@ -12,7 +12,7 @@
 \NLMeta{Architecture version}{0.1 - Proposed interface-component allocation}
 \NLMeta{Date}{18 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
-\NLMeta{Coverage}{333 HLIR parents; 999 SIRs; 57 interface components; 18 interface families; 7 realization packages; 15 teams}
+\NLMeta{Coverage}{357 HLIR parents; 1071 SIRs; 61 interface components; 19 interface families; 7 realization packages; 15 teams}
 \end{minipage}}{This document proposes the logical components and team responsibilities needed to bring every NL-TPS sub-interface requirement into being. It is not a detailed design, procurement specification, DICOM conformance statement, commissioning report, clinical protocol, regulatory determination, product release, or authorization for patient use.}
 
 \tableofcontents
@@ -41,7 +41,7 @@ Source document & NL-TPS Sub-Interface Requirements, Version 0.1, 18 August 2026
 \addlinespace[2pt]
 Baseline status & Proposed logical interface components and team allocation; not an approved implementation, conformance claim, commissioning result, or clinical release \\
 \addlinespace[2pt]
-Trace coverage & 999 of 999 SIRs mapped to I-STACK, realization-package components, assigned-family components, accountable owners, component leads, and independent assurance \\
+Trace coverage & 1071 of 1071 SIRs mapped to I-STACK, realization-package components, assigned-family components, accountable owners, component leads, and independent assurance \\
 \addlinespace[2pt]
 Interface component count & 57 \\
 \addlinespace[2pt]
@@ -55,16 +55,16 @@ Supersession & None \\
 
 \NLFrontMatterSection{Executive summary}
 
-This architecture baseline supplies the component layer beneath all 999 sub-interface requirements (SIRs). Each SIR receives a complete logical allocation consisting of a five-component universal interface stack, the components required by its realization package, and the specialized components required by every interface family inherited from its high-level interface requirement (HLIR). The result is a traceable bridge from interface obligation to buildable services, controlled artifacts, accountable teams, tests, commissioning evidence, and release controls.
+This architecture baseline supplies the component layer beneath all 1071 sub-interface requirements (SIRs). Each SIR receives a complete logical allocation consisting of a five-component universal interface stack, the components required by its realization package, and the specialized components required by every interface family inherited from its high-level interface requirement (HLIR). The result is a traceable bridge from interface obligation to buildable services, controlled artifacts, accountable teams, tests, commissioning evidence, and release controls.
 
 The components are logical responsibilities rather than mandated products, microservices, vendors, or deployment units. Architecture may combine several responsibilities into one controlled implementation or separate one responsibility across multiple implementations, but it may not delete an obligation, conceal a system boundary, bypass deterministic safety and human approval, or treat transport success as clinical acceptance. Existing commissioned treatment planning systems (TPSs), PACS, oncology information systems, imaging, registration, dose, QA, and delivery systems retain their approved authority. Radiation oncologists, dosimetrists, qualified medical physicists, therapists, informatics personnel, and other authorized professionals retain their specialty decisions and approvals.
 
 \section{1. Purpose, scope, and realization chain}
 The controlled trace path addressed by this document is:
 \begin{center}
-\textbf{ConOps} $\rightarrow$ \textbf{111 HLRs} $\rightarrow$ \textbf{333 HLIRs} $\rightarrow$ \textbf{999 SIRs} $\rightarrow$ \textbf{57 interface components and 15 teams} $\rightarrow$ \textbf{verified routes and released capability}
+\textbf{ConOps} $\rightarrow$ \textbf{119 HLRs} $\rightarrow$ \textbf{357 HLIRs} $\rightarrow$ \textbf{1071 SIRs} $\rightarrow$ \textbf{61 interface components and 15 teams} $\rightarrow$ \textbf{verified routes and released capability}
 \end{center}
-The parallel functional branch remains ConOps $\rightarrow$ HLRs $\rightarrow$ 333 detailed functional sub-requirements $\rightarrow$ 41 functional components. A clinical capability exists only when both branches, their shared hazards and controls, their functional and interface components, their people and procedures, and their verification and commissioning evidence are integrated and accepted together.
+The parallel functional branch remains ConOps $\rightarrow$ HLRs $\rightarrow$ 357 detailed sub-requirements $\rightarrow$ 45 functional components. A clinical capability exists only when both branches, their shared hazards and controls, their functional and interface components, their people and procedures, and their verification and commissioning evidence are integrated and accepted together.
 
 This document defines the component responsibilities necessary for implementation planning. It does not prescribe the final topology, technology stack, supplier, site configuration, clinical tolerance, DICOM object inventory, API, or workflow. Those choices remain controlled design and commissioning decisions constrained by the parent requirements.
 
@@ -197,6 +197,14 @@ IC-NLG-01 & Adapter & Language and Intent Boundary Gateway & Connects typed text
 \addlinespace[2pt]
 IC-EVG-01 & Adapter & Evidence and Rule Boundary Gateway & Connects the closed approved evidence service and computable-rule resolver to source authority, applicability, conflict, exception, citation, lifecycle, and no-applicable-rule outcomes. & T-EVD \\
 \addlinespace[2pt]
+IC-ACP-01 & Quality & Accreditation Profile Contract and Publisher & Versions approved ACR ROPA and ASTRO APEx profile content, applicability, local interpretation, authority, effective dates, supersession, and machine-validatable publication without asserting accreditation. & T-GOV \\
+\addlinespace[2pt]
+IC-EVL-01 & Quality & Evidence Link, Attestation, and Deficiency Exchange & Maintains evidence pointers, human attestations, findings, deficiencies, corrective actions, verification, retention, export manifests, and minimum-necessary disclosure with immutable trace. & T-GOV \\
+\addlinespace[2pt]
+IC-CTG-01 & Clinical safety & Clinical Documentation and Temporal Gate Adapter & Reconciles authoritative clinical artifacts, reviews, approvals, QA events, due-state, amendments, exceptions, and responsible roles and prevents unsafe workflow transitions when required evidence is missing or stale. & T-REV \\
+\addlinespace[2pt]
+IC-PBA-01 & Proton adapter & Proton Profile Boundary Adapter & Applies commissioned proton technique, RT Ion Plan, uncertainty, robustness, motion, image-guidance, delivery-compatibility, patient-specific-QA, and change-revalidation profiles while preserving physics authority. & T-PLAN \\
+\addlinespace[2pt]
 IC-IMG-01 & Adapter & Imaging, Registration, and Contouring Adapter & Connects case imaging, registration, accumulated dose, segmentation or contours, uncertainty, edit lineage, review, and approval services through versioned clinical-object contracts. & T-IMG \\
 \addlinespace[2pt]
 IC-PLN-01 & Adapter & Planning, Optimization, Robustness, and Dose Adapter & Connects structured planning intent to commissioned optimization, dose, robustness, machine, technique, candidate, and calculation services without generative dose calculation. & T-PLAN \\
@@ -290,6 +298,8 @@ IF-IAM-01 & Identity, Role, and Approval & IC-IAM-01; IC-POL-01 & T-SEC \\
 IF-SAF-01 & Intent, Safety Kernel, Workflow, and State & IC-SAF-01; IC-TXN-01 & T-SYS \\
 \addlinespace[2pt]
 IF-EVD-01 & Evidence Repository and Computable Rules & IC-EVG-01; IC-SEM-01 & T-EVD \\
+\addlinespace[2pt]
+IF-ACC-01 & Accreditation and Quality Evidence Exchange & IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01 & T-GOV \\
 \addlinespace[2pt]
 IF-CTX-01 & Patient and Case Context & IC-CTX-01; IC-REF-01; IC-DAT-01 & T-IMG \\
 \addlinespace[2pt]
@@ -3306,6 +3316,169 @@ Each shaded row reproduces the authoritative HLIR and its assigned families. Eac
 \end{longtable}
 \end{scriptsize}
 
+\subsection{Accreditation, quality, and proton profile allocation (ACC)}
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.17\textwidth}L{0.34\textwidth}L{0.34\textwidth}L{0.11\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{SIR} & \textbf{Realization obligation} & \textbf{Component allocation} & \textbf{Accountability} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{SIR} & \textbf{Realization obligation} & \textbf{Component allocation} & \textbf{Accountability} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\mbox{SIR-ACC-001-01-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for source-profile contract, applicability, and supersession contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ICD-01; IC-CAP-01; IC-OWN-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-EVG-01; IC-SEM-01; IC-RLS-01; IC-DAT-01; IC-PRV-01 & T-GOV; RP-ICD; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-01-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for source-profile contract, applicability, and supersession contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-SCH-01; IC-SEM-01; IC-OBJ-01; IC-EXM-01; IC-VER-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-EVG-01; IC-RLS-01; IC-ICD-01; IC-DAT-01; IC-PRV-01 & T-GOV; RP-SCH; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-01-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for source-profile contract, applicability, and supersession contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-EVG-01; IC-SEM-01; IC-ICD-01; IC-DAT-01; IC-PRV-01 & T-GOV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-02-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for source-profile contract, applicability, and supersession runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-GTW-01; IC-CTX-01; IC-REF-01; IC-POL-01; IC-SAF-01; IC-INT-01; IC-QRT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-EVG-01; IC-SEM-01; IC-RLS-01; IC-ICD-01; IC-DAT-01; IC-PRV-01 & T-GOV; RP-VAL; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-02-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for source-profile contract, applicability, and supersession runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ORC-01; IC-TXN-01; IC-IDM-01; IC-ACK-01; IC-CMP-01; IC-TMO-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-EVG-01; IC-SEM-01; IC-RLS-01; IC-ICD-01; IC-DAT-01; IC-PRV-01 & T-GOV; RP-TRX; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-02-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for source-profile contract, applicability, and supersession runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-PRV-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-TIM-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-EVG-01; IC-SEM-01; IC-RLS-01; IC-ICD-01; IC-DAT-01 & T-GOV; RP-OBS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-03-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for source-profile contract, applicability, and supersession verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-EVG-01; IC-SEM-01; IC-RLS-01; IC-ICD-01; IC-DAT-01; IC-PRV-01 & T-GOV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-03-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for source-profile contract, applicability, and supersession verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-EVG-01; IC-SEM-01; IC-RLS-01; IC-ICD-01; IC-DAT-01; IC-PRV-01 & T-GOV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-001-03-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for source-profile contract, applicability, and supersession verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-EVG-01; IC-SEM-01; IC-ICD-01; IC-DAT-01; IC-PRV-01 & T-GOV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-01-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for human authority and prohibited accreditation claim contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ICD-01; IC-CAP-01; IC-OWN-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-UIB-01; IC-HFE-01; IC-SAF-01; IC-TXN-01 & T-GOV; RP-ICD; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-01-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for human authority and prohibited accreditation claim contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-SCH-01; IC-SEM-01; IC-OBJ-01; IC-EXM-01; IC-VER-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-UIB-01; IC-HFE-01; IC-SAF-01; IC-TXN-01 & T-GOV; RP-SCH; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-01-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for human authority and prohibited accreditation claim contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-UIB-01; IC-HFE-01; IC-SAF-01; IC-TXN-01 & T-GOV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-02-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for human authority and prohibited accreditation claim runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-GTW-01; IC-CTX-01; IC-REF-01; IC-POL-01; IC-SAF-01; IC-INT-01; IC-QRT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-UIB-01; IC-HFE-01; IC-TXN-01 & T-GOV; RP-VAL; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-02-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for human authority and prohibited accreditation claim runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ORC-01; IC-TXN-01; IC-IDM-01; IC-ACK-01; IC-CMP-01; IC-TMO-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-UIB-01; IC-HFE-01; IC-SAF-01 & T-GOV; RP-TRX; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-02-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for human authority and prohibited accreditation claim runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-PRV-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-TIM-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-UIB-01; IC-HFE-01; IC-SAF-01; IC-TXN-01 & T-GOV; RP-OBS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-03-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for human authority and prohibited accreditation claim verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-UIB-01; IC-HFE-01; IC-SAF-01; IC-TXN-01 & T-GOV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-03-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for human authority and prohibited accreditation claim verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-UIB-01; IC-HFE-01; IC-SAF-01; IC-TXN-01 & T-GOV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-002-03-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for human authority and prohibited accreditation claim verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-UIB-01; IC-HFE-01; IC-SAF-01; IC-TXN-01 & T-GOV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-01-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for atomic accreditation trace and closure contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ICD-01; IC-CAP-01; IC-OWN-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-PRV-01; IC-RLS-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01 & T-GOV; RP-ICD; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-01-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for atomic accreditation trace and closure contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-SCH-01; IC-SEM-01; IC-OBJ-01; IC-EXM-01; IC-VER-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-PRV-01; IC-RLS-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01 & T-GOV; RP-SCH; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-01-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for atomic accreditation trace and closure contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-PRV-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01 & T-GOV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-02-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for atomic accreditation trace and closure runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-GTW-01; IC-CTX-01; IC-REF-01; IC-POL-01; IC-SAF-01; IC-INT-01; IC-QRT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-PRV-01; IC-RLS-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01 & T-GOV; RP-VAL; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-02-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for atomic accreditation trace and closure runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ORC-01; IC-TXN-01; IC-IDM-01; IC-ACK-01; IC-CMP-01; IC-TMO-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-PRV-01; IC-RLS-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01 & T-GOV; RP-TRX; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-02-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for atomic accreditation trace and closure runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-PRV-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-TIM-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-RLS-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01 & T-GOV; RP-OBS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-03-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for atomic accreditation trace and closure verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-PRV-01; IC-RLS-01; IC-ICD-01 & T-GOV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-03-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for atomic accreditation trace and closure verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-PRV-01; IC-RLS-01; IC-ICD-01 & T-GOV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-003-03-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for atomic accreditation trace and closure verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-PRV-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01 & T-GOV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-01-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for clinical documentation completeness and temporal gates contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ICD-01; IC-CAP-01; IC-OWN-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-IHE-01; IC-DVA-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-TPS-01; IC-VAP-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-ICD; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-01-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for clinical documentation completeness and temporal gates contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-SCH-01; IC-SEM-01; IC-OBJ-01; IC-EXM-01; IC-VER-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-IHE-01; IC-DVA-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-TPS-01; IC-VAP-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-SCH; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-01-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for clinical documentation completeness and temporal gates contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-IHE-01; IC-DVA-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-TPS-01; IC-VAP-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-02-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for clinical documentation completeness and temporal gates runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-GTW-01; IC-CTX-01; IC-REF-01; IC-POL-01; IC-SAF-01; IC-INT-01; IC-QRT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-IHE-01; IC-DVA-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-TPS-01; IC-VAP-01; IC-TXN-01 & T-REV; RP-VAL; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-02-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for clinical documentation completeness and temporal gates runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ORC-01; IC-TXN-01; IC-IDM-01; IC-ACK-01; IC-CMP-01; IC-TMO-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-IHE-01; IC-DVA-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-TPS-01; IC-VAP-01; IC-SAF-01 & T-REV; RP-TRX; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-02-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for clinical documentation completeness and temporal gates runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-PRV-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-TIM-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-IHE-01; IC-DVA-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-TPS-01; IC-VAP-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-OBS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-03-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for clinical documentation completeness and temporal gates verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-IHE-01; IC-DVA-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-TPS-01; IC-VAP-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-03-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for clinical documentation completeness and temporal gates verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-IHE-01; IC-DVA-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-TPS-01; IC-VAP-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-004-03-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for clinical documentation completeness and temporal gates verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-IHE-01; IC-DVA-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-TPS-01; IC-VAP-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-01-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for clinical review and QA schedules contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ICD-01; IC-CAP-01; IC-OWN-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-REV-01; IC-ACK-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-DVA-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-ICD; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-01-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for clinical review and QA schedules contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-SCH-01; IC-SEM-01; IC-OBJ-01; IC-EXM-01; IC-VER-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-REV-01; IC-ACK-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-DVA-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-SCH; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-01-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for clinical review and QA schedules contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-REV-01; IC-ACK-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-DVA-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-02-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for clinical review and QA schedules runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-GTW-01; IC-CTX-01; IC-REF-01; IC-POL-01; IC-SAF-01; IC-INT-01; IC-QRT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-REV-01; IC-ACK-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-DVA-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01; IC-TXN-01 & T-REV; RP-VAL; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-02-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for clinical review and QA schedules runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ORC-01; IC-TXN-01; IC-IDM-01; IC-ACK-01; IC-CMP-01; IC-TMO-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-REV-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-DVA-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01; IC-SAF-01 & T-REV; RP-TRX; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-02-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for clinical review and QA schedules runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-PRV-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-TIM-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-REV-01; IC-ACK-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-DVA-01; IC-BDR-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-OBS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-03-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for clinical review and QA schedules verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-REV-01; IC-ACK-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-DVA-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-03-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for clinical review and QA schedules verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-REV-01; IC-ACK-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-DVA-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-005-03-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for clinical review and QA schedules verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-REV-01; IC-ACK-01; IC-DCM-01; IC-DWP-01; IC-RTP-01; IC-DVA-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01; IC-SAF-01; IC-TXN-01 & T-REV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-01-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for qualified-medical-physicist TPS and model lifecycle contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ICD-01; IC-CAP-01; IC-OWN-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-RLS-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-MDG-01; IC-AIE-01 & T-VV; RP-ICD; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-01-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for qualified-medical-physicist TPS and model lifecycle contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-SCH-01; IC-SEM-01; IC-OBJ-01; IC-EXM-01; IC-VER-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-RLS-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-MDG-01; IC-AIE-01 & T-VV; RP-SCH; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-01-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for qualified-medical-physicist TPS and model lifecycle contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-MDG-01; IC-AIE-01 & T-VV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-02-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for qualified-medical-physicist TPS and model lifecycle runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-GTW-01; IC-CTX-01; IC-REF-01; IC-POL-01; IC-SAF-01; IC-INT-01; IC-QRT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-RLS-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-MDG-01; IC-AIE-01 & T-VV; RP-VAL; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-02-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for qualified-medical-physicist TPS and model lifecycle runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ORC-01; IC-TXN-01; IC-IDM-01; IC-ACK-01; IC-CMP-01; IC-TMO-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-RLS-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-MDG-01; IC-AIE-01 & T-VV; RP-TRX; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-02-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for qualified-medical-physicist TPS and model lifecycle runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-PRV-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-TIM-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-RLS-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-MDG-01; IC-AIE-01 & T-VV; RP-OBS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-03-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for qualified-medical-physicist TPS and model lifecycle verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-RLS-01; IC-ICD-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-MDG-01; IC-AIE-01 & T-VV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-03-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for qualified-medical-physicist TPS and model lifecycle verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-RLS-01; IC-ICD-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-MDG-01; IC-AIE-01 & T-VV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-006-03-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for qualified-medical-physicist TPS and model lifecycle verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-ICD-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-MDG-01; IC-AIE-01 & T-VV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-01-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for organizational evidence, privacy, deficiency, and corrective action contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ICD-01; IC-CAP-01; IC-OWN-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-DAT-01; IC-PRV-01; IC-SEC-01; IC-PTM-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01 & T-GOV; RP-ICD; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-01-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for organizational evidence, privacy, deficiency, and corrective action contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-SCH-01; IC-SEM-01; IC-OBJ-01; IC-EXM-01; IC-VER-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-DAT-01; IC-PRV-01; IC-SEC-01; IC-PTM-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01 & T-GOV; RP-SCH; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-01-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for organizational evidence, privacy, deficiency, and corrective action contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-DAT-01; IC-PRV-01; IC-SEC-01; IC-PTM-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01 & T-GOV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-02-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for organizational evidence, privacy, deficiency, and corrective action runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-GTW-01; IC-CTX-01; IC-REF-01; IC-POL-01; IC-SAF-01; IC-INT-01; IC-QRT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-PRV-01; IC-SEC-01; IC-PTM-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01 & T-GOV; RP-VAL; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-02-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for organizational evidence, privacy, deficiency, and corrective action runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ORC-01; IC-TXN-01; IC-IDM-01; IC-ACK-01; IC-CMP-01; IC-TMO-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-DAT-01; IC-PRV-01; IC-SEC-01; IC-PTM-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01 & T-GOV; RP-TRX; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-02-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for organizational evidence, privacy, deficiency, and corrective action runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-PRV-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-TIM-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-DAT-01; IC-SEC-01; IC-PTM-01; IC-BDR-01 & T-GOV; RP-OBS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-03-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for organizational evidence, privacy, deficiency, and corrective action verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-DAT-01; IC-PRV-01; IC-SEC-01; IC-PTM-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01 & T-GOV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-03-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for organizational evidence, privacy, deficiency, and corrective action verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-DAT-01; IC-PRV-01; IC-SEC-01; IC-PTM-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01 & T-GOV; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-007-03-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for organizational evidence, privacy, deficiency, and corrective action verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-POL-01; IC-DAT-01; IC-PRV-01; IC-SEC-01; IC-PTM-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-BDR-01 & T-GOV; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-01-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for proton profile, delivery compatibility, and patient-specific QA contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ICD-01; IC-CAP-01; IC-OWN-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-PLN-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-REV-01; IC-ACK-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01 & T-PLAN; RP-ICD; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-01-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for proton profile, delivery compatibility, and patient-specific QA contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-SCH-01; IC-SEM-01; IC-OBJ-01; IC-EXM-01; IC-VER-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-PLN-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-REV-01; IC-ACK-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01 & T-PLAN; RP-SCH; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-01-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for proton profile, delivery compatibility, and patient-specific QA contract and activation, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-PLN-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-REV-01; IC-ACK-01; IC-TST-01; IC-ITL-01; IC-COM-01 & T-PLAN; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-02-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for proton profile, delivery compatibility, and patient-specific QA runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-GTW-01; IC-CTX-01; IC-REF-01; IC-POL-01; IC-SAF-01; IC-INT-01; IC-QRT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-DAT-01; IC-PLN-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-REV-01; IC-ACK-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01 & T-PLAN; RP-VAL; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-02-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for proton profile, delivery compatibility, and patient-specific QA runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-ORC-01; IC-TXN-01; IC-IDM-01; IC-ACK-01; IC-CMP-01; IC-TMO-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-PLN-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-REV-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01 & T-PLAN; RP-TRX; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-02-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for proton profile, delivery compatibility, and patient-specific QA runtime enforcement and recovery, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-PRV-01; IC-MON-01; IC-REC-01; IC-ALT-01; IC-TIM-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-PLN-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-REV-01; IC-ACK-01; IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01 & T-PLAN; RP-OBS; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-03-01} & The allocated components shall implement, integrate, document, and verify the boundary or control record needed for proton profile, delivery compatibility, and patient-specific QA verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-PLN-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-REV-01; IC-ACK-01 & T-PLAN; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-03-02} & The allocated components shall implement, integrate, document, and verify the executable service or evidence path needed for proton profile, delivery compatibility, and patient-specific QA verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-TST-01; IC-ITL-01; IC-COM-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-PLN-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-REV-01; IC-ACK-01 & T-PLAN; RP-VVP; T-VV \\
+\addlinespace[2pt]
+\mbox{SIR-ACC-008-03-03} & The allocated components shall implement, integrate, document, and verify the approval, monitoring, or lifecycle record needed for proton profile, delivery compatibility, and patient-specific QA verification and release, preserving human clinical and accreditation authority and the exact parent trace. & I-STACK + IC-RLS-01; IC-CHG-01; IC-CAP-01; IC-RPT-01; IC-ACP-01; IC-EVL-01; IC-CTG-01; IC-PBA-01; IC-CTX-01; IC-REF-01; IC-DAT-01; IC-PLN-01; IC-TPS-01; IC-RTP-01; IC-DVA-01; IC-VAP-01; IC-DCM-01; IC-DWP-01; IC-REV-01; IC-ACK-01; IC-TST-01; IC-ITL-01; IC-COM-01 & T-PLAN; RP-RLS; T-VV \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
 \section{10. External TPS and DICOM component assembly}
 The following assemblies clarify how the logical components work together at the boundary with existing commissioned TPS and other clinical systems. The actual object and transaction inventory remains site- and vendor-specific and must be controlled in IC-CAP-01 and IC-SCH-01.
 \begin{scriptsize}
@@ -3383,7 +3556,9 @@ OPS & Clinical operations, monitoring, and resilience & 21 & 63 & 9 \\
 \addlinespace[2pt]
 VAL & Verification, commissioning, release, and change control & 27 & 81 & 18 \\
 \addlinespace[2pt]
-\textbf{TOTAL} & \textbf{Complete interface-component allocation} & \textbf{333} & \textbf{999} & \textbf{513} \\
+ACC & Accreditation, quality, and proton profiles & 24 & 72 & 36 \\
+\addlinespace[2pt]
+\textbf{TOTAL} & \textbf{Complete interface-component allocation} & \textbf{357} & \textbf{1071} & \textbf{549} \\
 \end{longtable}
 \end{small}
 
@@ -3403,21 +3578,21 @@ VAL & Verification, commissioning, release, and change control & 27 & 81 & 18 \\
 \endfoot
 \bottomrule
 \endlastfoot
-RP-ICD & Interface Control Definition & 111 \\
+RP-ICD & Interface Control Definition & 119 \\
 \addlinespace[2pt]
-RP-SCH & Schema and Semantic Profile & 111 \\
+RP-SCH & Schema and Semantic Profile & 119 \\
 \addlinespace[2pt]
-RP-VAL & Ingress Validation and Safety Controls & 111 \\
+RP-VAL & Ingress Validation and Safety Controls & 119 \\
 \addlinespace[2pt]
-RP-TRX & Transaction and Outcome Controller & 111 \\
+RP-TRX & Transaction and Outcome Controller & 119 \\
 \addlinespace[2pt]
-RP-OBS & Audit, Monitoring, Reconciliation, and Recovery & 111 \\
+RP-OBS & Audit, Monitoring, Reconciliation, and Recovery & 119 \\
 \addlinespace[2pt]
-RP-VVP & Verification and Commissioning Package & 222 \\
+RP-VVP & Verification and Commissioning Package & 238 \\
 \addlinespace[2pt]
-RP-RLS & Release, Change, and Support Record & 222 \\
+RP-RLS & Release, Change, and Support Record & 238 \\
 \addlinespace[2pt]
-\textbf{TOTAL} & \textbf{One package assigned to every SIR} & \textbf{999} \\
+\textbf{TOTAL} & \textbf{One package assigned to every SIR} & \textbf{1071} \\
 \end{longtable}
 \end{small}
 
@@ -3437,41 +3612,43 @@ RP-RLS & Release, Change, and Support Record & 222 \\
 \endfoot
 \bottomrule
 \endlastfoot
-IF-UI-01 & Clinical User Interaction & 324 \\
+IF-UI-01 & Clinical User Interaction & 333 \\
 \addlinespace[2pt]
 IF-NLI-01 & Speech, Text, and Typed Intent & 99 \\
 \addlinespace[2pt]
-IF-IAM-01 & Identity, Role, and Approval & 459 \\
+IF-IAM-01 & Identity, Role, and Approval & 477 \\
 \addlinespace[2pt]
-IF-SAF-01 & Intent, Safety Kernel, Workflow, and State & 486 \\
+IF-SAF-01 & Intent, Safety Kernel, Workflow, and State & 513 \\
 \addlinespace[2pt]
-IF-EVD-01 & Evidence Repository and Computable Rules & 288 \\
+IF-EVD-01 & Evidence Repository and Computable Rules & 297 \\
 \addlinespace[2pt]
-IF-CTX-01 & Patient and Case Context & 261 \\
+IF-ACC-01 & Accreditation and Quality Evidence Exchange & 72 \\
+\addlinespace[2pt]
+IF-CTX-01 & Patient and Case Context & 288 \\
 \addlinespace[2pt]
 IF-IMG-01 & Imaging, Registration, and Contouring & 207 \\
 \addlinespace[2pt]
-IF-PLN-01 & Planning, Optimization, Robustness, and Dose & 243 \\
+IF-PLN-01 & Planning, Optimization, Robustness, and Dose & 252 \\
 \addlinespace[2pt]
-IF-REV-01 & Plan Review, QA, Approval, and Transfer & 288 \\
+IF-REV-01 & Plan Review, QA, Approval, and Transfer & 306 \\
 \addlinespace[2pt]
-IF-DICOM-01 & DICOM and DICOM-RT Exchange & 513 \\
+IF-DICOM-01 & DICOM and DICOM-RT Exchange & 549 \\
 \addlinespace[2pt]
-IF-TPS-01 & Commissioned External TPS Adapter & 342 \\
+IF-TPS-01 & Commissioned External TPS Adapter & 369 \\
 \addlinespace[2pt]
-IF-IHE-01 & IHE-RO and Optional Clinical API Profiles & 9 \\
+IF-IHE-01 & IHE-RO and Optional Clinical API Profiles & 18 \\
 \addlinespace[2pt]
-IF-AI-01 & Model Registry, Gateway, and Runtime & 252 \\
+IF-AI-01 & Model Registry, Gateway, and Runtime & 261 \\
 \addlinespace[2pt]
-IF-DATA-01 & Clinical Objects, Provenance, and Audit & 486 \\
+IF-DATA-01 & Clinical Objects, Provenance, and Audit & 513 \\
 \addlinespace[2pt]
-IF-CFG-01 & Configuration, QMS, Governance, and Release & 279 \\
+IF-CFG-01 & Configuration, QMS, Governance, and Release & 306 \\
 \addlinespace[2pt]
-IF-OPS-01 & Jobs, Monitoring, Incident, and Recovery & 279 \\
+IF-OPS-01 & Jobs, Monitoring, Incident, and Recovery & 297 \\
 \addlinespace[2pt]
-IF-SEC-01 & Cybersecurity and Privacy Control & 252 \\
+IF-SEC-01 & Cybersecurity and Privacy Control & 261 \\
 \addlinespace[2pt]
-IF-VV-01 & Verification, Commissioning, and Acceptance & 288 \\
+IF-VV-01 & Verification, Commissioning, and Acceptance & 315 \\
 \addlinespace[2pt]
 \end{longtable}
 \end{small}
@@ -3492,119 +3669,127 @@ IF-VV-01 & Verification, Commissioning, and Acceptance & 288 \\
 \endfoot
 \bottomrule
 \endlastfoot
-IC-BND-01 & Boundary and Route Registry & 999 \\
+IC-BND-01 & Boundary and Route Registry & 1071 \\
 \addlinespace[2pt]
-IC-ICD-01 & Interface Control Definition Repository & 359 \\
+IC-ICD-01 & Interface Control Definition Repository & 391 \\
 \addlinespace[2pt]
-IC-CAP-01 & Capability and Compatibility Matrix & 333 \\
+IC-CAP-01 & Capability and Compatibility Matrix & 357 \\
 \addlinespace[2pt]
-IC-OWN-01 & Ownership and Approval Matrix & 111 \\
+IC-OWN-01 & Ownership and Approval Matrix & 119 \\
 \addlinespace[2pt]
-IC-CFG-01 & Interface Configuration Baseline & 999 \\
+IC-CFG-01 & Interface Configuration Baseline & 1071 \\
 \addlinespace[2pt]
-IC-RLS-01 & Interface Activation and Release Gate & 439 \\
+IC-RLS-01 & Interface Activation and Release Gate & 476 \\
 \addlinespace[2pt]
-IC-CHG-01 & Interface Change, Migration, and Rollback Manager & 222 \\
+IC-CHG-01 & Interface Change, Migration, and Rollback Manager & 238 \\
 \addlinespace[2pt]
-IC-SCH-01 & Schema and DICOM Profile Registry & 111 \\
+IC-SCH-01 & Schema and DICOM Profile Registry & 119 \\
 \addlinespace[2pt]
-IC-SEM-01 & Clinical Semantic Dictionary & 367 \\
+IC-SEM-01 & Clinical Semantic Dictionary & 383 \\
 \addlinespace[2pt]
-IC-OBJ-01 & Object and Message Profile Library & 111 \\
+IC-OBJ-01 & Object and Message Profile Library & 119 \\
 \addlinespace[2pt]
-IC-EXM-01 & Examples and Test-Fixture Library & 111 \\
+IC-EXM-01 & Examples and Test-Fixture Library & 119 \\
 \addlinespace[2pt]
-IC-VER-01 & Version and Compatibility Resolver & 111 \\
+IC-VER-01 & Version and Compatibility Resolver & 119 \\
 \addlinespace[2pt]
-IC-GTW-01 & Trusted Interface Gateway & 111 \\
+IC-GTW-01 & Trusted Interface Gateway & 119 \\
 \addlinespace[2pt]
-IC-CTX-01 & Patient and Case Context Validator & 343 \\
+IC-CTX-01 & Patient and Case Context Validator & 375 \\
 \addlinespace[2pt]
-IC-REF-01 & Reference, Geometry, and Unit Validator & 551 \\
+IC-REF-01 & Reference, Geometry, and Unit Validator & 583 \\
 \addlinespace[2pt]
-IC-POL-01 & Authorization and Policy Decision Point & 519 \\
+IC-POL-01 & Authorization and Policy Decision Point & 543 \\
 \addlinespace[2pt]
-IC-SAF-01 & Interface Safety and State Guard & 543 \\
+IC-SAF-01 & Interface Safety and State Guard & 575 \\
 \addlinespace[2pt]
-IC-INT-01 & Integrity and Freshness Validator & 111 \\
+IC-INT-01 & Integrity and Freshness Validator & 119 \\
 \addlinespace[2pt]
-IC-QRT-01 & Quarantine and Exception Store & 111 \\
+IC-QRT-01 & Quarantine and Exception Store & 119 \\
 \addlinespace[2pt]
-IC-ORC-01 & Interface Workflow Orchestrator & 111 \\
+IC-ORC-01 & Interface Workflow Orchestrator & 119 \\
 \addlinespace[2pt]
-IC-TXN-01 & Atomic Transaction and State Controller & 543 \\
+IC-TXN-01 & Atomic Transaction and State Controller & 575 \\
 \addlinespace[2pt]
-IC-IDM-01 & Idempotency, Ordering, and Duplicate Controller & 111 \\
+IC-IDM-01 & Idempotency, Ordering, and Duplicate Controller & 119 \\
 \addlinespace[2pt]
-IC-ACK-01 & Outcome and Acknowledgment Service & 367 \\
+IC-ACK-01 & Outcome and Acknowledgment Service & 391 \\
 \addlinespace[2pt]
-IC-CMP-01 & Compensation and Rollback Controller & 111 \\
+IC-CMP-01 & Compensation and Rollback Controller & 119 \\
 \addlinespace[2pt]
-IC-TMO-01 & Timeout, Retry, and Cancellation Controller & 111 \\
+IC-TMO-01 & Timeout, Retry, and Cancellation Controller & 119 \\
 \addlinespace[2pt]
-IC-AUD-01 & Immutable Interface Audit Ledger & 999 \\
+IC-AUD-01 & Immutable Interface Audit Ledger & 1071 \\
 \addlinespace[2pt]
-IC-PRV-01 & Interface Provenance and Integrity Manifest & 543 \\
+IC-PRV-01 & Interface Provenance and Integrity Manifest & 575 \\
 \addlinespace[2pt]
-IC-MON-01 & Interface Health and Safety Monitor & 359 \\
+IC-MON-01 & Interface Health and Safety Monitor & 383 \\
 \addlinespace[2pt]
-IC-REC-01 & Cross-System Reconciliation Engine & 359 \\
+IC-REC-01 & Cross-System Reconciliation Engine & 383 \\
 \addlinespace[2pt]
-IC-ALT-01 & Alert and Incident Connector & 359 \\
+IC-ALT-01 & Alert and Incident Connector & 383 \\
 \addlinespace[2pt]
-IC-BDR-01 & Backup, Restore, and Continuity Coordinator & 279 \\
+IC-BDR-01 & Backup, Restore, and Continuity Coordinator & 297 \\
 \addlinespace[2pt]
-IC-TIM-01 & Time Synchronization and Correlation Service & 111 \\
+IC-TIM-01 & Time Synchronization and Correlation Service & 119 \\
 \addlinespace[2pt]
-IC-DCM-01 & DICOM DIMSE Application Entity Gateway & 513 \\
+IC-DCM-01 & DICOM DIMSE Application Entity Gateway & 549 \\
 \addlinespace[2pt]
-IC-DWP-01 & DICOMweb Gateway & 513 \\
+IC-DWP-01 & DICOMweb Gateway & 549 \\
 \addlinespace[2pt]
-IC-RTP-01 & Radiotherapy Object and Reference Profile Validator & 513 \\
+IC-RTP-01 & Radiotherapy Object and Reference Profile Validator & 549 \\
 \addlinespace[2pt]
-IC-DVA-01 & DICOM Conformance and Semantic Validator & 513 \\
+IC-DVA-01 & DICOM Conformance and Semantic Validator & 549 \\
 \addlinespace[2pt]
-IC-TPS-01 & Commissioned External TPS Adapter Framework & 342 \\
+IC-TPS-01 & Commissioned External TPS Adapter Framework & 369 \\
 \addlinespace[2pt]
-IC-VAP-01 & Bounded Vendor API Adapter & 342 \\
+IC-VAP-01 & Bounded Vendor API Adapter & 369 \\
 \addlinespace[2pt]
-IC-IHE-01 & IHE-RO Profile Adapter & 9 \\
+IC-IHE-01 & IHE-RO Profile Adapter & 18 \\
 \addlinespace[2pt]
-IC-UIB-01 & Clinical Interaction Boundary & 324 \\
+IC-UIB-01 & Clinical Interaction Boundary & 333 \\
 \addlinespace[2pt]
 IC-NLG-01 & Language and Intent Boundary Gateway & 99 \\
 \addlinespace[2pt]
-IC-EVG-01 & Evidence and Rule Boundary Gateway & 288 \\
+IC-EVG-01 & Evidence and Rule Boundary Gateway & 297 \\
+\addlinespace[2pt]
+IC-ACP-01 & Accreditation Profile Contract and Publisher & 72 \\
+\addlinespace[2pt]
+IC-EVL-01 & Evidence Link, Attestation, and Deficiency Exchange & 72 \\
+\addlinespace[2pt]
+IC-CTG-01 & Clinical Documentation and Temporal Gate Adapter & 72 \\
+\addlinespace[2pt]
+IC-PBA-01 & Proton Profile Boundary Adapter & 72 \\
 \addlinespace[2pt]
 IC-IMG-01 & Imaging, Registration, and Contouring Adapter & 207 \\
 \addlinespace[2pt]
-IC-PLN-01 & Planning, Optimization, Robustness, and Dose Adapter & 243 \\
+IC-PLN-01 & Planning, Optimization, Robustness, and Dose Adapter & 252 \\
 \addlinespace[2pt]
-IC-REV-01 & Review, QA, Approval, and Transfer Adapter & 288 \\
+IC-REV-01 & Review, QA, Approval, and Transfer Adapter & 306 \\
 \addlinespace[2pt]
-IC-MDG-01 & Model Gateway and Runtime Adapter & 252 \\
+IC-MDG-01 & Model Gateway and Runtime Adapter & 261 \\
 \addlinespace[2pt]
-IC-DAT-01 & Clinical Object Repository Adapter & 693 \\
+IC-DAT-01 & Clinical Object Repository Adapter & 747 \\
 \addlinespace[2pt]
-IC-IAM-01 & Identity, Role, and Approval Adapter & 999 \\
+IC-IAM-01 & Identity, Role, and Approval Adapter & 1071 \\
 \addlinespace[2pt]
-IC-SEC-01 & Secure Transport and Endpoint Control & 252 \\
+IC-SEC-01 & Secure Transport and Endpoint Control & 261 \\
 \addlinespace[2pt]
-IC-PTM-01 & Privacy and Minimum-Necessary Filter & 252 \\
+IC-PTM-01 & Privacy and Minimum-Necessary Filter & 261 \\
 \addlinespace[2pt]
-IC-TRC-01 & Interface Traceability Repository & 999 \\
+IC-TRC-01 & Interface Traceability Repository & 1071 \\
 \addlinespace[2pt]
-IC-TST-01 & Contract and Conformance Test Harness & 446 \\
+IC-TST-01 & Contract and Conformance Test Harness & 483 \\
 \addlinespace[2pt]
-IC-ITL-01 & Interoperability Test Laboratory & 446 \\
+IC-ITL-01 & Interoperability Test Laboratory & 483 \\
 \addlinespace[2pt]
-IC-COM-01 & Site Commissioning Package & 446 \\
+IC-COM-01 & Site Commissioning Package & 483 \\
 \addlinespace[2pt]
-IC-HFE-01 & Human-Factors Interface Validation Harness & 324 \\
+IC-HFE-01 & Human-Factors Interface Validation Harness & 333 \\
 \addlinespace[2pt]
-IC-AIE-01 & Model-Route Evaluation Harness & 252 \\
+IC-AIE-01 & Model-Route Evaluation Harness & 261 \\
 \addlinespace[2pt]
-IC-RPT-01 & Acceptance and Release Evidence Reporter & 604 \\
+IC-RPT-01 & Acceptance and Release Evidence Reporter & 651 \\
 \addlinespace[2pt]
 \end{longtable}
 \end{small}
@@ -3627,7 +3812,7 @@ IC-RPT-01 & Acceptance and Release Evidence Reporter & 604 \\
 \endlastfoot
 T-CLIN & Clinical Practice Council & 0 \\
 \addlinespace[2pt]
-T-GOV & Clinical Governance and Quality & 63 \\
+T-GOV & Clinical Governance and Quality & 99 \\
 \addlinespace[2pt]
 T-SYS & Systems Engineering and Safety & 90 \\
 \addlinespace[2pt]
@@ -3639,9 +3824,9 @@ T-EVD & Evidence and Knowledge & 72 \\
 \addlinespace[2pt]
 T-IMG & Imaging, Registration, and Contouring & 81 \\
 \addlinespace[2pt]
-T-PLAN & Planning and Dose & 108 \\
+T-PLAN & Planning and Dose & 117 \\
 \addlinespace[2pt]
-T-REV & Plan Review and QA & 81 \\
+T-REV & Plan Review and QA & 99 \\
 \addlinespace[2pt]
 T-INT & DICOM, TPS, and Clinical Interoperability & 0 \\
 \addlinespace[2pt]
@@ -3653,9 +3838,9 @@ T-SEC & Privacy and Cybersecurity & 72 \\
 \addlinespace[2pt]
 T-OPS & Platform and Clinical Operations & 63 \\
 \addlinespace[2pt]
-T-VV & Verification and Commissioning & 81 \\
+T-VV & Verification and Commissioning & 90 \\
 \addlinespace[2pt]
-\textbf{TOTAL} & \textbf{One accountable parent owner for every SIR} & \textbf{999} \\
+\textbf{TOTAL} & \textbf{One accountable parent owner for every SIR} & \textbf{1071} \\
 \end{longtable}
 \end{small}
 

@@ -8,7 +8,7 @@
 \NLMeta{Interface version}{0.1 - Proposed high-level interface baseline}
 \NLMeta{Date}{18 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
-\NLMeta{Coverage}{111 parent requirements; 333 high-level interface requirements; 18 interface families; 15 teams}
+\NLMeta{Coverage}{119 parent requirements; 357 high-level interface requirements; 19 interface families; 15 teams}
 \end{minipage}}{This document defines proposed high-level interface requirements for architecture, integration, implementation, verification, and commissioning planning. It is not a detailed interface-control document, DICOM conformance statement, clinical protocol, released product specification, or authorization for patient use.}
 
 \tableofcontents
@@ -37,9 +37,9 @@ Source document & NL-TPS High-Level Requirements, Version 0.1, 17 August 2026 \\
 \addlinespace[2pt]
 Baseline status & Proposed high-level interface requirements; not an approved design, conformance claim, or clinical release \\
 \addlinespace[2pt]
-Trace coverage & 333 of 333 interface requirements mapped to 111 high-level parent requirements, interface families, teams, and verification methods \\
+Trace coverage & 357 of 357 interface requirements mapped to 119 high-level parent requirements, interface families, teams, and verification methods \\
 \addlinespace[2pt]
-Interface family count & 18 \\
+Interface family count & 19 \\
 \addlinespace[2pt]
 Team count & 15 \\
 \addlinespace[2pt]
@@ -52,7 +52,7 @@ Supersession & None \\
 
 \NLFrontMatterSection{Executive summary}
 
-This specification derives a controlled interface baseline from all 111 NL-TPS high-level requirements. Each parent has three interface children: a controlled contract requirement, a runtime interaction and failure-behavior requirement, and an evidence and conformance requirement. The resulting 333 requirements define what must cross system and team boundaries before detailed interface-control documents, software contracts, DICOM conformance statements, vendor integrations, and commissioning protocols are completed.
+This specification derives a controlled interface baseline from all 119 NL-TPS high-level requirements. Each parent has three interface children: a controlled contract requirement, a runtime interaction and failure-behavior requirement, and an evidence and conformance requirement. The resulting 357 requirements define what must cross system and team boundaries before detailed interface-control documents, software contracts, DICOM conformance statements, vendor integrations, and commissioning protocols are completed.
 
 The NL-TPS is a team-of-teams system that coordinates clinical users, deterministic safety controls, evidence services, imaging and planning services, inference models, data and audit services, quality and release controls, operations, and commissioned external systems. Existing TPS platforms remain authoritative within their commissioned roles. DICOM and DICOM-RT are the minimum portable external exchange foundation; approved vendor APIs, IHE-RO profiles, FHIR, or CodeX exchanges may supplement but shall not silently replace the commissioned DICOM route or bypass human approval and independent QA.
 
@@ -104,6 +104,8 @@ IF-IAM-01 & Enterprise\slash\allowbreak{}control & Identity, Role, and Approval 
 IF-SAF-01 & Control & Intent, Safety Kernel, Workflow, and State & Typed intent and case state to deterministic permission, precondition, transition, hard-stop, invalidation, and export decisions. & T-SYS \\
 \addlinespace[2pt]
 IF-EVD-01 & Knowledge & Evidence Repository and Computable Rules & Approved evidence and policy to versioned applicability, authority, computable rule, conflict, exception, and citation results. & T-EVD \\
+\addlinespace[2pt]
+IF-ACC-01 & Enterprise\slash\allowbreak{}quality & Accreditation and Quality Evidence Exchange & Approved source profiles, applicability decisions, evidence pointers, attestations, deficiencies, corrective actions, credential and training status, and controlled survey-export packages without treatment or accreditation authority. & T-GOV \\
 \addlinespace[2pt]
 IF-CTX-01 & Clinical data & Patient and Case Context & EHR, OIS, PACS, user, and clinical repositories to immutable patient, course, study, prescription, anatomy, prior-treatment, task, and destination context. & T-IMG \\
 \addlinespace[2pt]
@@ -1336,6 +1338,88 @@ Each parent row reproduces the authoritative high-level requirement. The three f
 \end{longtable}
 \end{scriptsize}
 
+\subsection{Accreditation, quality, and proton profile interfaces (ACC)}
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.15\textwidth}L{0.55\textwidth}L{0.20\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Normative high-level interface requirement} & \textbf{Interface families} & \textbf{Lead; V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Normative high-level interface requirement} & \textbf{Interface families} & \textbf{Lead; V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-001.} The NL-TPS shall maintain versioned, human-approved ACR ROPA and ASTRO APEx profiles, including source edition, category or indicator identity, applicability class, local interpretation, and supersession state.} \\
+\addlinespace[2pt]
+\mbox{IF-ACC-001-01} & The profile contract shall exchange immutable source identity, edition, locator, requirement text or controlled paraphrase, applicability class, rationale, local policy mapping, effective and review dates, approver, and supersession relationship. & IF-ACC-01; IF-EVD-01; IF-CFG-01; IF-DATA-01 & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{IF-ACC-001-02} & Runtime consumers shall accept only approved and current profiles, expose source and applicability to the user, preserve prior versions for historical cases, and fail closed on missing, conflicting, expired, or unapproved profile content. & IF-ACC-01; IF-EVD-01; IF-CFG-01; IF-DATA-01 & T-GOV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{IF-ACC-001-03} & Profile owners shall retain schema, provenance, approval, supersession, negative-case, version-compatibility, and historical-reconstruction evidence; unresolved provenance or applicability defects shall block release. & IF-ACC-01; IF-EVD-01; IF-CFG-01; IF-DATA-01 & T-GOV; I\slash\allowbreak{}T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-002.} The NL-TPS shall preserve human authority for applicability, compliance, and accreditation determinations and shall not represent system output as accreditation, certification, or surveyor judgment.} \\
+\addlinespace[2pt]
+\mbox{IF-ACC-002-01} & The authority contract shall encode accountable role, decision type, evidence reviewed, signature purpose, decision time, limitations, and separation-of-duties rules for applicability and compliance determinations. & IF-ACC-01; IF-IAM-01; IF-UI-01; IF-SAF-01 & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{IF-ACC-002-02} & The interface shall label generated mappings and readiness summaries as decision support, require authorized human attestation, prevent automated accreditation claims, and reject self-approval or unauthorized role combinations. & IF-ACC-01; IF-IAM-01; IF-UI-01; IF-SAF-01 & T-GOV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{IF-ACC-002-03} & Conformance evidence shall include representative-user comprehension, role and signature, prohibited-claim, separation-of-duty, cancellation, and audit-reconstruction tests. & IF-ACC-01; IF-IAM-01; IF-UI-01; IF-SAF-01 & T-GOV; I\slash\allowbreak{}T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-003.} The NL-TPS shall provide atomic bidirectional trace from each applicable profile obligation to requirements, controls, components, procedures, evidence, tests, findings, corrective actions, and release decisions.} \\
+\addlinespace[2pt]
+\mbox{IF-ACC-003-01} & The trace contract shall exchange stable object identifiers, typed link relations, versions, states, owners, effective dates, integrity values, and controlled orphan, waiver, exception, and supersession semantics. & IF-ACC-01; IF-DATA-01; IF-CFG-01; IF-VV-01 & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{IF-ACC-003-02} & Trace updates shall be atomic, preserve immutable history, identify broken or stale links, prevent closure without required evidence, and reconcile imported evidence without silent overwriting. & IF-ACC-01; IF-DATA-01; IF-CFG-01; IF-VV-01 & T-GOV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{IF-ACC-003-03} & Verification shall prove forward and reverse coverage, orphan and stale-link detection, history reconstruction, access control, integrity, and release gating for every applicable obligation. & IF-ACC-01; IF-DATA-01; IF-CFG-01; IF-VV-01 & T-GOV; I\slash\allowbreak{}T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-004.} The NL-TPS shall evaluate defined clinical documentation completeness and temporal dependencies for simulation, prescription, planning, review, transfer, and treatment-readiness workflows.} \\
+\addlinespace[2pt]
+\mbox{IF-ACC-004-01} & The documentation contract shall identify required clinical artifacts, authoritative source, patient and course references, status, author, approval, effective time, expiry, dependency, and controlled missing, late, amended, or conflicting conditions. & IF-ACC-01; IF-CTX-01; IF-IHE-01; IF-DICOM-01; IF-TPS-01; IF-SAF-01 & T-REV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{IF-ACC-004-02} & Runtime checks shall reconcile authoritative artifacts for the active patient and course, distinguish unavailable from not applicable, block safety-significant transitions when required content is missing or stale, and display the responsible resolving role. & IF-ACC-01; IF-CTX-01; IF-IHE-01; IF-DICOM-01; IF-TPS-01; IF-SAF-01 & T-REV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{IF-ACC-004-03} & Tests shall cover wrong patient or course, stale and amended documents, unavailable systems, conflicting timestamps, partial DICOM or workflow exchange, valid exception, and destination reconciliation. & IF-ACC-01; IF-CTX-01; IF-IHE-01; IF-DICOM-01; IF-TPS-01; IF-SAF-01 & T-REV; I\slash\allowbreak{}T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-005.} The NL-TPS shall enforce configured review and QA schedules, including peer review, chart review, physics checks, pretreatment verification, and documented exception handling.} \\
+\addlinespace[2pt]
+\mbox{IF-ACC-005-01} & The QA schedule contract shall exchange review type, case applicability, due event or interval, required role and independence, artifact scope, completion criteria, finding severity, exception authority, and downstream gate. & IF-ACC-01; IF-CTX-01; IF-REV-01; IF-DICOM-01; IF-OPS-01; IF-SAF-01 & T-REV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{IF-ACC-005-02} & The interface shall calculate due state from authoritative events, prevent an overdue or failed required review from being treated as complete, route exceptions for authorized disposition, and reconcile completion with the commissioned TPS or record system. & IF-ACC-01; IF-CTX-01; IF-REV-01; IF-DICOM-01; IF-OPS-01; IF-SAF-01 & T-REV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{IF-ACC-005-03} & Verification shall cover timing boundaries, independent-review constraints, late or corrected events, failed and repeated QA, authorized exceptions, outage recovery, and source-to-destination completion evidence. & IF-ACC-01; IF-CTX-01; IF-REV-01; IF-DICOM-01; IF-OPS-01; IF-SAF-01 & T-REV; I\slash\allowbreak{}T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-006.} A qualified medical physicist shall govern TPS and model lifecycle QA, commissioning, periodic and change-triggered testing, anomaly disposition, rollback, and return to service.} \\
+\addlinespace[2pt]
+\mbox{IF-ACC-006-01} & The lifecycle contract shall exchange commissioned scope, TPS, model, beam and machine version, baseline, test protocol, tolerance, result, anomaly, change impact, approver, release state, rollback target, and return-to-service decision. & IF-ACC-01; IF-CFG-01; IF-VV-01; IF-TPS-01; IF-DICOM-01; IF-AI-01 & T-VV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{IF-ACC-006-02} & Runtime adapters shall admit only released configurations, detect version drift, quarantine affected workflows, preserve the last approved rollback point, and require attributable qualified-medical-physicist authorization for return to clinical service. & IF-ACC-01; IF-CFG-01; IF-VV-01; IF-TPS-01; IF-DICOM-01; IF-AI-01 & T-VV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{IF-ACC-006-03} & Evidence shall include acceptance, commissioning, periodic, change-regression, anomaly, rollback, recovery, vendor-version, DICOM round-trip, model-contract, and independent-review results. & IF-ACC-01; IF-CFG-01; IF-VV-01; IF-TPS-01; IF-DICOM-01; IF-AI-01 & T-VV; I\slash\allowbreak{}T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-007.} The NL-TPS shall support controlled organizational accreditation evidence while protecting patient information and preserving local ownership of staffing, credentials, training, policy, safety, and quality decisions.} \\
+\addlinespace[2pt]
+\mbox{IF-ACC-007-01} & The organizational evidence contract shall exchange criterion, applicability, accountable owner, evidence pointer or approved artifact, period, status, attestation, deficiency, corrective action, due date, verification, retention, and minimum-necessary disclosure. & IF-ACC-01; IF-IAM-01; IF-DATA-01; IF-SEC-01; IF-OPS-01 & T-GOV; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{IF-ACC-007-02} & The workspace shall enforce least privilege, keep PHI in approved repositories where possible, export only authorized and redacted packages, track deficiencies and corrective actions, and never infer staffing competence or policy compliance from missing evidence. & IF-ACC-01; IF-IAM-01; IF-DATA-01; IF-SEC-01; IF-OPS-01 & T-GOV; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{IF-ACC-007-03} & Tests shall cover role access, minimum-necessary disclosure, redaction, export manifest integrity, evidence expiry, missing artifacts, overdue corrective action, attestation, retention, and audit reconstruction. & IF-ACC-01; IF-IAM-01; IF-DATA-01; IF-SEC-01; IF-OPS-01 & T-GOV; I\slash\allowbreak{}T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent ACC-008.} The NL-TPS shall maintain a proton-specific profile for robust planning, range and setup uncertainty, motion, image guidance, patient-specific QA, delivery compatibility, and change-triggered revalidation.} \\
+\addlinespace[2pt]
+\mbox{IF-ACC-008-01} & The proton profile contract shall exchange technique, beam and nozzle capability, range and setup uncertainty, robust scenarios, motion strategy, image guidance, dose and biological assumptions, delivery constraints, patient-specific QA criteria, and applicable evidence source. & IF-ACC-01; IF-CTX-01; IF-PLN-01; IF-TPS-01; IF-DICOM-01; IF-REV-01; IF-VV-01 & T-PLAN; I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{IF-ACC-008-02} & Proton interfaces shall preserve ion-plan semantics and units, validate delivery compatibility and robust-evaluation completeness, block unsupported or lossy exchange, expose assumptions and limitations, and require commissioned patient-specific QA and review gates. & IF-ACC-01; IF-CTX-01; IF-PLN-01; IF-TPS-01; IF-DICOM-01; IF-REV-01; IF-VV-01 & T-PLAN; T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{IF-ACC-008-03} & Verification shall include RT Ion Plan and RT Dose conformance, geometry and unit fidelity, representative robust and motion cases, machine delivery checks, patient-specific QA, unsupported-feature rejection, version change, round trip, and independent physics review. & IF-ACC-01; IF-CTX-01; IF-PLN-01; IF-TPS-01; IF-DICOM-01; IF-REV-01; IF-VV-01 & T-PLAN; I\slash\allowbreak{}T\slash\allowbreak{}A \\
+\end{longtable}
+\end{scriptsize}
+
 \section{7. External TPS and DICOM interface baseline}
 For every commissioned external TPS connection, T-INT with T-PLAN, T-IMG, T-REV, T-DATA, T-SEC, T-OPS, T-VV, representative clinical users, and the vendor shall establish an interface-control and commissioning package containing:
 \begin{itemize}
@@ -1401,7 +1485,9 @@ OPS & Clinical operations, monitoring, and resilience & 7 & 21 & 3 \\
 \addlinespace[2pt]
 VAL & Verification, commissioning, release, and change control & 9 & 27 & 6 \\
 \addlinespace[2pt]
-\textbf{TOTAL} & \textbf{Complete interface baseline} & \textbf{111} & \textbf{333} & \textbf{171} \\
+ACC & Accreditation, quality, and proton profiles & 8 & 24 & 12 \\
+\addlinespace[2pt]
+\textbf{TOTAL} & \textbf{Complete interface baseline} & \textbf{119} & \textbf{357} & \textbf{183} \\
 \end{longtable}
 \end{small}
 
@@ -1421,41 +1507,43 @@ VAL & Verification, commissioning, release, and change control & 9 & 27 & 6 \\
 \endfoot
 \bottomrule
 \endlastfoot
-IF-UI-01 & Clinical User Interaction & 108 \\
+IF-UI-01 & Clinical User Interaction & 111 \\
 \addlinespace[2pt]
 IF-NLI-01 & Speech, Text, and Typed Intent & 33 \\
 \addlinespace[2pt]
-IF-IAM-01 & Identity, Role, and Approval & 153 \\
+IF-IAM-01 & Identity, Role, and Approval & 159 \\
 \addlinespace[2pt]
-IF-SAF-01 & Intent, Safety Kernel, Workflow, and State & 162 \\
+IF-SAF-01 & Intent, Safety Kernel, Workflow, and State & 171 \\
 \addlinespace[2pt]
-IF-EVD-01 & Evidence Repository and Computable Rules & 96 \\
+IF-EVD-01 & Evidence Repository and Computable Rules & 99 \\
 \addlinespace[2pt]
-IF-CTX-01 & Patient and Case Context & 87 \\
+IF-ACC-01 & Accreditation and Quality Evidence Exchange & 24 \\
+\addlinespace[2pt]
+IF-CTX-01 & Patient and Case Context & 96 \\
 \addlinespace[2pt]
 IF-IMG-01 & Imaging, Registration, and Contouring & 69 \\
 \addlinespace[2pt]
-IF-PLN-01 & Planning, Optimization, Robustness, and Dose & 81 \\
+IF-PLN-01 & Planning, Optimization, Robustness, and Dose & 84 \\
 \addlinespace[2pt]
-IF-REV-01 & Plan Review, QA, Approval, and Transfer & 96 \\
+IF-REV-01 & Plan Review, QA, Approval, and Transfer & 102 \\
 \addlinespace[2pt]
-IF-DICOM-01 & DICOM and DICOM-RT Exchange & 171 \\
+IF-DICOM-01 & DICOM and DICOM-RT Exchange & 183 \\
 \addlinespace[2pt]
-IF-TPS-01 & Commissioned External TPS Adapter & 114 \\
+IF-TPS-01 & Commissioned External TPS Adapter & 123 \\
 \addlinespace[2pt]
-IF-IHE-01 & IHE-RO and Optional Clinical API Profiles & 3 \\
+IF-IHE-01 & IHE-RO and Optional Clinical API Profiles & 6 \\
 \addlinespace[2pt]
-IF-AI-01 & Model Registry, Gateway, and Runtime & 84 \\
+IF-AI-01 & Model Registry, Gateway, and Runtime & 87 \\
 \addlinespace[2pt]
-IF-DATA-01 & Clinical Objects, Provenance, and Audit & 162 \\
+IF-DATA-01 & Clinical Objects, Provenance, and Audit & 171 \\
 \addlinespace[2pt]
-IF-CFG-01 & Configuration, QMS, Governance, and Release & 93 \\
+IF-CFG-01 & Configuration, QMS, Governance, and Release & 102 \\
 \addlinespace[2pt]
-IF-OPS-01 & Jobs, Monitoring, Incident, and Recovery & 93 \\
+IF-OPS-01 & Jobs, Monitoring, Incident, and Recovery & 99 \\
 \addlinespace[2pt]
-IF-SEC-01 & Cybersecurity and Privacy Control & 84 \\
+IF-SEC-01 & Cybersecurity and Privacy Control & 87 \\
 \addlinespace[2pt]
-IF-VV-01 & Verification, Commissioning, and Acceptance & 96 \\
+IF-VV-01 & Verification, Commissioning, and Acceptance & 105 \\
 \addlinespace[2pt]
 \end{longtable}
 \end{small}

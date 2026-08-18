@@ -7,7 +7,7 @@
 \NLTitleBlock{SYSTEM REQUIREMENTS BASELINE}{High-Level Requirements}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
 \NLMeta{Source baseline}{Natural Language Treatment Planning System ConOps, Version 0.1}
 \NLMeta{Requirements version}{0.1 - Proposed baseline}
-\NLMeta{Date}{17 August 2026}
+\NLMeta{Date}{18 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
 \end{minipage}}{This document defines proposed system-level requirements for design and verification planning. It is not a clinical protocol, commissioning report, regulatory determination, or authorization for patient use.}
 
@@ -37,7 +37,7 @@ Source document & Natural Language Treatment Planning System ConOps, Version 0.1
 \addlinespace[2pt]
 Baseline status & Proposed high-level requirements; not yet approved or allocated to a clinical release \\
 \addlinespace[2pt]
-Requirement count & 111 \\
+Requirement count & 119 \\
 \addlinespace[2pt]
 Change authority & Clinical governance and quality-system change control \\
 \addlinespace[2pt]
@@ -137,7 +137,9 @@ OPS & Clinical operations, monitoring, and resilience & 7 & OPS-001 through OPS-
 \addlinespace[2pt]
 VAL & Verification, commissioning, release, and change control & 9 & VAL-001 through VAL-009 \\
 \addlinespace[2pt]
-TOTAL & Proposed high-level requirements & 111 & All domains \\
+ACC & Accreditation and practice-quality profiles & 8 & ACC-001 through ACC-008 \\
+\addlinespace[2pt]
+TOTAL & Proposed high-level requirements & 119 & All domains \\
 \end{longtable}
 \end{small}
 
@@ -637,6 +639,43 @@ VAL-007 & The NL-TPS shall prevent progression through each release gate until i
 VAL-008 & Each expansion to a new disease site, model, modality, machine, technique, institution, adaptive workflow, interface, or evidence package shall receive documented change-impact assessment, commissioning, human-factors assessment, regression testing, and monitoring approval. & QMS; ROAD & I\slash\allowbreak{}T \\
 \addlinespace[2pt]
 VAL-009 & The NL-TPS shall not enter or remain in clinical service with an unresolved critical anomaly, unacceptable residual risk, failed release threshold, unverified risk control, or unreconciled safety-critical change. & HAZ; VV; QMS; ROAD & I\slash\allowbreak{}T \\
+\end{longtable}
+\end{small}
+
+\subsection{Accreditation and practice-quality profiles (ACC)}
+
+Implements applicable ACR ROPA, ASTRO APEx, ACR--AAPM technical, institutional, and modality-specific controls without transferring professional or accreditation authority to the NL-TPS.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{High-level requirement} & \textbf{Source \slash\allowbreak{} hazard} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{High-level requirement} & \textbf{Source \slash\allowbreak{} hazard} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+ACC-001 & The NL-TPS shall maintain separately versioned ACR ROPA, ASTRO APEx, technical-guidance, institutional, and modality-specific profiles with explicit authority, applicability, effective status, and supersession. & ACR; APEx; EVD; QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+ACC-002 & The NL-TPS shall require authorized human approval of every profile applicability decision, distinguish product-enforceable, workflow-supporting, evidence-only, organizational, and not-applicable controls, and shall not represent readiness status as accreditation or compliance. & ACR; APEx; AUTH; H-18 & I\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+ACC-003 & The NL-TPS shall maintain atomic bidirectional traceability from each applicable source element through requirements, risks, interfaces, components, tests, evidence, deficiencies, approvals, releases, and supersession. & ACR; APEx; TLR; QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+ACC-004 & The NL-TPS shall validate the completeness, consistency, signature, effective time, and authoritative source of required patient-evaluation status, prior-treatment information, simulation directive, planning directive, prescription, consent status, planning documentation, and transfer verification before the associated clinical transition. & APEx 1--3,14; ROPA; H-01,H-04,H-12 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+ACC-005 & The NL-TPS shall enforce institution-approved prerequisites and schedules for patient identity verification, timeout evidence, pretreatment and replan physics checks, independent dose or MU verification, patient-specific QA, periodic chart review, end-of-treatment review, and affected-approval invalidation. & APEx 3; ROPA QA; H-13,H-17 & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+ACC-006 & The NL-TPS shall require QMP-owned acceptance, commissioning, limitation documentation, periodic TPS QA, postservice and upgrade assessment, annual and change-triggered end-to-end testing, and return-to-service authorization for the TPS and all clinically used support software, scripts, models, and interfaces. & APEx 11--12; ACR--AAPM TPS; H-08,H-15 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+ACC-007 & The NL-TPS shall maintain attributable, time-ordered, privacy-controlled evidence for credentials, competency, SOPs, staffing plans, safety events, CQI, peer review, patient education and follow-up status, deficiencies, CAPA, and survey preparation without replacing the responsible professional or facility process. & APEx 4--10,13--14; ROPA; H-14 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+ACC-008 & The NL-TPS shall apply proton-specific planning, dose, robustness, calibration, patient-specific QA, independent verification, beamline, readiness, and periodic-review controls only to the commissioned proton scope and delivery mode identified by the active release profile. & ACR--AAPM PBT; PLN; VAL; H-09,H-13 & I\slash\allowbreak{}T \\
 \end{longtable}
 \end{small}
 

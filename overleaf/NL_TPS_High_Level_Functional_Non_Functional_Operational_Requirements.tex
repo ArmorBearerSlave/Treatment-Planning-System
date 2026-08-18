@@ -8,7 +8,7 @@
 \NLMeta{Requirements version}{0.1 - Proposed baseline}
 \NLMeta{Date}{18 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
-\NLMeta{Coverage}{111 requirements: 64 functional; 24 non-functional; 23 operational}
+\NLMeta{Coverage}{119 requirements: 69 functional; 25 non-functional; 25 operational}
 \end{minipage}}{This document provides a controlled functional, non-functional, and operational view of the existing NL-TPS high-level baseline. It is not a clinical protocol, commissioning report, regulatory determination, released product specification, or authorization for patient use.}
 
 \tableofcontents
@@ -39,9 +39,9 @@ Source document & NL-TPS High-Level Requirements, Version 0.1; NL-TPS ConOps, Ve
 \addlinespace[2pt]
 Baseline status & Proposed requirements and realization planning; not approved, implemented, commissioned, or allocated to a clinical release \\
 \addlinespace[2pt]
-Coverage & 111 requirements: 64 functional; 24 non-functional; 23 operational \\
+Coverage & 119 requirements: 69 functional; 25 non-functional; 25 operational \\
 \addlinespace[2pt]
-Identifier policy & New category IDs retain immutable source aliases to the original 111 HLR identifiers. \\
+Identifier policy & New category IDs retain immutable source aliases to the original 119 HLR identifiers. \\
 \addlinespace[2pt]
 Change authority & Clinical governance and quality-system change control \\
 \addlinespace[2pt]
@@ -52,7 +52,7 @@ Supersession & None; this document preserves and traces to the existing controll
 
 \NLFrontMatterSection{Executive summary}
 
-This specification organizes the complete 111-requirement source baseline into three primary realization classes: 64 functional requirements, 24 non-functional requirements, and 23 operational requirements. The partition clarifies what the clinical system does, the qualities and constraints under which it must do so, and the institutional controls needed to deploy and sustain it.
+This specification organizes the complete 119-requirement source baseline into three primary realization classes: 69 functional requirements, 25 non-functional requirements, and 25 operational requirements. The partition clarifies what the clinical system does, the qualities and constraints under which it must do so, and the institutional controls needed to deploy and sustain it.
 
 The original requirement wording, source/hazard trace, and anticipated verification methods are preserved. Category IDs are trace aliases, not replacements. Cross-cutting effects remain valid: an operational control may constrain a function, and a non-functional requirement may require functional enforcement.
 
@@ -83,11 +83,11 @@ The baseline covers natural-language and voice interaction, evidence governance,
 \endfoot
 \bottomrule
 \endlastfoot
-Functional & HFR & FSR & Capabilities that accept, transform, calculate, present, exchange, or govern patient-specific planning information and candidate plans. & 64 & 192 \\
+Functional & HFR & FSR & Capabilities that accept, transform, calculate, present, exchange, or govern patient-specific planning information and candidate plans. & 69 & 207 \\
 \addlinespace[2pt]
-Non-functional & HNFR & NFSR & Cross-cutting safety, human-factors, privacy, security, integrity, and assurance constraints on every applicable function. & 24 & 72 \\
+Non-functional & HNFR & NFSR & Cross-cutting safety, human-factors, privacy, security, integrity, and assurance constraints on every applicable function. & 25 & 75 \\
 \addlinespace[2pt]
-Operational & HOR & OSR & Institutional governance, deployment, monitoring, resilience, verification, commissioning, release, and lifecycle obligations needed to operate the system safely. & 23 & 69 \\
+Operational & HOR & OSR & Institutional governance, deployment, monitoring, resilience, verification, commissioning, release, and lifecycle obligations needed to operate the system safely. & 25 & 75 \\
 \addlinespace[2pt]
 \end{longtable}
 \end{scriptsize}
@@ -163,11 +163,15 @@ Functional & DAT & Data, interoperability, provenance, and audit & 10 & 30 & HFR
 \addlinespace[2pt]
 Functional & AIM & AI and inference-model lifecycle & 8 & 24 & HFR-AIM-001 through HFR-AIM-008 \\
 \addlinespace[2pt]
+Functional & ACC & Accreditation-profile, clinical-documentation, QA, and proton capabilities & 5 & 15 & HFR-ACC-001 through HFR-ACC-005 \\
+\addlinespace[2pt]
 Non-functional & SAF & Safety boundaries and human authority & 10 & 30 & HNFR-SAF-001 through HNFR-SAF-010 \\
 \addlinespace[2pt]
 Non-functional & HFE & Human factors, usability, and competency & 6 & 18 & HNFR-HFE-001 through HNFR-HFE-006 \\
 \addlinespace[2pt]
 Non-functional & SEC & Privacy, cybersecurity, and secure development & 8 & 24 & HNFR-SEC-001 through HNFR-SEC-008 \\
+\addlinespace[2pt]
+Non-functional & ACC & Human accreditation authority and claim limitation & 1 & 3 & HNFR-ACC-001 \\
 \addlinespace[2pt]
 Operational & GOV & Governance, intended use, and scope & 7 & 21 & HOR-GOV-001 through HOR-GOV-007 \\
 \addlinespace[2pt]
@@ -175,7 +179,9 @@ Operational & OPS & Clinical operations, monitoring, and resilience & 7 & 21 & H
 \addlinespace[2pt]
 Operational & VAL & Verification, commissioning, release, and change control & 9 & 27 & HOR-VAL-001 through HOR-VAL-009 \\
 \addlinespace[2pt]
-TOTAL & All & Complete categorized baseline & 111 & 333 & All source IDs represented exactly once \\
+Operational & ACC & Physicist lifecycle governance and organizational evidence & 2 & 6 & HOR-ACC-001 through HOR-ACC-002 \\
+\addlinespace[2pt]
+TOTAL & All & Complete categorized baseline & 119 & 357 & All source IDs represented exactly once \\
 \addlinespace[2pt]
 \end{longtable}
 \end{scriptsize}
@@ -452,6 +458,34 @@ Capabilities that accept, transform, calculate, present, exchange, or govern pat
 \end{longtable}
 \end{scriptsize}
 
+\subsection{Accreditation-profile and proton capabilities (ACC)}
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.14\textwidth}L{0.09\textwidth}L{0.47\textwidth}L{0.15\textwidth}L{0.07\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category ID} & \textbf{Source} & \textbf{High-level requirement} & \textbf{Source / hazard} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category ID} & \textbf{Source} & \textbf{High-level requirement} & \textbf{Source / hazard} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\mbox{HFR-ACC-001} & \mbox{ACC-001} & The NL-TPS shall maintain versioned, human-approved ACR ROPA and ASTRO APEx profiles with source edition, criterion identity, applicability, local interpretation, effective state, and supersession history. & ACR; APEx; QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{HFR-ACC-002} & \mbox{ACC-003} & The NL-TPS shall provide atomic bidirectional trace from each applicable profile obligation through requirements, controls, components, procedures, evidence, tests, findings, corrective actions, and release decisions. & ACR; APEx; TRACE & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{HFR-ACC-003} & \mbox{ACC-004} & The NL-TPS shall evaluate defined clinical-documentation completeness and temporal dependencies for simulation, prescription, planning, review, transfer, and treatment-readiness workflows. & ACR; APEx; H-01 & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{HFR-ACC-004} & \mbox{ACC-005} & The NL-TPS shall enforce configured review and QA schedules, including peer review, chart review, physics checks, pretreatment verification, and documented exception handling. & ACR; APEx; QA & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{HFR-ACC-005} & \mbox{ACC-008} & The NL-TPS shall maintain a proton-specific profile for robust planning, range and setup uncertainty, motion, image guidance, patient-specific QA, delivery compatibility, and change-triggered revalidation. & ACR; APEx; PBT & T\slash\allowbreak{}A \\
+\end{longtable}
+\end{scriptsize}
+
 \section{Non-functional high-level requirements}
 
 Cross-cutting safety, human-factors, privacy, security, integrity, and assurance constraints on every applicable function.
@@ -561,6 +595,26 @@ Cross-cutting safety, human-factors, privacy, security, integrity, and assurance
 \addlinespace[2pt]
 \mbox{HNFR-SEC-008} & \mbox{SEC-008} & The NL-TPS shall support tested clinical and cybersecurity incident containment, evidence preservation, patient-impact assessment, communication, reporting, recovery, and corrective and preventive action. & SEC; OPS; H-14 & D\slash\allowbreak{}I \\
 \addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\subsection{Human accreditation authority and claim limitation (ACC)}
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.14\textwidth}L{0.09\textwidth}L{0.47\textwidth}L{0.15\textwidth}L{0.07\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category ID} & \textbf{Source} & \textbf{High-level requirement} & \textbf{Source / hazard} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category ID} & \textbf{Source} & \textbf{High-level requirement} & \textbf{Source / hazard} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\mbox{HNFR-ACC-001} & \mbox{ACC-002} & The NL-TPS shall preserve human authority for applicability, compliance, and accreditation determinations and shall not represent system output as accreditation, certification, or surveyor judgment. & ACR; APEx; AUTH & I\slash\allowbreak{}HFE \\
 \end{longtable}
 \end{scriptsize}
 
@@ -674,6 +728,28 @@ Institutional governance, deployment, monitoring, resilience, verification, comm
 \end{longtable}
 \end{scriptsize}
 
+\subsection{Physicist lifecycle governance and organizational evidence (ACC)}
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.14\textwidth}L{0.09\textwidth}L{0.47\textwidth}L{0.15\textwidth}L{0.07\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category ID} & \textbf{Source} & \textbf{High-level requirement} & \textbf{Source / hazard} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category ID} & \textbf{Source} & \textbf{High-level requirement} & \textbf{Source / hazard} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\mbox{HOR-ACC-001} & \mbox{ACC-006} & A qualified medical physicist shall govern TPS and model lifecycle QA, commissioning, periodic and change-triggered testing, anomaly disposition, rollback, and return to service. & ACR; APEx; QMP & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{HOR-ACC-002} & \mbox{ACC-007} & The NL-TPS shall support controlled organizational accreditation evidence while protecting patient information and preserving local ownership of staffing, credentials, training, policy, safety, and quality decisions. & ACR; APEx; QMS & I\slash\allowbreak{}A \\
+\end{longtable}
+\end{scriptsize}
+
 \section{Cross-category realization and acceptance}
 
 Functional completion alone is insufficient for clinical readiness. Each included function shall be paired with its applicable non-functional constraints and operational controls through the requirements, risk, interface, component, and verification traces. A release gate shall reject orphan functions, unverified controls, unresolved safety-significant anomalies, uncommissioned external TPS pathways, and unsupported clinical scope.
@@ -697,13 +773,13 @@ For each release, the Systems Integration Council shall produce a cross-category
 \endfoot
 \bottomrule
 \endlastfoot
-Functional & 64 & 64 & 192 & NLI, EVD, CLN, PLN, REV, DAT, AIM & Pass \\
+Functional & 69 & 69 & 207 & NLI, EVD, CLN, PLN, REV, DAT, AIM, ACC & Pass \\
 \addlinespace[2pt]
-Non-functional & 24 & 24 & 72 & SAF, HFE, SEC & Pass \\
+Non-functional & 25 & 25 & 75 & SAF, HFE, SEC, ACC & Pass \\
 \addlinespace[2pt]
-Operational & 23 & 23 & 69 & GOV, OPS, VAL & Pass \\
+Operational & 25 & 25 & 75 & GOV, OPS, VAL, ACC & Pass \\
 \addlinespace[2pt]
-TOTAL & 111 & 111 & 333 & 13 domains & Pass \\
+TOTAL & 119 & 119 & 357 & 14 domains & Pass \\
 \addlinespace[2pt]
 \end{longtable}
 \end{small}

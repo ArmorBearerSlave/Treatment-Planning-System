@@ -8,7 +8,7 @@
 \NLMeta{Requirements version}{0.1 - Proposed baseline}
 \NLMeta{Date}{18 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
-\NLMeta{Coverage}{333 sub-requirements; 74 category-scoped component responsibilities; 15 teams}
+\NLMeta{Coverage}{357 sub-requirements; 78 category-scoped component responsibilities; 15 teams}
 \end{minipage}}{This document allocates proposed components and teams needed to realize the categorized sub-requirements. It is an architecture and program-planning baseline, not evidence of implementation, verification, commissioning, clinical validation, or authorization for patient use.}
 
 \tableofcontents
@@ -39,7 +39,7 @@ Source document & NL-TPS Functional, Non-Functional, and Operational Sub-Require
 \addlinespace[2pt]
 Baseline status & Proposed requirements and realization planning; not approved, implemented, commissioned, or allocated to a clinical release \\
 \addlinespace[2pt]
-Coverage & 333 sub-requirements; 74 category-scoped component responsibilities; 15 teams \\
+Coverage & 357 sub-requirements; 78 category-scoped component responsibilities; 15 teams \\
 \addlinespace[2pt]
 Identifier policy & Every category sub-requirement maps to a complete category stack, direct components, and an accountable lead with collaborating teams. \\
 \addlinespace[2pt]
@@ -52,7 +52,7 @@ Supersession & None; this document preserves and traces to the existing controll
 
 \NLFrontMatterSection{Executive summary}
 
-This specification defines 74 category-scoped component responsibilities: 30 functional, 22 non-functional, and 22 operational. It then maps all 333 categorized sub-requirements to the complete components and team-of-teams participation needed for realization.
+This specification defines 78 category-scoped component responsibilities: 32 functional, 23 non-functional, and 23 operational. It then maps all 357 categorized sub-requirements to the complete components and team-of-teams participation needed for realization.
 
 A component in this document is an accountable realization responsibility, not necessarily a separately deployed software service. One deployed service may implement several responsibilities, and one responsibility may span software, configuration, procedures, evidence, and people. Consolidation is permitted only when interfaces, independence, human authority, verification, and separation-of-duties obligations remain demonstrably satisfied.
 
@@ -87,11 +87,11 @@ Each category uses a mandatory universal stack plus direct components selected b
 \endfoot
 \bottomrule
 \endlastfoot
-Functional & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01 & 192 & Required for every sub-requirement in this class \\
+Functional & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01 & 207 & Required for every sub-requirement in this class \\
 \addlinespace[2pt]
-Non-functional & NFC-REQ-01; NFC-ARCH-01; NFC-CFG-01; NFC-MON-01; NFC-VV-01 & 72 & Required for every sub-requirement in this class \\
+Non-functional & NFC-REQ-01; NFC-ARCH-01; NFC-CFG-01; NFC-MON-01; NFC-VV-01 & 75 & Required for every sub-requirement in this class \\
 \addlinespace[2pt]
-Operational & OC-REQ-01; OC-GOV-01; OC-QMS-01; OC-CFG-01; OC-AUD-01; OC-VV-01 & 69 & Required for every sub-requirement in this class \\
+Operational & OC-REQ-01; OC-GOV-01; OC-QMS-01; OC-CFG-01; OC-AUD-01; OC-VV-01 & 75 & Required for every sub-requirement in this class \\
 \addlinespace[2pt]
 \end{longtable}
 \end{small}
@@ -100,7 +100,7 @@ Universal stacks ensure that every child has requirements trace, controlled arch
 
 \section{Component catalogs}
 
-\subsection{Functional component responsibilities (30)}
+\subsection{Functional component responsibilities (32)}
 
 \begin{scriptsize}
 \begin{longtable}{@{}L{0.15\textwidth}L{0.11\textwidth}L{0.21\textwidth}L{0.38\textwidth}L{0.08\textwidth}@{}}
@@ -177,10 +177,14 @@ Universal stacks ensure that every child has requirements trace, controlled arch
 \addlinespace[2pt]
 \mbox{FC-AUD-01} & Data & Tamper-Evident Clinical Audit Ledger & Records ordered commands, context, evidence, outputs, warnings, edits, approvals, QA, transfers, failures, and reconciliation. & T-DATA \\
 \addlinespace[2pt]
+\mbox{FC-ACC-01} & Quality & Accreditation Profile Runtime & Publishes approved ACR ROPA and ASTRO APEx profiles, resolves scoped applicability, maintains atomic trace and evidence state, and prevents system-generated accreditation claims. & T-GOV \\
+\addlinespace[2pt]
+\mbox{FC-DOC-01} & Clinical safety & Clinical Documentation and Temporal Gate & Reconciles required clinical artifacts, approval and amendment state, review and QA due events, exceptions, and responsible roles and enforces configured transition gates. & T-REV \\
+\addlinespace[2pt]
 \end{longtable}
 \end{scriptsize}
 
-\subsection{Non-functional component responsibilities (22)}
+\subsection{Non-functional component responsibilities (23)}
 
 \begin{scriptsize}
 \begin{longtable}{@{}L{0.15\textwidth}L{0.11\textwidth}L{0.21\textwidth}L{0.38\textwidth}L{0.08\textwidth}@{}}
@@ -241,10 +245,12 @@ Universal stacks ensure that every child has requirements trace, controlled arch
 \addlinespace[2pt]
 \mbox{NFC-INC-01} & Assurance & Safety, Privacy, and Security Incident Workflow & Coordinates triage, containment, patient-impact assessment, evidence preservation, communication, recovery, CAPA, and closure. & T-OPS \\
 \addlinespace[2pt]
+\mbox{NFC-CLM-01} & Assurance & Accreditation Claim and Human-Authority Guard & Enforces decision-support labeling, authenticated human applicability and compliance attestation, separation of duties, and prohibition of automated accreditation, certification, or surveyor conclusions. & T-GOV \\
+\addlinespace[2pt]
 \end{longtable}
 \end{scriptsize}
 
-\subsection{Operational component responsibilities (22)}
+\subsection{Operational component responsibilities (23)}
 
 \begin{scriptsize}
 \begin{longtable}{@{}L{0.15\textwidth}L{0.11\textwidth}L{0.21\textwidth}L{0.38\textwidth}L{0.08\textwidth}@{}}
@@ -304,6 +310,8 @@ Universal stacks ensure that every child has requirements trace, controlled arch
 \mbox{OC-ANOM-01} & Assurance & Anomaly and Deviation Disposition Workflow & Classifies discrepancies, blocks inappropriate acceptance, records investigation, and requires approved disposition and retest. & T-VV \\
 \addlinespace[2pt]
 \mbox{OC-REV-01} & Lifecycle & Periodic Review and Revalidation Board & Reviews field signals, scope, residual risk, controls, evidence, models, changes, and continued authorization at defined intervals. & T-GOV \\
+\addlinespace[2pt]
+\mbox{OC-ACC-01} & Quality operations & Accreditation Evidence and Lifecycle Program & Coordinates QMP-governed TPS and model lifecycle evidence, organizational criterion ownership, credential and training pointers, deficiencies, corrective actions, privacy-controlled exports, and periodic profile review. & T-GOV \\
 \addlinespace[2pt]
 \end{longtable}
 \end{scriptsize}
@@ -950,6 +958,55 @@ The Systems Integration Council consists of all team leads, with T-CLIN, T-GOV, 
 \end{longtable}
 \end{scriptsize}
 
+\subsection{Accreditation-profile and proton realization (ACC)}
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.12\textwidth}L{0.49\textwidth}L{0.17\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source child} & \textbf{Complete component allocation} & \textbf{Accountability} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source child} & \textbf{Complete component allocation} & \textbf{Accountability} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\mbox{FSR-ACC-001-01} & \mbox{ACC-001-01} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-ACC-01; FC-EVID-01; FC-RULE-01; FC-OBJ-01; FC-AUD-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-001-02} & \mbox{ACC-001-02} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-ACC-01; FC-EVID-01; FC-RULE-01; FC-OBJ-01; FC-AUD-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-001-03} & \mbox{ACC-001-03} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-ACC-01; FC-EVID-01; FC-RULE-01; FC-OBJ-01; FC-AUD-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-002-01} & \mbox{ACC-003-01} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-ACC-01; FC-OBJ-01; FC-AUD-01; FC-STATE-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-002-02} & \mbox{ACC-003-02} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-ACC-01; FC-OBJ-01; FC-AUD-01; FC-STATE-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-002-03} & \mbox{ACC-003-03} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-ACC-01; FC-OBJ-01; FC-AUD-01; FC-STATE-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-003-01} & \mbox{ACC-004-01} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-DOC-01; FC-CASE-01; FC-SAFE-01; FC-STATE-01; FC-WF-01; FC-DICOM-01; FC-TPS-01; FC-AUD-01 & Lead: T-REV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-003-02} & \mbox{ACC-004-02} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-DOC-01; FC-CASE-01; FC-SAFE-01; FC-STATE-01; FC-WF-01; FC-DICOM-01; FC-TPS-01; FC-AUD-01 & Lead: T-REV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-003-03} & \mbox{ACC-004-03} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-DOC-01; FC-CASE-01; FC-SAFE-01; FC-STATE-01; FC-WF-01; FC-DICOM-01; FC-TPS-01; FC-AUD-01 & Lead: T-REV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-004-01} & \mbox{ACC-005-01} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-DOC-01; FC-CASE-01; FC-SAFE-01; FC-STATE-01; FC-WF-01; FC-DICOM-01; FC-TPS-01; FC-AUD-01; FC-QA-01; FC-REV-01; FC-JOB-01 & Lead: T-REV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-004-02} & \mbox{ACC-005-02} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-DOC-01; FC-CASE-01; FC-SAFE-01; FC-STATE-01; FC-WF-01; FC-DICOM-01; FC-TPS-01; FC-AUD-01; FC-QA-01; FC-REV-01; FC-JOB-01 & Lead: T-REV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-004-03} & \mbox{ACC-005-03} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-DOC-01; FC-CASE-01; FC-SAFE-01; FC-STATE-01; FC-WF-01; FC-DICOM-01; FC-TPS-01; FC-AUD-01; FC-QA-01; FC-REV-01; FC-JOB-01 & Lead: T-REV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-005-01} & \mbox{ACC-008-01} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-ACC-01; FC-DOC-01; FC-CASE-01; FC-PLAN-01; FC-DOSE-01; FC-QA-01; FC-DICOM-01; FC-TPS-01; FC-TERM-01; FC-AUD-01 & Lead: T-PLAN; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-005-02} & \mbox{ACC-008-02} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-ACC-01; FC-DOC-01; FC-CASE-01; FC-PLAN-01; FC-DOSE-01; FC-QA-01; FC-DICOM-01; FC-TPS-01; FC-TERM-01; FC-AUD-01 & Lead: T-PLAN; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{FSR-ACC-005-03} & \mbox{ACC-008-03} & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01; FC-ACC-01; FC-DOC-01; FC-CASE-01; FC-PLAN-01; FC-DOSE-01; FC-QA-01; FC-DICOM-01; FC-TPS-01; FC-TERM-01; FC-AUD-01 & Lead: T-PLAN; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
 \section{Non-functional sub-requirement realization}
 
 \subsection{Safety boundaries and human authority (SAF)}
@@ -1180,6 +1237,31 @@ The Systems Integration Council consists of all team leads, with T-CLIN, T-GOV, 
 \end{longtable}
 \end{scriptsize}
 
+\subsection{Human accreditation authority and claim limitation realization (ACC)}
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.12\textwidth}L{0.49\textwidth}L{0.17\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source child} & \textbf{Complete component allocation} & \textbf{Accountability} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source child} & \textbf{Complete component allocation} & \textbf{Accountability} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\mbox{NFSR-ACC-001-01} & \mbox{ACC-002-01} & NFC-REQ-01; NFC-ARCH-01; NFC-CFG-01; NFC-MON-01; NFC-VV-01; NFC-CLM-01; NFC-IAM-01; NFC-SAFE-01; NFC-UX-01; NFC-HFE-01; NFC-AUD-01; NFC-DATA-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{NFSR-ACC-001-02} & \mbox{ACC-002-02} & NFC-REQ-01; NFC-ARCH-01; NFC-CFG-01; NFC-MON-01; NFC-VV-01; NFC-CLM-01; NFC-IAM-01; NFC-SAFE-01; NFC-UX-01; NFC-HFE-01; NFC-AUD-01; NFC-DATA-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{NFSR-ACC-001-03} & \mbox{ACC-002-03} & NFC-REQ-01; NFC-ARCH-01; NFC-CFG-01; NFC-MON-01; NFC-VV-01; NFC-CLM-01; NFC-IAM-01; NFC-SAFE-01; NFC-UX-01; NFC-HFE-01; NFC-AUD-01; NFC-DATA-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
 \section{Operational sub-requirement realization}
 
 \subsection{Governance, intended use, and scope (GOV)}
@@ -1403,6 +1485,37 @@ The Systems Integration Council consists of all team leads, with T-CLIN, T-GOV, 
 \end{longtable}
 \end{scriptsize}
 
+\subsection{Physicist lifecycle governance and organizational evidence realization (ACC)}
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.12\textwidth}L{0.49\textwidth}L{0.17\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source child} & \textbf{Complete component allocation} & \textbf{Accountability} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source child} & \textbf{Complete component allocation} & \textbf{Accountability} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\mbox{OSR-ACC-001-01} & \mbox{ACC-006-01} & OC-REQ-01; OC-GOV-01; OC-QMS-01; OC-CFG-01; OC-AUD-01; OC-VV-01; OC-ACC-01; OC-SCOPE-01; OC-MODE-01; OC-ACCESS-01; OC-REL-01; OC-CHG-01; OC-COMM-01; OC-TEST-01; OC-ANOM-01; OC-REV-01 & Lead: T-VV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{OSR-ACC-001-02} & \mbox{ACC-006-02} & OC-REQ-01; OC-GOV-01; OC-QMS-01; OC-CFG-01; OC-AUD-01; OC-VV-01; OC-ACC-01; OC-SCOPE-01; OC-MODE-01; OC-ACCESS-01; OC-REL-01; OC-CHG-01; OC-COMM-01; OC-TEST-01; OC-ANOM-01; OC-REV-01 & Lead: T-VV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{OSR-ACC-001-03} & \mbox{ACC-006-03} & OC-REQ-01; OC-GOV-01; OC-QMS-01; OC-CFG-01; OC-AUD-01; OC-VV-01; OC-ACC-01; OC-SCOPE-01; OC-MODE-01; OC-ACCESS-01; OC-REL-01; OC-CHG-01; OC-COMM-01; OC-TEST-01; OC-ANOM-01; OC-REV-01 & Lead: T-VV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{OSR-ACC-002-01} & \mbox{ACC-007-01} & OC-REQ-01; OC-GOV-01; OC-QMS-01; OC-CFG-01; OC-AUD-01; OC-VV-01; OC-ACC-01; OC-ACCESS-01; OC-REL-01; OC-CHG-01; OC-MON-01; OC-ALERT-01; OC-INC-01; OC-CAPA-01; OC-REV-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{OSR-ACC-002-02} & \mbox{ACC-007-02} & OC-REQ-01; OC-GOV-01; OC-QMS-01; OC-CFG-01; OC-AUD-01; OC-VV-01; OC-ACC-01; OC-ACCESS-01; OC-REL-01; OC-CHG-01; OC-MON-01; OC-ALERT-01; OC-INC-01; OC-CAPA-01; OC-REV-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\mbox{OSR-ACC-002-03} & \mbox{ACC-007-03} & OC-REQ-01; OC-GOV-01; OC-QMS-01; OC-CFG-01; OC-AUD-01; OC-VV-01; OC-ACC-01; OC-ACCESS-01; OC-REL-01; OC-CHG-01; OC-MON-01; OC-ALERT-01; OC-INC-01; OC-CAPA-01; OC-REV-01 & Lead: T-GOV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-DATA\slash\allowbreak{}T-VV \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
 \section{Required realization packages and definition of done}
 
 Each allocated component shall provide, as applicable: an approved owner and intended responsibility; architecture and interface contracts; threat, hazard, privacy, and use-risk inputs; controlled configuration; build and dependency identity; data dictionary and provenance behavior; failure and degraded-mode behavior; monitoring and alert rules; operating and support procedures; unit and component tests; integration and negative tests; trace to verification results; known limitations; anomaly disposition; commissioning evidence; and release approval.
@@ -1428,13 +1541,13 @@ A sub-requirement is complete only when every allocated component has supplied a
 \endfoot
 \bottomrule
 \endlastfoot
-Functional & 192 & 192 & 30 & 0 & Pass \\
+Functional & 207 & 207 & 32 & 0 & Pass \\
 \addlinespace[2pt]
-Non-functional & 72 & 72 & 22 & 0 & Pass \\
+Non-functional & 75 & 75 & 23 & 0 & Pass \\
 \addlinespace[2pt]
-Operational & 69 & 69 & 22 & 0 & Pass \\
+Operational & 75 & 75 & 23 & 0 & Pass \\
 \addlinespace[2pt]
-TOTAL & 333 & 333 & 74 & 0 & Pass \\
+TOTAL & 357 & 357 & 78 & 0 & Pass \\
 \addlinespace[2pt]
 \end{longtable}
 \end{small}
@@ -1456,21 +1569,21 @@ TOTAL & 333 & 333 & 74 & 0 & Pass \\
 \endfoot
 \bottomrule
 \endlastfoot
-Functional & FC-REQ-01 & Functional Requirements and Trace Repository & 192 & T-SYS \\
+Functional & FC-REQ-01 & Functional Requirements and Trace Repository & 207 & T-SYS \\
 \addlinespace[2pt]
-Functional & FC-ARCH-01 & Functional Architecture and Contract Registry & 192 & T-SYS \\
+Functional & FC-ARCH-01 & Functional Architecture and Contract Registry & 207 & T-SYS \\
 \addlinespace[2pt]
-Functional & FC-CFG-01 & Functional Configuration and Policy Registry & 192 & T-SYS \\
+Functional & FC-CFG-01 & Functional Configuration and Policy Registry & 207 & T-SYS \\
 \addlinespace[2pt]
-Functional & FC-PROV-01 & Clinical Provenance and Dependency Graph & 192 & T-DATA \\
+Functional & FC-PROV-01 & Clinical Provenance and Dependency Graph & 207 & T-DATA \\
 \addlinespace[2pt]
-Functional & FC-VV-01 & Functional Verification Harness & 192 & T-VV \\
+Functional & FC-VV-01 & Functional Verification Harness & 207 & T-VV \\
 \addlinespace[2pt]
 Functional & FC-IAM-01 & Clinical Identity and Approval Service & 11 & T-SEC \\
 \addlinespace[2pt]
-Functional & FC-SAFE-01 & Deterministic Safety Kernel & 35 & T-SYS \\
+Functional & FC-SAFE-01 & Deterministic Safety Kernel & 41 & T-SYS \\
 \addlinespace[2pt]
-Functional & FC-STATE-01 & Clinical Lifecycle State Engine & 35 & T-SYS \\
+Functional & FC-STATE-01 & Clinical Lifecycle State Engine & 44 & T-SYS \\
 \addlinespace[2pt]
 Functional & FC-UX-01 & Clinical Command and Review Workspace & 34 & T-UX \\
 \addlinespace[2pt]
@@ -1478,33 +1591,33 @@ Functional & FC-VOICE-01 & Speech and Transcript Confirmation Service & 24 & T-N
 \addlinespace[2pt]
 Functional & FC-INTENT-01 & Typed Intent Compiler & 24 & T-NLI \\
 \addlinespace[2pt]
-Functional & FC-WF-01 & Clinical Workflow Orchestrator & 41 & T-SYS \\
+Functional & FC-WF-01 & Clinical Workflow Orchestrator & 47 & T-SYS \\
 \addlinespace[2pt]
-Functional & FC-EVID-01 & Approved Evidence Repository & 24 & T-EVD \\
+Functional & FC-EVID-01 & Approved Evidence Repository & 27 & T-EVD \\
 \addlinespace[2pt]
-Functional & FC-RULE-01 & Computable Rule and Authority Resolver & 24 & T-EVD \\
+Functional & FC-RULE-01 & Computable Rule and Authority Resolver & 27 & T-EVD \\
 \addlinespace[2pt]
-Functional & FC-CASE-01 & Case Context and Manifest Service & 28 & T-IMG \\
+Functional & FC-CASE-01 & Case Context and Manifest Service & 37 & T-IMG \\
 \addlinespace[2pt]
 Functional & FC-REG-01 & Registration and Derived-Dose Service & 14 & T-IMG \\
 \addlinespace[2pt]
 Functional & FC-SEG-01 & Contouring Gateway and Anatomy Review Service & 17 & T-IMG \\
 \addlinespace[2pt]
-Functional & FC-PLAN-01 & Planning Intent and Candidate Orchestrator & 36 & T-PLAN \\
+Functional & FC-PLAN-01 & Planning Intent and Candidate Orchestrator & 39 & T-PLAN \\
 \addlinespace[2pt]
-Functional & FC-DOSE-01 & Commissioned Optimizer and Dose Adapter & 36 & T-PLAN \\
+Functional & FC-DOSE-01 & Commissioned Optimizer and Dose Adapter & 39 & T-PLAN \\
 \addlinespace[2pt]
-Functional & FC-REV-01 & Plan Comparison, Selection, and Approval Workspace & 32 & T-REV \\
+Functional & FC-REV-01 & Plan Comparison, Selection, and Approval Workspace & 35 & T-REV \\
 \addlinespace[2pt]
-Functional & FC-QA-01 & Independent QA and Transfer Coordinator & 32 & T-REV \\
+Functional & FC-QA-01 & Independent QA and Transfer Coordinator & 38 & T-REV \\
 \addlinespace[2pt]
-Functional & FC-DICOM-01 & DICOM and DICOM-RT Gateway & 33 & T-INT \\
+Functional & FC-DICOM-01 & DICOM and DICOM-RT Gateway & 42 & T-INT \\
 \addlinespace[2pt]
-Functional & FC-TPS-01 & Existing TPS Adapter Framework & 33 & T-INT \\
+Functional & FC-TPS-01 & Existing TPS Adapter Framework & 42 & T-INT \\
 \addlinespace[2pt]
-Functional & FC-TERM-01 & Terminology, Units, Coordinates, and Nomenclature Service & 63 & T-DATA \\
+Functional & FC-TERM-01 & Terminology, Units, Coordinates, and Nomenclature Service & 66 & T-DATA \\
 \addlinespace[2pt]
-Functional & FC-OBJ-01 & Versioned Clinical Object Repository & 60 & T-DATA \\
+Functional & FC-OBJ-01 & Versioned Clinical Object Repository & 66 & T-DATA \\
 \addlinespace[2pt]
 Functional & FC-MGW-01 & Clinical Model Gateway & 26 & T-AI \\
 \addlinespace[2pt]
@@ -1512,31 +1625,35 @@ Functional & FC-MREG-01 & Model and Dependency Registry & 24 & T-AI \\
 \addlinespace[2pt]
 Functional & FC-MVAL-01 & Model Evaluation and Monitoring Service & 24 & T-AI \\
 \addlinespace[2pt]
-Functional & FC-JOB-01 & Atomic Job and Transaction Coordinator & 4 & T-OPS \\
+Functional & FC-JOB-01 & Atomic Job and Transaction Coordinator & 7 & T-OPS \\
 \addlinespace[2pt]
-Functional & FC-AUD-01 & Tamper-Evident Clinical Audit Ledger & 62 & T-DATA \\
+Functional & FC-AUD-01 & Tamper-Evident Clinical Audit Ledger & 77 & T-DATA \\
 \addlinespace[2pt]
-Non-functional & NFC-REQ-01 & Quality, Risk, and Trace Repository & 72 & T-SYS \\
+Functional & FC-ACC-01 & Accreditation Profile Runtime & 9 & T-GOV \\
 \addlinespace[2pt]
-Non-functional & NFC-ARCH-01 & Quality-Attribute Contract Registry & 72 & T-SYS \\
+Functional & FC-DOC-01 & Clinical Documentation and Temporal Gate & 9 & T-REV \\
 \addlinespace[2pt]
-Non-functional & NFC-CFG-01 & Controlled Threshold and Policy Registry & 72 & T-SYS \\
+Non-functional & NFC-REQ-01 & Quality, Risk, and Trace Repository & 75 & T-SYS \\
 \addlinespace[2pt]
-Non-functional & NFC-MON-01 & Quality and Safety Measurement Service & 72 & T-OPS \\
+Non-functional & NFC-ARCH-01 & Quality-Attribute Contract Registry & 75 & T-SYS \\
 \addlinespace[2pt]
-Non-functional & NFC-VV-01 & Non-Functional Verification Harness & 72 & T-VV \\
+Non-functional & NFC-CFG-01 & Controlled Threshold and Policy Registry & 75 & T-SYS \\
 \addlinespace[2pt]
-Non-functional & NFC-SAFE-01 & Deterministic Safety Enforcement Kernel & 34 & T-SYS \\
+Non-functional & NFC-MON-01 & Quality and Safety Measurement Service & 75 & T-OPS \\
+\addlinespace[2pt]
+Non-functional & NFC-VV-01 & Non-Functional Verification Harness & 75 & T-VV \\
+\addlinespace[2pt]
+Non-functional & NFC-SAFE-01 & Deterministic Safety Enforcement Kernel & 37 & T-SYS \\
 \addlinespace[2pt]
 Non-functional & NFC-STATE-01 & Safety-Critical State and Dependency Controller & 34 & T-SYS \\
 \addlinespace[2pt]
-Non-functional & NFC-IAM-01 & Identity, Authorization, and Separation-of-Duties Service & 26 & T-SEC \\
+Non-functional & NFC-IAM-01 & Identity, Authorization, and Separation-of-Duties Service & 29 & T-SEC \\
 \addlinespace[2pt]
 Non-functional & NFC-CTX-01 & Patient and Action Context Assurance & 30 & T-SYS \\
 \addlinespace[2pt]
-Non-functional & NFC-HFE-01 & Human-Factors Engineering and Competency Program & 19 & T-UX \\
+Non-functional & NFC-HFE-01 & Human-Factors Engineering and Competency Program & 22 & T-UX \\
 \addlinespace[2pt]
-Non-functional & NFC-UX-01 & Accessible Safety-Critical Presentation Layer & 27 & T-UX \\
+Non-functional & NFC-UX-01 & Accessible Safety-Critical Presentation Layer & 30 & T-UX \\
 \addlinespace[2pt]
 Non-functional & NFC-ALERT-01 & Warning, Notification, and Alert-Burden Controller & 20 & T-UX \\
 \addlinespace[2pt]
@@ -1554,41 +1671,43 @@ Non-functional & NFC-ART-01 & Artifact Trust and Integrity Verifier & 25 & T-SEC
 \addlinespace[2pt]
 Non-functional & NFC-SDL-01 & Secure Development, SBOM, and Supplier Assurance & 24 & T-SEC \\
 \addlinespace[2pt]
-Non-functional & NFC-AUD-01 & Protected Safety and Security Audit Ledger & 30 & T-DATA \\
+Non-functional & NFC-AUD-01 & Protected Safety and Security Audit Ledger & 33 & T-DATA \\
 \addlinespace[2pt]
-Non-functional & NFC-DATA-01 & Safety-Critical Data Integrity Service & 24 & T-DATA \\
+Non-functional & NFC-DATA-01 & Safety-Critical Data Integrity Service & 27 & T-DATA \\
+\addlinespace[2pt]
+Non-functional & NFC-CLM-01 & Accreditation Claim and Human-Authority Guard & 3 & T-GOV \\
 \addlinespace[2pt]
 Non-functional & NFC-INC-01 & Safety, Privacy, and Security Incident Workflow & 13 & T-OPS \\
 \addlinespace[2pt]
-Operational & OC-REQ-01 & Operational Requirements and Trace Repository & 69 & T-SYS \\
+Operational & OC-REQ-01 & Operational Requirements and Trace Repository & 75 & T-SYS \\
 \addlinespace[2pt]
-Operational & OC-GOV-01 & Clinical Governance and Decision Authority & 69 & T-GOV \\
+Operational & OC-GOV-01 & Clinical Governance and Decision Authority & 75 & T-GOV \\
 \addlinespace[2pt]
-Operational & OC-QMS-01 & Quality, Document, Change, and CAPA System & 69 & T-GOV \\
+Operational & OC-QMS-01 & Quality, Document, Change, and CAPA System & 75 & T-GOV \\
 \addlinespace[2pt]
-Operational & OC-CFG-01 & Operational Configuration and Release Registry & 69 & T-SYS \\
+Operational & OC-CFG-01 & Operational Configuration and Release Registry & 75 & T-SYS \\
 \addlinespace[2pt]
-Operational & OC-AUD-01 & Operational Evidence and Audit Repository & 69 & T-DATA \\
+Operational & OC-AUD-01 & Operational Evidence and Audit Repository & 75 & T-DATA \\
 \addlinespace[2pt]
-Operational & OC-VV-01 & Operational Acceptance and Exercise Harness & 69 & T-VV \\
+Operational & OC-VV-01 & Operational Acceptance and Exercise Harness & 75 & T-VV \\
 \addlinespace[2pt]
-Operational & OC-SCOPE-01 & Intended-Use and Scope Register & 28 & T-GOV \\
+Operational & OC-SCOPE-01 & Intended-Use and Scope Register & 31 & T-GOV \\
 \addlinespace[2pt]
-Operational & OC-MODE-01 & Operating-Mode and Environment Controller & 37 & T-OPS \\
+Operational & OC-MODE-01 & Operating-Mode and Environment Controller & 40 & T-OPS \\
 \addlinespace[2pt]
-Operational & OC-ACCESS-01 & Role, Access, and Periodic Review Administration & 22 & T-SEC \\
+Operational & OC-ACCESS-01 & Role, Access, and Periodic Review Administration & 28 & T-SEC \\
 \addlinespace[2pt]
-Operational & OC-REL-01 & Clinical Release Gate & 55 & T-GOV \\
+Operational & OC-REL-01 & Clinical Release Gate & 61 & T-GOV \\
 \addlinespace[2pt]
-Operational & OC-CHG-01 & Change, Impact, Migration, and Rollback Control & 51 & T-GOV \\
+Operational & OC-CHG-01 & Change, Impact, Migration, and Rollback Control & 57 & T-GOV \\
 \addlinespace[2pt]
-Operational & OC-MON-01 & Clinical Operations Monitoring Service & 25 & T-OPS \\
+Operational & OC-MON-01 & Clinical Operations Monitoring Service & 28 & T-OPS \\
 \addlinespace[2pt]
-Operational & OC-ALERT-01 & Operational Alert and Escalation Service & 24 & T-OPS \\
+Operational & OC-ALERT-01 & Operational Alert and Escalation Service & 27 & T-OPS \\
 \addlinespace[2pt]
-Operational & OC-INC-01 & Incident and Near-Miss Management & 22 & T-OPS \\
+Operational & OC-INC-01 & Incident and Near-Miss Management & 25 & T-OPS \\
 \addlinespace[2pt]
-Operational & OC-CAPA-01 & Corrective and Preventive Action Workflow & 22 & T-GOV \\
+Operational & OC-CAPA-01 & Corrective and Preventive Action Workflow & 25 & T-GOV \\
 \addlinespace[2pt]
 Operational & OC-BKP-01 & Backup, Restore, and Integrity Service & 21 & T-OPS \\
 \addlinespace[2pt]
@@ -1596,13 +1715,15 @@ Operational & OC-DOWN-01 & Downtime and Degraded-Operations Procedure & 21 & T-O
 \addlinespace[2pt]
 Operational & OC-REC-01 & Recovery and Continuity Exercise Program & 23 & T-OPS \\
 \addlinespace[2pt]
-Operational & OC-COMM-01 & Site Commissioning and Acceptance Program & 28 & T-VV \\
+Operational & OC-COMM-01 & Site Commissioning and Acceptance Program & 31 & T-VV \\
 \addlinespace[2pt]
-Operational & OC-TEST-01 & Reference, Challenge, and Regression Case Library & 31 & T-VV \\
+Operational & OC-TEST-01 & Reference, Challenge, and Regression Case Library & 34 & T-VV \\
 \addlinespace[2pt]
-Operational & OC-ANOM-01 & Anomaly and Deviation Disposition Workflow & 29 & T-VV \\
+Operational & OC-ANOM-01 & Anomaly and Deviation Disposition Workflow & 32 & T-VV \\
 \addlinespace[2pt]
-Operational & OC-REV-01 & Periodic Review and Revalidation Board & 31 & T-GOV \\
+Operational & OC-REV-01 & Periodic Review and Revalidation Board & 37 & T-GOV \\
+\addlinespace[2pt]
+Operational & OC-ACC-01 & Accreditation Evidence and Lifecycle Program & 6 & T-GOV \\
 \addlinespace[2pt]
 \end{longtable}
 \end{scriptsize}
@@ -1620,6 +1741,6 @@ Structural pass confirms that every categorized child has a complete component s
 \item jurisdiction-specific regulatory classification, quality-system obligations, applicable standards editions, and release evidence.
 \end{itemize}
 
-\textbf{Bottom line. }The category-scoped components and accountable teams provide a complete realization path from all 333 sub-requirements to an integrated, DICOM-connected, human-supervised treatment-planning support system.
+\textbf{Bottom line. }The category-scoped components and accountable teams provide a complete realization path from all 357 sub-requirements to an integrated, DICOM-connected, human-supervised treatment-planning support system.
 
 \end{document}
