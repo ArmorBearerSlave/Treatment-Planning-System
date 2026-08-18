@@ -109,8 +109,12 @@
 }
 
 \newcommand{\NLTitleBlock}[5]{%
-  \hypersetup{pageanchor=false}%
-  \begin{titlepage}
+  \ifdefined\NLTPSCombinedDocument
+    \clearpage
+  \else
+    \hypersetup{pageanchor=false}%
+    \begin{titlepage}
+  \fi
   \thispagestyle{empty}
   \vspace*{0.55in}
   {\large\bfseries\color{NLGOLD}#1\par}
@@ -124,7 +128,11 @@
   \begin{nlnotice}{STATUS AND SAFETY NOTICE}
   #5
   \end{nlnotice}
-  \end{titlepage}
-  \hypersetup{pageanchor=true}%
-  \pagenumbering{roman}%
+  \ifdefined\NLTPSCombinedDocument
+    \clearpage
+  \else
+    \end{titlepage}
+    \hypersetup{pageanchor=true}%
+    \pagenumbering{roman}%
+  \fi
 }
