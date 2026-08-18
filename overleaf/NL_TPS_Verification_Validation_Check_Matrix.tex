@@ -1,6 +1,10 @@
 \documentclass[11pt,letterpaper]{article}
 \usepackage{nl_tps_common}
 \hypersetup{pdftitle={NL-TPS Verification and Validation Check Matrix},pdfsubject={NL-TPS controlled documentation}}
+\makeatletter
+\renewcommand{\@pnumwidth}{3.0em}
+\renewcommand{\@tocrmarg}{4.0em}
+\makeatother
 \begin{document}
 \NLSetPageStyle{NL-TPS VERIFICATION AND VALIDATION CHECK MATRIX}{2,144 Planned Checks Across Requirements, Interfaces, Components, and Machine QA}
 \NLTitleBlock{VERIFICATION AND VALIDATION SPECIFICATION}{Verification and Validation Check Matrix}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
@@ -8,7 +12,7 @@
 \NLMeta{Document version}{0.1 - Proposed baseline}
 \NLMeta{Date}{18 August 2026}
 \NLMeta{Status}{Discussion Draft - Planned checks, not executed results}
-\NLMeta{Coverage}{2,144 unique checks: 1,940 requirement checks and 204 component or subassembly checks}
+\NLMeta{Coverage}{2,144 unique checks: 1,952 requirement or interface checks and 192 component or subassembly checks}
 \end{minipage}}{This document specifies required checks. It does not claim that verification, validation, commissioning, clinical evaluation, acceptance, or release has occurred. A check becomes PASS only after controlled execution, attributable review, anomaly disposition, and approval by the required independent and clinical authorities.}
 
 \tableofcontents
@@ -140,7 +144,7 @@ Every executed check record shall include: immutable check and entity IDs; paren
 Each HLR check verifies the parent outcome in addition to child closure and validates the integrated clinical or operational result.
 \subsection{Governance, intended use, and scope (GOV) - 7 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -172,7 +176,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Safety boundaries and human authority (SAF) - 10 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -210,7 +214,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Natural-language and voice interaction (NLI) - 8 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -244,7 +248,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Evidence and literature governance (EVD) - 8 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -278,7 +282,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Clinical context, imaging, registration, and contours (CLN) - 9 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -314,7 +318,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Treatment-plan generation and calculation (PLN) - 12 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -356,7 +360,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Plan review, selection, QA, and transfer (REV) - 9 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -392,7 +396,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Data, interoperability, provenance, and audit (DAT) - 10 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -430,7 +434,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{AI and inference-model lifecycle (AIM) - 8 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -464,7 +468,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Human factors, usability, and competency (HFE) - 6 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -494,7 +498,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Privacy, cybersecurity, and secure development (SEC) - 8 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -528,7 +532,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Clinical operations, monitoring, and resilience (OPS) - 7 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -560,7 +564,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Verification, commissioning, release, and change control (VAL) - 9 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -596,7 +600,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 \end{scriptsize}
 \subsection{Accreditation-profile and clinical-quality governance (ACC) - 8 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -632,7 +636,7 @@ Each HLR check verifies the parent outcome in addition to child closure and vali
 Each detailed child receives a direct executable or inspectable check through its allocated components; source and F/NF/O alias IDs share one result.
 \subsection{Governance, intended use, and scope (GOV) - 21 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -692,7 +696,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Safety boundaries and human authority (SAF) - 30 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -770,7 +774,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Natural-language and voice interaction (NLI) - 24 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -836,7 +840,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Evidence and literature governance (EVD) - 24 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -902,7 +906,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Clinical context, imaging, registration, and contours (CLN) - 27 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -974,7 +978,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Treatment-plan generation and calculation (PLN) - 36 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1064,7 +1068,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Plan review, selection, QA, and transfer (REV) - 27 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1136,7 +1140,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Data, interoperability, provenance, and audit (DAT) - 30 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1214,7 +1218,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{AI and inference-model lifecycle (AIM) - 24 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1280,7 +1284,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Human factors, usability, and competency (HFE) - 18 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1334,7 +1338,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Privacy, cybersecurity, and secure development (SEC) - 24 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1400,7 +1404,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Clinical operations, monitoring, and resilience (OPS) - 21 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1460,7 +1464,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Verification, commissioning, release, and change control (VAL) - 27 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1532,7 +1536,7 @@ Each detailed child receives a direct executable or inspectable check through it
 \end{scriptsize}
 \subsection{Accreditation-profile and clinical-quality governance (ACC) - 24 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1600,7 +1604,7 @@ Each detailed child receives a direct executable or inspectable check through it
 Each HLIR check covers the paired producer-consumer contract, integrated route, assigned interface families, and all three SIR children.
 \subsection{Governance, intended use, and scope (GOV) - 21 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1660,7 +1664,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Safety boundaries and human authority (SAF) - 30 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1738,7 +1742,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Natural-language and voice interaction (NLI) - 24 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1804,7 +1808,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Evidence and literature governance (EVD) - 24 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1870,7 +1874,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Clinical context, imaging, registration, and contours (CLN) - 27 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -1942,7 +1946,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Treatment-plan generation and calculation (PLN) - 36 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -2032,7 +2036,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Plan review, selection, QA, and transfer (REV) - 27 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -2104,7 +2108,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Data, interoperability, provenance, and audit (DAT) - 30 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -2182,7 +2186,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{AI and inference-model lifecycle (AIM) - 24 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -2248,7 +2252,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Human factors, usability, and competency (HFE) - 18 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -2302,7 +2306,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Privacy, cybersecurity, and secure development (SEC) - 24 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -2368,7 +2372,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Clinical operations, monitoring, and resilience (OPS) - 21 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -2428,7 +2432,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Verification, commissioning, release, and change control (VAL) - 27 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -2500,7 +2504,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 \end{scriptsize}
 \subsection{Accreditation-profile and clinical-quality governance (ACC) - 24 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -2568,7 +2572,7 @@ Each HLIR check covers the paired producer-consumer contract, integrated route, 
 Each SIR check verifies its assigned realization package at every relevant boundary and validates its contribution within the parent route.
 \subsection{Governance, intended use, and scope (GOV) - 63 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -2712,7 +2716,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Safety boundaries and human authority (SAF) - 90 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -2910,7 +2914,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Natural-language and voice interaction (NLI) - 72 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -3072,7 +3076,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Evidence and literature governance (EVD) - 72 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -3234,7 +3238,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Clinical context, imaging, registration, and contours (CLN) - 81 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -3414,7 +3418,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Treatment-plan generation and calculation (PLN) - 108 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -3648,7 +3652,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Plan review, selection, QA, and transfer (REV) - 81 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -3828,7 +3832,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Data, interoperability, provenance, and audit (DAT) - 90 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -4026,7 +4030,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{AI and inference-model lifecycle (AIM) - 72 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -4188,7 +4192,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Human factors, usability, and competency (HFE) - 54 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -4314,7 +4318,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Privacy, cybersecurity, and secure development (SEC) - 72 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -4476,7 +4480,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Clinical operations, monitoring, and resilience (OPS) - 63 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -4620,7 +4624,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Verification, commissioning, release, and change control (VAL) - 81 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -4800,7 +4804,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \end{scriptsize}
 \subsection{Accreditation-profile and clinical-quality governance (ACC) - 72 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -4963,7 +4967,7 @@ Each SIR check verifies its assigned realization package at every relevant bound
 \section{Core component V\&V checks}
 One direct check is assigned to each of the 45 core component responsibilities.
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -5072,7 +5076,7 @@ One direct check is assigned to each of the 45 core component responsibilities.
 \section{Interface component V\&V checks}
 One direct check is assigned to each of the 61 interface component responsibilities.
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -5213,7 +5217,7 @@ One direct check is assigned to each of the 61 interface component responsibilit
 \section{F/NF/O category component V\&V checks}
 One direct check is assigned to each of the 78 category-scoped component responsibilities.
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -5389,7 +5393,7 @@ One direct check is assigned to each of the 78 category-scoped component respons
 These 56 checks supplement the 2,088-entity controlled baseline and trace MQA-PKG-01 into the same independent V\&V and clinical-governance process. They do not create automated machine-readiness or return-to-service authority.
 \subsection{MQA realization requirements - 12 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -5431,7 +5435,7 @@ These 56 checks supplement the 2,088-entity controlled baseline and trace MQA-PK
 \end{scriptsize}
 \subsection{MQA sub-requirements - 36 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
@@ -5521,7 +5525,7 @@ These 56 checks supplement the 2,088-entity controlled baseline and trace MQA-PK
 \end{scriptsize}
 \subsection{MQA package subassemblies - 8 checks}
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.20\textwidth}L{0.23\textwidth}L{0.085\textwidth}@{}}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.24\textwidth}L{0.19\textwidth}L{0.225\textwidth}L{0.08\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Check / entity} & \textbf{Verification check} & \textbf{Validation check} & \textbf{Acceptance evidence} & \textbf{Owner / method / gate} \\
 \midrule
