@@ -4,7 +4,7 @@
 \graphicspath{{figures/}{overleaf/figures/}}
 \hypersetup{
   pdftitle={NL-TPS Controlled Documentation Suite},
-  pdfsubject={ConOps, high-level requirements, high-level and sub-interface requirements, functional sub-requirements, and component realization}
+  pdfsubject={ConOps, high-level requirements, interface requirements, sub-requirements, and functional and interface component realization}
 }
 \makeatletter
 \renewcommand{\@pnumwidth}{2.2em}
@@ -29,13 +29,13 @@
 }
 
 \begin{document}
-\NLSetPageStyle{NL-TPS DOCUMENTATION SUITE}{ConOps through Component Realization - Version 0.1}
+\NLSetPageStyle{NL-TPS DOCUMENTATION SUITE}{ConOps through Functional and Interface Component Realization - Version 0.1}
 \NLTitleBlock{CONTROLLED DOCUMENTATION SUITE}{Natural-Language Treatment Planning System}{ConOps, requirements, interfaces, and component realization}{\begin{minipage}{0.95\textwidth}
 \NLMeta{Suite version}{0.1 - Discussion Draft}
 \NLMeta{Date}{18 August 2026}
-\NLMeta{Included documents}{6}
-\NLMeta{Trace chain}{ConOps $\rightarrow$ 111 HLRs $\rightarrow$ 333 HLIRs $\rightarrow$ 999 SIRs; parallel 333 functional sub-requirements $\rightarrow$ 41 components and 15 teams}
-\end{minipage}}{This file compiles the six separately controlled NL-TPS documents into one review copy. The constituent source files and standalone Overleaf entry points remain authoritative and independently compilable. Nothing in this combined view authorizes clinical use.}
+\NLMeta{Included documents}{7}
+\NLMeta{Trace chain}{ConOps $\rightarrow$ 111 HLRs $\rightarrow$ 333 HLIRs $\rightarrow$ 999 SIRs $\rightarrow$ 57 interface components; parallel 333 functional sub-requirements $\rightarrow$ 41 functional components; 15 teams}
+\end{minipage}}{This file compiles the seven separately controlled NL-TPS documents into one review copy. The constituent source files and standalone Overleaf entry points remain authoritative and independently compilable. Nothing in this combined view authorizes clinical use.}
 
 \tableofcontents
 \clearpage
@@ -46,7 +46,8 @@
 \NLTPSIncludeDocument{Document II: High-Level Requirements}{overleaf/NL_TPS_High_Level_Requirements.tex}{hlr}
 \NLTPSIncludeDocument{Document III: High-Level Interface Requirements}{overleaf/NL_TPS_High_Level_Interface_Requirements.tex}{interfaces}
 \NLTPSIncludeDocument{Document IV: Sub-Interface Requirements}{overleaf/NL_TPS_Sub_Interface_Requirements.tex}{subinterfaces}
-\NLTPSIncludeDocument{Document V: Detailed Functional Sub-Requirements}{overleaf/NL_TPS_Detailed_Requirements.tex}{subreq}
-\NLTPSIncludeDocument{Document VI: Component and Team Realization}{overleaf/NL_TPS_Component_Realization.tex}{components}
+\NLTPSIncludeDocument{Document V: Interface Component and Team Realization}{overleaf/NL_TPS_Interface_Component_Realization.tex}{interfacecomponents}
+\NLTPSIncludeDocument{Document VI: Detailed Functional Sub-Requirements}{overleaf/NL_TPS_Detailed_Requirements.tex}{subreq}
+\NLTPSIncludeDocument{Document VII: Functional Component and Team Realization}{overleaf/NL_TPS_Component_Realization.tex}{components}
 
 \end{document}
