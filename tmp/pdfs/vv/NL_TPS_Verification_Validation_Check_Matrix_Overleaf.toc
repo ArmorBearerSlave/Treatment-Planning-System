@@ -1,0 +1,76 @@
+\contentsline {section}{Document control}{1}{Doc-Start}%
+\contentsline {section}{Executive summary}{1}{table.1}%
+\contentsline {section}{\numberline {1}Purpose, scope, and governing principles}{1}{section.1}%
+\contentsline {section}{\numberline {2}Coverage and roll-up architecture}{2}{section.2}%
+\contentsline {section}{\numberline {3}Methods, independence, and execution record}{2}{section.3}%
+\contentsline {section}{\numberline {4}Pass, fail, block, and change rules}{3}{section.4}%
+\contentsline {section}{\numberline {5}System high-level requirement V\&V checks}{3}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Governance, intended use, and scope (GOV) - 7 checks}{3}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Safety boundaries and human authority (SAF) - 10 checks}{5}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Natural-language and voice interaction (NLI) - 8 checks}{7}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Evidence and literature governance (EVD) - 8 checks}{9}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Clinical context, imaging, registration, and contours (CLN) - 9 checks}{11}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Treatment-plan generation and calculation (PLN) - 12 checks}{13}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Plan review, selection, QA, and transfer (REV) - 9 checks}{15}{subsection.5.7}%
+\contentsline {subsection}{\numberline {5.8}Data, interoperability, provenance, and audit (DAT) - 10 checks}{17}{subsection.5.8}%
+\contentsline {subsection}{\numberline {5.9}AI and inference-model lifecycle (AIM) - 8 checks}{20}{subsection.5.9}%
+\contentsline {subsection}{\numberline {5.10}Human factors, usability, and competency (HFE) - 6 checks}{21}{subsection.5.10}%
+\contentsline {subsection}{\numberline {5.11}Privacy, cybersecurity, and secure development (SEC) - 8 checks}{23}{subsection.5.11}%
+\contentsline {subsection}{\numberline {5.12}Clinical operations, monitoring, and resilience (OPS) - 7 checks}{25}{subsection.5.12}%
+\contentsline {subsection}{\numberline {5.13}Verification, commissioning, release, and change control (VAL) - 9 checks}{26}{subsection.5.13}%
+\contentsline {subsection}{\numberline {5.14}Accreditation-profile and clinical-quality governance (ACC) - 8 checks}{28}{subsection.5.14}%
+\contentsline {section}{\numberline {6}Detailed sub-requirement V\&V checks}{30}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Governance, intended use, and scope (GOV) - 21 checks}{30}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Safety boundaries and human authority (SAF) - 30 checks}{35}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Natural-language and voice interaction (NLI) - 24 checks}{41}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Evidence and literature governance (EVD) - 24 checks}{47}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Clinical context, imaging, registration, and contours (CLN) - 27 checks}{52}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}Treatment-plan generation and calculation (PLN) - 36 checks}{58}{subsection.6.6}%
+\contentsline {subsection}{\numberline {6.7}Plan review, selection, QA, and transfer (REV) - 27 checks}{67}{subsection.6.7}%
+\contentsline {subsection}{\numberline {6.8}Data, interoperability, provenance, and audit (DAT) - 30 checks}{74}{subsection.6.8}%
+\contentsline {subsection}{\numberline {6.9}AI and inference-model lifecycle (AIM) - 24 checks}{81}{subsection.6.9}%
+\contentsline {subsection}{\numberline {6.10}Human factors, usability, and competency (HFE) - 18 checks}{86}{subsection.6.10}%
+\contentsline {subsection}{\numberline {6.11}Privacy, cybersecurity, and secure development (SEC) - 24 checks}{91}{subsection.6.11}%
+\contentsline {subsection}{\numberline {6.12}Clinical operations, monitoring, and resilience (OPS) - 21 checks}{96}{subsection.6.12}%
+\contentsline {subsection}{\numberline {6.13}Verification, commissioning, release, and change control (VAL) - 27 checks}{101}{subsection.6.13}%
+\contentsline {subsection}{\numberline {6.14}Accreditation-profile and clinical-quality governance (ACC) - 24 checks}{108}{subsection.6.14}%
+\contentsline {section}{\numberline {7}High-level interface requirement V\&V checks}{114}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Governance, intended use, and scope (GOV) - 21 checks}{114}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Safety boundaries and human authority (SAF) - 30 checks}{119}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Natural-language and voice interaction (NLI) - 24 checks}{125}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Evidence and literature governance (EVD) - 24 checks}{130}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}Clinical context, imaging, registration, and contours (CLN) - 27 checks}{135}{subsection.7.5}%
+\contentsline {subsection}{\numberline {7.6}Treatment-plan generation and calculation (PLN) - 36 checks}{140}{subsection.7.6}%
+\contentsline {subsection}{\numberline {7.7}Plan review, selection, QA, and transfer (REV) - 27 checks}{148}{subsection.7.7}%
+\contentsline {subsection}{\numberline {7.8}Data, interoperability, provenance, and audit (DAT) - 30 checks}{155}{subsection.7.8}%
+\contentsline {subsection}{\numberline {7.9}AI and inference-model lifecycle (AIM) - 24 checks}{161}{subsection.7.9}%
+\contentsline {subsection}{\numberline {7.10}Human factors, usability, and competency (HFE) - 18 checks}{166}{subsection.7.10}%
+\contentsline {subsection}{\numberline {7.11}Privacy, cybersecurity, and secure development (SEC) - 24 checks}{170}{subsection.7.11}%
+\contentsline {subsection}{\numberline {7.12}Clinical operations, monitoring, and resilience (OPS) - 21 checks}{175}{subsection.7.12}%
+\contentsline {subsection}{\numberline {7.13}Verification, commissioning, release, and change control (VAL) - 27 checks}{180}{subsection.7.13}%
+\contentsline {subsection}{\numberline {7.14}Accreditation-profile and clinical-quality governance (ACC) - 24 checks}{186}{subsection.7.14}%
+\contentsline {section}{\numberline {8}Sub-interface requirement V\&V checks}{191}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Governance, intended use, and scope (GOV) - 63 checks}{191}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Safety boundaries and human authority (SAF) - 90 checks}{204}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Natural-language and voice interaction (NLI) - 72 checks}{222}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Evidence and literature governance (EVD) - 72 checks}{237}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}Clinical context, imaging, registration, and contours (CLN) - 81 checks}{252}{subsection.8.5}%
+\contentsline {subsection}{\numberline {8.6}Treatment-plan generation and calculation (PLN) - 108 checks}{268}{subsection.8.6}%
+\contentsline {subsection}{\numberline {8.7}Plan review, selection, QA, and transfer (REV) - 81 checks}{290}{subsection.8.7}%
+\contentsline {subsection}{\numberline {8.8}Data, interoperability, provenance, and audit (DAT) - 90 checks}{306}{subsection.8.8}%
+\contentsline {subsection}{\numberline {8.9}AI and inference-model lifecycle (AIM) - 72 checks}{324}{subsection.8.9}%
+\contentsline {subsection}{\numberline {8.10}Human factors, usability, and competency (HFE) - 54 checks}{339}{subsection.8.10}%
+\contentsline {subsection}{\numberline {8.11}Privacy, cybersecurity, and secure development (SEC) - 72 checks}{350}{subsection.8.11}%
+\contentsline {subsection}{\numberline {8.12}Clinical operations, monitoring, and resilience (OPS) - 63 checks}{365}{subsection.8.12}%
+\contentsline {subsection}{\numberline {8.13}Verification, commissioning, release, and change control (VAL) - 81 checks}{377}{subsection.8.13}%
+\contentsline {subsection}{\numberline {8.14}Accreditation-profile and clinical-quality governance (ACC) - 72 checks}{394}{subsection.8.14}%
+\contentsline {section}{\numberline {9}Core component V\&V checks}{408}{section.9}%
+\contentsline {section}{\numberline {10}Interface component V\&V checks}{420}{section.10}%
+\contentsline {section}{\numberline {11}F/NF/O category component V\&V checks}{436}{section.11}%
+\contentsline {section}{\numberline {12}Machine-QA realization V\&V checks}{456}{section.12}%
+\contentsline {subsection}{\numberline {12.1}MQA realization requirements - 12 checks}{456}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}MQA sub-requirements - 36 checks}{458}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}MQA package subassemblies - 8 checks}{466}{subsection.12.3}%
+\contentsline {section}{\numberline {13}Execution sequence and release gates}{468}{section.13}%
+\contentsline {section}{\numberline {14}Structural completeness audit}{469}{section.14}%
+\contentsline {section}{\numberline {15}Definition of done}{469}{section.15}%

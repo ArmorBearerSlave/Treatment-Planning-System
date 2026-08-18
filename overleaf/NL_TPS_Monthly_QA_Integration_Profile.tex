@@ -1,0 +1,674 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage{nl_tps_common}
+\hypersetup{pdftitle={NL-TPS Machine QA Evidence and Readiness Integration Profile},pdfsubject={NL-TPS controlled documentation}}
+\begin{document}
+\NLSetPageStyle{NL-TPS MACHINE QA INTEGRATION PROFILE}{Monthly, Daily, Annual, Commissioning, and Readiness Evidence}
+\NLTitleBlock{DOMAIN REALIZATION PROFILE}{Machine QA Evidence and Readiness\\Integration}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
+\NLMeta{Source baseline}{Controlled NL-TPS suite v0.1; local Monthly QA implementation snapshot reviewed 18 August 2026}
+\NLMeta{Profile identifier}{MQA-PKG-01}
+\NLMeta{Profile version}{0.1 - Proposed baseline}
+\NLMeta{Date}{18 August 2026}
+\NLMeta{Status}{Discussion Draft - Not for clinical use}
+\NLMeta{Coverage}{12 realization requirements; 36 sub-requirements; 8 subassemblies; 12 principal risks; 8 trade-off decisions}
+\end{minipage}}{This profile defines how machine quality-assurance evidence may support NL-TPS readiness decisions. It does not approve a QA procedure, tolerance, commissioning reference, machine, treatment plan, or return to service. Qualified medical physicist ownership, approved institutional procedures, independent review, and existing treatment-delivery controls remain mandatory.}
+
+\tableofcontents
+\clearpage
+\ifdefined\NLTPSCombinedDocument\else\pagenumbering{arabic}\fi
+
+\NLFrontMatterSection{Document control}
+
+\begin{small}
+\begin{longtable}{@{}L{0.18\textwidth}L{0.74\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Value} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Value} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Document owner & NL-TPS Program; technical ownership assigned to the Qualified Medical Physicist and the Verification and Validation team \\
+\addlinespace[2pt]
+Source implementation & Local \texttt{Monthly QA} directory containing controlled-source extractors, workbooks, local retrieval corpora, normalized datasets, and the HUPTI QA Explorer prototype \\
+\addlinespace[2pt]
+Authority boundary & Approved departmental procedures, commissioned configurations, source QA records, and attributable QMP approvals remain authoritative \\
+\addlinespace[2pt]
+Change authority & Clinical governance, QMP technical authority, quality management, systems engineering, security/privacy, and independent verification \\
+\addlinespace[2pt]
+Review trigger & Procedure or tolerance revision; machine, detector, configuration, maintenance, software, extractor, schema, interface, or deployment change; incident; failed QA; source-integrity event; or scheduled review \\
+\addlinespace[2pt]
+Supersession & None \\
+\end{longtable}
+\end{small}
+
+\NLFrontMatterSection{Executive summary}
+
+The reviewed Monthly QA implementation is a useful evidence and visualization prototype. It contains read-only extractors, longitudinal QA records, detector-specific provenance, commissioning candidates, Daily QA protocol-era separation, explicit missing-data behavior, local retrieval corpora, and a modern web explorer. Those capabilities can accelerate NL-TPS realization when they are placed behind the suite's existing governance, evidence, safety, security, state, audit, operations, and verification controls.
+
+The implementation shall enter the NL-TPS as \textbf{MQA-PKG-01 Machine QA Evidence and Readiness Integration}, a domain package composed of existing controlled components. It shall not become a second planning authority, a replacement for source QA records, an automated QMP, or a retrieval-driven pass/fail engine. A signed, versioned readiness assertion may be consumed by the deterministic safety kernel only after the applicable QA evidence, approved rule, configuration, review, and return-to-service state have been reconciled.
+
+\begin{nlnotice}{NON-NEGOTIABLE CLINICAL BOUNDARY}
+The machine-QA subsystem may collect, normalize, display, compare, route, and preserve evidence. It may calculate a deterministic comparison using an approved computable rule. It shall not approve a procedure or tolerance, sign a QA result, waive a discrepancy, declare a machine safe, authorize return to service, approve a plan, or command treatment delivery. Retrieval and generative models shall not perform pass/fail or readiness adjudication.
+\end{nlnotice}
+
+\section{Purpose and scope}
+
+This profile defines the controlled integration of Daily, Monthly, Annual, commissioning, maintenance-context, detector, and supporting QA evidence into the NL-TPS. It translates the reviewed prototype into requirements, interfaces, component allocations, data objects, workflows, risks, trade-off decisions, verification obligations, and implementation phases.
+
+\subsection{In scope}
+
+\begin{itemize}
+\item Read-only acquisition from approved workbooks, reports, databases, DICOM objects, detector exports, and other commissioned source adapters.
+\item Canonical machine-QA observations with explicit units, configuration, protocol, tolerance, uncertainty, provenance, and lifecycle state.
+\item Longitudinal review, source drill-down, missing-evidence identification, protocol-era separation, and pre/post-maintenance comparison.
+\item QMP-controlled procedure, tolerance, reference, deviation, corrective-action, approval, expiry, and return-to-service workflows.
+\item Publication of a minimal signed machine-readiness assertion to the NL-TPS safety and proton-profile services.
+\item Natural-language query and draft-workflow support within the existing typed-intent and confirmation boundary.
+\item DICOM and external-TPS association only through commissioned, allowlisted interfaces.
+\end{itemize}
+
+\subsection{Out of scope}
+
+\begin{itemize}
+\item Autonomous approval of measurements, tolerances, procedures, references, deviations, or machine readiness.
+\item Substitution of statistical models, retrieval results, dashboards, or normalized data for authoritative source records.
+\item Silent conversion of a commissioning candidate, embedded expected value, historical baseline, or literature value into an approved clinical tolerance.
+\item Fabrication or imputation of missing measurements, dates, configurations, evidence files, or approvals.
+\item Direct treatment delivery, machine control, plan approval, QA waiver, or return-to-service action by AI or a service account.
+\end{itemize}
+
+\section{Reviewed implementation baseline}
+
+\subsection{Validated snapshot}
+
+The local prototype's built-in validators completed successfully for the following normalized snapshot. Counts describe the reviewed implementation and are not permanent clinical acceptance thresholds.
+
+\begin{small}
+\begin{longtable}{@{}L{0.24\textwidth}L{0.20\textwidth}L{0.46\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Domain} & \textbf{Validated snapshot} & \textbf{Interpretation} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Domain} & \textbf{Validated snapshot} & \textbf{Interpretation} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Monthly and archival & 46 metric definitions; 6,579 observations; 2011--2026 & Longitudinal GTR4/GTR5 records with explicit unavailable periods and no missing-month imputation \\
+\addlinespace[2pt]
+Detector evidence & 5,204 observations; 33 evidence sources & Matrixx, MLIC, and Lynx measurements with source-level locators; two accepted prototype cases lack located raw Matrixx files \\
+\addlinespace[2pt]
+Annual QA & 2,922 observations & 2024--2025 records retain acquisition dates, reported replicates, detector configuration, and annual-report links \\
+\addlinespace[2pt]
+Daily QA & 7,061 runs; 155,704 observations; 51 metrics & Legacy Access and Machine QA PDF protocol eras remain separate; a known GTR4 structured gap remains visible \\
+\addlinespace[2pt]
+Commissioning & 21 reference sets; 304 points & Four comparison-ready candidate mappings; thirteen method-approval-required mappings; four inventory-only mappings; no approved reference set \\
+\addlinespace[2pt]
+Local retrieval & GTR4: 3,587 files and 13,057 chunks; GTR5: 4,468 files and 19,379 chunks & Local TF-IDF and latent semantic retrieval with SHA-256 manifests, source locators, privacy controls, and zero reported extraction errors \\
+\end{longtable}
+\end{small}
+
+\subsection{Reusable strengths}
+
+\begin{itemize}
+\item Source-read-only and idempotent extraction intent.
+\item Explicit differentiation among measured values, embedded expected values, tolerances, and commissioning candidates.
+\item Source workbook, worksheet, cell, PDF page, raw-directory, raw-file, detector, date, and calculation-method locators.
+\item Preservation of repeated observations and configuration facets rather than silent averaging.
+\item Protocol-era separation and explicit structured-data gaps.
+\item Candidate, method-approval-required, and inventory-only commissioning states.
+\item Offline retrieval, source hashing, DICOM identifier redaction, excluded PLD patient columns, and metadata-only handling of proprietary binaries.
+\item Deterministic statistical functions and clear exploratory-use labeling for normal and Monte Carlo views.
+\end{itemize}
+
+\subsection{Gaps requiring controlled redesign}
+
+\begin{itemize}
+\item Application authentication, role authorization, electronic approval, immutable audit logging, deviation/CAPA workflow, and return-to-service gating are not implemented in the prototype.
+\item Large static JSON files are bundled with application code; Monthly/Annual data are passed to client components rather than queried through an authorized server boundary.
+\item Evidence records retain paths and filenames but are not directly bound to the RAG manifests' source hashes.
+\item Source paths, release expectations, record counts, transformation exceptions, and some reference mappings are encoded in scripts.
+\item Browser workbook loading accepts broad file extensions and performs only limited structural validation without a clinical schema signature, file-size limit, malware control, or resource sandbox.
+\item The health endpoint proves process liveness but not data integrity, evidence currency, configuration compatibility, or dependency readiness.
+\item The repository-wide lint command includes temporary browser-profile content; application-scoped source lint succeeds, but the release command is not currently reproducible without an ignore correction.
+\end{itemize}
+
+\section{Authority and information model}
+
+\subsection{Authority classes}
+
+\begin{small}
+\begin{longtable}{@{}L{0.18\textwidth}L{0.29\textwidth}L{0.25\textwidth}L{0.20\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Class} & \textbf{Examples} & \textbf{Permitted use} & \textbf{Prohibited use} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Class} & \textbf{Examples} & \textbf{Permitted use} & \textbf{Prohibited use} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Institutional procedure & Approved QA SOP, tolerance table, escalation and return-to-service policy & Generate approved computable rules within scope and effective dates & Infer policy from an unapproved template or dashboard \\
+\addlinespace[2pt]
+Authoritative QA record & Signed/final report, controlled workbook, approved database record, retained raw acquisition & Establish what was measured and reviewed & Replace with a retrieval chunk, screenshot, or recalculated display \\
+\addlinespace[2pt]
+Commissioning evidence & Approved configuration and reference measurement package & Support a scoped reference after QMP approval & Treat a candidate or inventory item as approved \\
+\addlinespace[2pt]
+Technical guidance & AAPM TG-224 and other approved technical sources & Support procedure design, uncertainty, and validation & Automatically create a local tolerance or release rule \\
+\addlinespace[2pt]
+Retrieval evidence & Indexed source text, metadata, and search results & Discovery, navigation, completeness review, and citation & Numerical calculation, pass/fail, readiness, signature, or approval \\
+\addlinespace[2pt]
+Derived analytics & Trends, statistics, distributions, simulations, and comparisons & Review support and anomaly screening & Override source status or establish clinical acceptability \\
+\end{longtable}
+\end{small}
+
+\subsection{Canonical objects}
+
+\begin{small}
+\begin{longtable}{@{}L{0.22\textwidth}L{0.68\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Object} & \textbf{Required responsibility} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Object} & \textbf{Required responsibility} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+MQA Source Object & Immutable identity, source type, authoritative-system status, location, size, source hash, acquisition and modification times, sensitivity, retention, and access policy \\
+\addlinespace[2pt]
+MQA Import Run & Job identity, source scope, adapter and dependency versions, configuration, start/end time, counts, warnings, errors, reconciliation, reviewer, and output manifest \\
+\addlinespace[2pt]
+MQA Protocol Version & Controlled identifier, revision, owner, authority, scope, machine/configuration applicability, effective interval, measurement method, required evidence, escalation, review, and supersession \\
+\addlinespace[2pt]
+MQA Metric Definition & Stable metric identity, measurand, terminology, units, axes/configuration facets, calculation, rounding, display, and compatibility rules \\
+\addlinespace[2pt]
+MQA Tolerance Rule & Rule identity, comparator, expected or baseline source, limits, units, uncertainty treatment, scope, authority, approval, effective interval, exception policy, and tests \\
+\addlinespace[2pt]
+MQA Execution & Site, room, machine, beamline, configuration, QA program, protocol, scheduled/due state, acquisition time, operator, maintenance context, equipment, and source package \\
+\addlinespace[2pt]
+MQA Observation & Execution, metric, value, raw value, expected value, units, uncertainty reference, result, source locator, calculation lineage, review state, and anomaly links \\
+\addlinespace[2pt]
+MQA Deviation/CAPA & Affected observations and readiness scope, containment, investigation, impact, corrective/preventive action, effectiveness review, owners, approvals, and closure \\
+\addlinespace[2pt]
+MQA Readiness Assertion & Machine/configuration scope, normal/hold/conditional/released/expired state, applicable evidence and rules, unresolved conditions, QMP signature, effective interval, integrity value, and supersession \\
+\end{longtable}
+\end{small}
+
+\section{Architecture and interface allocation}
+
+\subsection{Target data flow}
+
+The target architecture uses an asynchronous evidence-ingestion path and a minimal synchronous readiness path:
+
+\begin{enumerate}
+\item Approved source adapters read controlled archives without modifying them.
+\item C-JOB-01 records an atomic import run and C-SEC-01 applies the approved parsing and privacy boundary.
+\item C-TERM-01 and C-RULE-01 validate terminology, units, transformations, applicability, and approved comparison rules.
+\item C-OBJ-01 stores immutable canonical versions; C-PROV-01 links source, transform, configuration, review, and downstream impact; C-AUD-01 records actions and decisions.
+\item C-UX-01 presents observations, gaps, source evidence, trends, and review tasks to authorized users.
+\item C-IAM-01, C-STATE-01, C-QMS-01, and C-INC-01 control review, approval, deviations, CAPA, and closure.
+\item C-PBT-01 publishes the applicable signed readiness assertion to C-SAFE-01. The evidence explorer itself is not a synchronous treatment-planning dependency.
+\end{enumerate}
+
+\subsection{Existing interface profiles}
+
+\begin{small}
+\begin{longtable}{@{}L{0.15\textwidth}L{0.26\textwidth}L{0.43\textwidth}L{0.10\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Interface} & \textbf{Machine-QA profile} & \textbf{Required boundary behavior} & \textbf{Lead} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Interface} & \textbf{Machine-QA profile} & \textbf{Required boundary behavior} & \textbf{Lead} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+IF-UI-01 & Evidence and review workspace & Display scope, source authority, state, gaps, uncertainty, approval, and actions without color-only meaning & T-UX \\
+\addlinespace[2pt]
+IF-NLI-01 & Typed machine-QA intent & Convert text or confirmed speech into query, comparison, draft-task, or source-navigation intent with deterministic validation & T-NLI \\
+\addlinespace[2pt]
+IF-IAM-01 & QA role and approval & Enforce QMP, reviewer, operator, quality, informatics, and read-only privileges and separation of duties & T-SEC \\
+\addlinespace[2pt]
+IF-SAF-01 & Readiness consumption & Accept only a current signed readiness assertion; fail closed on missing, mismatched, expired, or invalid state & T-SYS \\
+\addlinespace[2pt]
+IF-EVD-01 & Procedure and tolerance rules & Return approved source, rule, applicability, effective date, conflict, and no-applicable-rule outcomes & T-EVD \\
+\addlinespace[2pt]
+IF-ACC-01 & Quality evidence exchange & Exchange minimal evidence pointers, attestations, deficiencies, CAPA state, and readiness reporting without treatment authority & T-GOV \\
+\addlinespace[2pt]
+IF-DATA-01 & QA objects and provenance & Store immutable versions, hashes, lineage, audit events, retention, and reconciliation & T-DATA \\
+\addlinespace[2pt]
+IF-CFG-01 & Machine-QA release profile & Publish approved site, room, machine, mode, protocol, adapter, rule, monitor, and response configuration & T-GOV \\
+\addlinespace[2pt]
+IF-OPS-01 & Import, health, alert, and recovery & Expose atomic job outcome, data age, integrity, dependency state, alerts, rollback, and recovery & T-OPS \\
+\addlinespace[2pt]
+IF-VV-01 & Acceptance and commissioning evidence & Trace contracts to locked cases, expected results, anomalies, approval, and release evidence & T-VV \\
+\addlinespace[2pt]
+IF-DICOM-01 and IF-TPS-01 & Commissioned association & Exchange only approved DICOM objects and bounded TPS transactions; retain UID, frame, machine, configuration, acknowledgment, and reconciliation & T-INT \\
+\end{longtable}
+\end{small}
+
+\subsection{DICOM and existing-TPS boundary}
+
+DICOM shall be used when a QA source is a valid DICOM object or when QA evidence must be associated with commissioned clinical objects. The subsystem shall not create synthetic DICOM objects merely to transport spreadsheets, reports, Access records, or proprietary detector formats. Those artifacts remain evidence objects in the canonical repository and may reference DICOM identifiers when a validated association exists.
+
+Each external-TPS route shall have a site- and version-specific conformance analysis, transaction and object allowlist, identity and UID reconciliation, private-attribute policy, timeout and retry behavior, negative tests, known limitations, monitoring, and rollback. An undocumented private field or inferred equivalence shall not become a silent dependency.
+
+\section{Machine-QA realization requirements}
+
+The following requirements are subordinate realization requirements. They do not increase or replace the 119 high-level requirements in the controlled baseline.
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.11\textwidth}L{0.48\textwidth}L{0.23\textwidth}L{0.12\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Requirement} & \textbf{Parent trace} & \textbf{Verify} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Requirement} & \textbf{Parent trace} & \textbf{Verify} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+MQA-001 & The NL-TPS shall acquire machine-QA evidence only through approved, source-read-only adapters and shall record source scope, integrity, adapter version, outcome, warnings, and reconciliation for each atomic import. & DAT-002, DAT-009; SEC-004/005; OPS-002 & I/T \\
+\addlinespace[2pt]
+MQA-002 & The NL-TPS shall assign stable identity, version, ownership, lifecycle state, machine/configuration context, units, and source linkage to every machine-QA source, execution, metric, observation, rule, deviation, approval, and readiness assertion. & DAT-001/003/010; ACC-003/007 & I/T \\
+\addlinespace[2pt]
+MQA-003 & The NL-TPS shall evaluate a machine-QA observation only with an institution-approved, QMP-owned, versioned computable rule that is applicable to the active machine, configuration, protocol, method, and effective time. & EVD-002/005/006/007; ACC-006/008 & I/T \\
+\addlinespace[2pt]
+MQA-004 & The NL-TPS shall preserve bidirectional lineage from each displayed or applied result to the authoritative source object, exact locator, raw value, transformation, calculation, rule, software, configuration, user action, review, and downstream readiness effect. & DAT-002/008/009; ACC-003/007 & I/T/A \\
+\addlinespace[2pt]
+MQA-005 & The NL-TPS shall represent missing, incomplete, unreadable, unsupported, conflicting, raw-only, protocol-discontinuous, and unreviewed evidence explicitly and shall not impute or silently reconcile it. & SAF-004/010; DAT-007; EVD-005/008 & T/A \\
+\addlinespace[2pt]
+MQA-006 & The NL-TPS shall separate source-recorded results from deterministic recalculation and exploratory analytics and shall prevent a trend, fitted distribution, simulation, or retrieval result from changing pass/fail or readiness state. & SAF-008/009; REV-003/009; SEC-004 & T/A/HFE \\
+\addlinespace[2pt]
+MQA-007 & The NL-TPS shall enforce authenticated role authority, independent review, attributable QMP approval, effective time, and separation of duties for procedure, tolerance, exception, QA-result, and return-to-service decisions. & GOV-005/007; SAF-001/008/009; ACC-002/006 & T/I \\
+\addlinespace[2pt]
+MQA-008 & The NL-TPS shall support containment, discrepancy assessment, investigation, impact analysis, repeat/exclusion rationale, deviation, CAPA, effectiveness review, escalation, and closure without replacing the institutional quality process. & OPS-001/006; ACC-007; VAL-009 & I/D/T \\
+\addlinespace[2pt]
+MQA-009 & The NL-TPS shall publish and consume a minimal signed, versioned machine-readiness assertion and shall invalidate or hold affected scope after failed, missing, expired, superseded, changed, unreconciled, or postservice conditions until authorized resolution and return to service. & SAF-004/007/010; ACC-006/008; VAL-007/009 & T/D \\
+\addlinespace[2pt]
+MQA-010 & The natural-language interface shall support machine-QA query, source navigation, comparison, completeness review, and draft-task preparation through inspectable typed intent while prohibiting AI approval, waiver, readiness, return-to-service, planning approval, or delivery authority. & NLI-002/005/006/008; SAF-001; SEC-004 & T/HFE \\
+\addlinespace[2pt]
+MQA-011 & The NL-TPS shall associate DICOM and external-TPS content only through commissioned object and transaction allowlists with identity, UID, frame, machine, configuration, unit, completeness, destination, and acknowledgment reconciliation. & DAT-004/005/007; REV-007; ACC-008 & I/T \\
+\addlinespace[2pt]
+MQA-012 & The machine-QA capability shall undergo threat analysis, privacy review, site acceptance, commissioning, reference and challenge testing, regression, shadow operation, recovery testing, monitoring approval, and governance release before its readiness output can affect clinical workflow. & SEC-001--008; OPS-001--007; VAL-001--009 & I/T/D \\
+\end{longtable}
+\end{scriptsize}
+
+\section{Sub-requirements and component allocation}
+
+Each parent has a definition-and-schema child, an executable-behavior child, and an evidence-and-verification child. \textbf{U-STACK} means C-REQ-01, C-ARCH-01, C-CFG-01, C-PROV-01, C-AUD-01, and C-VV-01.
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.13\textwidth}L{0.48\textwidth}L{0.31\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Sub-requirement} & \textbf{Allocated realization} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Sub-requirement} & \textbf{Allocated realization} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+MQA-001-01 & Define an allowlisted source-adapter contract covering source identity, access mode, schema, limits, privacy class, expected artifacts, hash policy, and error semantics. & U-STACK + C-SEC-01; C-JOB-01; C-TERM-01 \\
+MQA-001-02 & Execute imports atomically in a resource-bounded environment; preserve source files; reject unsupported content; expose complete, partial, failed, canceled, or degraded outcomes. & C-JOB-01; C-SBX-01; C-SEC-01; C-RES-01 \\
+MQA-001-03 & Retain import manifests, counts, hashes, warnings, errors, source-read verification, and reviewer reconciliation. & C-PROV-01; C-AUD-01; C-VV-01 \\
+\addlinespace[3pt]
+MQA-002-01 & Define canonical schemas and stable identifiers for every object listed in Section 3.2. & U-STACK + C-OBJ-01; C-TERM-01 \\
+MQA-002-02 & Validate required identity, machine/configuration context, units, references, uniqueness, and lifecycle state before acceptance. & C-OBJ-01; C-TERM-01; C-SAFE-01; C-STATE-01 \\
+MQA-002-03 & Test schema compatibility, migration, duplicate, orphan, wrong-machine, wrong-unit, and supersession behavior. & C-TEST-01; C-VV-01; C-PROV-01 \\
+\addlinespace[3pt]
+MQA-003-01 & Define each rule's authority, comparator, expected/baseline source, limits, units, uncertainty handling, scope, effective interval, conflict policy, and approval. & U-STACK + C-EVID-01; C-RULE-01; C-PBT-01 \\
+MQA-003-02 & Resolve the highest applicable approved rule and return no-applicable-rule or conflict rather than silently selecting or blending. & C-RULE-01; C-SAFE-01; C-STATE-01 \\
+MQA-003-03 & Verify boundary values, rounding, units, configuration, effective time, conflict, expiry, suspension, and rollback using locked cases. & C-TEST-01; C-VV-01; C-QMS-01 \\
+\addlinespace[3pt]
+MQA-004-01 & Define source, locator, raw value, transformation, calculation, rule, software, configuration, actor, review, and downstream dependency links. & U-STACK + C-OBJ-01; C-PROV-01 \\
+MQA-004-02 & Prevent publication when a mandatory provenance edge or integrity value is missing or inconsistent. & C-PROV-01; C-SAFE-01; C-STATE-01 \\
+MQA-004-03 & Demonstrate source-to-display and display-to-source reconstruction for representative and challenged records. & C-VV-01; C-TEST-01; C-AUD-01 \\
+\addlinespace[3pt]
+MQA-005-01 & Define explicit evidence states and protocol-era compatibility rules without a generic acceptable default. & U-STACK + C-EVID-01; C-RULE-01; C-STATE-01 \\
+MQA-005-02 & Display gaps and incompatibilities and block affected promotion when approved policy requires the evidence. & C-UX-01; C-SAFE-01; C-PBT-01; C-MON-01 \\
+MQA-005-03 & Test missing months, blank formulas, absent raw files, unreadable files, protocol gaps, conflicting dates, and unsupported mappings. & C-TEST-01; C-VV-01 \\
+\addlinespace[3pt]
+MQA-006-01 & Define distinct fields and visual states for source result, deterministic comparison, trend statistic, fitted model, simulation, and retrieval evidence. & U-STACK + C-OBJ-01; C-UX-01; C-HFE-01 \\
+MQA-006-02 & Permit only the approved deterministic rule to affect evaluation state; isolate analytics and retrieval from the readiness transaction. & C-RULE-01; C-SAFE-01; C-STATE-01; C-SBX-01 \\
+MQA-006-03 & Validate normality caveats, small samples, outliers, extreme scales, alert comprehension, and attempts to promote exploratory output. & C-HFE-01; C-TEST-01; C-VV-01 \\
+\addlinespace[3pt]
+MQA-007-01 & Define role, purpose, independence, signature, scope, effective time, credential, competency, and expiration for each controlled action. & U-STACK + C-IAM-01; C-HFE-01; C-QMS-01 \\
+MQA-007-02 & Enforce role and state authorization; prohibit AI and service-account signatures and incompatible self-approval. & C-IAM-01; C-SAFE-01; C-STATE-01 \\
+MQA-007-03 & Retain attributable decisions and test unauthorized, expired, wrong-purpose, shared-account, and separation-of-duties cases. & C-AUD-01; C-VV-01; C-TEST-01 \\
+\addlinespace[3pt]
+MQA-008-01 & Define deviation, containment, investigation, impact, action, effectiveness, escalation, closure, and reopening states and owners. & U-STACK + C-QMS-01; C-INC-01; C-STATE-01 \\
+MQA-008-02 & Link every discrepancy to affected evidence and readiness scope and prevent silent deletion, exclusion, repetition, or closure. & C-INC-01; C-PROV-01; C-SAFE-01; C-MON-01 \\
+MQA-008-03 & Verify escalation, overdue action, repeat rationale, effectiveness, reopening, audit, and authorized exception paths. & C-VV-01; C-TEST-01; C-AUD-01 \\
+\addlinespace[3pt]
+MQA-009-01 & Define readiness scope, state, prerequisites, unresolved conditions, signature, integrity, effective interval, expiry, and invalidation triggers. & U-STACK + C-PBT-01; C-QA-01; C-STATE-01 \\
+MQA-009-02 & Publish and consume readiness atomically; fail closed on absent, mismatched, expired, invalid, postservice, or unreconciled state. & C-PBT-01; C-SAFE-01; C-JOB-01; C-MON-01 \\
+MQA-009-03 & Test maintenance, repair, software change, failed QA, expiry, rollback, reapproval, degraded operation, and return-to-service scenarios. & C-VV-01; C-TEST-01; C-RES-01 \\
+\addlinespace[3pt]
+MQA-010-01 & Define allowlisted query, comparison, completeness, source-navigation, and draft-task intents and prohibited approval or delivery intents. & U-STACK + C-INTENT-01; C-WF-01; C-UX-01 \\
+MQA-010-02 & Validate machine, period, metric, units, configuration, evidence scope, action, and authority; present read-back and require confirmation for state-changing draft actions. & C-INTENT-01; C-SAFE-01; C-IAM-01; C-UX-01 \\
+MQA-010-03 & Test ambiguity, prompt injection, embedded instructions, wrong room, wrong period, prohibited action, correction, cancellation, and audit reconstruction. & C-TEST-01; C-HFE-01; C-AUD-01; C-SEC-01 \\
+\addlinespace[3pt]
+MQA-011-01 & Define the approved DICOM and TPS object/transaction profile, identities, roles, UIDs, frames, units, configurations, private-field policy, and acknowledgments. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01 \\
+MQA-011-02 & Reject incomplete, wrong-context, orphaned, partial, unsupported, or unreconciled transfers without substituting a file-based shortcut. & C-DICOM-02; C-SAFE-01; C-JOB-01 \\
+MQA-011-03 & Execute conformance, round-trip, duplicate, timeout, retry, partial-transfer, private-attribute, destination, and reconciliation tests for each released route. & C-VV-01; C-TEST-01; C-TPS-01 \\
+\addlinespace[3pt]
+MQA-012-01 & Define the assurance plan, hazards, critical tasks, reference cases, challenge cases, monitors, thresholds, recovery, and release evidence. & U-STACK + C-GOV-01; C-QMS-01; C-MON-01 \\
+MQA-012-02 & Progress through retrospective, commissioning, shadow, and limited controlled stages without permitting readiness influence before release approval. & C-SBX-01; C-VV-01; C-SAFE-01; C-CFG-01 \\
+MQA-012-03 & Block or suspend service for unresolved critical anomalies, unacceptable residual risk, failed thresholds, unverified controls, integrity failures, or unreconciled change. & C-SAFE-01; C-MON-01; C-INC-01; C-RES-01 \\
+\end{longtable}
+\end{scriptsize}
+
+\section{Package subassemblies}
+
+MQA-PKG-01 is a deployment profile and coordinated realization package, not a new independent authority. Its subassemblies allocate work to the existing component baseline.
+
+\begin{small}
+\begin{longtable}{@{}L{0.14\textwidth}L{0.25\textwidth}L{0.35\textwidth}L{0.18\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Subassembly} & \textbf{Responsibility} & \textbf{Primary components} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Subassembly} & \textbf{Responsibility} & \textbf{Primary components} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+MQA-A01 & Controlled Source Adapter Set & Read-only, allowlisted, resource-bounded source discovery, extraction, hashing, error reporting, and reconciliation & C-ARCH-01; C-SEC-01; C-JOB-01; C-SBX-01 \\
+\addlinespace[2pt]
+MQA-A02 & Canonical QA Object Store & Versioned source, execution, observation, evidence, approval, deviation, and readiness objects with units and lineage & C-OBJ-01; C-TERM-01; C-PROV-01; C-AUD-01 \\
+\addlinespace[2pt]
+MQA-A03 & Protocol and Tolerance Registry & Approved QMP-owned procedure, applicability, baseline, tolerance, uncertainty, effective-date, and conflict rules & C-EVID-01; C-RULE-01; C-CFG-01; C-PBT-01 \\
+\addlinespace[2pt]
+MQA-A04 & QA Review and Quality Workflow & Review, approval, signature, deviation, CAPA, escalation, expiry, invalidation, and closure & C-IAM-01; C-STATE-01; C-QMS-01; C-INC-01 \\
+\addlinespace[2pt]
+MQA-A05 & Evidence and Analytics Workspace & Configuration-aware observations, trends, gaps, sources, deterministic results, and clearly separated exploratory analytics & C-UX-01; C-MON-01; C-HFE-01 \\
+\addlinespace[2pt]
+MQA-A06 & Machine Readiness Publisher & Minimal signed readiness assertion, invalidation, hold, expiry, and return-to-service integration & C-PBT-01; C-QA-01; C-SAFE-01; C-VV-01 \\
+\addlinespace[2pt]
+MQA-A07 & Natural-Language QA Interaction & Typed query, comparison, navigation, and draft-task intent with read-back, confirmation, and prohibited actions & C-INTENT-01; C-WF-01; C-UX-01; C-SAFE-01 \\
+\addlinespace[2pt]
+MQA-A08 & External QA Association Profile & Commissioned DICOM/TPS linkage and minimal quality-evidence exchange & C-DICOM-01; C-DICOM-02; C-TPS-01; C-ACC-02 \\
+\end{longtable}
+\end{small}
+
+\section{Workflow and readiness state}
+
+\subsection{Evidence workflow}
+
+\begin{small}
+\begin{longtable}{@{}L{0.17\textwidth}L{0.32\textwidth}L{0.37\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{State} & \textbf{Entry condition} & \textbf{Permitted transition} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{State} & \textbf{Entry condition} & \textbf{Permitted transition} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Discovered & Source identified under an approved adapter scope & Import pending or excluded with rationale \\
+\addlinespace[2pt]
+Imported & Atomic import completed with manifest and source integrity & Validation pending; never equivalent to approved \\
+\addlinespace[2pt]
+Validated & Schema, identity, units, references, transforms, and rule applicability pass & Human review pending \\
+\addlinespace[2pt]
+Under review & Authorized reviewer examines source, result, gaps, repeats, and context & Approved, discrepancy, rejected, or more information required \\
+\addlinespace[2pt]
+Approved evidence & Required attributable review is complete & May contribute to readiness within scope and effective time \\
+\addlinespace[2pt]
+Discrepancy/hold & Failure, missing evidence, conflict, invalidation, service event, or unresolved condition exists & Investigation, correction, retest, exception, or retirement \\
+\addlinespace[2pt]
+CAPA & Controlled quality workflow is active & Effectiveness review and authorized closure \\
+\addlinespace[2pt]
+Superseded & A newer approved version or retirement decision exists & Read-only retention; never returned silently to active use \\
+\end{longtable}
+\end{small}
+
+\subsection{Readiness states}
+
+Readiness is a separate object from evidence review. \textbf{Unknown} means the applicable state cannot be established. \textbf{Hold} means an approved rule requires clinical-use restriction. \textbf{Conditional} means a specifically authorized limited scope and condition exist. \textbf{Released} means all applicable prerequisites and QMP authorization are current. \textbf{Expired} means the effective interval ended. Every state shall identify exact machine/configuration scope and shall be consumed through C-SAFE-01 rather than inferred from dashboard color or record count.
+
+\section{Natural-language operating profile}
+
+\begin{small}
+\begin{longtable}{@{}L{0.27\textwidth}L{0.29\textwidth}L{0.32\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Intent class} & \textbf{Examples} & \textbf{Required response} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Intent class} & \textbf{Examples} & \textbf{Required response} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Query and navigate & ``Show GTR5 range constancy for July''; ``open the source for this point'' & Resolve typed room, period, metric, configuration, and source; display provenance and evidence state \\
+\addlinespace[2pt]
+Compare & ``Compare the approved pre-PM and post-PM output records'' & Identify compatibility, rules, gaps, uncertainty, and exact source versions; abstain on unapproved equivalence \\
+\addlinespace[2pt]
+Completeness review & ``Find missing raw detector evidence for this package'' & Return explicit required, present, missing, excluded, and unresolved evidence with approved checklist source \\
+\addlinespace[2pt]
+Draft workflow & ``Prepare a draft deviation for review'' & Present read-back, affected scope, source links, proposed fields, and confirmation; create only a draft \\
+\addlinespace[2pt]
+Prohibited authority & ``Approve this tolerance''; ``return the room to service''; ``waive this failure'' & Refuse the action, identify the authorized role and controlled workflow, and record the attempt as required \\
+\end{longtable}
+\end{small}
+
+Retrieved documents, workbooks, DICOM metadata, and reports are untrusted content under SEC-004. Instructions embedded in those artifacts shall never change system policy, authorize tools, alter the typed intent, or override user and institutional authority.
+
+\section{Source migration disposition}
+
+\begin{small}
+\begin{longtable}{@{}L{0.25\textwidth}L{0.18\textwidth}L{0.45\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Prototype capability} & \textbf{Disposition} & \textbf{Controlled implementation decision} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Prototype capability} & \textbf{Disposition} & \textbf{Controlled implementation decision} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Read-only extractors & Reuse after validation & Convert paths, schemas, transformations, privacy rules, limits, and expected artifacts to approved configuration; sign and test adapter releases \\
+\addlinespace[2pt]
+Normalized TypeScript/JSON types & Refactor & Promote to versioned canonical schemas with runtime validation, migration, referential integrity, effective time, approvals, and hashes \\
+\addlinespace[2pt]
+Trend and provenance views & Reuse/refactor & Preserve interaction patterns; query authorized server APIs; distinguish evidence and analytics; perform human-factors validation \\
+\addlinespace[2pt]
+Static JSON deployment & Replace & Use immutable versioned storage and paged, filtered, authorized server queries; publish a signed release manifest \\
+\addlinespace[2pt]
+Browser workbook loader & Sandbox only & Restrict to training/commissioning unless separately approved; validate signature/schema/type/size; scan and isolate content \\
+\addlinespace[2pt]
+Local RAG corpus & Reuse for discovery & Preserve local retrieval, source hashes, redaction, and citations; prohibit numerical and readiness authority; sign retrieval artifacts before controlled use \\
+\addlinespace[2pt]
+Commissioning candidates & Preserve as candidates & Require QMP approval of version, method, units, interpolation, uncertainty, tolerance, configuration, and effective dates before use \\
+\addlinespace[2pt]
+Normal and Monte Carlo views & Exploratory only & No connection to pass/fail or readiness; validate labeling, assumptions, small-sample behavior, and user comprehension \\
+\addlinespace[2pt]
+Simple health endpoint & Replace/extend & Report application, data revision, integrity, evidence age, dependencies, configuration compatibility, degraded state, and last successful reconciliation \\
+\end{longtable}
+\end{small}
+
+\section{Risk and mitigation register}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.10\textwidth}L{0.25\textwidth}L{0.12\textwidth}L{0.43\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Risk} & \textbf{Hazard scenario} & \textbf{Initial} & \textbf{Required mitigation and evidence} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Risk} & \textbf{Hazard scenario} & \textbf{Initial} & \textbf{Required mitigation and evidence} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+MQA-R01 & Wrong tolerance, expected value, baseline, comparator, or effective date creates an incorrect evaluation. & Critical & QMP-approved computable rule; version/effective scope; unit and boundary tests; dual review; fail closed on conflict or no rule \\
+\addlinespace[2pt]
+MQA-R02 & Normalized result no longer matches its source or transformation. & High & Full-file hash; exact locator; raw/derived separation; adapter and dependency version; transformation trace; source-to-display reconstruction \\
+\addlinespace[2pt]
+MQA-R03 & Missing or incomplete evidence appears acceptable. & Critical & Explicit evidence states; required-artifact profile; no imputation; completeness gate; negative tests; visible unresolved condition \\
+\addlinespace[2pt]
+MQA-R04 & Candidate commissioning data are treated as approved references. & Critical & Candidate/method-pending/inventory/approved lifecycle; separate fields and visuals; QMP signature; effective configuration; promotion tests \\
+\addlinespace[2pt]
+MQA-R05 & Retrieval or model output performs pass/fail or readiness adjudication. & Critical & Typed data and deterministic rules only; tool separation; prompt-injection tests; prohibited intent; audit; independent safety-kernel tests \\
+\addlinespace[2pt]
+MQA-R06 & Shared calculation logic defeats independent verification. & High & Independence analysis; source-result preservation; separately derived locked cases; common-cause documentation; QMP review \\
+\addlinespace[2pt]
+MQA-R07 & Stale QA remains associated with an active machine/configuration after maintenance or change. & Critical & Dependency graph; service/change triggers; atomic invalidation; hold state; expiry; reconciliation; QMP return-to-service signature \\
+\addlinespace[2pt]
+MQA-R08 & Untrusted document or oversized workbook compromises the application or changes behavior. & High & Sandboxed parsing; size/time/memory limits; allowlisted formats and schemas; malware controls; SEC-004 instruction isolation \\
+\addlinespace[2pt]
+MQA-R09 & Internal paths, workforce identifiers, or sensitive metadata cross an unapproved boundary. & High & Minimum necessary views; RBAC; local evidence handling; redaction/pseudonym policy; encrypted transport; export review; audit \\
+\addlinespace[2pt]
+MQA-R10 & Statistical model assumptions or scale effects mislead reviewers. & High & Exploratory labeling; raw-value preservation; focus/full-scale controls; sample and assumption disclosure; HFE validation; no readiness linkage \\
+\addlinespace[2pt]
+MQA-R11 & Transfer associates QA evidence with the wrong machine, plan, frame, or destination. & Critical & Commissioned DICOM/TPS route; identity/UID/frame/configuration validation; acknowledgments; round-trip and wrong-context tests \\
+\addlinespace[2pt]
+MQA-R12 & Service failure, partial import, rollback, or restore presents stale or partially reconciled readiness. & Critical & Atomic jobs; signed release manifest; explicit degraded mode; staged recovery; restore and reconciliation tests; fail-closed readiness consumption \\
+\end{longtable}
+\end{scriptsize}
+
+Residual risk shall be assessed after mitigation evidence is available. No row in this register constitutes risk acceptance.
+
+\section{Trade-off analysis}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.18\textwidth}L{0.21\textwidth}L{0.21\textwidth}L{0.32\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Decision} & \textbf{Option A} & \textbf{Option B} & \textbf{Selected approach and rationale} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Decision} & \textbf{Option A} & \textbf{Option B} & \textbf{Selected approach and rationale} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Prototype integration & Merge the dashboard directly into the clinical runtime & Rebuild every capability from zero & Reuse validated extraction and presentation patterns behind controlled services and schemas. This retains evidence value without importing prototype authority or deployment assumptions. \\
+\addlinespace[2pt]
+Runtime dependency & Make the full evidence explorer synchronous with planning & Keep QA wholly disconnected from planning & Publish a minimal signed readiness assertion synchronously; keep evidence ingestion and exploration asynchronous. \\
+\addlinespace[2pt]
+Evaluation method & Let retrieval or AI infer pass/fail & Use workbook formulas as the permanent authority & Use versioned, QMP-approved deterministic rules while retaining source-recorded results and formula provenance. \\
+\addlinespace[2pt]
+Data delivery & Ship complete static JSON to each client & Query authoritative objects through server APIs & Use paged, filtered, authorized server queries and immutable releases to reduce exposure, payload, and stale-data risk. \\
+\addlinespace[2pt]
+Workbook replacement & Permit unrestricted browser upload in clinical mode & Prohibit all ad hoc workbook review & Confine replacement workbooks to segregated training/commissioning unless a validated controlled-ingestion workflow is approved. \\
+\addlinespace[2pt]
+Interface architecture & Create a new top-level interface family immediately & Reuse existing interfaces without a domain profile & Reuse IF-ACC, IF-EVD, IF-DATA, IF-CFG, IF-OPS, IF-VV, IF-SAF, IF-DICOM, and IF-TPS with this explicit machine-QA profile. \\
+\addlinespace[2pt]
+DICOM use & Convert every QA artifact into DICOM & Avoid DICOM for QA entirely & Use DICOM only for valid objects and commissioned associations; retain non-DICOM artifacts as governed evidence with referenced UIDs where applicable. \\
+\addlinespace[2pt]
+Analytics & Remove statistical and simulation tools & Let analytics drive automated action & Retain clearly separated exploratory analytics for review and research; prohibit readiness authority and verify user comprehension. \\
+\end{longtable}
+\end{scriptsize}
+
+\section{Verification and acceptance}
+
+\subsection{Locked reference and challenge set}
+
+The initial controlled test library shall include, at minimum:
+
+\begin{itemize}
+\item representative GTR4 and GTR5 Daily, Monthly, Annual, and commissioning records;
+\item pre-maintenance, post-maintenance, routine, missing-month, raw-only, and protocol-transition examples;
+\item output, flatness, symmetry, range, spot size, spot position, mechanical, imaging, and detector-specific configurations;
+\item exact boundary, just-inside, just-outside, unit-conversion, rounding, and no-applicable-rule cases;
+\item missing raw evidence, blank template formulas, duplicate observations, repeated measurements, inconsistent dates, wrong room, wrong configuration, and corrupted or unsupported files;
+\item candidate, method-pending, inventory-only, approved, expired, suspended, and superseded reference states;
+\item unauthorized approval, incompatible self-review, prompt injection, embedded document instructions, and attempted AI return-to-service actions;
+\item DICOM wrong-patient, wrong-study, wrong-frame, orphaned reference, duplicate, partial, timeout, and destination-reconciliation cases;
+\item maintenance, repair, software upgrade, rollback, data restore, degraded mode, invalidation, retest, and return-to-service scenarios.
+\end{itemize}
+
+\subsection{Release gates}
+
+MQA-PKG-01 shall not influence clinical readiness until:
+
+\begin{enumerate}
+\item The source inventory, authority, privacy, retention, ownership, and integrity baseline are approved.
+\item Canonical schemas, terminology, units, transformations, procedures, tolerances, and effective-date rules are controlled and traceable.
+\item Every released adapter is source-read-only, resource-bounded, signed, independently reviewed, and tested against locked evidence.
+\item Authentication, role authorization, electronic signatures, separation of duties, audit integrity, deviation/CAPA, and return-to-service workflows are verified.
+\item Retrieval and analytics are demonstrably isolated from pass/fail, readiness, approval, and treatment authority.
+\item Readiness invalidation, expiry, hold, degraded operation, rollback, backup, restore, and reconciliation are verified end to end.
+\item Each DICOM/TPS route passes conformance, object, transaction, identity, UID, frame, unit, private-field, round-trip, and destination tests.
+\item Representative users complete formative and summative human-factors testing for source authority, gaps, warnings, protocol eras, candidate references, confirmations, and recovery.
+\item Retrospective and shadow-mode results meet approved accuracy, completeness, false-positive, false-negative, availability, latency, security, and user-burden thresholds.
+\item The QMP, clinical governance, quality, security/privacy, informatics, operations, and independent V\&V authorities approve residual risk and the released scope.
+\end{enumerate}
+
+\section{Controlled implementation sequence}
+
+\begin{enumerate}
+\item \textbf{Baseline and freeze.} Inventory a representative evidence package, record hashes and authority, confirm August 2026 and later source status directly from the controlled share, and preserve a locked test snapshot.
+\item \textbf{Control the information model.} Approve canonical objects, terminology, units, protocol and tolerance schemas, transformations, lifecycle states, and source-authority rules.
+\item \textbf{Harden ingestion.} Convert extractors into signed configuration-driven jobs with atomic output, resource limits, privacy controls, integrity linkage, and reconciliation reports.
+\item \textbf{Deploy read-only exploration.} Reuse the strongest chart, configuration, gap, and source-drill-down patterns through authenticated server APIs in a segregated mode.
+\item \textbf{Add human governance.} Implement role-based review, signatures, procedure/tolerance approval, deviations, CAPA, expiry, and audit reconstruction.
+\item \textbf{Publish readiness.} Implement the minimal signed readiness assertion, deterministic safety-kernel consumption, invalidation, hold, degraded operation, and QMP return to service.
+\item \textbf{Add natural-language support.} Release allowlisted query and draft-workflow intents after ambiguity, prohibited-action, prompt-injection, read-back, confirmation, cancellation, and HFE testing.
+\item \textbf{Commission external routes.} Add DICOM and TPS associations one site, version, machine, object, and transaction profile at a time.
+\item \textbf{Validate and release.} Complete reference/challenge tests, shadow operation, recovery, security, performance, human-factors, site acceptance, residual-risk approval, and governed release.
+\end{enumerate}
+
+\section{Definition of done}
+
+The profile is realized only when every MQA requirement and sub-requirement has an approved owner, design allocation, interface contract, hazard and risk trace, implementation, test case, expected result, executed result, anomaly disposition, monitoring signal, rollback method, and release decision. The operational system must be able to reconstruct why an observation was displayed, which source and rule were used, who reviewed it, what readiness scope it affected, and why the resulting state was accepted or blocked.
+
+\textbf{Bottom line.} The prototype is a valuable evidence and interface foundation; clinical use requires a governed, typed, traceable, QMP-owned readiness service. Accountability remains explicit: clinical physics owns technical meaning and return to service; quality owns process/CAPA; systems engineering owns deterministic state/safety; data and security own integrity/privacy; integration owns commissioned DICOM/TPS boundaries; independent V\&V owns release evidence.
+
+\end{document}
