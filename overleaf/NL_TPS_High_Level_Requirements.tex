@@ -1,0 +1,857 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage{nl_tps_common}
+\graphicspath{{figures/}}
+\hypersetup{pdftitle={NL-TPS High-Level Requirements},pdfsubject={NL-TPS controlled documentation}}
+\begin{document}
+\NLSetPageStyle{NL-TPS HIGH-LEVEL REQUIREMENTS}{Derived from Natural Language TPS ConOps v0.1}
+\NLTitleBlock{SYSTEM REQUIREMENTS BASELINE}{High-Level Requirements}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
+\NLMeta{Source baseline}{Natural Language Treatment Planning System ConOps, Version 0.1}
+\NLMeta{Requirements version}{0.1 - Proposed baseline}
+\NLMeta{Date}{17 August 2026}
+\NLMeta{Status}{Discussion Draft - Not for clinical use}
+\end{minipage}}{This document defines proposed system-level requirements for design and verification planning. It is not a clinical protocol, commissioning report, regulatory determination, or authorization for patient use.}
+
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\NLFrontMatterSection{Document control}
+
+\begin{small}
+\begin{longtable}{@{}L{0.1769\textwidth}L{0.7431\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{Field}} & \textbf{\textbf{Value}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{Field}} & \textbf{\textbf{Value}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Document owner & NL-TPS Program - proposed; final owner requires governance approval \\
+\addlinespace[2pt]
+Source document & Natural Language Treatment Planning System ConOps, Version 0.1, 17 August 2026 \\
+\addlinespace[2pt]
+Baseline status & Proposed high-level requirements; not yet approved or allocated to a clinical release \\
+\addlinespace[2pt]
+Requirement count & 111 \\
+\addlinespace[2pt]
+Change authority & Clinical governance and quality-system change control \\
+\addlinespace[2pt]
+Supersession & None \\
+\end{longtable}
+\end{small}
+
+\NLFrontMatterSection{Executive summary}
+
+This specification translates the ConOps into a proposed, testable high-level requirements baseline for a human-supervised natural-language treatment planning system. The baseline preserves clinician authority, constrains patient-specific reasoning to approved evidence, uses commissioned planning and dose services, produces reviewable candidate plans, and requires independent verification and staged clinical release.
+
+These requirements define what the integrated NL-TPS and its operating program must accomplish. They do not prescribe detailed software design. Each requirement must be decomposed into system, software, interface, data, model, cybersecurity, human-factors, quality, and verification specifications before implementation.
+
+\textbf{Baseline rule. }Every requirement in this document is proposed as mandatory for the approved use to which it is allocated. Release phasing may defer a capability, but it may not weaken a safety control for an included capability.
+
+\section{1. Purpose, scope, and relationship to the ConOps}
+
+The purpose of this document is to establish the first requirements baseline derived from the NL-TPS ConOps. The ConOps remains authoritative for operational intent, stakeholder roles, use scenarios, and safety philosophy. This specification converts that intent into uniquely identified obligations suitable for allocation, design, risk control, and verification.
+
+The baseline covers the integrated product and the clinical operating program necessary for safe deployment: governance, natural-language interaction, evidence services, imaging and contours, planning and dose, plan review, interoperability, auditability, model lifecycle, human factors, cybersecurity, monitoring, commissioning, and release control.
+
+Detailed numerical performance thresholds, product-specific interfaces, first-release disease site, exact regulatory claims, and operational service levels remain controlled decisions. They are recorded in Section 5 and must be resolved before an approved product requirements baseline is issued.
+
+\section{2. Requirement conventions and verification methods}
+
+A normative requirement uses the subject 'The NL-TPS' or an explicitly named subsystem or program element followed by 'shall.' Each ID is permanent once baselined. Editorial changes that alter meaning require a new version and traceability review.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0934\textwidth}L{0.1868\textwidth}L{0.6399\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{Code}} & \textbf{\textbf{Verification method}} & \textbf{\textbf{Use}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{Code}} & \textbf{\textbf{Verification method}} & \textbf{\textbf{Use}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+I & Inspection & Review of design, configuration, records, source, labeling, or objective evidence. \\
+\addlinespace[2pt]
+A & Analysis & Calculation, risk analysis, traceability analysis, statistical evaluation, or expert assessment. \\
+\addlinespace[2pt]
+T & Test & Controlled execution with defined inputs, expected results, pass\slash\allowbreak{}fail criteria, and recorded evidence. \\
+\addlinespace[2pt]
+D & Demonstration & Observed operation showing a capability or workflow under representative conditions. \\
+\addlinespace[2pt]
+HFE & Human-factors evaluation & Formative or summative study with representative users, tasks, and use environments. \\
+\end{longtable}
+\end{small}
+
+\textbf{Interpretation. }Combined codes identify the anticipated primary methods at this level. The verification plan may add methods but may not remove a method needed to demonstrate the safety intent.
+
+\section{3. Baseline summary}
+
+\begin{small}
+\begin{longtable}{@{}L{0.1032\textwidth}L{0.4541\textwidth}L{0.0885\textwidth}L{0.2742\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{Domain}} & \textbf{\textbf{Title}} & \textbf{\textbf{Count}} & \textbf{\textbf{ID range}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{Domain}} & \textbf{\textbf{Title}} & \textbf{\textbf{Count}} & \textbf{\textbf{ID range}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+GOV & Governance, intended use, and scope & 7 & GOV-001 through GOV-007 \\
+\addlinespace[2pt]
+SAF & Safety boundaries and human authority & 10 & SAF-001 through SAF-010 \\
+\addlinespace[2pt]
+NLI & Natural-language and voice interaction & 8 & NLI-001 through NLI-008 \\
+\addlinespace[2pt]
+EVD & Evidence and literature governance & 8 & EVD-001 through EVD-008 \\
+\addlinespace[2pt]
+CLN & Clinical context, imaging, registration, and contours & 9 & CLN-001 through CLN-009 \\
+\addlinespace[2pt]
+PLN & Treatment-plan generation and calculation & 12 & PLN-001 through PLN-012 \\
+\addlinespace[2pt]
+REV & Plan review, selection, QA, and transfer & 9 & REV-001 through REV-009 \\
+\addlinespace[2pt]
+DAT & Data, interoperability, provenance, and audit & 10 & DAT-001 through DAT-010 \\
+\addlinespace[2pt]
+AIM & AI and inference-model lifecycle & 8 & AIM-001 through AIM-008 \\
+\addlinespace[2pt]
+HFE & Human factors, usability, and competency & 6 & HFE-001 through HFE-006 \\
+\addlinespace[2pt]
+SEC & Privacy, cybersecurity, and secure development & 8 & SEC-001 through SEC-008 \\
+\addlinespace[2pt]
+OPS & Clinical operations, monitoring, and resilience & 7 & OPS-001 through OPS-007 \\
+\addlinespace[2pt]
+VAL & Verification, commissioning, release, and change control & 9 & VAL-001 through VAL-009 \\
+\addlinespace[2pt]
+TOTAL & Proposed high-level requirements & 111 & All domains \\
+\end{longtable}
+\end{small}
+
+\section{4. High-level requirements by domain}
+
+The Source \slash\allowbreak{} hazard column identifies the primary ConOps section codes and, where applicable, preliminary hazard IDs that motivated the requirement. It is not an exhaustive trace. The formal requirements traceability matrix shall expand these links to stakeholder needs, risk controls, lower-level requirements, verification cases, and results.
+
+\subsection{Governance, intended use, and scope (GOV)}
+
+Defines institutional authority, the permitted clinical purpose, controlled operating modes, and the bounded use envelope.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+GOV-001 & The NL-TPS shall operate as a human-supervised treatment-planning support system and shall not be represented as a substitute for the professional judgment of radiation oncologists, medical dosimetrists, qualified medical physicists, or other authorized clinical staff. & SCP; PRN; AUTH & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+GOV-002 & The NL-TPS shall restrict clinical operation to the institution-approved intended use, patient population, disease sites, modalities, machines, techniques, and tasks defined in the active release authorization. & SCP; MODE; ROAD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+GOV-003 & The NL-TPS shall block clinical execution for an unsupported or out-of-scope workflow until that workflow has completed separate risk assessment, commissioning, validation, and governance approval. & SCP; HAZ; ROAD & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+GOV-004 & The NL-TPS shall provide segregated training\slash\allowbreak{}research, commissioning, shadow, clinical-draft, clinical-approved, and degraded\slash\allowbreak{}read-only operating modes with mode-specific permissions and destinations. & MODE; ARCH & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+GOV-005 & The NL-TPS shall enforce institution-approved role authority and separation-of-duties rules for radiation oncologists, dosimetrists, medical physicists, therapists, informatics staff, quality staff, and system developers. & AUTH; MODE; QMS & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+GOV-006 & The NL-TPS shall maintain the intended-use statement, approved scope, risk controls, release status, configuration baseline, and applicable regulatory and quality-system records as controlled artifacts. & SCP; QMS; ROAD & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+GOV-007 & The NL-TPS shall require clinical-governance approval for changes to deployment scope, accepted residual risk, evidence policy, model release, monitoring thresholds, or clinical workflow authority. & AUTH; QMS; ROAD & I\slash\allowbreak{}A \\
+\end{longtable}
+\end{small}
+
+\subsection{Safety boundaries and human authority (SAF)}
+
+Establishes fail-closed behavior, human approval boundaries, deterministic controls, and reversible draft execution.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+SAF-001 & The NL-TPS shall prevent any AI or automated service from prescribing treatment, signing or approving a prescription or plan, waiving required QA, releasing a plan for treatment, or commanding treatment delivery. & PRN; AUTH; MODE; TLR; H-04 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+SAF-002 & The NL-TPS shall bind every clinical action to an authenticated user and role and to a confirmed patient, course, study, frame of reference, plan version, operating mode, and destination. & WF; ARCH; TLR; H-01 & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+SAF-003 & The NL-TPS shall require confirmation of at least two patient identifiers before a state-changing clinical action is executed. & HAZ; H-01 & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+SAF-004 & The NL-TPS shall fail closed when a safety-critical field, permission, dependency, context assertion, evidence rule, or commissioned-use condition is missing, ambiguous, inconsistent, expired, or unsupported. & PRN; WF; TLR; H-01,H-03,H-08 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+SAF-005 & The NL-TPS shall keep automated contours, objectives, transformations, calculations, and candidate plans in a visibly unsigned draft or sandbox state until all required reviews and approvals are complete. & MODE; WF; TLR; H-16 & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+SAF-006 & The NL-TPS shall provide a structured preview, explicit confirmation, cancellation, and rollback for reversible state-changing actions before those actions can affect a clinical candidate. & MODE; WF; PRN & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+SAF-007 & The NL-TPS shall invalidate affected downstream approvals, QA evidence, and transfer status whenever an approved dependency changes. & INFO; TLR; H-17 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+SAF-008 & The NL-TPS shall implement role authorization, state transitions, context assertions, hard stops, approval invalidation, and export policy in a deterministic safety kernel that is independently testable from generative models. & ARCH; PRN; HAZ & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+SAF-009 & The NL-TPS shall preserve institutionally required independent review, dose or MU verification, data-transfer verification, patient-specific QA, and physics checks without allowing AI output to satisfy incompatible approval roles. & PRN; AUTH; VV; TLR; H-13 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+SAF-010 & The NL-TPS shall identify degraded operation and failed dependencies explicitly and shall not use an unannounced fallback that changes clinical behavior, calculation, evidence, model, or destination. & PRN; OPS; H-16 & T\slash\allowbreak{}D \\
+\end{longtable}
+\end{small}
+
+\subsection{Natural-language and voice interaction (NLI)}
+
+Defines how text or speech becomes a deterministic, inspectable, and auditable clinical intent.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+NLI-001 & The NL-TPS shall accept typed text and user-initiated push-to-talk speech while prohibiting background listening and voice-only clinical signatures. & WF; NLI; H-02 & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+NLI-002 & The NL-TPS shall compile each actionable natural-language request into a versioned, inspectable, typed intent before executing a state-changing action. & WF; NLI; TLR; H-02 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+NLI-003 & The typed intent shall identify the clinical objects, requested action, parameters, units, priorities, evidence references, preconditions, expected outputs, and affected approval state. & WF; NLI; ARCH & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+NLI-004 & The NL-TPS shall distinguish verified patient facts, signed clinical intent, user preferences, evidence-derived rules, system assumptions, and unresolved questions in the compiled intent and user interface. & ARCH; INFO; HFE & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+NLI-005 & The NL-TPS shall use deterministic validation for safety-critical numbers, units, dose basis, fractionation, negation, laterality, structure identity, and clinical-object references. & NLI; HAZ; H-02,H-07 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+NLI-006 & The NL-TPS shall display a structured read-back of what will change, the affected patient and object, assumptions, evidence, expected effect, expected runtime, and cancellation or rollback method before consequential execution. & WF; NLI; TLR & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+NLI-007 & The NL-TPS shall require explicit confirmation of speech transcripts containing safety-critical numbers, units, negation, laterality, prescription elements, or clinical-object names. & NLI; TLR; H-02 & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+NLI-008 & The NL-TPS shall record the original user input or confirmed transcript, compiled intent, clarifications, assumptions, preview, confirmations, execution result, and user corrections in the audit ledger. & WF; INFO; TLR & T\slash\allowbreak{}I \\
+\end{longtable}
+\end{small}
+
+\subsection{Evidence and literature governance (EVD)}
+
+Constrains clinical reasoning to approved, versioned, applicability-checked sources and computable institutional rules.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+EVD-001 & The NL-TPS shall use only an institution-approved, closed evidence service for patient-specific clinical rules and shall not derive such rules from unrestricted internet retrieval in clinical mode. & EVD; ARCH; TLR; H-03 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+EVD-002 & The NL-TPS shall attach the source title, version or date, exact location, population, applicability, limitations, institutional approval status, effective date, and review date to each active evidence-derived rule. & EVD; TLR; H-03 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+EVD-003 & The NL-TPS shall apply the approved authority order of patient-specific signed intent, applicable trial protocol, institutional standard, professional guidance, and supporting peer-reviewed evidence. & EVD; H-03,H-04 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+EVD-004 & The NL-TPS shall treat the signed prescription and physician-approved case intent as the highest patient-specific authority and shall stop when a lower-tier rule conflicts with that authority. & EVD; H-04 & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+EVD-005 & The NL-TPS shall block or escalate conflicting, expired, retired, superseded, or inapplicable evidence rather than silently selecting or blending a clinical rule. & EVD; TLR; H-03 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+EVD-006 & The evidence service shall represent each computable rule with explicit structure definition, units, comparator, dose quantity and basis, population, exclusions, rule type, tolerance, and conflict policy. & EVD; INFO; H-07 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+EVD-007 & The NL-TPS shall support controlled evidence proposal, independent clinical review, approval, publication, periodic review, retirement, emergency suspension, and rollback. & EVD; QMS; OPS; H-15 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+EVD-008 & The NL-TPS shall provide a no-source or no-applicable-rule response and require human resolution when a verified clinical rule cannot be produced. & EVD; PRN; H-03 & T\slash\allowbreak{}HFE \\
+\end{longtable}
+\end{small}
+
+\subsection{Clinical context, imaging, registration, and contours (CLN)}
+
+Covers disease-site support, imaging integrity, commissioned registration, contour drafting, provenance, and review authority.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+CLN-001 & The NL-TPS disease-site assistant shall map verified case facts to candidate workflows or templates, identify missing material information, and require clinician confirmation without autonomously diagnosing or staging disease. & UC; MODEL & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+CLN-002 & The NL-TPS shall acquire and bind the approved image studies, frame of reference, registrations, structure sets, prior-treatment information, and signed clinical intent required for the active planning task. & WF; INFO; H-01 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+CLN-003 & The NL-TPS shall permit rigid or deformable registration and derived dose accumulation only through commissioned methods with registration-specific visualization, quality review, uncertainty documentation, and approval. & UC; VV; H-06 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+CLN-004 & The NL-TPS shall invoke contouring models only for approved anatomy, imaging conditions, structures, populations, and use cases and shall retain all model-generated contours as drafts pending review. & UC; MODEL; H-05 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+CLN-005 & The NL-TPS shall display contour-model uncertainty, input anomalies, and out-of-distribution status and shall abstain or route to manual contouring when the commissioned use envelope is not satisfied. & MODEL; VV; H-05,H-15 & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+CLN-006 & The NL-TPS shall validate structure identity, nomenclature mapping, laterality, presence, completeness, topology, image coverage, and geometric plausibility before a contour set can become a clinical candidate. & UC; INFO; H-05 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+CLN-007 & The NL-TPS shall preserve each contour's input study, frame of reference, model and version, configuration, naming map, confidence information, edits, reviewer, approval state, and lineage. & INFO; TLR; H-05 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+CLN-008 & The NL-TPS shall provide slice, surface, difference, and clinically relevant error-review views and shall capture the location and extent of user edits. & UC; VV; HFE & D\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+CLN-009 & The NL-TPS shall require radiation-oncologist approval for clinical target contours and shall enforce institution-approved approval roles for organs at risk and other derived structures. & AUTH; UC; TLR; H-05 & T\slash\allowbreak{}I \\
+\end{longtable}
+\end{small}
+
+\subsection{Treatment-plan generation and calculation (PLN)}
+
+Defines structured planning intent, commissioned execution, candidate diversity, robustness, and plan lineage.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+PLN-001 & The NL-TPS shall create a versioned structured planning intent from the signed prescription, approved anatomy, patient-specific instructions, applicable protocol, institutional planning standard, and confirmed user priorities. & WF; UC; INFO & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+PLN-002 & The NL-TPS shall generate or modify candidate plans only through commissioned planning, optimization, robustness, and dose-calculation services operating within the validated machine, technique, and algorithm envelope. & UC; ARCH; TLR; H-08 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+PLN-003 & The NL-TPS shall prevent language, speech, disease-site, or generative models from directly calculating clinical dose or substituting for a commissioned dose engine. & PRN; MODEL; H-08 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+PLN-004 & The structured planning intent shall distinguish hard constraints, planning goals, optimization objectives, preferences, and reporting-only metrics. & UC; EVD; TLR; H-11 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+PLN-005 & The NL-TPS shall prevent silent relaxation of a hard constraint and shall require an authorized explicit action, documented rationale, and pre\slash\allowbreak{}post difference review for any permitted relaxation. & UC; TLR; H-11 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+PLN-006 & The NL-TPS shall generate the number of candidate plans requested by an authorized user when feasible and shall identify when the requested candidate set cannot be produced. & UC; MOE & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+PLN-007 & The NL-TPS shall document the planning strategy, parameter variation, objective tradeoff, beam or modality variation, or other method used to create meaningful candidate diversity. & UC; TLR; H-10 & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+PLN-008 & The NL-TPS shall identify infeasible candidates and candidates dominated by another candidate under the declared evaluation criteria. & UC; TLR; H-10 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+PLN-009 & The NL-TPS shall attest at runtime to the active machine model, energy or beam type, technique, dose algorithm, grid, optimizer, biological model if used, and approved configuration before plan calculation. & INFO; MODEL; H-08 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+PLN-010 & The NL-TPS shall represent physical dose, RBE-weighted dose, fractionation, normalization, BED or EQD2 when approved, and proton-specific assumptions explicitly and without implicit conversion. & EVD; INFO; H-07,H-09 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+PLN-011 & The NL-TPS shall apply and record the institution-approved setup, range, motion, interplay, and other robustness scenarios required for the active technique before candidate eligibility. & UC; VV; H-09 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+PLN-012 & The NL-TPS shall preserve candidate-plan identity, parent intent, parameters, calculation outputs, warnings, configuration, evaluation results, and lineage through iterative refinement. & INFO; ARCH; H-17 & I\slash\allowbreak{}T \\
+\end{longtable}
+\end{small}
+
+\subsection{Plan review, selection, QA, and transfer (REV)}
+
+Specifies comparable plan review, transparent tradeoffs, role approvals, independent verification, and controlled export.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+REV-001 & The NL-TPS shall present candidate plans in a consistent comparison workspace showing absolute values and differences without changing metric definitions or display scales between candidates. & UC; HFE; MOE & D\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+REV-002 & The comparison workspace shall display target coverage, organ-at-risk results, constraint status, spatial dose, hotspots and coldspots, robustness, uncertainty, complexity, deliverability, and provenance before plan selection. & UC; TLR; H-10 & D\slash\allowbreak{}T \\
+\addlinespace[2pt]
+REV-003 & The NL-TPS shall expose the declared tradeoffs and shall not select or recommend a winning plan solely through an opaque composite score. & UC; PRN; H-10,H-18 & I\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+REV-004 & The NL-TPS shall record the selected plan, rejected alternatives, review comments, deviations, tradeoff rationale, and role-specific decisions. & INFO; MOE & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+REV-005 & The NL-TPS shall enforce radiation-oncologist clinical plan approval and qualified-medical-physicist technical review before a candidate can enter the approved state. & AUTH; MODE; HAZ & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+REV-006 & The NL-TPS shall route the approved candidate through the institutionally required independent dose or MU verification, patient-specific QA, transfer QA, and other technique-specific checks. & VV; TLR; H-13 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+REV-007 & The NL-TPS shall authorize export only after all required approvals and QA states are current and shall verify source-to-destination identity, content, geometry, and status after transfer. & WF; INFO; H-12,H-17 & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+REV-008 & The NL-TPS shall make approved clinical objects immutable or version-controlled and shall require re-review of every affected downstream object after a change. & MODE; INFO; H-17 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+REV-009 & The NL-TPS shall document the independence assumptions, shared inputs, shared dependencies, ownership boundaries, and common-cause failure risks of each automated verification path. & PRN; VV; TLR; H-13 & I\slash\allowbreak{}A \\
+\end{longtable}
+\end{small}
+
+\subsection{Data, interoperability, provenance, and audit (DAT)}
+
+Defines canonical clinical objects, DICOM and workflow interoperability, transfer fidelity, and tamper-evident traceability.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+DAT-001 & The NL-TPS shall assign a unique identity, version, lifecycle state, owner, and source linkage to each clinical context, prescription intent, anatomy set, evidence package, planning strategy, candidate plan, review decision, QA record, and transfer record. & INFO; ARCH & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+DAT-002 & The NL-TPS shall maintain a dependency and provenance graph that traces every derived object to its inputs, transformations, software, model, evidence, configuration, user actions, and approvals. & INFO; TLR; H-17 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+DAT-003 & The NL-TPS shall validate and preserve explicit units, coordinate systems, dose quantity and basis, structure definitions, and rounding behavior at storage, calculation, display, and interface boundaries. & INFO; H-07,H-12 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+DAT-004 & The NL-TPS shall validate DICOM patient and study identities, SOP Instance UIDs, references, frame-of-reference UIDs, required attributes, coordinate transformations, units, and destination fidelity for every clinical transfer. & ARCH; TLR; H-01,H-12 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+DAT-005 & The NL-TPS shall support the approved DICOM objects and transactions required for images, registrations, segmentations or structures, RT Plan, RT Ion Plan, RT Dose, treatment records, and related provenance in the active deployment. & ARCH; QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+DAT-006 & The NL-TPS shall use approved IHE-RO profiles and FHIR or CodeX radiation-therapy exchanges where implemented and shall document conformance and known limitations. & ARCH; QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+DAT-007 & The NL-TPS shall reject incomplete, ambiguous, inconsistent, orphaned, or partially transferred clinical data rather than promoting it to a valid state. & INFO; H-12,H-16 & T \\
+\addlinespace[2pt]
+DAT-008 & The NL-TPS shall maintain a tamper-evident, time-synchronized audit ledger of commands, context, inputs, versions, evidence, outputs, warnings, edits, approvals, QA, exports, failures, overrides, and reconciliation events. & INFO; TLR; H-14 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+DAT-009 & The NL-TPS shall use integrity hashes or equivalent controls to detect unauthorized modification of clinical objects, evidence packages, software artifacts, model artifacts, audit records, and transferred data. & INFO; SEC; H-12,H-14 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+DAT-010 & The NL-TPS shall identify the authoritative system of record and retention, legal-record, export, archival, and reconciliation policy for each clinical object type. & INFO; DEC & I\slash\allowbreak{}A \\
+\end{longtable}
+\end{small}
+
+\subsection{AI and inference-model lifecycle (AIM)}
+
+Controls model approval, routing, use envelopes, abstention, evaluation, change, and rollback.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+AIM-001 & The NL-TPS shall invoke only institution-approved, locked model versions registered for the active task and clinical operating mode. & MODEL; TLR; H-15 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+AIM-002 & The model gateway shall verify that the active case satisfies the model's intended use, input contract, population, imaging or data conditions, required preprocessing, and resource limits before inference. & ARCH; MODEL; TLR & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+AIM-003 & Each clinical model shall implement a defined abstention, rejection, or manual-review response for unsupported, anomalous, incomplete, or out-of-distribution input. & MODEL; TLR; H-05,H-15 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+AIM-004 & The NL-TPS shall prohibit production model-weight updates and unapproved behavioral learning from routine patient cases, user edits, prompts, or outcomes. & MODEL; TLR; H-15 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+AIM-005 & The NL-TPS shall maintain a model and dependency registry containing version, intended use, owner, supplier, training and evaluation provenance, limitations, approved configuration, signed artifacts, and software bill of materials. & MODEL; SEC; QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+AIM-006 & Clinical model evaluation shall use separated development, tuning, internal test, external test, and site-acceptance data with documented overlap controls. & MODEL; VV & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+AIM-007 & The NL-TPS shall evaluate and display clinically relevant overall and subgroup performance, calibration, failure detection, uncertainty, edit burden, and known limitations for each approved model use. & MODEL; VV; MOE & A\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+AIM-008 & Changes to model weights, prompts that alter clinical behavior, retrieval configuration, clinical rules, preprocessing, dependencies, or runtime infrastructure shall undergo impact assessment, regression testing, approval, versioning, and rollback planning. & MODEL; QMS; ROAD; H-15 & I\slash\allowbreak{}T \\
+\end{longtable}
+\end{small}
+
+\subsection{Human factors, usability, and competency (HFE)}
+
+Ensures critical context is visible, uncertainty is understandable, alerts are actionable, and users are trained for their assigned roles.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+HFE-001 & The NL-TPS shall continuously display the active patient, course, study, plan, operating mode, approval state, and unsaved or unverified changes during clinical work. & HFE; H-01,H-17 & HFE\slash\allowbreak{}T \\
+\addlinespace[2pt]
+HFE-002 & The user interface shall visually distinguish verified patient facts, signed intent, approved evidence, model suggestions, user preferences, assumptions, warnings, and unresolved questions. & NLI; HFE; H-18 & HFE\slash\allowbreak{}I \\
+\addlinespace[2pt]
+HFE-003 & Warnings shall identify the hazard, affected object, required action, and escalation path and shall not rely on color alone. & HFE; H-18 & HFE\slash\allowbreak{}I \\
+\addlinespace[2pt]
+HFE-004 & Confirmation burden shall be proportional to clinical risk, and the NL-TPS shall monitor alert burden, overrides, workarounds, and critical-warning comprehension. & WF; HFE; OPS; H-18 & HFE\slash\allowbreak{}A \\
+\addlinespace[2pt]
+HFE-005 & The NL-TPS shall complete formative and summative human-factors validation with representative intended users, critical tasks, environments, interruptions, handoffs, and recovery scenarios before clinical release. & VV; HFE; TLR & HFE\slash\allowbreak{}I \\
+\addlinespace[2pt]
+HFE-006 & The NL-TPS shall require role-specific training, demonstrated competency, and current authorization before a user can perform clinical functions assigned to that role. & AUTH; HFE; ROAD & I\slash\allowbreak{}T \\
+\end{longtable}
+\end{small}
+
+\subsection{Privacy, cybersecurity, and secure development (SEC)}
+
+Protects confidentiality, integrity, availability, model and evidence supply chains, and clinical-mode boundaries.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+SEC-001 & The NL-TPS shall enforce unique user identity, multi-factor authentication, least privilege, role and context authorization, session controls, and periodic access review. & SEC; TLR; H-14 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+SEC-002 & The NL-TPS shall protect data and services through approved encryption, network segmentation, managed secrets, secure configuration, endpoint controls, and least-privilege service identities. & SEC; TLR; H-14 & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+SEC-003 & The NL-TPS shall prevent protected health information, images, prompts, transcripts, or outputs from being sent to an unapproved connector, model service, tenant, destination, or external tool. & SEC; H-14 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+SEC-004 & The NL-TPS shall treat retrieved text, uploaded documents, DICOM metadata, user content, and model output as untrusted input and shall isolate instructions embedded in that content from system authority. & SEC; H-14 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+SEC-005 & The NL-TPS shall verify the identity, integrity, signature, provenance, and approved status of software, model, evidence, configuration, and dependency artifacts before clinical use. & MODEL; SEC; H-14,H-15 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+SEC-006 & The NL-TPS development and maintenance process shall include threat modeling, secure coding, code review, software bill of materials, vulnerability scanning, penetration testing, patch governance, and supplier-risk controls. & SEC; QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+SEC-007 & The NL-TPS shall centrally record and detect unauthorized access, anomalous export, integrity failure, malicious input, model or evidence compromise, secrets exposure, and suspected PHI leakage. & SEC; OPS; H-14 & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+SEC-008 & The NL-TPS shall support tested clinical and cybersecurity incident containment, evidence preservation, patient-impact assessment, communication, reporting, recovery, and corrective and preventive action. & SEC; OPS; H-14 & D\slash\allowbreak{}I \\
+\end{longtable}
+\end{small}
+
+\subsection{Clinical operations, monitoring, and resilience (OPS)}
+
+Defines production monitoring, action thresholds, atomic work states, suspension, downtime, recovery, and learning.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+OPS-001 & The NL-TPS shall monitor predefined safety, model, evidence, workflow, technical, subgroup, reliability, and security signals against approved action thresholds. & OPS; MOE; TLR; H-15 & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+OPS-002 & The NL-TPS shall use atomic job states and shall prevent a timed-out, failed, canceled, partial, or unreconciled result from appearing complete or eligible for promotion. & OPS; H-16 & T \\
+\addlinespace[2pt]
+OPS-003 & The NL-TPS shall support rapid suspension of a model, evidence rule, connector, workflow, disease site, or complete clinical service and rollback to an approved known-good configuration. & OPS; TLR; H-15,H-16 & D\slash\allowbreak{}T \\
+\addlinespace[2pt]
+OPS-004 & The NL-TPS shall provide an explicit degraded or read-only mode and an institution-approved downtime procedure that prohibits new clinical execution while preserving access to completed work and audit records as authorized. & MODE; OPS; TLR & D\slash\allowbreak{}T \\
+\addlinespace[2pt]
+OPS-005 & The NL-TPS shall maintain validated backups and shall perform staged restoration, object and destination reconciliation, approval-state verification, regression testing, and documented recovery exercises. & SEC; OPS & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+OPS-006 & The NL-TPS shall support reporting, triage, investigation, patient-impact assessment, evidence preservation, trend analysis, and corrective and preventive action for incidents, near misses, unsafe workarounds, and QA discrepancies. & OPS; QMS & I\slash\allowbreak{}D \\
+\addlinespace[2pt]
+OPS-007 & The NL-TPS shall define, approve, monitor, and periodically review clinical service levels and action thresholds for availability, latency, recovery, data retention, reliability, safety, model performance, evidence currency, and security. & OPS; MOE; DEC & I\slash\allowbreak{}A \\
+\end{longtable}
+\end{small}
+
+\subsection{Verification, commissioning, release, and change control (VAL)}
+
+Establishes traceability, layered verification, site-specific commissioning, staged clinical evidence, and controlled release expansion.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0806\textwidth}L{0.5386\textwidth}L{0.1868\textwidth}L{0.1140\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{High-level requirement}} & \textbf{\textbf{Source \slash\allowbreak{} hazard}} & \textbf{\textbf{V\&V}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+VAL-001 & The program shall trace each stakeholder need, hazard, risk control, and high-level requirement to allocated design, implementation, verification method, test result, anomaly disposition, and release decision. & HAZ; VV; QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+VAL-002 & The integrated NL-TPS shall pass site-specific acceptance, commissioning, end-to-end, regression, shadow-mode, and governance release criteria before clinical use. & VV; ROAD; TLR & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+VAL-003 & Verification shall include locked reference cases and challenge cases for language and voice, evidence computation, segmentation, registration, planning, dose, robustness, interoperability, security, recovery, and audit integrity. & VV; HAZ & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+VAL-004 & End-to-end verification shall exercise normal, boundary, rare but foreseeable, wrong-context, partial-failure, timeout, rollback, post-approval change, and recovery scenarios through the official clinical interfaces. & HAZ; VV; OPS & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+VAL-005 & Clinical model validation shall include task-specific technical performance, clinically significant error, dose impact where relevant, edit burden, failure detection, subgroup performance, and human-team effect. & MODEL; VV; MOE & A\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+VAL-006 & Clinical evaluation shall progress through retrospective, shadow, and controlled limited-clinical stages with predefined endpoints, independent adjudication, and applicable research, ethics, quality, and regulatory authorization. & VV; ROAD; DEC & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+VAL-007 & The NL-TPS shall prevent progression through each release gate until its predefined safety, quality, subgroup, usability, reliability, cybersecurity, and governance evidence is complete and approved. & ROAD; MOE & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+VAL-008 & Each expansion to a new disease site, model, modality, machine, technique, institution, adaptive workflow, interface, or evidence package shall receive documented change-impact assessment, commissioning, human-factors assessment, regression testing, and monitoring approval. & QMS; ROAD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+VAL-009 & The NL-TPS shall not enter or remain in clinical service with an unresolved critical anomaly, unacceptable residual risk, failed release threshold, unverified risk control, or unreconciled safety-critical change. & HAZ; VV; QMS; ROAD & I\slash\allowbreak{}T \\
+\end{longtable}
+\end{small}
+
+\section{5. ConOps seed-requirement crosswalk}
+
+The ConOps introduced 29 top-level operational requirement identifiers. The crosswalk below preserves their traceability while allowing this document to decompose combined obligations into more atomic HLRs. A requirements-management system should retain both the original seed ID and the derived HLR links.
+
+\begin{small}
+\begin{longtable}{@{}L{0.1474\textwidth}L{0.2457\textwidth}L{0.5268\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ConOps seed ID}} & \textbf{\textbf{Derived HLR ID(s)}} & \textbf{\textbf{Disposition}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ConOps seed ID}} & \textbf{\textbf{Derived HLR ID(s)}} & \textbf{\textbf{Disposition}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+SAF-001 & SAF-001 & Carried forward \\
+\addlinespace[2pt]
+SAF-002 & SAF-002 & Carried forward \\
+\addlinespace[2pt]
+SAF-003 & SAF-004 & Carried forward; fail-closed conditions clarified \\
+\addlinespace[2pt]
+SAF-004 & SAF-005 & Carried forward; draft-state scope clarified \\
+\addlinespace[2pt]
+SAF-005 & SAF-007; REV-008 & Decomposed into invalidation and re-review obligations \\
+\addlinespace[2pt]
+NL-001 & NLI-002; NLI-003 & Decomposed into typed-intent creation and required content \\
+\addlinespace[2pt]
+NL-002 & NLI-006 & Carried forward as structured read-back \\
+\addlinespace[2pt]
+NL-003 & NLI-007 & Carried forward as safety-critical transcript confirmation \\
+\addlinespace[2pt]
+EVD-001 & EVD-002; EVD-006 & Decomposed into provenance and computable-rule metadata \\
+\addlinespace[2pt]
+EVD-002 & EVD-005 & Carried forward as conflict and lifecycle blocking \\
+\addlinespace[2pt]
+EVD-003 & EVD-001 & Carried forward as the closed clinical evidence boundary \\
+\addlinespace[2pt]
+AI-001 & AIM-001; AIM-002 & Decomposed into model approval and case-contract checks \\
+\addlinespace[2pt]
+AI-002 & AIM-003 & Carried forward as abstention or manual review \\
+\addlinespace[2pt]
+AI-003 & AIM-004; AIM-008 & Decomposed into production-lock and controlled change \\
+\addlinespace[2pt]
+CNT-001 & CLN-007 & Carried forward as contour provenance \\
+\addlinespace[2pt]
+CNT-002 & CLN-009 & Carried forward as target-contour approval authority \\
+\addlinespace[2pt]
+PLN-001 & PLN-002; PLN-009 & Decomposed into commissioned execution and runtime attestation \\
+\addlinespace[2pt]
+PLN-002 & PLN-004; PLN-005 & Decomposed into typed priorities and controlled relaxation \\
+\addlinespace[2pt]
+PLN-003 & REV-002 & Carried forward as candidate review content \\
+\addlinespace[2pt]
+PLN-004 & PLN-007; PLN-008 & Decomposed into diversity provenance and dominated-plan status \\
+\addlinespace[2pt]
+QA-001 & SAF-009; REV-006 & Decomposed into preservation and routing of required QA \\
+\addlinespace[2pt]
+QA-002 & REV-009 & Carried forward as independence and common-cause analysis \\
+\addlinespace[2pt]
+INT-001 & DAT-004; DAT-007 & Decomposed into transfer validation and rejection behavior \\
+\addlinespace[2pt]
+AUD-001 & DAT-008; DAT-009 & Decomposed into ledger completeness and integrity \\
+\addlinespace[2pt]
+SEC-001 & SEC-001 through SEC-008 & Decomposed into independently verifiable security controls \\
+\addlinespace[2pt]
+OPS-001 & OPS-001; OPS-007 & Decomposed into monitoring and approved thresholds \\
+\addlinespace[2pt]
+OPS-002 & OPS-003 through OPS-005 & Decomposed into suspension, degraded operation, and recovery \\
+\addlinespace[2pt]
+HFE-001 & HFE-005 & Carried forward as formative and summative validation \\
+\addlinespace[2pt]
+VAL-001 & VAL-002; VAL-007; VAL-009 & Decomposed into integrated validation, gate control, and release blocking \\
+\end{longtable}
+\end{small}
+
+\section{6. Open decisions and TBD register}
+
+The following decisions are inherited from the ConOps and materially affect requirement allocation, thresholds, interfaces, validation evidence, or regulatory scope. Requirements shall not be weakened by an unresolved TBD. Where a TBD prevents a verifiable design, the affected release item remains unapproved.
+
+\begin{small}
+\begin{longtable}{@{}L{0.0885\textwidth}L{0.5111\textwidth}L{0.2261\textwidth}L{0.0944\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{Decision required}} & \textbf{\textbf{Proposed owner}} & \textbf{\textbf{ConOps}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{ID}} & \textbf{\textbf{Decision required}} & \textbf{\textbf{Proposed owner}} & \textbf{\textbf{ConOps}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+TBD-01 & Approve the exact intended-use statement and regulatory claims for the first release. & Executive, clinical, regulatory & D-01 \\
+\addlinespace[2pt]
+TBD-02 & Select the first disease site, modality, machine, technique, and task forming the bounded clinical slice. & Clinical, dosimetry, physics & D-02 \\
+\addlinespace[2pt]
+TBD-03 & Identify the systems of record and the contractually available TPS, ROIS, dose, QA, and interoperability interfaces. & Physics, informatics, procurement & D-03 \\
+\addlinespace[2pt]
+TBD-04 & Approve the patient-specific and protocol-specific authority hierarchy and evidence-domain ownership. & Clinical governance & D-04 \\
+\addlinespace[2pt]
+TBD-05 & Select contouring and planning models and establish data rights, supplier evidence, and lifecycle ownership. & Program, legal, quality & D-05 \\
+\addlinespace[2pt]
+TBD-06 & Approve independent-verification methods and separation-of-duties rules for each supported technique. & Physics, safety committee & D-06 \\
+\addlinespace[2pt]
+TBD-07 & Set quantitative performance, subgroup, use-error, reliability, cybersecurity, and release-gate thresholds. & Governance committee & D-07 \\
+\addlinespace[2pt]
+TBD-08 & Approve the clinical study design, IRB pathway, and regulatory interactions for shadow and limited clinical use. & Clinical research, regulatory & D-08 \\
+\addlinespace[2pt]
+TBD-09 & Set downtime, recovery-time, retention, and business-continuity targets. & Clinical operations, IT & D-09 \\
+\addlinespace[2pt]
+TBD-10 & Define how patients will be informed when AI-assisted tools materially participate in planning. & Clinical ethics, legal, communications & D-10 \\
+\end{longtable}
+\end{small}
+
+\section{7. Source traceability legend}
+
+\begin{small}
+\begin{longtable}{@{}L{0.1081\textwidth}L{0.8119\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{Code}} & \textbf{\textbf{ConOps source section}} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{\textbf{Code}} & \textbf{\textbf{ConOps source section}} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+SCP & Purpose, audience, scope, and ConOps status \\
+\addlinespace[2pt]
+NEED & Operational need and future-state vision \\
+\addlinespace[2pt]
+PRN & Guiding principles and non-negotiable boundaries \\
+\addlinespace[2pt]
+AUTH & Stakeholders, authority, and responsibility \\
+\addlinespace[2pt]
+MODE & Operating modes and autonomy envelope \\
+\addlinespace[2pt]
+WF & Operational concept and end-to-end workflow \\
+\addlinespace[2pt]
+UC & Primary clinical use cases \\
+\addlinespace[2pt]
+NLI & Natural-language interaction contract \\
+\addlinespace[2pt]
+EVD & Evidence-constrained reasoning and literature governance \\
+\addlinespace[2pt]
+ARCH & System context and logical architecture \\
+\addlinespace[2pt]
+INFO & Core information and provenance model \\
+\addlinespace[2pt]
+MODEL & AI and inference model strategy \\
+\addlinespace[2pt]
+HAZ & Safety engineering and preliminary hazard analysis \\
+\addlinespace[2pt]
+VV & Verification, validation, commissioning, and clinical evaluation \\
+\addlinespace[2pt]
+HFE & Human factors, usability, and training \\
+\addlinespace[2pt]
+SEC & Privacy, cybersecurity, and resilience \\
+\addlinespace[2pt]
+QMS & Quality system, regulatory strategy, and standards \\
+\addlinespace[2pt]
+OPS & Clinical operations, monitoring, downtime, and incident learning \\
+\addlinespace[2pt]
+MOE & Measures of effectiveness and program success \\
+\addlinespace[2pt]
+ROAD & Implementation roadmap and release gates \\
+\addlinespace[2pt]
+TLR & Top-level operational requirements \\
+\addlinespace[2pt]
+DEC & Assumptions, constraints, dependencies, and open decisions \\
+\end{longtable}
+\end{small}
+
+Hazard references H-01 through H-18 correspond to the preliminary hazard analysis in the ConOps. Formal risk management shall maintain bidirectional traceability between hazards, causes, hazardous situations, harms, risk controls, verification evidence, residual risk, and production monitoring.
+
+\section{8. Decomposition and baseline-acceptance criteria}
+
+\subsection{Required next-level specifications}
+
+\begin{itemize}
+\item System requirements specification with quantitative performance, availability, latency, recovery, data-retention, and release thresholds.
+\item Software and safety-kernel requirements, architecture, state machine, permissions model, and failure behavior.
+\item Clinical intent schema, evidence-rule schema, data dictionary, unit model, and provenance model.
+\item DICOM, IHE-RO, FHIR, TPS, ROIS, dose-engine, QA-system, identity, and audit interface requirements.
+\item Model requirements and model cards for each segmentation, disease-site, planning, prediction, language, or anomaly-detection model.
+\item Human-factors engineering file covering intended users, use environments, critical tasks, hazards, user-interface requirements, and validation protocol.
+\item Cybersecurity and privacy requirements, threat model, secure-development plan, incident response, and recovery architecture.
+\item Verification, validation, commissioning, clinical-evaluation, monitoring, and change-control plans with objective release criteria.
+\end{itemize}
+
+\subsection{Proposed baseline-acceptance checklist}
+
+\begin{itemize}
+\item Clinical governance approves the intended use, first bounded clinical slice, systems of record, and release authority.
+\item Every high-level requirement has an accountable owner, allocation, rationale, risk linkage, and approved verification method.
+\item All TBDs affecting the first release are resolved or formally deferred with no unmitigated safety impact.
+\item The preliminary hazard analysis and cybersecurity threat model are updated against the requirement baseline.
+\item Lower-level specifications demonstrate complete bidirectional traceability without orphan requirements or orphan risk controls.
+\item Quantitative pass\slash\allowbreak{}fail thresholds are approved before design verification or clinical evaluation begins.
+\item The quality system defines change control, anomaly disposition, residual-risk acceptance, release approval, and periodic reauthorization.
+\end{itemize}
+
+\textbf{Approval statement. }This Version 0.1 document is a proposed requirements baseline for multidisciplinary review. It becomes authoritative only after controlled approval under the program quality system.
+
+\end{document}

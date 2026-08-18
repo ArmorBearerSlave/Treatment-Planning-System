@@ -1,0 +1,130 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{nl_tps_common}[2026/08/18 NL-TPS shared Overleaf style]
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{helvet}
+\RequirePackage[letterpaper,margin=1in,headheight=15pt,headsep=18pt,footskip=30pt]{geometry}
+\RequirePackage[table]{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{longtable}
+\RequirePackage{array}
+\RequirePackage{booktabs}
+\RequirePackage{ragged2e}
+\RequirePackage{enumitem}
+\RequirePackage{titlesec}
+\RequirePackage{fancyhdr}
+\RequirePackage{lastpage}
+\RequirePackage{caption}
+\RequirePackage{microtype}
+\RequirePackage[hidelinks]{hyperref}
+
+\renewcommand{\familydefault}{\sfdefault}
+\definecolor{NLNavy}{HTML}{17365D}
+\definecolor{NLBlue}{HTML}{2E74B5}
+\definecolor{NLDarkBlue}{HTML}{1F4D78}
+\definecolor{NLInk}{HTML}{17212B}
+\definecolor{NLMuted}{HTML}{5E6B78}
+\definecolor{NLTableHeader}{HTML}{E8EEF5}
+\definecolor{NLLight}{HTML}{F2F4F7}
+\definecolor{NLPaleGold}{HTML}{FFF5D6}
+\definecolor{NLGOLD}{HTML}{9A6B00}
+\definecolor{NLRisk}{HTML}{9B1C1C}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=NLDarkBlue,
+  urlcolor=NLBlue,
+  citecolor=NLDarkBlue,
+  pdfborder={0 0 0}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\setlength{\LTpre}{6pt}
+\setlength{\LTpost}{10pt}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.16}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\emergencystretch=2em
+\urlstyle{same}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{NLBlue}}
+  {\thesection}{0.65em}{}
+\titleformat{name=\section,numberless}
+  {\normalfont\Large\bfseries\color{NLBlue}}
+  {}{0pt}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{NLBlue}}
+  {\thesubsection}{0.65em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{NLDarkBlue}}
+  {\thesubsubsection}{0.65em}{}
+\titlespacing*{\section}{0pt}{16pt}{8pt}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+\titlespacing*{\subsubsection}{0pt}{8pt}{4pt}
+
+\setlist[itemize]{leftmargin=0.5in,labelsep=0.18in,itemsep=3pt,topsep=4pt}
+\setlist[enumerate]{leftmargin=0.5in,labelsep=0.18in,itemsep=3pt,topsep=4pt}
+\captionsetup{font=small,labelfont=bf,labelsep=period}
+
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\Centering\arraybackslash}p{#1}}
+
+\newcommand{\NLSetPageStyle}[2]{%
+  \pagestyle{fancy}%
+  \fancyhf{}%
+  \fancyhead[L]{\small\bfseries\color{NLMuted}#1}%
+  \fancyhead[R]{\small\bfseries\color{NLGOLD}DISCUSSION DRAFT}%
+  \fancyfoot[L]{\scriptsize\color{NLMuted}#2}%
+  \fancyfoot[R]{\scriptsize\color{NLMuted}Page \thepage\ of \pageref*{LastPage}}%
+  \renewcommand{\headrulewidth}{0.35pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+
+\newcommand{\NLFrontMatterSection}[1]{%
+  \section*{#1}%
+  \addcontentsline{toc}{section}{#1}%
+}
+
+\newcommand{\NLMeta}[2]{%
+  \noindent\textbf{#1:}\ #2\par\vspace{2pt}%
+}
+
+\newsavebox{\NLNoticeBox}
+\newenvironment{nlnotice}[1]
+{%
+  \par\medskip
+  \begin{lrbox}{\NLNoticeBox}%
+  \begin{minipage}{0.94\linewidth}%
+  \textbf{\color{NLDarkBlue}#1}\par\smallskip
+}
+{%
+  \end{minipage}%
+  \end{lrbox}%
+  \noindent\fcolorbox{NLGOLD}{NLPaleGold}{\usebox{\NLNoticeBox}}%
+  \par\medskip
+}
+
+\newcommand{\NLTitleBlock}[5]{%
+  \hypersetup{pageanchor=false}%
+  \begin{titlepage}
+  \thispagestyle{empty}
+  \vspace*{0.55in}
+  {\large\bfseries\color{NLGOLD}#1\par}
+  \vspace{0.18in}
+  {\Huge\bfseries\color{NLNavy}#2\par}
+  \vspace{0.12in}
+  {\Large\color{NLDarkBlue}#3\par}
+  \vspace{0.35in}
+  {\color{NLInk}#4\par}
+  \vfill
+  \begin{nlnotice}{STATUS AND SAFETY NOTICE}
+  #5
+  \end{nlnotice}
+  \end{titlepage}
+  \hypersetup{pageanchor=true}%
+  \pagenumbering{roman}%
+}
