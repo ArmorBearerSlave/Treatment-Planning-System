@@ -1,0 +1,1202 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage{nl_tps_common}
+\hypersetup{pdftitle={Functional, Non-Functional, and Operational Sub-Requirements},pdfsubject={NL-TPS controlled documentation}}
+\begin{document}
+\NLSetPageStyle{NL-TPS F/NF/O SUB-REQUIREMENTS}{NL-TPS categorized F/NF/O High-Level Requirements v0.1}
+\NLTitleBlock{SYSTEM REQUIREMENTS BASELINE}{Functional, Non-Functional, and Operational Sub-Requirements}{Complete decomposition and immutable source trace}{\begin{minipage}{0.95\textwidth}
+\NLMeta{Source baseline}{NL-TPS categorized F/NF/O High-Level Requirements v0.1}
+\NLMeta{Requirements version}{0.1 - Proposed baseline}
+\NLMeta{Date}{18 August 2026}
+\NLMeta{Status}{Discussion Draft - Not for clinical use}
+\NLMeta{Coverage}{333 requirements: 192 functional; 72 non-functional; 69 operational}
+\end{minipage}}{This document decomposes the categorized high-level baseline into proposed, testable sub-requirements. It is not a clinical protocol, commissioning report, regulatory determination, released product specification, or authorization for patient use.}
+
+\tableofcontents
+\clearpage
+\ifdefined\NLTPSCombinedDocument\else\pagenumbering{arabic}\fi
+
+
+\NLFrontMatterSection{Document control}
+
+\begin{small}
+\begin{longtable}{@{}L{0.1769\textwidth}L{0.7431\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Value} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Value} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Document owner & NL-TPS Program - proposed; final owner requires governance approval \\
+\addlinespace[2pt]
+Source document & NL-TPS High-Level Functional, Non-Functional, and Operational Requirements, Version 0.1 \\
+\addlinespace[2pt]
+Baseline status & Proposed requirements and realization planning; not approved, implemented, commissioned, or allocated to a clinical release \\
+\addlinespace[2pt]
+Coverage & 333 requirements: 192 functional; 72 non-functional; 69 operational \\
+\addlinespace[2pt]
+Identifier policy & Each category child ID retains the immutable original detailed-requirement alias. \\
+\addlinespace[2pt]
+Change authority & Clinical governance and quality-system change control \\
+\addlinespace[2pt]
+Supersession & None; this document preserves and traces to the existing controlled baselines \\
+\addlinespace[2pt]
+\end{longtable}
+\end{small}
+
+\NLFrontMatterSection{Executive summary}
+
+This specification realizes the 111 categorized high-level requirements through all 333 existing lower-level obligations: 192 functional, 72 non-functional, and 69 operational sub-requirements. Each parent retains three children covering controlled definition or configuration, enforceable behavior or workflow, and retained verification or audit evidence.
+
+No child obligation has been summarized away. The exact source text, legacy allocation code, and anticipated V\&V methods are preserved, while the new category ID provides an explicit functional, non-functional, or operational classification.
+
+\section{Purpose and decomposition rule}
+
+This document provides the complete lower-level requirements needed to bring each categorized high-level requirement into being. It supports subsystem allocation, interface-control documents, risk controls, detailed design, implementation, team planning, verification, commissioning, and release evidence.
+
+\begin{nlnotice}{DECOMPOSITION RULE}
+A sub-requirement elaborates its parent; it does not weaken, narrow, replace, or independently satisfy the parent. Compliance requires the parent, all applicable children, linked interface requirements, risk controls, component allocations, and institution- and release-specific acceptance criteria.
+\end{nlnotice}
+
+\section{Identifiers, trace, and verification}
+
+The category child identifier prepends \texttt{FSR}, \texttt{NFSR}, or \texttt{OSR} to the unchanged source child ID. The parent category ID and both source aliases shall be present in the trace repository. V\&V codes are I (inspection), A (analysis), T (test), D (demonstration), and HFE (human-factors evaluation).
+
+Legacy allocation codes identify the original primary implementing family and remain visible for reconciliation with the earlier Detailed Requirements and Component Realization documents. The respective component realization document converts these legacy codes into category-specific components and accountable team allocations.
+
+\section{Coverage summary}
+
+\begin{small}
+\begin{longtable}{@{}L{0.13\textwidth}L{0.08\textwidth}L{0.45\textwidth}L{0.11\textwidth}L{0.11\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Class} & \textbf{Domain} & \textbf{Title} & \textbf{Parents} & \textbf{Children} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Class} & \textbf{Domain} & \textbf{Title} & \textbf{Parents} & \textbf{Children} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Functional & NLI & Natural-language and voice interaction & 8 & 24 \\
+\addlinespace[2pt]
+Functional & EVD & Evidence and literature governance & 8 & 24 \\
+\addlinespace[2pt]
+Functional & CLN & Clinical context, imaging, registration, and contours & 9 & 27 \\
+\addlinespace[2pt]
+Functional & PLN & Treatment-plan generation and calculation & 12 & 36 \\
+\addlinespace[2pt]
+Functional & REV & Plan review, selection, QA, and transfer & 9 & 27 \\
+\addlinespace[2pt]
+Functional & DAT & Data, interoperability, provenance, and audit & 10 & 30 \\
+\addlinespace[2pt]
+Functional & AIM & AI and inference-model lifecycle & 8 & 24 \\
+\addlinespace[2pt]
+Non-functional & SAF & Safety boundaries and human authority & 10 & 30 \\
+\addlinespace[2pt]
+Non-functional & HFE & Human factors, usability, and competency & 6 & 18 \\
+\addlinespace[2pt]
+Non-functional & SEC & Privacy, cybersecurity, and secure development & 8 & 24 \\
+\addlinespace[2pt]
+Operational & GOV & Governance, intended use, and scope & 7 & 21 \\
+\addlinespace[2pt]
+Operational & OPS & Clinical operations, monitoring, and resilience & 7 & 21 \\
+\addlinespace[2pt]
+Operational & VAL & Verification, commissioning, release, and change control & 9 & 27 \\
+\addlinespace[2pt]
+TOTAL & All & Complete decomposed baseline & 111 & 333 \\
+\addlinespace[2pt]
+\end{longtable}
+\end{small}
+
+\section{Functional sub-requirements}
+
+\subsection{Natural-language and voice interaction (NLI)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-NLI-001 (source NLI-001).} The NL-TPS shall accept typed text and user-initiated push-to-talk speech while prohibiting background listening and voice-only clinical signatures.} \\
+\mbox{FSR-NLI-001-01} & \mbox{NLI-001-01} & The interaction service shall accept typed input and shall activate speech capture only while an authenticated user deliberately invokes the push-to-talk control. & NLU\slash\allowbreak{}UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-001-02} & \mbox{NLI-001-02} & Microphone capture shall be disabled by default, shall terminate when push-to-talk is released or canceled, and shall not persist background audio beyond the approved processing workflow. & NLU\slash\allowbreak{}SEC & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-001-03} & \mbox{NLI-001-03} & The interface shall prohibit voice-only clinical signatures and shall route all approval actions through an authenticated non-voice confirmation control. & SK\slash\allowbreak{}UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-NLI-002 (source NLI-002).} The NL-TPS shall compile each actionable natural-language request into a versioned, inspectable, typed intent before executing a state-changing action.} \\
+\mbox{FSR-NLI-002-01} & \mbox{NLI-002-01} & The intent compiler shall transform each actionable request into a schema-valid typed-intent object with a unique identity, schema version, content version, and lifecycle state. & NLU\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-002-02} & \mbox{NLI-002-02} & The safety kernel shall prevent a state-changing action until the typed intent has passed deterministic validation and the required preview and confirmation steps. & SK & T \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-002-03} & \mbox{NLI-002-03} & The audit ledger shall retain every typed-intent version and its relationship to the original input, clarifications, validation result, confirmation, and execution result. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-NLI-003 (source NLI-003).} The typed intent shall identify the clinical objects, requested action, parameters, units, priorities, evidence references, preconditions, expected outputs, and affected approval state.} \\
+\mbox{FSR-NLI-003-01} & \mbox{NLI-003-01} & The typed-intent schema shall provide explicit fields for clinical-object identifiers, action, parameters, units, priorities, evidence references, preconditions, expected outputs, and approval-state effects. & NLU\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-003-02} & \mbox{NLI-003-02} & Intent validation shall reject a required field that is missing, untyped, unresolved, internally inconsistent, or not bound to a current clinical object. & NLU\slash\allowbreak{}SK & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-003-03} & \mbox{NLI-003-03} & The interface and audit export shall render the same serialized typed-intent content used for deterministic execution. & UI\slash\allowbreak{}AUD & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-NLI-004 (source NLI-004).} The NL-TPS shall distinguish verified patient facts, signed clinical intent, user preferences, evidence-derived rules, system assumptions, and unresolved questions in the compiled intent and user interface.} \\
+\mbox{FSR-NLI-004-01} & \mbox{NLI-004-01} & Each intent element shall carry a source classification of verified fact, signed clinical intent, user preference, evidence-derived rule, system assumption, or unresolved question. & DATA\slash\allowbreak{}NLU & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-004-02} & \mbox{NLI-004-02} & The interface shall distinguish source classifications with persistent text labels and a visible legend that does not rely on color alone. & UI & HFE\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-004-03} & \mbox{NLI-004-03} & The system shall prevent a model suggestion, preference, assumption, or unresolved question from overwriting or being promoted as a verified fact or signed clinical intent. & SK & T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-NLI-005 (source NLI-005).} The NL-TPS shall use deterministic validation for safety-critical numbers, units, dose basis, fractionation, negation, laterality, structure identity, and clinical-object references.} \\
+\mbox{FSR-NLI-005-01} & \mbox{NLI-005-01} & A deterministic validator shall parse and normalize safety-critical numbers, units, dose basis, fractionation, negation, laterality, structure identity, and clinical-object references. & NLU\slash\allowbreak{}SK & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-005-02} & \mbox{NLI-005-02} & The system shall reject or request clarification for ambiguous, incompatible, implausible, or unresolved safety-critical values before intent confirmation. & NLU\slash\allowbreak{}UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-005-03} & \mbox{NLI-005-03} & The verification corpus shall include accepted, rejected, boundary, negated, unit-conversion, laterality, alias, dictation-error, and adversarial examples for every supported safety-critical field. & VVP & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-NLI-006 (source NLI-006).} The NL-TPS shall display a structured read-back of what will change, the affected patient and object, assumptions, evidence, expected effect, expected runtime, and cancellation or rollback method before consequential execution.} \\
+\mbox{FSR-NLI-006-01} & \mbox{NLI-006-01} & The structured read-back shall identify the action, affected patient and objects, current and proposed values, assumptions, evidence, expected effect, expected runtime, and cancellation or rollback method. & UI & I\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-006-02} & \mbox{NLI-006-02} & The system shall require the read-back to be generated from the validated typed intent and shall regenerate it whenever the intent or bound context changes. & SK\slash\allowbreak{}UI & T \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-006-03} & \mbox{NLI-006-03} & The exact read-back presented to the user, its version, display time, and resulting confirmation or cancellation shall be retained in the audit ledger. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-NLI-007 (source NLI-007).} The NL-TPS shall require explicit confirmation of speech transcripts containing safety-critical numbers, units, negation, laterality, prescription elements, or clinical-object names.} \\
+\mbox{FSR-NLI-007-01} & \mbox{NLI-007-01} & The transcript processor shall flag utterances containing safety-critical numbers, units, negation, laterality, prescription elements, or clinical-object names. & NLU & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-007-02} & \mbox{NLI-007-02} & A flagged transcript shall be displayed for active user confirmation or correction, and the safety kernel shall block execution until confirmation is complete. & UI\slash\allowbreak{}SK & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-007-03} & \mbox{NLI-007-03} & The system shall retain the captured transcript, flagged tokens, user corrections, confirmed transcript, and confirmation identity and time. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-NLI-008 (source NLI-008).} The NL-TPS shall record the original user input or confirmed transcript, compiled intent, clarifications, assumptions, preview, confirmations, execution result, and user corrections in the audit ledger.} \\
+\mbox{FSR-NLI-008-01} & \mbox{NLI-008-01} & The audit schema shall link the original text or confirmed transcript, typed-intent versions, clarification turns, assumptions, previews, confirmations, execution outputs, and user corrections under one interaction identity. & AUD\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-008-02} & \mbox{NLI-008-02} & Interaction audit records shall be append-only, integrity protected, access controlled, and time synchronized according to the approved retention policy. & AUD\slash\allowbreak{}SEC & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{FSR-NLI-008-03} & \mbox{NLI-008-03} & An authorized reviewer shall be able to reconstruct the ordered interaction and identify the exact inputs, versions, decisions, and outputs used for execution. & AUD\slash\allowbreak{}VVP & T \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\subsection{Evidence and literature governance (EVD)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-EVD-001 (source EVD-001).} The NL-TPS shall use only an institution-approved, closed evidence service for patient-specific clinical rules and shall not derive such rules from unrestricted internet retrieval in clinical mode.} \\
+\mbox{FSR-EVD-001-01} & \mbox{EVD-001-01} & Clinical mode shall use an allowlisted evidence repository and retrieval configuration containing only institution-approved sources, rules, versions, and effective states. & EVID\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-001-02} & \mbox{EVD-001-02} & The evidence service shall block unrestricted internet retrieval and unapproved external connectors for patient-specific clinical-rule generation in clinical mode. & SEC\slash\allowbreak{}EVID & T \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-001-03} & \mbox{EVD-001-03} & Each evidence query shall record the repository, retrieval configuration, source set, operating mode, result, and any blocked retrieval attempt. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-EVD-002 (source EVD-002).} The NL-TPS shall attach the source title, version or date, exact location, population, applicability, limitations, institutional approval status, effective date, and review date to each active evidence-derived rule.} \\
+\mbox{FSR-EVD-002-01} & \mbox{EVD-002-01} & The evidence-rule schema shall require source title, version or date, exact location, population, applicability, limitations, approval status, effective date, and review date. & EVID\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-002-02} & \mbox{EVD-002-02} & The publication workflow shall reject an evidence-derived rule when any required provenance field is missing, invalid, expired, or inconsistent with the approved source. & EVID\slash\allowbreak{}QMS & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-002-03} & \mbox{EVD-002-03} & The interface shall make the complete provenance and applicability record available from every displayed or applied evidence-derived rule. & UI & D\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-EVD-003 (source EVD-003).} The NL-TPS shall apply the approved authority order of patient-specific signed intent, applicable trial protocol, institutional standard, professional guidance, and supporting peer-reviewed evidence.} \\
+\mbox{FSR-EVD-003-01} & \mbox{EVD-003-01} & The evidence service shall encode the approved authority tiers and ordering for signed patient intent, trial protocol, institutional standard, professional guidance, and supporting evidence. & EVID\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-003-02} & \mbox{EVD-003-02} & Rule evaluation shall apply the highest applicable authority and shall identify unresolved conflicts rather than combining rules across authority tiers without an approved policy. & EVID\slash\allowbreak{}SK & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-003-03} & \mbox{EVD-003-03} & The system shall display and record the authority tier, applicability determination, selected rule, excluded rules, and conflict-resolution rationale. & UI\slash\allowbreak{}AUD & I\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-EVD-004 (source EVD-004).} The NL-TPS shall treat the signed prescription and physician-approved case intent as the highest patient-specific authority and shall stop when a lower-tier rule conflicts with that authority.} \\
+\mbox{FSR-EVD-004-01} & \mbox{EVD-004-01} & The evidence service shall bind the current signed prescription and physician-approved case intent as the highest patient-specific authority for the active case. & CXT\slash\allowbreak{}EVID & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-004-02} & \mbox{EVD-004-02} & The safety kernel shall issue a hard stop when a lower-tier rule conflicts with signed patient-specific authority and shall prohibit silent substitution or relaxation. & SK & T \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-004-03} & \mbox{EVD-004-03} & The conflict display and audit record shall identify the conflicting fields, source versions, affected objects, and required physician resolution. & UI\slash\allowbreak{}AUD & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-EVD-005 (source EVD-005).} The NL-TPS shall block or escalate conflicting, expired, retired, superseded, or inapplicable evidence rather than silently selecting or blending a clinical rule.} \\
+\mbox{FSR-EVD-005-01} & \mbox{EVD-005-01} & Each evidence source and rule shall have a controlled lifecycle state, effective interval, supersession link, applicability predicate, and conflict status. & EVID\slash\allowbreak{}QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-005-02} & \mbox{EVD-005-02} & The resolver shall exclude expired, retired, suspended, superseded, and inapplicable rules and shall block or escalate unresolved conflicts. & EVID\slash\allowbreak{}SK & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-005-03} & \mbox{EVD-005-03} & The audit ledger shall retain all candidate rules, exclusion reasons, lifecycle states, conflict results, and the human disposition when escalation occurs. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-EVD-006 (source EVD-006).} The evidence service shall represent each computable rule with explicit structure definition, units, comparator, dose quantity and basis, population, exclusions, rule type, tolerance, and conflict policy.} \\
+\mbox{FSR-EVD-006-01} & \mbox{EVD-006-01} & A computable-rule record shall contain a controlled structure definition, units, comparator, dose quantity and basis, population, exclusions, rule type, tolerance, and conflict policy. & EVID\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-006-02} & \mbox{EVD-006-02} & Rule publication shall verify dimensional consistency, structure mapping, comparator behavior, boundary behavior, exclusions, and conflict-policy execution. & EVID & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-006-03} & \mbox{EVD-006-03} & Each published rule shall include versioned positive, negative, boundary, and conflict test cases with approved expected results. & VVP\slash\allowbreak{}QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-EVD-007 (source EVD-007).} The NL-TPS shall support controlled evidence proposal, independent clinical review, approval, publication, periodic review, retirement, emergency suspension, and rollback.} \\
+\mbox{FSR-EVD-007-01} & \mbox{EVD-007-01} & The evidence lifecycle shall implement proposal, independent clinical review, approval, publication, periodic review, retirement, emergency suspension, and rollback states with authorized roles. & QMS\slash\allowbreak{}EVID & I \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-007-02} & \mbox{EVD-007-02} & Only approved and effective rule versions shall be available in clinical mode, and rollback shall restore a previously approved version without altering historical case records. & EVID\slash\allowbreak{}CFG & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-007-03} & \mbox{EVD-007-03} & Every evidence lifecycle transition shall retain the actor, role, rationale, source change, impact assessment, approval, effective time, and affected release configurations. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-EVD-008 (source EVD-008).} The NL-TPS shall provide a no-source or no-applicable-rule response and require human resolution when a verified clinical rule cannot be produced.} \\
+\mbox{FSR-EVD-008-01} & \mbox{EVD-008-01} & The evidence service shall return an explicit no-source or no-applicable-rule status when it cannot produce a verified rule for the active context. & EVID & T \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-008-02} & \mbox{EVD-008-02} & The system shall block dependent automated reasoning, identify the missing evidence need, and route the case to an authorized human for resolution. & SK\slash\allowbreak{}UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-EVD-008-03} & \mbox{EVD-008-03} & The audit ledger shall record the query, evaluated sources, exclusion reasons, no-rule status, human resolution, and any approved case-specific decision. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\subsection{Clinical context, imaging, registration, and contours (CLN)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-CLN-001 (source CLN-001).} The NL-TPS disease-site assistant shall map verified case facts to candidate workflows or templates, identify missing material information, and require clinician confirmation without autonomously diagnosing or staging disease.} \\
+\mbox{FSR-CLN-001-01} & \mbox{CLN-001-01} & The disease-site assistant shall derive candidate workflow matches only from verified case facts and approved workflow definitions. & CXT & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-001-02} & \mbox{CLN-001-02} & The assistant shall display candidate rationale and missing material information, shall require clinician confirmation, and shall not assign an autonomous diagnosis or stage. & UI\slash\allowbreak{}SK & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-001-03} & \mbox{CLN-001-03} & The system shall record the verified inputs, workflow candidates, missing-data findings, clinician selection or rejection, and corrections. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-CLN-002 (source CLN-002).} The NL-TPS shall acquire and bind the approved image studies, frame of reference, registrations, structure sets, prior-treatment information, and signed clinical intent required for the active planning task.} \\
+\mbox{FSR-CLN-002-01} & \mbox{CLN-002-01} & The planning-context manifest shall identify the approved image studies, frames of reference, registrations, structure sets, prior-treatment information, and signed clinical intent by unique version. & CXT\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-002-02} & \mbox{CLN-002-02} & Context validation shall reject a planning task with a missing, conflicting, stale, or incorrectly referenced required input. & CXT\slash\allowbreak{}SK & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-002-03} & \mbox{CLN-002-03} & The system shall preserve the validated planning-context manifest and bind it to every derived anatomy, intent, and candidate-plan version. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-CLN-003 (source CLN-003).} The NL-TPS shall permit rigid or deformable registration and derived dose accumulation only through commissioned methods with registration-specific visualization, quality review, uncertainty documentation, and approval.} \\
+\mbox{FSR-CLN-003-01} & \mbox{CLN-003-01} & The registration service shall allow only commissioned rigid-registration, deformable-registration, and dose-accumulation methods for the active anatomy, image conditions, and clinical purpose. & REG\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-003-02} & \mbox{CLN-003-02} & The review workflow shall provide registration-specific visualization, quality measures, uncertainty documentation, and an authorized approval step before derived dose is used. & REG\slash\allowbreak{}UI & D\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-003-03} & \mbox{CLN-003-03} & The system shall retain the source and target images, transform, method and version, settings, quality results, uncertainty, reviewer, approval, and accumulated-dose lineage. & REG\slash\allowbreak{}AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-CLN-004 (source CLN-004).} The NL-TPS shall invoke contouring models only for approved anatomy, imaging conditions, structures, populations, and use cases and shall retain all model-generated contours as drafts pending review.} \\
+\mbox{FSR-CLN-004-01} & \mbox{CLN-004-01} & The model gateway shall verify the approved anatomy, imaging conditions, structure list, patient population, use case, model version, and operating mode before contour inference. & MGW\slash\allowbreak{}SEG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-004-02} & \mbox{CLN-004-02} & Every model-generated contour shall be created in a draft state and shall retain its model, input, configuration, and applicability decision. & SEG\slash\allowbreak{}DATA & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-004-03} & \mbox{CLN-004-03} & The system shall prohibit a model or automated service from approving a generated contour or promoting it directly to an approved clinical state. & SK & T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-CLN-005 (source CLN-005).} The NL-TPS shall display contour-model uncertainty, input anomalies, and out-of-distribution status and shall abstain or route to manual contouring when the commissioned use envelope is not satisfied.} \\
+\mbox{FSR-CLN-005-01} & \mbox{CLN-005-01} & The contouring service shall calculate the commissioned uncertainty, input-quality, anomaly, and out-of-distribution indicators defined for the active model use. & SEG\slash\allowbreak{}MGW & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-005-02} & \mbox{CLN-005-02} & The service shall abstain or route to manual contouring when an approved applicability threshold is not met and shall display the specific condition and required action. & SK\slash\allowbreak{}UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-005-03} & \mbox{CLN-005-03} & The system shall record all applicability indicators, thresholds, decisions, user responses, and performance against commissioned abstention and failure-detection cases. & AUD\slash\allowbreak{}VVP & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-CLN-006 (source CLN-006).} The NL-TPS shall validate structure identity, nomenclature mapping, laterality, presence, completeness, topology, image coverage, and geometric plausibility before a contour set can become a clinical candidate.} \\
+\mbox{FSR-CLN-006-01} & \mbox{CLN-006-01} & Contour validation shall evaluate structure identity, approved nomenclature mapping, laterality, required presence, completeness, topology, image coverage, and configured geometric plausibility rules. & SEG\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-006-02} & \mbox{CLN-006-02} & The lifecycle service shall block promotion to clinical-candidate status while any required contour validation is failed, unresolved, or stale. & SK & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-006-03} & \mbox{CLN-006-03} & The system shall provide and retain a validation report identifying each check, result, affected structure, evidence, disposition, and reviewer. & UI\slash\allowbreak{}AUD & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-CLN-007 (source CLN-007).} The NL-TPS shall preserve each contour's input study, frame of reference, model and version, configuration, naming map, confidence information, edits, reviewer, approval state, and lineage.} \\
+\mbox{FSR-CLN-007-01} & \mbox{CLN-007-01} & Each contour version shall reference its input study, frame of reference, model and version, configuration, naming map, confidence information, and parent contour version. & DATA\slash\allowbreak{}SEG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-007-02} & \mbox{CLN-007-02} & User edits shall create a new contour version and shall retain the changed region, editor, time, reason when required, and pre-edit geometry. & DATA\slash\allowbreak{}UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-007-03} & \mbox{CLN-007-03} & Approval and export records shall identify the exact contour version, lineage, reviewer, approval state, and integrity value transferred downstream. & AUD\slash\allowbreak{}INT & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-CLN-008 (source CLN-008).} The NL-TPS shall provide slice, surface, difference, and clinically relevant error-review views and shall capture the location and extent of user edits.} \\
+\mbox{FSR-CLN-008-01} & \mbox{CLN-008-01} & The contour review workspace shall provide synchronized slice, surface, difference, and configured clinically relevant error views for the selected contour versions. & UI\slash\allowbreak{}SEG & D\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-008-02} & \mbox{CLN-008-02} & The editing service shall capture the location, spatial extent, operation type, and before-and-after geometry for each user edit. & UI\slash\allowbreak{}DATA & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-008-03} & \mbox{CLN-008-03} & Human-factors evaluation shall verify that representative users can find, interpret, edit, and confirm clinically important contour errors using the provided views. & HFE\slash\allowbreak{}VVP & HFE\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-CLN-009 (source CLN-009).} The NL-TPS shall require radiation-oncologist approval for clinical target contours and shall enforce institution-approved approval roles for organs at risk and other derived structures.} \\
+\mbox{FSR-CLN-009-01} & \mbox{CLN-009-01} & The approval configuration shall identify the authorized approval role for targets, organs at risk, derived structures, and each supported clinical workflow. & IAM\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-009-02} & \mbox{CLN-009-02} & The state engine shall require radiation-oncologist approval for clinical targets and shall enforce the configured authorized role before any structure becomes approved. & SK & T \\
+\addlinespace[2pt]
+\mbox{FSR-CLN-009-03} & \mbox{CLN-009-03} & Each structure approval shall bind the approver, role, contour version, review time, approval decision, and any conditions, and later edits shall invalidate the approval. & DATA\slash\allowbreak{}AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\subsection{Treatment-plan generation and calculation (PLN)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-001 (source PLN-001).} The NL-TPS shall create a versioned structured planning intent from the signed prescription, approved anatomy, patient-specific instructions, applicable protocol, institutional planning standard, and confirmed user priorities.} \\
+\mbox{FSR-PLN-001-01} & \mbox{PLN-001-01} & The planning-intent schema shall reference the signed prescription, approved anatomy, patient-specific instructions, applicable protocol, institutional planning standard, and confirmed user priorities by version. & PLAN\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-001-02} & \mbox{PLN-001-02} & Intent compilation shall identify missing inputs and conflicts among authoritative sources and shall block candidate generation until required conflicts are resolved. & PLAN\slash\allowbreak{}SK & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-001-03} & \mbox{PLN-001-03} & Each planning-intent version shall retain its source versions, normalized content, assumptions, clarifications, author or confirmer, integrity value, and supersession relationship. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-002 (source PLN-002).} The NL-TPS shall generate or modify candidate plans only through commissioned planning, optimization, robustness, and dose-calculation services operating within the validated machine, technique, and algorithm envelope.} \\
+\mbox{FSR-PLN-002-01} & \mbox{PLN-002-01} & The release configuration shall list each commissioned planning, optimization, robustness, and dose-calculation service with its validated machine, technique, algorithm, and use envelope. & CFG\slash\allowbreak{}PLAN & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-002-02} & \mbox{PLN-002-02} & The planning orchestrator shall verify the active request and configuration against the commissioned-use envelope before invoking a clinical planning or dose service. & SK\slash\allowbreak{}PLAN & T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-002-03} & \mbox{PLN-002-03} & The system shall record the service identity, version, approved configuration, envelope decision, input identity, and output identity for every candidate calculation. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-003 (source PLN-003).} The NL-TPS shall prevent language, speech, disease-site, or generative models from directly calculating clinical dose or substituting for a commissioned dose engine.} \\
+\mbox{FSR-PLN-003-01} & \mbox{PLN-003-01} & The architecture shall separate language, speech, disease-site, and generative-model services from commissioned numerical dose-calculation components and credentials. & ARCH\slash\allowbreak{}SK & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-003-02} & \mbox{PLN-003-02} & The planning orchestrator shall accept clinical dose only from an approved commissioned dose service and shall reject model-supplied dose arrays, dose metrics, or calculation attestations. & PLAN\slash\allowbreak{}DATA & T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-003-03} & \mbox{PLN-003-03} & Testing shall demonstrate rejection of spoofed, mislabeled, malformed, or model-generated dose results at every supported interface boundary. & VVP\slash\allowbreak{}SEC & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-004 (source PLN-004).} The structured planning intent shall distinguish hard constraints, planning goals, optimization objectives, preferences, and reporting-only metrics.} \\
+\mbox{FSR-PLN-004-01} & \mbox{PLN-004-01} & Each planning-intent criterion shall have an explicit type of hard constraint, planning goal, optimization objective, preference, or reporting-only metric. & PLAN\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-004-02} & \mbox{PLN-004-02} & The planning workspace shall display criterion type, priority, units, source, and status without presenting a preference or reporting metric as a hard constraint. & UI & D\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-004-03} & \mbox{PLN-004-03} & Optimization and eligibility logic shall apply behavior consistent with the declared criterion type and shall prevent implicit type conversion. & PLAN\slash\allowbreak{}SK & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-005 (source PLN-005).} The NL-TPS shall prevent silent relaxation of a hard constraint and shall require an authorized explicit action, documented rationale, and pre\slash\allowbreak{}post difference review for any permitted relaxation.} \\
+\mbox{FSR-PLN-005-01} & \mbox{PLN-005-01} & The state engine shall prohibit modification or relaxation of a hard constraint unless the active policy permits it and the user holds the required authorization. & SK\slash\allowbreak{}IAM & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-005-02} & \mbox{PLN-005-02} & A permitted relaxation shall require an explicit action, structured rationale, and a pre-change and post-change difference review before recalculation or promotion. & UI\slash\allowbreak{}PLAN & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-005-03} & \mbox{PLN-005-03} & The relaxed constraint shall create a new planning-intent version and shall retain the actor, authority, rationale, old and new values, affected candidates, and required reapprovals. & DATA\slash\allowbreak{}AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-006 (source PLN-006).} The NL-TPS shall generate the number of candidate plans requested by an authorized user when feasible and shall identify when the requested candidate set cannot be produced.} \\
+\mbox{FSR-PLN-006-01} & \mbox{PLN-006-01} & The candidate-generation request shall contain the authorized requested candidate count and shall assign a unique identity to each attempted candidate. & PLAN & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-006-02} & \mbox{PLN-006-02} & The system shall report generated, failed, infeasible, canceled, and pending candidates and shall state why the requested set was not completed. & PLAN\slash\allowbreak{}UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-006-03} & \mbox{PLN-006-03} & The audit record shall retain the requested count, generation attempts, parameters, job states, results, and user decision to continue, retry, or accept a partial set. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-007 (source PLN-007).} The NL-TPS shall document the planning strategy, parameter variation, objective tradeoff, beam or modality variation, or other method used to create meaningful candidate diversity.} \\
+\mbox{FSR-PLN-007-01} & \mbox{PLN-007-01} & Each candidate shall identify the planning strategy and the parameter, objective, beam, modality, robustness, or other controlled variation used to distinguish it from its peers. & PLAN\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-007-02} & \mbox{PLN-007-02} & The system shall calculate and present configured diversity descriptors against the parent candidate set without claiming clinically meaningful diversity from an unapproved threshold. & PLAN\slash\allowbreak{}REVW & A\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-007-03} & \mbox{PLN-007-03} & The candidate-set record shall retain the diversity method, configuration, descriptors, related candidates, and any user-directed variation. & AUD & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-008 (source PLN-008).} The NL-TPS shall identify infeasible candidates and candidates dominated by another candidate under the declared evaluation criteria.} \\
+\mbox{FSR-PLN-008-01} & \mbox{PLN-008-01} & The planning service shall use versioned feasibility rules and declared dominance criteria appropriate to the active modality, technique, and evaluation set. & PLAN\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-008-02} & \mbox{PLN-008-02} & The system shall label infeasible candidates and candidates dominated under the declared criteria and shall expose the specific failed conditions or comparison results. & PLAN\slash\allowbreak{}REVW & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-008-03} & \mbox{PLN-008-03} & The feasibility and dominance record shall retain rule versions, input metrics, comparator results, excluded candidates, and any authorized human disposition. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-009 (source PLN-009).} The NL-TPS shall attest at runtime to the active machine model, energy or beam type, technique, dose algorithm, grid, optimizer, biological model if used, and approved configuration before plan calculation.} \\
+\mbox{FSR-PLN-009-01} & \mbox{PLN-009-01} & Each commissioned calculation service shall expose a signed runtime manifest containing machine model, energy or beam type, technique, dose algorithm, grid, optimizer, biological model, and configuration identifiers. & DOSE\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-009-02} & \mbox{PLN-009-02} & The planning orchestrator shall compare the runtime manifest with the approved release configuration and shall block calculation on a missing or mismatched field. & SK\slash\allowbreak{}PLAN & T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-009-03} & \mbox{PLN-009-03} & The exact runtime manifest and comparison result shall be bound to each calculation output and candidate-plan version. & DATA\slash\allowbreak{}AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-010 (source PLN-010).} The NL-TPS shall represent physical dose, RBE-weighted dose, fractionation, normalization, BED or EQD2 when approved, and proton-specific assumptions explicitly and without implicit conversion.} \\
+\mbox{FSR-PLN-010-01} & \mbox{PLN-010-01} & Every dose quantity shall identify numeric units, physical or RBE-weighted basis, fractionation, normalization, biological transformation when approved, and applicable proton-specific assumptions. & DATA\slash\allowbreak{}PLAN & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-010-02} & \mbox{PLN-010-02} & The system shall prevent comparison, summation, or conversion of incompatible dose quantities unless an approved explicit transformation and its assumptions are applied. & SK\slash\allowbreak{}REVW & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-010-03} & \mbox{PLN-010-03} & Displays, reports, and audit exports shall present the dose basis and assumptions adjacent to each value and shall retain every transformation and source quantity. & UI\slash\allowbreak{}AUD & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-011 (source PLN-011).} The NL-TPS shall apply and record the institution-approved setup, range, motion, interplay, and other robustness scenarios required for the active technique before candidate eligibility.} \\
+\mbox{FSR-PLN-011-01} & \mbox{PLN-011-01} & The active technique configuration shall define the required setup, range, motion, interplay, and other robustness scenarios, including parameter values and evaluation rules. & CFG\slash\allowbreak{}PLAN & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-011-02} & \mbox{PLN-011-02} & The planning service shall execute every required scenario and shall block candidate eligibility when a scenario is missing, failed, stale, or outside the approved configuration. & PLAN\slash\allowbreak{}SK & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-011-03} & \mbox{PLN-011-03} & The candidate record and review workspace shall retain and present each scenario definition, result, aggregate, warning, and eligibility decision. & DATA\slash\allowbreak{}REVW & I\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-PLN-012 (source PLN-012).} The NL-TPS shall preserve candidate-plan identity, parent intent, parameters, calculation outputs, warnings, configuration, evaluation results, and lineage through iterative refinement.} \\
+\mbox{FSR-PLN-012-01} & \mbox{PLN-012-01} & Each candidate-plan version shall have a unique immutable identity and shall reference its parent intent, predecessor candidate, parameters, configuration, and calculation outputs. & DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-012-02} & \mbox{PLN-012-02} & Each refinement shall create a new candidate version without overwriting prior parameters, results, warnings, evaluation states, or lineage. & PLAN & T \\
+\addlinespace[2pt]
+\mbox{FSR-PLN-012-03} & \mbox{PLN-012-03} & Authorized users shall be able to compare any retained candidate versions and reconstruct the ordered refinement history and decision trail. & REVW\slash\allowbreak{}AUD & I\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\subsection{Plan review, selection, QA, and transfer (REV)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-REV-001 (source REV-001).} The NL-TPS shall present candidate plans in a consistent comparison workspace showing absolute values and differences without changing metric definitions or display scales between candidates.} \\
+\mbox{FSR-REV-001-01} & \mbox{REV-001-01} & The comparison workspace shall use one versioned metric definition, unit convention, calculation method, and default display scale for all candidates in a comparison session. & REVW\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-REV-001-02} & \mbox{REV-001-02} & The workspace shall present absolute values and candidate-to-reference differences and shall visibly identify any authorized scale or reference change. & REVW\slash\allowbreak{}UI & D\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-REV-001-03} & \mbox{REV-001-03} & The comparison record shall retain the candidate set, metric-definition version, scales, reference candidate, filters, and user changes. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-REV-002 (source REV-002).} The comparison workspace shall display target coverage, organ-at-risk results, constraint status, spatial dose, hotspots and coldspots, robustness, uncertainty, complexity, deliverability, and provenance before plan selection.} \\
+\mbox{FSR-REV-002-01} & \mbox{REV-002-01} & The review workspace shall provide target, organ-at-risk, constraint, spatial dose, hotspot, coldspot, robustness, uncertainty, complexity, deliverability, and provenance views for every candidate. & REVW & I\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{FSR-REV-002-02} & \mbox{REV-002-02} & The selection workflow shall identify missing or stale required review content and shall block promotion until the configured review package is complete. & SK\slash\allowbreak{}REVW & T \\
+\addlinespace[2pt]
+\mbox{FSR-REV-002-03} & \mbox{REV-002-03} & Each displayed review result shall link to the exact candidate, calculation, definition, scenario, and provenance record from which it was derived. & DATA\slash\allowbreak{}AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-REV-003 (source REV-003).} The NL-TPS shall expose the declared tradeoffs and shall not select or recommend a winning plan solely through an opaque composite score.} \\
+\mbox{FSR-REV-003-01} & \mbox{REV-003-01} & The workspace shall display each declared tradeoff criterion, value, priority or weight, and candidate-specific contribution used in an ordering or recommendation. & REVW & I\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-REV-003-02} & \mbox{REV-003-02} & The system shall not automatically select a final candidate and shall not present an unexplained composite score as sufficient clinical justification. & SK\slash\allowbreak{}REVW & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-REV-003-03} & \mbox{REV-003-03} & Any recommendation shall include an inspectable rationale, uncertainty and limitations, and the audit record shall identify the authorized user who made the final selection. & UI\slash\allowbreak{}AUD & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-REV-004 (source REV-004).} The NL-TPS shall record the selected plan, rejected alternatives, review comments, deviations, tradeoff rationale, and role-specific decisions.} \\
+\mbox{FSR-REV-004-01} & \mbox{REV-004-01} & The review-decision schema shall identify the selected candidate, rejected alternatives, reviewer roles, comments, deviations, tradeoff rationale, and decision state. & DATA\slash\allowbreak{}REVW & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-REV-004-02} & \mbox{REV-004-02} & The workflow shall require completion of configured decision fields and role-specific attestations before the review can be finalized. & REVW\slash\allowbreak{}UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-REV-004-03} & \mbox{REV-004-03} & Finalized review decisions shall be integrity protected, version linked, time stamped, and retained with all subsequent amendments or superseding decisions. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-REV-005 (source REV-005).} The NL-TPS shall enforce radiation-oncologist clinical plan approval and qualified-medical-physicist technical review before a candidate can enter the approved state.} \\
+\mbox{FSR-REV-005-01} & \mbox{REV-005-01} & The approval workflow shall assign clinical plan approval to an authorized radiation oncologist and technical review to an authorized qualified medical physicist. & IAM\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-REV-005-02} & \mbox{REV-005-02} & The state engine shall require both current role-specific decisions and shall enforce configured ordering and separation-of-duties constraints before approved status. & SK & T \\
+\addlinespace[2pt]
+\mbox{FSR-REV-005-03} & \mbox{REV-005-03} & Each approval shall bind the actor, role, candidate version, reviewed evidence, decision, conditions, time, and authentication event. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-REV-006 (source REV-006).} The NL-TPS shall route the approved candidate through the institutionally required independent dose or MU verification, patient-specific QA, transfer QA, and other technique-specific checks.} \\
+\mbox{FSR-REV-006-01} & \mbox{REV-006-01} & The QA-routing configuration shall define required independent dose or MU verification, patient-specific QA, transfer QA, and technique-specific checks for each supported workflow. & CFG\slash\allowbreak{}QMS & I \\
+\addlinespace[2pt]
+\mbox{FSR-REV-006-02} & \mbox{REV-006-02} & The workflow shall create and track every required QA task and shall block release while a required task is incomplete, failed, expired, or linked to another candidate version. & REVW\slash\allowbreak{}SK & T \\
+\addlinespace[2pt]
+\mbox{FSR-REV-006-03} & \mbox{REV-006-03} & The system shall retain each QA input, method, result, tolerance, reviewer, disposition, linked candidate version, and supersession state. & DATA\slash\allowbreak{}AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-REV-007 (source REV-007).} The NL-TPS shall authorize export only after all required approvals and QA states are current and shall verify source-to-destination identity, content, geometry, and status after transfer.} \\
+\mbox{FSR-REV-007-01} & \mbox{REV-007-01} & The export gateway shall verify that all required approvals and QA states are current for the exact source-object versions before initiating transfer. & SK\slash\allowbreak{}INT & T \\
+\addlinespace[2pt]
+\mbox{FSR-REV-007-02} & \mbox{REV-007-02} & Transfer verification shall compare patient and object identity, content, units, geometry, references, integrity values, and destination acknowledgment with the source package. & INT & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-REV-007-03} & \mbox{REV-007-03} & The transfer record shall retain the source package, destination, transmitted objects, validation results, acknowledgments, failures, retries, and reconciliation outcome. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-REV-008 (source REV-008).} The NL-TPS shall make approved clinical objects immutable or version-controlled and shall require re-review of every affected downstream object after a change.} \\
+\mbox{FSR-REV-008-01} & \mbox{REV-008-01} & An approved clinical object shall be immutable; any authorized change shall create a new version linked to the approved predecessor. & DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-REV-008-02} & \mbox{REV-008-02} & The dependency graph shall identify and invalidate every downstream approval, QA result, transfer status, and derived object affected by the new version. & DATA\slash\allowbreak{}SK & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-REV-008-03} & \mbox{REV-008-03} & The workflow shall present the required re-review set and shall retain each completed re-review and resulting restoration of eligibility. & REVW\slash\allowbreak{}AUD & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-REV-009 (source REV-009).} The NL-TPS shall document the independence assumptions, shared inputs, shared dependencies, ownership boundaries, and common-cause failure risks of each automated verification path.} \\
+\mbox{FSR-REV-009-01} & \mbox{REV-009-01} & Each automated verification path shall have a controlled independence record identifying its owner, purpose, inputs, algorithms, dependencies, data sources, and approval boundaries. & QMS\slash\allowbreak{}VVP & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-REV-009-02} & \mbox{REV-009-02} & The independence assessment shall evaluate shared inputs, common software, models, configurations, infrastructure, personnel, and failure modes and shall define compensating controls. & VVP & A\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-REV-009-03} & \mbox{REV-009-03} & The review workspace shall expose material independence limitations, and the system shall retain the assessment version used for each verification result. & REVW\slash\allowbreak{}AUD & I\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\subsection{Data, interoperability, provenance, and audit (DAT)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-DAT-001 (source DAT-001).} The NL-TPS shall assign a unique identity, version, lifecycle state, owner, and source linkage to each clinical context, prescription intent, anatomy set, evidence package, planning strategy, candidate plan, review decision, QA record, and transfer record.} \\
+\mbox{FSR-DAT-001-01} & \mbox{DAT-001-01} & The clinical-object schema shall require a globally unique identity, version, lifecycle state, owner, creation source, and source linkage for every controlled object type. & DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-001-02} & \mbox{DAT-001-02} & The repository shall reject identifier collision, missing ownership, invalid lifecycle transition, or creation of a derived object without a valid source link. & DATA & T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-001-03} & \mbox{DAT-001-03} & Authorized users and audit exports shall expose the identity, version, state, owner, and source linkage for each clinical object. & UI\slash\allowbreak{}AUD & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-DAT-002 (source DAT-002).} The NL-TPS shall maintain a dependency and provenance graph that traces every derived object to its inputs, transformations, software, model, evidence, configuration, user actions, and approvals.} \\
+\mbox{FSR-DAT-002-01} & \mbox{DAT-002-01} & The provenance graph shall represent typed edges from every derived object to its input objects, transformations, software, models, evidence, configuration, user actions, and approvals. & DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-002-02} & \mbox{DAT-002-02} & The repository shall prevent promotion of an object with a missing mandatory provenance edge, orphaned dependency, or unresolved version reference. & DATA\slash\allowbreak{}SK & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-002-03} & \mbox{DAT-002-03} & An authorized reviewer shall be able to query transitive upstream and downstream provenance and reproduce the dependency set for a selected object version. & UI\slash\allowbreak{}AUD & D\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-DAT-003 (source DAT-003).} The NL-TPS shall validate and preserve explicit units, coordinate systems, dose quantity and basis, structure definitions, and rounding behavior at storage, calculation, display, and interface boundaries.} \\
+\mbox{FSR-DAT-003-01} & \mbox{DAT-003-01} & The information model shall define canonical units, coordinate systems, dose quantities and bases, structure definitions, and rounding rules for each stored and exchanged field. & DATA\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-003-02} & \mbox{DAT-003-02} & Every boundary conversion shall be explicit, versioned, dimensionally validated, and rejected when the source or destination representation is ambiguous or unsupported. & DATA\slash\allowbreak{}INT & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-003-03} & \mbox{DAT-003-03} & Verification shall cover storage, calculation, display, export, round-trip, precision, rounding, coordinate-transform, and incompatible-unit cases. & VVP & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-DAT-004 (source DAT-004).} The NL-TPS shall validate DICOM patient and study identities, SOP Instance UIDs, references, frame-of-reference UIDs, required attributes, coordinate transformations, units, and destination fidelity for every clinical transfer.} \\
+\mbox{FSR-DAT-004-01} & \mbox{DAT-004-01} & The DICOM gateway shall validate patient and study identity, SOP Instance UIDs, object references, frame-of-reference UIDs, required attributes, transformations, and units for each transfer package. & INT & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-004-02} & \mbox{DAT-004-02} & The gateway shall reject or quarantine a transfer containing a missing, duplicate, inconsistent, orphaned, or destination-altered required element. & INT\slash\allowbreak{}SK & T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-004-03} & \mbox{DAT-004-03} & The transfer report shall compare source and destination identities, references, content, geometry, units, integrity values, and acknowledgment status. & INT\slash\allowbreak{}AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-DAT-005 (source DAT-005).} The NL-TPS shall support the approved DICOM objects and transactions required for images, registrations, segmentations or structures, RT Plan, RT Ion Plan, RT Dose, treatment records, and related provenance in the active deployment.} \\
+\mbox{FSR-DAT-005-01} & \mbox{DAT-005-01} & The deployment conformance statement shall list the supported DICOM SOP classes, roles, transfer syntaxes, transactions, required attributes, and known limitations for each approved interface. & INT\slash\allowbreak{}CFG & I \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-005-02} & \mbox{DAT-005-02} & The gateway shall import, validate, create, and export only the DICOM objects and transactions approved for the active deployment and operating mode. & INT & T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-005-03} & \mbox{DAT-005-03} & Conformance testing shall use representative and challenge objects for images, registrations, segmentations or structures, plans, ion plans, dose, treatment records, and provenance. & VVP\slash\allowbreak{}QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-DAT-006 (source DAT-006).} The NL-TPS shall use approved IHE-RO profiles and FHIR or CodeX radiation-therapy exchanges where implemented and shall document conformance and known limitations.} \\
+\mbox{FSR-DAT-006-01} & \mbox{DAT-006-01} & Each implemented IHE-RO, FHIR, or CodeX exchange shall identify the profile or guide version, actor or resource role, supported transactions, terminology, and optional features. & INT\slash\allowbreak{}CFG & I \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-006-02} & \mbox{DAT-006-02} & The interface shall validate conformance to the approved profile or guide and shall prevent use of an unsupported exchange as though it were conformant. & INT & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-006-03} & \mbox{DAT-006-03} & The system shall maintain and make available a conformance statement and known-limitations record for every implemented exchange. & QMS\slash\allowbreak{}UI & I\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-DAT-007 (source DAT-007).} The NL-TPS shall reject incomplete, ambiguous, inconsistent, orphaned, or partially transferred clinical data rather than promoting it to a valid state.} \\
+\mbox{FSR-DAT-007-01} & \mbox{DAT-007-01} & Clinical-data validation shall classify missing, ambiguous, inconsistent, orphaned, duplicate, and partial-transfer conditions with explicit invalid or quarantine states. & DATA\slash\allowbreak{}INT & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-007-02} & \mbox{DAT-007-02} & The lifecycle service shall prevent invalid or quarantined data from becoming active, approved, or eligible as input to a clinical calculation or transfer. & SK & T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-007-03} & \mbox{DAT-007-03} & The interface and audit record shall identify each detected condition, affected object, source, disposition, correction, and reconciliation result. & UI\slash\allowbreak{}AUD & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-DAT-008 (source DAT-008).} The NL-TPS shall maintain a tamper-evident, time-synchronized audit ledger of commands, context, inputs, versions, evidence, outputs, warnings, edits, approvals, QA, exports, failures, overrides, and reconciliation events.} \\
+\mbox{FSR-DAT-008-01} & \mbox{DAT-008-01} & The audit ledger shall use append-only records, trusted time, ordered event identity, actor identity, object versions, action type, outcome, and integrity protection. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-008-02} & \mbox{DAT-008-02} & The ledger shall capture commands, context, inputs, versions, evidence, outputs, warnings, edits, approvals, QA, exports, failures, overrides, and reconciliation events. & AUD & T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-008-03} & \mbox{DAT-008-03} & Authorized queries and exports shall preserve event order and integrity while enforcing access control, retention, legal hold, and privacy policy. & AUD\slash\allowbreak{}SEC & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-DAT-009 (source DAT-009).} The NL-TPS shall use integrity hashes or equivalent controls to detect unauthorized modification of clinical objects, evidence packages, software artifacts, model artifacts, audit records, and transferred data.} \\
+\mbox{FSR-DAT-009-01} & \mbox{DAT-009-01} & The system shall create and retain an integrity hash, digital signature, or approved equivalent for each protected clinical, evidence, software, model, configuration, audit, and transfer artifact. & DATA\slash\allowbreak{}SEC & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-009-02} & \mbox{DAT-009-02} & Integrity shall be verified at approved creation, load, use, transfer, restoration, and reconciliation boundaries, with failure preventing clinical promotion or use. & DATA\slash\allowbreak{}INT & T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-009-03} & \mbox{DAT-009-03} & An integrity failure shall create a security and clinical-safety event containing the artifact, expected and observed values, context, containment action, and disposition. & AUD\slash\allowbreak{}OPS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-DAT-010 (source DAT-010).} The NL-TPS shall identify the authoritative system of record and retention, legal-record, export, archival, and reconciliation policy for each clinical object type.} \\
+\mbox{FSR-DAT-010-01} & \mbox{DAT-010-01} & A controlled information-governance matrix shall identify the authoritative system of record, retention period, legal-record status, export policy, archive, and reconciliation method for each object type. & QMS\slash\allowbreak{}DATA & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-010-02} & \mbox{DAT-010-02} & Object storage, export, archive, and deletion workflows shall enforce the active information-governance matrix and applicable legal holds. & DATA\slash\allowbreak{}INT & T \\
+\addlinespace[2pt]
+\mbox{FSR-DAT-010-03} & \mbox{DAT-010-03} & Periodic reconciliation shall compare authoritative and dependent records and shall retain discrepancies, corrective actions, and closure evidence. & OPS\slash\allowbreak{}AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\subsection{AI and inference-model lifecycle (AIM)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-AIM-001 (source AIM-001).} The NL-TPS shall invoke only institution-approved, locked model versions registered for the active task and clinical operating mode.} \\
+\mbox{FSR-AIM-001-01} & \mbox{AIM-001-01} & The model registry shall identify each approved model version, task, intended use, operating modes, clinical scope, artifact signature, and effective release state. & MGW\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-001-02} & \mbox{AIM-001-02} & The model gateway shall invoke only the exact locked artifact approved for the active task, scope, and operating mode and shall reject aliases or unregistered versions. & MGW & T \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-001-03} & \mbox{AIM-001-03} & Each inference record shall retain the requested and resolved model identities, registry version, signature result, approval status, and invocation outcome. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-AIM-002 (source AIM-002).} The model gateway shall verify that the active case satisfies the model's intended use, input contract, population, imaging or data conditions, required preprocessing, and resource limits before inference.} \\
+\mbox{FSR-AIM-002-01} & \mbox{AIM-002-01} & Each model registration shall contain a machine-readable input contract for intended use, population, data or imaging conditions, required fields, preprocessing, and resource limits. & MGW\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-002-02} & \mbox{AIM-002-02} & The model gateway shall validate the active case and prepared inputs against every applicable input-contract condition before inference and shall reject an unsatisfied or unknown condition. & MGW & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-002-03} & \mbox{AIM-002-03} & The system shall expose and retain the input-contract results, preprocessing version, resource checks, rejected conditions, and routing decision. & UI\slash\allowbreak{}AUD & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-AIM-003 (source AIM-003).} Each clinical model shall implement a defined abstention, rejection, or manual-review response for unsupported, anomalous, incomplete, or out-of-distribution input.} \\
+\mbox{FSR-AIM-003-01} & \mbox{AIM-003-01} & Each clinical model shall define versioned abstention, rejection, and manual-review triggers for unsupported, anomalous, incomplete, and out-of-distribution inputs. & MGW\slash\allowbreak{}MLOPS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-003-02} & \mbox{AIM-003-02} & A triggered condition shall produce no promotable clinical output and shall route the case to the configured manual or alternate approved workflow. & MGW\slash\allowbreak{}SK & T \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-003-03} & \mbox{AIM-003-03} & Model validation and production records shall measure and retain trigger performance, false acceptance, false rejection, routing outcome, and user disposition. & VVP\slash\allowbreak{}AUD & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-AIM-004 (source AIM-004).} The NL-TPS shall prohibit production model-weight updates and unapproved behavioral learning from routine patient cases, user edits, prompts, or outcomes.} \\
+\mbox{FSR-AIM-004-01} & \mbox{AIM-004-01} & Production model weights, prompts, and behavior-defining artifacts shall be read-only to clinical workflows and service identities. & MLOPS\slash\allowbreak{}SEC & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-004-02} & \mbox{AIM-004-02} & Patient cases, user edits, prompts, and outcomes shall not write to or update a production model or retrieval behavior through the clinical execution path. & MGW\slash\allowbreak{}DATA & T \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-004-03} & \mbox{AIM-004-03} & Any learning or model-update activity shall occur in a segregated governed lifecycle with approved data use, evaluation, change control, and release authorization. & QMS\slash\allowbreak{}MLOPS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-AIM-005 (source AIM-005).} The NL-TPS shall maintain a model and dependency registry containing version, intended use, owner, supplier, training and evaluation provenance, limitations, approved configuration, signed artifacts, and software bill of materials.} \\
+\mbox{FSR-AIM-005-01} & \mbox{AIM-005-01} & The registry shall require model version, intended use, owner, supplier, training and evaluation provenance, limitations, approved configuration, signed artifacts, dependencies, and software bill of materials. & MLOPS\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-005-02} & \mbox{AIM-005-02} & Registration and release shall verify completeness, signatures, dependency identities, vulnerability status, and compatibility before the model becomes approved. & MLOPS\slash\allowbreak{}SEC & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-005-03} & \mbox{AIM-005-03} & The exact registry manifest used for an inference shall be queryable by authorized users and linked to the inference and resulting clinical object. & AUD\slash\allowbreak{}UI & I\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-AIM-006 (source AIM-006).} Clinical model evaluation shall use separated development, tuning, internal test, external test, and site-acceptance data with documented overlap controls.} \\
+\mbox{FSR-AIM-006-01} & \mbox{AIM-006-01} & The model-evaluation plan shall assign immutable identities and intended purposes to development, tuning, internal-test, external-test, and site-acceptance datasets. & MLOPS\slash\allowbreak{}VVP & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-006-02} & \mbox{AIM-006-02} & The evaluation pipeline shall perform patient, study, source, temporal, and derived-data overlap checks and shall report all identified overlap and leakage risks. & MLOPS & A\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-006-03} & \mbox{AIM-006-03} & Dataset separation, overlap disposition, exclusions, and residual limitations shall receive documented approval before model release. & QMS\slash\allowbreak{}VVP & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-AIM-007 (source AIM-007).} The NL-TPS shall evaluate and display clinically relevant overall and subgroup performance, calibration, failure detection, uncertainty, edit burden, and known limitations for each approved model use.} \\
+\mbox{FSR-AIM-007-01} & \mbox{AIM-007-01} & The model-validation specification shall define overall and subgroup performance, calibration, failure detection, uncertainty, edit burden, and known-limitation measures for each approved use. & VVP\slash\allowbreak{}MLOPS & A\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-007-02} & \mbox{AIM-007-02} & The system shall display the applicable model performance summary, limitations, uncertainty meaning, and commissioned action thresholds to authorized users. & UI\slash\allowbreak{}MGW & D\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-007-03} & \mbox{AIM-007-03} & Production monitoring and periodic review shall compare observed model and subgroup signals with approved thresholds and shall document resulting action. & OPS\slash\allowbreak{}QMS & A\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HFR-AIM-008 (source AIM-008).} Changes to model weights, prompts that alter clinical behavior, retrieval configuration, clinical rules, preprocessing, dependencies, or runtime infrastructure shall undergo impact assessment, regression testing, approval, versioning, and rollback planning.} \\
+\mbox{FSR-AIM-008-01} & \mbox{AIM-008-01} & Change control shall classify changes to weights, behavior-altering prompts, retrieval configuration, clinical rules, preprocessing, dependencies, and runtime infrastructure and shall identify affected model uses. & QMS\slash\allowbreak{}MLOPS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-008-02} & \mbox{AIM-008-02} & Each classified change shall receive documented impact assessment and the required regression, performance, safety, cybersecurity, and compatibility testing before approval. & VVP\slash\allowbreak{}MLOPS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{FSR-AIM-008-03} & \mbox{AIM-008-03} & Deployment shall create a new versioned release with an approved rollback plan and shall preserve the prior known-good configuration until acceptance is complete. & CFG\slash\allowbreak{}OPS & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\section{Non-functional sub-requirements}
+
+\subsection{Safety boundaries and human authority (SAF)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SAF-001 (source SAF-001).} The NL-TPS shall prevent any AI or automated service from prescribing treatment, signing or approving a prescription or plan, waiving required QA, releasing a plan for treatment, or commanding treatment delivery.} \\
+\mbox{NFSR-SAF-001-01} & \mbox{SAF-001-01} & The execution architecture shall expose no AI-callable capability that can prescribe treatment, provide a clinical signature, waive QA, release a plan, or command treatment delivery. & SK\slash\allowbreak{}ARCH & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-001-02} & \mbox{SAF-001-02} & Each restricted approval or release transition shall require an authenticated authorized human acting through the designated clinical workflow and shall reject automated or service-account approval. & IAM\slash\allowbreak{}SK & T \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-001-03} & \mbox{SAF-001-03} & Security and safety testing shall demonstrate that prompts, tool calls, model output, malformed requests, and privilege escalation attempts cannot invoke a restricted transition. & VVP & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SAF-002 (source SAF-002).} The NL-TPS shall bind every clinical action to an authenticated user and role and to a confirmed patient, course, study, frame of reference, plan version, operating mode, and destination.} \\
+\mbox{NFSR-SAF-002-01} & \mbox{SAF-002-01} & The context service shall create an immutable action context containing the authenticated user, role, patient, course, study, frame of reference, plan version, operating mode, and destination. & CXT\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-002-02} & \mbox{SAF-002-02} & The safety kernel shall block a clinical action when any required context element is absent or inconsistent, and the interface shall present the bound context before confirmation. & SK\slash\allowbreak{}UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-002-03} & \mbox{SAF-002-03} & The audit ledger shall store the complete action context and the identifiers of every object read, changed, created, or transferred by the action. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SAF-003 (source SAF-003).} The NL-TPS shall require confirmation of at least two patient identifiers before a state-changing clinical action is executed.} \\
+\mbox{NFSR-SAF-003-01} & \mbox{SAF-003-01} & The interface shall present at least two independently sourced patient identifiers and shall require an active user confirmation that is not preselected before a state-changing clinical action. & UI\slash\allowbreak{}CXT & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-003-02} & \mbox{SAF-003-02} & The safety kernel shall reject state-changing execution when the identifier confirmation is absent, stale, associated with another patient, or invalidated by a context change. & SK & T \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-003-03} & \mbox{SAF-003-03} & The system shall record identifier-confirmation events and shall include wrong-patient, interruption, and context-switch scenarios in human-factors validation. & AUD\slash\allowbreak{}HFE & I\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SAF-004 (source SAF-004).} The NL-TPS shall fail closed when a safety-critical field, permission, dependency, context assertion, evidence rule, or commissioned-use condition is missing, ambiguous, inconsistent, expired, or unsupported.} \\
+\mbox{NFSR-SAF-004-01} & \mbox{SAF-004-01} & The safety kernel shall represent each safety-critical precondition with explicit satisfied, unsatisfied, or unknown status and shall permit execution only when every required precondition is satisfied. & SK & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-004-02} & \mbox{SAF-004-02} & The interface shall identify each blocking precondition, the affected action, and the authorized resolution path without offering an ungoverned bypass. & UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-004-03} & \mbox{SAF-004-03} & The system shall record every fail-closed decision and shall verify missing, ambiguous, inconsistent, expired, and unsupported preconditions with controlled negative tests. & AUD\slash\allowbreak{}VVP & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SAF-005 (source SAF-005).} The NL-TPS shall keep automated contours, objectives, transformations, calculations, and candidate plans in a visibly unsigned draft or sandbox state until all required reviews and approvals are complete.} \\
+\mbox{NFSR-SAF-005-01} & \mbox{SAF-005-01} & The lifecycle model shall assign every automated contour, objective, transformation, calculation, and candidate plan an unsigned draft or sandbox state at creation. & DATA\slash\allowbreak{}SK & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-005-02} & \mbox{SAF-005-02} & The interface shall distinguish draft and sandbox objects from reviewed and approved clinical objects using persistent text and status indicators that do not rely on color alone. & UI & D\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-005-03} & \mbox{SAF-005-03} & Promotion, approval, and export services shall reject an automated object until all configured human reviews and approvals are current. & SK\slash\allowbreak{}INT & T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SAF-006 (source SAF-006).} The NL-TPS shall provide a structured preview, explicit confirmation, cancellation, and rollback for reversible state-changing actions before those actions can affect a clinical candidate.} \\
+\mbox{NFSR-SAF-006-01} & \mbox{SAF-006-01} & The action preview shall identify the affected objects, current and proposed values, expected consequences, required approvals, cancellation path, and rollback eligibility. & UI\slash\allowbreak{}DATA & I\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-006-02} & \mbox{SAF-006-02} & Execution shall require a distinct confirmation action after preview, and the confirmation shall expire when the patient context, object version, proposed change, or user authorization changes. & SK\slash\allowbreak{}UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-006-03} & \mbox{SAF-006-03} & Reversible actions shall execute as recoverable transactions with tested cancellation and rollback behavior that preserves object identity, provenance, and prior approved state. & DATA\slash\allowbreak{}VVP & T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SAF-007 (source SAF-007).} The NL-TPS shall invalidate affected downstream approvals, QA evidence, and transfer status whenever an approved dependency changes.} \\
+\mbox{NFSR-SAF-007-01} & \mbox{SAF-007-01} & The dependency graph shall identify every downstream approval, QA result, transfer status, and derived object affected by a change to an approved dependency. & DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-007-02} & \mbox{SAF-007-02} & The state engine shall atomically invalidate affected approvals, QA evidence, and export eligibility before the changed dependency becomes the active version. & SK & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-007-03} & \mbox{SAF-007-03} & The interface shall present the required re-review set, and the audit ledger shall record the invalidation cause, affected objects, prior states, and required recovery actions. & UI\slash\allowbreak{}AUD & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SAF-008 (source SAF-008).} The NL-TPS shall implement role authorization, state transitions, context assertions, hard stops, approval invalidation, and export policy in a deterministic safety kernel that is independently testable from generative models.} \\
+\mbox{NFSR-SAF-008-01} & \mbox{SAF-008-01} & The safety kernel shall be a versioned deterministic component separated from generative-model prompts, weights, sampling behavior, and model-provided policy text. & SK\slash\allowbreak{}ARCH & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-008-02} & \mbox{SAF-008-02} & The safety kernel shall implement explicit allowlisted rules for authorization, state transitions, context assertions, hard stops, approval invalidation, and export eligibility. & SK & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-008-03} & \mbox{SAF-008-03} & The safety kernel shall provide an independent test interface and evidence demonstrating repeatable decisions for equivalent inputs across supported model configurations. & VVP & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SAF-009 (source SAF-009).} The NL-TPS shall preserve institutionally required independent review, dose or MU verification, data-transfer verification, patient-specific QA, and physics checks without allowing AI output to satisfy incompatible approval roles.} \\
+\mbox{NFSR-SAF-009-01} & \mbox{SAF-009-01} & The release configuration shall identify every required independent review, dose or MU verification, transfer verification, patient-specific QA activity, physics check, and responsible role by technique. & CFG\slash\allowbreak{}QMS & I \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-009-02} & \mbox{SAF-009-02} & The workflow engine shall prevent AI output, shared automated evidence, or one incompatible actor from satisfying an independent approval or verification step. & SK & T \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-009-03} & \mbox{SAF-009-03} & Candidate promotion shall remain blocked until current results and authorized signoffs exist for every required independent check, with all evidence linked in the audit record. & REVW\slash\allowbreak{}AUD & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SAF-010 (source SAF-010).} The NL-TPS shall identify degraded operation and failed dependencies explicitly and shall not use an unannounced fallback that changes clinical behavior, calculation, evidence, model, or destination.} \\
+\mbox{NFSR-SAF-010-01} & \mbox{SAF-010-01} & The health service shall assign an explicit normal, degraded, failed, or unavailable state to each safety-relevant dependency and shall map each state to an approved operating response. & OPS\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-010-02} & \mbox{SAF-010-02} & The interface shall announce degraded operation and the safety kernel shall prohibit any fallback that is not listed and approved for the active configuration. & UI\slash\allowbreak{}SK & D\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SAF-010-03} & \mbox{SAF-010-03} & The system shall record the failed dependency, selected response, affected clinical behavior, user notifications, confirmations, and restoration or escalation outcome. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\subsection{Human factors, usability, and competency (HFE)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-HFE-001 (source HFE-001).} The NL-TPS shall continuously display the active patient, course, study, plan, operating mode, approval state, and unsaved or unverified changes during clinical work.} \\
+\mbox{NFSR-HFE-001-01} & \mbox{HFE-001-01} & A persistent context banner shall display the active patient, course, study, plan, operating mode, approval state, and unsaved or unverified-change status throughout clinical work. & UI & HFE\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-001-02} & \mbox{HFE-001-02} & A context switch shall require explicit transition handling and shall invalidate stale confirmations, previews, and unsaved actions associated with the prior context. & UI\slash\allowbreak{}SK & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-001-03} & \mbox{HFE-001-03} & Human-factors validation and audit review shall verify context visibility and correct user response during interruptions, handoffs, multi-patient work, and version changes. & HFE\slash\allowbreak{}AUD & HFE\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-HFE-002 (source HFE-002).} The user interface shall visually distinguish verified patient facts, signed intent, approved evidence, model suggestions, user preferences, assumptions, warnings, and unresolved questions.} \\
+\mbox{NFSR-HFE-002-01} & \mbox{HFE-002-01} & Every displayed fact, intent, evidence item, model suggestion, preference, assumption, warning, and unresolved question shall carry an explicit semantic source label. & UI\slash\allowbreak{}DATA & I\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-002-02} & \mbox{HFE-002-02} & Visual distinctions shall use text, shape, iconography, or grouping in addition to color and shall remain consistent across supported workflows. & UI & HFE\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-002-03} & \mbox{HFE-002-03} & Representative-user evaluation shall verify correct classification and interpretation of source types in normal, ambiguous, and time-pressured scenarios. & HFE\slash\allowbreak{}VVP & HFE\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-HFE-003 (source HFE-003).} Warnings shall identify the hazard, affected object, required action, and escalation path and shall not rely on color alone.} \\
+\mbox{NFSR-HFE-003-01} & \mbox{HFE-003-01} & Each warning shall state the hazard or condition, affected patient or object, consequence when material, required action, and escalation path. & UI & I\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-003-02} & \mbox{HFE-003-02} & Critical warning presentation shall use accessible multimodal indicators, shall not rely on color alone, and shall require the configured acknowledgment or corrective action. & UI & HFE\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-003-03} & \mbox{HFE-003-03} & The system shall record warning presentation and response, and usability review shall assess warning recognition, comprehension, and appropriate action. & AUD\slash\allowbreak{}HFE & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-HFE-004 (source HFE-004).} Confirmation burden shall be proportional to clinical risk, and the NL-TPS shall monitor alert burden, overrides, workarounds, and critical-warning comprehension.} \\
+\mbox{NFSR-HFE-004-01} & \mbox{HFE-004-01} & The notification policy shall assign a risk tier, presentation method, acknowledgment requirement, escalation, suppression rule, and owner to each warning or confirmation type. & HFE\slash\allowbreak{}CFG & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-004-02} & \mbox{HFE-004-02} & The system shall collect alert frequency, repeated exposure, acknowledgment, override, cancellation, workaround, and response-time signals without weakening a required hard stop. & UI\slash\allowbreak{}OPS & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-004-03} & \mbox{HFE-004-03} & The program shall periodically review alert burden and critical-warning comprehension and shall control corrective changes through risk and human-factors assessment. & QMS\slash\allowbreak{}HFE & A\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-HFE-005 (source HFE-005).} The NL-TPS shall complete formative and summative human-factors validation with representative intended users, critical tasks, environments, interruptions, handoffs, and recovery scenarios before clinical release.} \\
+\mbox{NFSR-HFE-005-01} & \mbox{HFE-005-01} & The human-factors plan shall identify intended users, use environments, critical tasks, hazards, foreseeable misuse, interruptions, handoffs, recovery scenarios, and acceptance criteria. & HFE\slash\allowbreak{}VVP & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-005-02} & \mbox{HFE-005-02} & Formative evaluations shall document findings, risk links, design changes, unresolved issues, and verification of corrective actions. & HFE\slash\allowbreak{}QMS & HFE\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-005-03} & \mbox{HFE-005-03} & Summative validation shall use representative users and conditions and shall demonstrate successful completion of critical tasks without unacceptable use-related risk before clinical release. & HFE\slash\allowbreak{}VVP & HFE\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-HFE-006 (source HFE-006).} The NL-TPS shall require role-specific training, demonstrated competency, and current authorization before a user can perform clinical functions assigned to that role.} \\
+\mbox{NFSR-HFE-006-01} & \mbox{HFE-006-01} & The training program shall define role-specific curricula, prerequisites, supervised practice, competency assessments, renewal intervals, and remediation for each clinical function. & HFE\slash\allowbreak{}QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-006-02} & \mbox{HFE-006-02} & The identity service shall enable a role-specific clinical function only when the user's training, competency, and authorization records are current. & IAM & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{NFSR-HFE-006-03} & \mbox{HFE-006-03} & The system shall retain training and competency evidence, authorization decisions, expirations, revocations, exceptions, and periodic review results. & AUD\slash\allowbreak{}QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\subsection{Privacy, cybersecurity, and secure development (SEC)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SEC-001 (source SEC-001).} The NL-TPS shall enforce unique user identity, multi-factor authentication, least privilege, role and context authorization, session controls, and periodic access review.} \\
+\mbox{NFSR-SEC-001-01} & \mbox{SEC-001-01} & The identity service shall provide unique user identity, approved multi-factor authentication, role and context authorization, least privilege, and configurable session controls for clinical access. & IAM & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-001-02} & \mbox{SEC-001-02} & Every protected action shall evaluate current identity, role, context, session, and object authorization and shall reject absent, expired, or insufficient authorization. & IAM\slash\allowbreak{}SK & T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-001-03} & \mbox{SEC-001-03} & The program shall perform periodic access and privilege reviews and shall retain approvals, changes, dormant accounts, exceptions, and remediation. & QMS\slash\allowbreak{}AUD & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SEC-002 (source SEC-002).} The NL-TPS shall protect data and services through approved encryption, network segmentation, managed secrets, secure configuration, endpoint controls, and least-privilege service identities.} \\
+\mbox{NFSR-SEC-002-01} & \mbox{SEC-002-01} & The deployment shall use approved encryption in transit and at rest, network segmentation, managed secrets, endpoint controls, secure configuration, and least-privilege service identities. & SEC\slash\allowbreak{}ARCH & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-002-02} & \mbox{SEC-002-02} & Security configuration shall be continuously or periodically assessed against the approved baseline, with material deviation generating an actionable event. & SEC\slash\allowbreak{}OPS & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-002-03} & \mbox{SEC-002-03} & The system shall retain security-baseline versions, key and certificate status, configuration assessments, exceptions, approvals, and remediation evidence. & QMS\slash\allowbreak{}AUD & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SEC-003 (source SEC-003).} The NL-TPS shall prevent protected health information, images, prompts, transcripts, or outputs from being sent to an unapproved connector, model service, tenant, destination, or external tool.} \\
+\mbox{NFSR-SEC-003-01} & \mbox{SEC-003-01} & The egress policy shall allowlist approved connectors, model services, tenants, destinations, data classes, purposes, and required protection controls. & SEC\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-003-02} & \mbox{SEC-003-02} & The system shall block protected health information, images, prompts, transcripts, and outputs from an unapproved egress path or incompatible tenant. & SEC\slash\allowbreak{}SK & T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-003-03} & \mbox{SEC-003-03} & Every blocked or permitted sensitive-data transfer shall retain the source, destination, data classification, policy decision, actor, purpose, and incident escalation when applicable. & AUD\slash\allowbreak{}OPS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SEC-004 (source SEC-004).} The NL-TPS shall treat retrieved text, uploaded documents, DICOM metadata, user content, and model output as untrusted input and shall isolate instructions embedded in that content from system authority.} \\
+\mbox{NFSR-SEC-004-01} & \mbox{SEC-004-01} & Retrieved text, uploaded documents, DICOM metadata, user content, and model output shall enter the system through an untrusted-data boundary separate from system policy and tool authority. & SEC\slash\allowbreak{}ARCH & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-004-02} & \mbox{SEC-004-02} & The system shall sanitize, constrain, or reject embedded instructions that attempt to alter system authority, safety policy, credentials, tool permissions, or execution scope. & SEC\slash\allowbreak{}NLU & T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-004-03} & \mbox{SEC-004-03} & Adversarial testing shall cover prompt injection, indirect instruction, malformed metadata, encoded content, tool redirection, data exfiltration, and privilege escalation. & VVP\slash\allowbreak{}SEC & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SEC-005 (source SEC-005).} The NL-TPS shall verify the identity, integrity, signature, provenance, and approved status of software, model, evidence, configuration, and dependency artifacts before clinical use.} \\
+\mbox{NFSR-SEC-005-01} & \mbox{SEC-005-01} & Each clinical software, model, evidence, configuration, and dependency artifact shall have an approved manifest containing identity, version, provenance, integrity value, signature, and release status. & SEC\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-005-02} & \mbox{SEC-005-02} & Artifact verification shall occur before load or clinical use and shall block a missing, unsigned, altered, revoked, incompatible, or unapproved artifact. & SEC\slash\allowbreak{}SK & T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-005-03} & \mbox{SEC-005-03} & The verification result, trust chain, manifest version, exception, containment action, and affected services shall be retained for each artifact load. & AUD\slash\allowbreak{}OPS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SEC-006 (source SEC-006).} The NL-TPS development and maintenance process shall include threat modeling, secure coding, code review, software bill of materials, vulnerability scanning, penetration testing, patch governance, and supplier-risk controls.} \\
+\mbox{NFSR-SEC-006-01} & \mbox{SEC-006-01} & The secure-development lifecycle shall require threat modeling, secure coding standards, code review, software bill of materials, vulnerability scanning, penetration testing, patch governance, and supplier-risk review. & QMS\slash\allowbreak{}SEC & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-006-02} & \mbox{SEC-006-02} & Each release shall include objective evidence that required security activities are complete and that identified vulnerabilities are remediated or formally risk accepted. & SEC\slash\allowbreak{}QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-006-03} & \mbox{SEC-006-03} & Supplier and dependency changes shall undergo provenance, vulnerability, license, support, incident, and continuity assessment before approval. & QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SEC-007 (source SEC-007).} The NL-TPS shall centrally record and detect unauthorized access, anomalous export, integrity failure, malicious input, model or evidence compromise, secrets exposure, and suspected PHI leakage.} \\
+\mbox{NFSR-SEC-007-01} & \mbox{SEC-007-01} & Central security monitoring shall collect identity, access, export, integrity, connector, model, evidence, secret, and data-loss events with synchronized time and protected provenance. & SEC\slash\allowbreak{}AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-007-02} & \mbox{SEC-007-02} & Approved detection rules shall identify unauthorized access, anomalous export, integrity failure, malicious input, artifact compromise, secrets exposure, and suspected protected-information leakage. & SEC\slash\allowbreak{}OPS & T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-007-03} & \mbox{SEC-007-03} & A triggered detection shall create a triage record containing severity, affected users and objects, clinical impact, containment, evidence, disposition, and escalation. & OPS\slash\allowbreak{}AUD & I\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HNFR-SEC-008 (source SEC-008).} The NL-TPS shall support tested clinical and cybersecurity incident containment, evidence preservation, patient-impact assessment, communication, reporting, recovery, and corrective and preventive action.} \\
+\mbox{NFSR-SEC-008-01} & \mbox{SEC-008-01} & Incident-response plans shall define clinical and cybersecurity containment, evidence preservation, patient-impact assessment, communication, reporting, recovery, and corrective-action responsibilities. & OPS\slash\allowbreak{}SEC & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-008-02} & \mbox{SEC-008-02} & The program shall perform documented exercises covering representative compromise, outage, data-integrity, privacy, model, evidence, and interface incidents. & OPS & D\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{NFSR-SEC-008-03} & \mbox{SEC-008-03} & Each incident and exercise shall retain chronology, decisions, affected cases, notifications, evidence, recovery validation, lessons learned, and corrective and preventive actions. & QMS\slash\allowbreak{}AUD & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\section{Operational sub-requirements}
+
+\subsection{Governance, intended use, and scope (GOV)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-GOV-001 (source GOV-001).} The NL-TPS shall operate as a human-supervised treatment-planning support system and shall not be represented as a substitute for the professional judgment of radiation oncologists, medical dosimetrists, qualified medical physicists, or other authorized clinical staff.} \\
+\mbox{OSR-GOV-001-01} & \mbox{GOV-001-01} & The user interface, labeling, training material, and controlled product communications shall identify AI-produced content as decision support or draft output and shall identify the authorized human roles retaining clinical authority. & UI\slash\allowbreak{}QMS & I\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-001-02} & \mbox{GOV-001-02} & The deterministic safety kernel shall reject any state transition in which model output, an automated service identity, or an unauthenticated actor is presented as professional review, approval, or judgment. & SK & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-001-03} & \mbox{GOV-001-03} & The quality program shall review the intended-use statement, labeling, training content, and release communications for consistency with the human-supervised operating model before each clinical release. & QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-GOV-002 (source GOV-002).} The NL-TPS shall restrict clinical operation to the institution-approved intended use, patient population, disease sites, modalities, machines, techniques, and tasks defined in the active release authorization.} \\
+\mbox{OSR-GOV-002-01} & \mbox{GOV-002-01} & The configuration service shall maintain a versioned approved-use matrix containing the permitted institution, patient population, disease site, modality, machine, technique, task, operating mode, and release identifier. & CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-002-02} & \mbox{GOV-002-02} & The safety kernel shall compare the active case and requested workflow with every applicable field in the approved-use matrix before enabling a clinical function and shall deny execution on any mismatch. & SK\slash\allowbreak{}CXT & T \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-002-03} & \mbox{GOV-002-03} & The audit service shall record the evaluated scope attributes, approved-use matrix version, decision, and denial reason for each clinical workflow initiation. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-GOV-003 (source GOV-003).} The NL-TPS shall block clinical execution for an unsupported or out-of-scope workflow until that workflow has completed separate risk assessment, commissioning, validation, and governance approval.} \\
+\mbox{OSR-GOV-003-01} & \mbox{GOV-003-01} & The safety kernel shall classify any unlisted scope value or workflow combination as unsupported and shall block state change, candidate promotion, and clinical export for that workflow. & SK & T \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-003-02} & \mbox{GOV-003-02} & The quality program shall require linked risk assessment, commissioning, validation, and governance-approval records for each proposed scope expansion. & QMS\slash\allowbreak{}VVP & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-003-03} & \mbox{GOV-003-03} & The configuration service shall prevent activation of a scope expansion until all required records are complete, approved, effective, and bound to the release baseline. & CFG & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-GOV-004 (source GOV-004).} The NL-TPS shall provide segregated training\slash\allowbreak{}research, commissioning, shadow, clinical-draft, clinical-approved, and degraded\slash\allowbreak{}read-only operating modes with mode-specific permissions and destinations.} \\
+\mbox{OSR-GOV-004-01} & \mbox{GOV-004-01} & The configuration service shall define, for each operating mode, the permitted actions, data classes, model and evidence versions, approval states, interfaces, and destinations. & CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-004-02} & \mbox{GOV-004-02} & Identity, safety-kernel, and user-interface controls shall enforce the active mode's permissions and shall display the active mode continuously during user interaction. & IAM\slash\allowbreak{}SK\slash\allowbreak{}UI & T\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-004-03} & \mbox{GOV-004-03} & The data and interface services shall prevent promotion or transfer of objects between operating modes except through an approved, versioned, and audited transition workflow. & DATA\slash\allowbreak{}INT & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-GOV-005 (source GOV-005).} The NL-TPS shall enforce institution-approved role authority and separation-of-duties rules for radiation oncologists, dosimetrists, medical physicists, therapists, informatics staff, quality staff, and system developers.} \\
+\mbox{OSR-GOV-005-01} & \mbox{GOV-005-01} & The identity service shall implement an institution-approved role-permission matrix that identifies allowed functions and incompatible responsibilities for each authorized clinical and technical role. & IAM\slash\allowbreak{}QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-005-02} & \mbox{GOV-005-02} & The safety kernel shall prevent one actor or service identity from satisfying approval steps that the active separation-of-duties policy defines as incompatible. & SK & T \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-005-03} & \mbox{GOV-005-03} & The quality program shall perform and retain periodic access, role, exception, and separation-of-duties reviews, including disposition of identified conflicts. & QMS\slash\allowbreak{}AUD & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-GOV-006 (source GOV-006).} The NL-TPS shall maintain the intended-use statement, approved scope, risk controls, release status, configuration baseline, and applicable regulatory and quality-system records as controlled artifacts.} \\
+\mbox{OSR-GOV-006-01} & \mbox{GOV-006-01} & The controlled-document repository shall assign an identifier, owner, version, approval state, effective date, and supersession status to each intended-use, scope, risk, release, configuration, regulatory, and quality artifact. & QMS & I \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-006-02} & \mbox{GOV-006-02} & The release configuration shall reference the exact approved versions of all required controlled artifacts and shall not activate with an incomplete or inconsistent baseline. & CFG & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-006-03} & \mbox{GOV-006-03} & The system shall generate a reproducible release-baseline report listing each controlled artifact, approval, effective status, and integrity value. & AUD\slash\allowbreak{}QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-GOV-007 (source GOV-007).} The NL-TPS shall require clinical-governance approval for changes to deployment scope, accepted residual risk, evidence policy, model release, monitoring thresholds, or clinical workflow authority.} \\
+\mbox{OSR-GOV-007-01} & \mbox{GOV-007-01} & The change-control process shall classify changes to deployment scope, residual risk, evidence policy, model release, monitoring thresholds, and workflow authority as governance-controlled changes. & QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-007-02} & \mbox{GOV-007-02} & The configuration service shall require the designated clinical-governance approvals before a governance-controlled change can be deployed or made effective. & CFG & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\mbox{OSR-GOV-007-03} & \mbox{GOV-007-03} & The audit record for each governance-controlled change shall retain the prior and new values, rationale, impact assessment, approvers, approval times, effective date, and rollback reference. & AUD & I \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\subsection{Clinical operations, monitoring, and resilience (OPS)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-OPS-001 (source OPS-001).} The NL-TPS shall monitor predefined safety, model, evidence, workflow, technical, subgroup, reliability, and security signals against approved action thresholds.} \\
+\mbox{OSR-OPS-001-01} & \mbox{OPS-001-01} & The monitoring catalog shall define each safety, model, evidence, workflow, technical, subgroup, reliability, and security signal with data source, owner, threshold, action, and review interval. & OPS\slash\allowbreak{}CFG & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-001-02} & \mbox{OPS-001-02} & The monitoring service shall calculate signals against the approved thresholds and shall trigger the configured notification, restriction, suspension, or investigation action. & OPS & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-001-03} & \mbox{OPS-001-03} & The system shall retain signal values, cohort or subgroup definition, threshold version, alert, action, acknowledgment, disposition, and periodic review. & AUD\slash\allowbreak{}QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-OPS-002 (source OPS-002).} The NL-TPS shall use atomic job states and shall prevent a timed-out, failed, canceled, partial, or unreconciled result from appearing complete or eligible for promotion.} \\
+\mbox{OSR-OPS-002-01} & \mbox{OPS-002-01} & Each asynchronous clinical job shall use a versioned state machine with pending, running, completed, failed, canceled, timed-out, partial, and reconciliation states as applicable. & OPS\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-002-02} & \mbox{OPS-002-02} & Only an atomically committed completed result shall be eligible for promotion; every other terminal or uncertain state shall remain ineligible and visibly noncomplete. & SK\slash\allowbreak{}DATA & T \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-002-03} & \mbox{OPS-002-03} & The system shall retain all job transitions, checkpoints, partial artifacts, cleanup actions, reconciliation decisions, and final eligibility. & OPS\slash\allowbreak{}AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-OPS-003 (source OPS-003).} The NL-TPS shall support rapid suspension of a model, evidence rule, connector, workflow, disease site, or complete clinical service and rollback to an approved known-good configuration.} \\
+\mbox{OSR-OPS-003-01} & \mbox{OPS-003-01} & The operations service shall provide authorized suspension controls for a model, evidence rule, connector, workflow, disease site, and the complete clinical service. & OPS\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-003-02} & \mbox{OPS-003-02} & Suspension shall prevent new affected execution, identify in-progress and downstream affected work, and transition the service to the approved safe state. & SK\slash\allowbreak{}OPS & D\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-003-03} & \mbox{OPS-003-03} & Rollback shall restore a signed known-good configuration and shall require documented validation, reconciliation, approval, and communication before resumption. & OPS\slash\allowbreak{}QMS & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-OPS-004 (source OPS-004).} The NL-TPS shall provide an explicit degraded or read-only mode and an institution-approved downtime procedure that prohibits new clinical execution while preserving access to completed work and audit records as authorized.} \\
+\mbox{OSR-OPS-004-01} & \mbox{OPS-004-01} & The degraded or read-only mode shall define allowed read functions, prohibited executions, authorized users, data availability, indicators, entry criteria, and exit criteria. & OPS\slash\allowbreak{}CFG & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-004-02} & \mbox{OPS-004-02} & When degraded or read-only mode is active, the system shall display the condition and shall block new clinical execution, modification, approval, and export except as explicitly authorized. & SK\slash\allowbreak{}UI & D\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-004-03} & \mbox{OPS-004-03} & The downtime procedure shall define access to completed work and audit records, external work practices, reconciliation, communication, and controlled restoration. & QMS\slash\allowbreak{}OPS & I\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-OPS-005 (source OPS-005).} The NL-TPS shall maintain validated backups and shall perform staged restoration, object and destination reconciliation, approval-state verification, regression testing, and documented recovery exercises.} \\
+\mbox{OSR-OPS-005-01} & \mbox{OPS-005-01} & The backup configuration shall identify protected objects, versions, encryption, integrity checks, retention, recovery objectives, storage locations, and restoration authority. & OPS\slash\allowbreak{}SEC & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-005-02} & \mbox{OPS-005-02} & Restoration shall occur in a staged environment and shall verify object identity, dependencies, destination reconciliation, approval states, audit continuity, and regression results before release. & OPS\slash\allowbreak{}DATA & D\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-005-03} & \mbox{OPS-005-03} & The program shall conduct and retain periodic recovery exercises, observed results, deviations, corrective actions, and approval for continued adequacy. & QMS\slash\allowbreak{}AUD & I\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-OPS-006 (source OPS-006).} The NL-TPS shall support reporting, triage, investigation, patient-impact assessment, evidence preservation, trend analysis, and corrective and preventive action for incidents, near misses, unsafe workarounds, and QA discrepancies.} \\
+\mbox{OSR-OPS-006-01} & \mbox{OPS-006-01} & The event-management workflow shall support reports for incidents, near misses, unsafe workarounds, and QA discrepancies with severity, triage, ownership, and escalation. & OPS\slash\allowbreak{}QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-006-02} & \mbox{OPS-006-02} & Each event shall link affected patients, cases, objects, releases, models, evidence, interfaces, and prior related events while preserving required privacy. & OPS\slash\allowbreak{}DATA & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-006-03} & \mbox{OPS-006-03} & Investigation shall document patient impact, evidence preservation, root or contributing causes, trends, corrective and preventive action, effectiveness checks, and closure approval. & QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-OPS-007 (source OPS-007).} The NL-TPS shall define, approve, monitor, and periodically review clinical service levels and action thresholds for availability, latency, recovery, data retention, reliability, safety, model performance, evidence currency, and security.} \\
+\mbox{OSR-OPS-007-01} & \mbox{OPS-007-01} & A controlled service-level catalog shall define approved measures, thresholds, owners, escalation, and review intervals for availability, latency, recovery, retention, reliability, safety, model performance, evidence currency, and security. & OPS\slash\allowbreak{}QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-007-02} & \mbox{OPS-007-02} & The system shall measure each service-level indicator using approved definitions and shall notify the responsible owner when an action threshold is crossed. & OPS & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-OPS-007-03} & \mbox{OPS-007-03} & Periodic service review shall retain performance trends, threshold breaches, actions, exceptions, proposed threshold changes, and governance approval. & QMS\slash\allowbreak{}AUD & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\subsection{Verification, commissioning, release, and change control (VAL)}
+
+\begin{scriptsize}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.105\textwidth}L{0.435\textwidth}L{0.12\textwidth}L{0.08\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Category child} & \textbf{Source} & \textbf{Sub-requirement} & \textbf{Legacy allocation} & \textbf{V\&V} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-VAL-001 (source VAL-001).} The program shall trace each stakeholder need, hazard, risk control, and high-level requirement to allocated design, implementation, verification method, test result, anomaly disposition, and release decision.} \\
+\mbox{OSR-VAL-001-01} & \mbox{VAL-001-01} & The traceability repository shall assign stable identities and typed links among stakeholder needs, hazards, risk controls, high-level requirements, child requirements, design elements, implementation items, verification cases, results, anomalies, and releases. & VVP\slash\allowbreak{}QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-001-02} & \mbox{VAL-001-02} & Automated trace analysis shall identify missing, orphaned, duplicate, circular, stale, or failed links and shall prevent baseline acceptance with an unresolved required trace. & VVP & A\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-001-03} & \mbox{VAL-001-03} & Each release shall retain an approved traceability report, anomaly dispositions, coverage results, and the configuration of all traced artifacts. & QMS\slash\allowbreak{}AUD & I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-VAL-002 (source VAL-002).} The integrated NL-TPS shall pass site-specific acceptance, commissioning, end-to-end, regression, shadow-mode, and governance release criteria before clinical use.} \\
+\mbox{OSR-VAL-002-01} & \mbox{VAL-002-01} & The site release plan shall define acceptance, commissioning, end-to-end, regression, shadow-mode, and governance criteria for the approved site configuration and intended use. & VVP\slash\allowbreak{}QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-002-02} & \mbox{VAL-002-02} & The integrated system shall execute the approved site test protocols using controlled configurations, expected results, tolerances, independent reviewers, and recorded deviations. & VVP & T\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-002-03} & \mbox{VAL-002-03} & Clinical mode shall remain disabled until all required site evidence is complete, anomalies are acceptably dispositioned, and designated authorities approve release. & CFG\slash\allowbreak{}QMS & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-VAL-003 (source VAL-003).} Verification shall include locked reference cases and challenge cases for language and voice, evidence computation, segmentation, registration, planning, dose, robustness, interoperability, security, recovery, and audit integrity.} \\
+\mbox{OSR-VAL-003-01} & \mbox{VAL-003-01} & The verification library shall contain locked reference and challenge cases for language, voice, evidence, segmentation, registration, planning, dose, robustness, interoperability, security, recovery, and audit integrity. & VVP & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-003-02} & \mbox{VAL-003-02} & Each case shall include immutable inputs, expected results or adjudication rules, configuration, applicability, provenance, and acceptance criteria. & VVP\slash\allowbreak{}DATA & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-003-03} & \mbox{VAL-003-03} & Coverage analysis shall map cases to requirements, hazards, boundaries, failure modes, supported configurations, and known residual gaps. & VVP\slash\allowbreak{}QMS & A\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-VAL-004 (source VAL-004).} End-to-end verification shall exercise normal, boundary, rare but foreseeable, wrong-context, partial-failure, timeout, rollback, post-approval change, and recovery scenarios through the official clinical interfaces.} \\
+\mbox{OSR-VAL-004-01} & \mbox{VAL-004-01} & The end-to-end test plan shall include normal, boundary, rare but foreseeable, wrong-context, partial-failure, timeout, rollback, post-approval change, and recovery scenarios. & VVP & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-004-02} & \mbox{VAL-004-02} & Each scenario shall execute through the official user, model, clinical-service, and interface paths using the release-candidate configuration. & VVP & T\slash\allowbreak{}D \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-004-03} & \mbox{VAL-004-03} & Results shall retain ordered evidence, expected and observed behavior, data lineage, screenshots or logs when applicable, anomalies, dispositions, and regression linkage. & VVP\slash\allowbreak{}QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-VAL-005 (source VAL-005).} Clinical model validation shall include task-specific technical performance, clinically significant error, dose impact where relevant, edit burden, failure detection, subgroup performance, and human-team effect.} \\
+\mbox{OSR-VAL-005-01} & \mbox{VAL-005-01} & The clinical-model validation plan shall define task-specific technical performance, clinically significant error, dose impact where relevant, edit burden, failure detection, subgroup performance, and human-team-effect endpoints. & VVP\slash\allowbreak{}MLOPS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-005-02} & \mbox{VAL-005-02} & Validation shall use representative and challenge data, prespecified analyses, independent adjudication, confidence intervals or uncertainty characterization, and approved acceptance criteria. & VVP & A\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-005-03} & \mbox{VAL-005-03} & Release evidence shall document limitations, subgroup findings, user interaction effects, residual risk, monitoring needs, and approval for the bounded intended use. & QMS\slash\allowbreak{}HFE & I\slash\allowbreak{}HFE \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-VAL-006 (source VAL-006).} Clinical evaluation shall progress through retrospective, shadow, and controlled limited-clinical stages with predefined endpoints, independent adjudication, and applicable research, ethics, quality, and regulatory authorization.} \\
+\mbox{OSR-VAL-006-01} & \mbox{VAL-006-01} & Each retrospective, shadow, or controlled limited-clinical stage shall have an approved protocol defining scope, endpoints, stop rules, sample rationale, adjudication, monitoring, and progression criteria. & VVP\slash\allowbreak{}QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-006-02} & \mbox{VAL-006-02} & The program shall obtain and retain all applicable research, ethics, privacy, quality, institutional, and regulatory authorizations before initiating a clinical-evaluation stage. & QMS & I \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-006-03} & \mbox{VAL-006-03} & Stage completion shall require independent endpoint adjudication, anomaly and patient-impact review, residual-risk assessment, and documented approval to progress. & VVP\slash\allowbreak{}QMS & A\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-VAL-007 (source VAL-007).} The NL-TPS shall prevent progression through each release gate until its predefined safety, quality, subgroup, usability, reliability, cybersecurity, and governance evidence is complete and approved.} \\
+\mbox{OSR-VAL-007-01} & \mbox{VAL-007-01} & Each release gate shall have a versioned checklist of required safety, quality, subgroup, usability, reliability, cybersecurity, clinical, and governance evidence and authorized approvers. & QMS\slash\allowbreak{}CFG & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-007-02} & \mbox{VAL-007-02} & The release service shall prevent progression or clinical activation when required evidence is missing, failed, expired, inconsistent, or not approved. & SK\slash\allowbreak{}CFG & T \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-007-03} & \mbox{VAL-007-03} & The gate record shall retain submitted evidence versions, automated checks, reviewer decisions, exceptions, residual risks, approval times, and resulting release state. & AUD & I\slash\allowbreak{}T \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-VAL-008 (source VAL-008).} Each expansion to a new disease site, model, modality, machine, technique, institution, adaptive workflow, interface, or evidence package shall receive documented change-impact assessment, commissioning, human-factors assessment, regression testing, and monitoring approval.} \\
+\mbox{OSR-VAL-008-01} & \mbox{VAL-008-01} & The change process shall classify expansions by disease site, model, modality, machine, technique, institution, adaptive workflow, interface, and evidence package and shall identify affected requirements and hazards. & QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-008-02} & \mbox{VAL-008-02} & The impact assessment shall prescribe the required commissioning, regression, human-factors, interoperability, cybersecurity, clinical, and monitoring activities for the expansion. & VVP\slash\allowbreak{}QMS & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-008-03} & \mbox{VAL-008-03} & The expanded scope shall remain unavailable in clinical mode until all prescribed activities and approvals are complete and bound to a new release configuration. & CFG & T\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\rowcolor{NLLight}\multicolumn{5}{@{}L{0.94\textwidth}@{}}{\textbf{Parent HOR-VAL-009 (source VAL-009).} The NL-TPS shall not enter or remain in clinical service with an unresolved critical anomaly, unacceptable residual risk, failed release threshold, unverified risk control, or unreconciled safety-critical change.} \\
+\mbox{OSR-VAL-009-01} & \mbox{VAL-009-01} & The anomaly and risk registry shall identify severity, clinical impact, affected scope, risk-control status, release-threshold effect, owner, disposition, and closure evidence. & QMS\slash\allowbreak{}VVP & I\slash\allowbreak{}A \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-009-02} & \mbox{VAL-009-02} & The release service shall block entry to or continued operation in clinical mode when a critical anomaly, unacceptable residual risk, failed threshold, unverified control, or unreconciled safety change is active. & CFG\slash\allowbreak{}SK & T \\
+\addlinespace[2pt]
+\mbox{OSR-VAL-009-03} & \mbox{VAL-009-03} & Emergency suspension and re-entry shall require containment, affected-case assessment, corrective action, regression evidence, residual-risk approval, and documented authorization. & OPS\slash\allowbreak{}QMS & D\slash\allowbreak{}I \\
+\addlinespace[2pt]
+\end{longtable}
+\end{scriptsize}
+
+\section{Completion and acceptance rule}
+
+A sub-requirement is realized only when its allocated category components and interfaces are implemented, their contracts and configuration are baselined, responsible teams have supplied required objective evidence, linked hazards and anomalies are dispositioned, and the integrated parent requirement passes its approved acceptance criteria. Passing isolated component tests does not establish clinical readiness.
+
+External TPS interoperability shall be accepted through the approved DICOM/DICOM-RT boundary and any separately approved vendor API. Commissioned TPS and dose-engine behavior shall not be inferred from nominal object names; conformance, semantic mapping, identity, references, geometry, units, status, completeness, round-trip fidelity, and site configuration require verification.
+
+\section{Structural decomposition audit}
+
+\begin{small}
+\begin{longtable}{@{}L{0.15\textwidth}L{0.11\textwidth}L{0.11\textwidth}L{0.20\textwidth}L{0.17\textwidth}L{0.10\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Class} & \textbf{Parents} & \textbf{Children} & \textbf{Unique category IDs} & \textbf{Children/parent} & \textbf{Audit} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Class} & \textbf{Parents} & \textbf{Children} & \textbf{Unique category IDs} & \textbf{Children/parent} & \textbf{Audit} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Functional & 64 & 192 & 192 & 3.00 & Pass \\
+\addlinespace[2pt]
+Non-functional & 24 & 72 & 72 & 3.00 & Pass \\
+\addlinespace[2pt]
+Operational & 23 & 69 & 69 & 3.00 & Pass \\
+\addlinespace[2pt]
+TOTAL & 111 & 333 & 333 & 3.00 & Pass \\
+\addlinespace[2pt]
+\end{longtable}
+\end{small}
+
+Structural pass confirms complete one-to-one aliasing and three-child decomposition. It does not constitute verification, validation, commissioning, regulatory acceptance, residual-risk acceptance, or authorization for patient care.
+
+\textbf{Bottom line. }All 111 categorized high-level requirements are decomposed into the complete 333-sub-requirement baseline needed for traceable realization.
+
+\end{document}
