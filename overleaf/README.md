@@ -7,17 +7,21 @@ controlled Word artifacts in the repository root:
 - `NL_TPS_High_Level_Requirements.tex` - High-Level Requirements
 
 Both documents use `nl_tps_common.sty`. The ConOps also uses the images in
-`figures/`.
+`figures/`. For reliable compilation from the repository root, use the two
+top-level Overleaf entry points:
+
+- `NL_TPS_ConOps_Overleaf.tex`
+- `NL_TPS_High_Level_Requirements_Overleaf.tex`
 
 ## Import from GitHub
 
-1. In Overleaf, create or open a project connected to this GitHub repository.
-2. Pull the repository content.
-3. Open **Menu -> Main document**.
-4. Select either `overleaf/NL_TPS_ConOps.tex` or
-   `overleaf/NL_TPS_High_Level_Requirements.tex`.
-5. Use pdfLaTeX as the compiler.
-6. Recompile twice after changing headings, page counts, or the table of
+1. In the connected Overleaf project, open **Integrations -> GitHub** and pull
+   the latest GitHub changes.
+2. Open **Settings -> Compiler -> Main document**.
+3. Select either `NL_TPS_ConOps_Overleaf.tex` or
+   `NL_TPS_High_Level_Requirements_Overleaf.tex`.
+4. Use pdfLaTeX as the compiler.
+5. Recompile twice after changing headings, page counts, or the table of
    contents.
 
 The two files are intentionally separate controlled documents. Select one as
