@@ -4,7 +4,7 @@
 \graphicspath{{figures/}{overleaf/figures/}}
 \hypersetup{
   pdftitle={NL-TPS Controlled Documentation Suite},
-  pdfsubject={ConOps, high-level requirements, sub-requirements, and component realization}
+  pdfsubject={ConOps, high-level requirements, high-level interface requirements, sub-requirements, and component realization}
 }
 \makeatletter
 \renewcommand{\@pnumwidth}{2.2em}
@@ -30,12 +30,12 @@
 
 \begin{document}
 \NLSetPageStyle{NL-TPS DOCUMENTATION SUITE}{ConOps through Component Realization - Version 0.1}
-\NLTitleBlock{CONTROLLED DOCUMENTATION SUITE}{Natural-Language Treatment Planning System}{ConOps, high-level requirements, sub-requirements, and component realization}{\begin{minipage}{0.95\textwidth}
+\NLTitleBlock{CONTROLLED DOCUMENTATION SUITE}{Natural-Language Treatment Planning System}{ConOps, requirements, interfaces, and component realization}{\begin{minipage}{0.95\textwidth}
 \NLMeta{Suite version}{0.1 - Discussion Draft}
 \NLMeta{Date}{18 August 2026}
-\NLMeta{Included documents}{4}
-\NLMeta{Trace chain}{ConOps $\rightarrow$ 111 high-level requirements $\rightarrow$ 333 sub-requirements $\rightarrow$ 41 components and 15 teams}
-\end{minipage}}{This file compiles the four separately controlled NL-TPS documents into one review copy. The constituent source files and standalone Overleaf entry points remain authoritative and independently compilable. Nothing in this combined view authorizes clinical use.}
+\NLMeta{Included documents}{5}
+\NLMeta{Trace chain}{ConOps $\rightarrow$ 111 high-level requirements $\rightarrow$ 333 interface requirements and 333 sub-requirements $\rightarrow$ 41 components and 15 teams}
+\end{minipage}}{This file compiles the five separately controlled NL-TPS documents into one review copy. The constituent source files and standalone Overleaf entry points remain authoritative and independently compilable. Nothing in this combined view authorizes clinical use.}
 
 \tableofcontents
 \clearpage
@@ -44,7 +44,8 @@
 
 \NLTPSIncludeDocument{Document I: Concept of Operations}{overleaf/NL_TPS_ConOps.tex}{conops}
 \NLTPSIncludeDocument{Document II: High-Level Requirements}{overleaf/NL_TPS_High_Level_Requirements.tex}{hlr}
-\NLTPSIncludeDocument{Document III: Detailed Sub-Requirements}{overleaf/NL_TPS_Detailed_Requirements.tex}{subreq}
-\NLTPSIncludeDocument{Document IV: Component and Team Realization}{overleaf/NL_TPS_Component_Realization.tex}{components}
+\NLTPSIncludeDocument{Document III: High-Level Interface Requirements}{overleaf/NL_TPS_High_Level_Interface_Requirements.tex}{interfaces}
+\NLTPSIncludeDocument{Document IV: Detailed Sub-Requirements}{overleaf/NL_TPS_Detailed_Requirements.tex}{subreq}
+\NLTPSIncludeDocument{Document V: Component and Team Realization}{overleaf/NL_TPS_Component_Realization.tex}{components}
 
 \end{document}
