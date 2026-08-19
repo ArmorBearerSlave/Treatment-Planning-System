@@ -43,6 +43,7 @@ def git_paths(*args: str) -> list[str]:
 
 def main() -> int:
     errors: list[str] = []
+    crlf_paths: list[str] = []
     tracked = git_paths("ls-files", "--cached", "--others", "--exclude-standard")
     missing = sorted(
         relative for relative in REQUIRED_ROOT_FILES
@@ -71,6 +72,17 @@ def main() -> int:
             match = pattern.search(text)
             if match:
                 errors.append(f"{relative} contains {label}: {match.group(0)!r}")
+        # The determinism gates hash bytes and compare them, so a checkout that
+        # rewrites line endings makes them report drift that does not exist.
+        if b"\r\n" in path.read_bytes():
+            crlf_paths.append(relative)
+
+    if crlf_paths:
+        errors.append(
+            f"{len(crlf_paths)} controlled text files carry CRLF line endings "
+            f"(first: {crlf_paths[0]}); the byte-comparison gates require LF. "
+            "Confirm .gitattributes sets 'eol=lf' and refresh the checkout."
+        )
 
     if errors:
         print("ERROR: repository hygiene gate failed", file=sys.stderr)

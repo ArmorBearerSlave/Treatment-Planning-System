@@ -1,0 +1,30 @@
+# Line-ending policy for a hash-bound corpus.
+#
+# The determinism gates compare bytes and hash source files, so a checkout that
+# rewrites line endings makes them fail. With core.autocrlf=true and no attributes,
+# a fresh Windows checkout receives CRLF while the index stores LF, and
+# build_hlr_import_bundle.py --check and build_trace_graph.py --check both report
+# drift that does not exist. Normalizing to LF in the working tree keeps the
+# controlled artifacts byte-identical on every platform.
+#
+# The gates deliberately stay byte-exact. Relaxing them to ignore line endings
+# would weaken a determinism control to work around a checkout setting.
+
+* text=auto eol=lf
+
+# Binary artifacts: never filtered, never diffed as text.
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.docx  binary
+*.xlsx  binary
+*.pptx  binary
+*.zip   binary
+
+# MPS persistence is XML that MPS writes and reviewers read. It is text, kept at LF
+# by the rule above so file-per-root diffs stay reviewable and deterministic.
+# ADR-001 prohibits hand-editing it; that is a process control, not a reason to
+# make it opaque to review.
