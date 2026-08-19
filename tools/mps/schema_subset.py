@@ -12,7 +12,9 @@ import re
 from typing import Any
 
 
-def _is_type(value: Any, expected: str) -> bool:
+def _is_type(value: Any, expected: str | list[str]) -> bool:
+    if isinstance(expected, list):
+        return any(_is_type(value, option) for option in expected)
     if expected == "object":
         return isinstance(value, dict)
     if expected == "array":
@@ -83,6 +85,30 @@ def validate_json_schema(instance: Any, schema: dict[str, Any]) -> None:
         if isinstance(value, (int, float)) and not isinstance(value, bool):
             if "minimum" in rule and value < rule["minimum"]:
                 errors.append(f"{path}: is less than {rule['minimum']}")
+
+        for index, sub_rule in enumerate(rule.get("allOf", [])):
+            check(value, sub_rule, f"{path}/allOf[{index}]")
+
+        # Conditional application. Construction records require different fields
+        # depending on their entity type, so if/then/else is part of the subset.
+        if "if" in rule:
+            branch = "then" if _matches(value, rule["if"]) else "else"
+            if branch in rule:
+                check(value, rule[branch], path)
+
+    def _matches(value: Any, rule: dict[str, Any]) -> bool:
+        probe: list[str] = []
+
+        def probe_check(inner_value: Any, inner_rule: dict[str, Any], inner_path: str) -> None:
+            saved = list(errors)
+            errors.clear()
+            check(inner_value, inner_rule, inner_path)
+            probe.extend(errors)
+            errors.clear()
+            errors.extend(saved)
+
+        probe_check(value, rule, "$")
+        return not probe
 
     check(instance, schema, "$")
     if errors:

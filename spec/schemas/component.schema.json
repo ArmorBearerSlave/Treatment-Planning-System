@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gcpl:nltps:schema:component:0.1",
+  "title": "GCPL / NL-TPS constructed component specification",
+  "$comment": "Field set promoted from the ENG-PKG-01 realization deliverables and definition of done. A name-only record is not a component specification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "entity_class",
+    "construction_state",
+    "name",
+    "layer",
+    "responsibility",
+    "responsibility_sha256",
+    "lead_team",
+    "trust_zone",
+    "build_decision",
+    "interface_contracts",
+    "state_behavior",
+    "failure_behavior",
+    "allocated_requirements",
+    "hazards",
+    "hazard_basis",
+    "verification"
+  ],
+  "properties": {
+    "id": {"type": "string", "pattern": "^(C|IC|FC|NFC|OC)-[A-Z0-9-]+-[0-9]{2}$"},
+    "entity_class": {"const": "component"},
+    "construction_state": {"enum": ["draft", "reviewed", "approved"]},
+    "constructed_by": {"type": "string", "minLength": 1},
+    "reviewed_by": {"type": ["string", "null"]},
+    "review_date": {"type": ["string", "null"], "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "name": {"type": "string", "minLength": 3},
+    "layer": {"type": "string", "minLength": 1},
+    "responsibility": {"type": "string", "minLength": 60},
+    "responsibility_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "lead_team": {"type": "string", "pattern": "^T-[A-Z]+$"},
+    "partner_teams": {"type": "array", "items": {"type": "string", "pattern": "^T-[A-Z]+$"}},
+    "trust_zone": {"enum": ["Z0-LANG", "Z1-KERNEL", "Z2-EXEC", "Z3-EXTERNAL", "PROGRAM"]},
+    "build_decision": {"enum": ["build", "adopt", "adapt", "configure", "procedure"]},
+    "interface_contracts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["icd", "family", "direction", "counterparty", "payload", "error_semantics"],
+        "properties": {
+          "icd": {"type": "string", "pattern": "^ICD-[0-9]{3}$"},
+          "family": {"type": "string", "pattern": "^IF-[A-Z]+-[0-9]{2}$"},
+          "direction": {"enum": ["produces", "consumes", "bidirectional"]},
+          "counterparty": {"type": "string", "minLength": 1},
+          "payload": {"type": "string", "minLength": 10},
+          "units_and_basis": {"type": "string"},
+          "error_semantics": {"type": "string", "minLength": 10}
+        }
+      }
+    },
+    "state_behavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["states", "atomicity"],
+      "properties": {
+        "states": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}},
+        "transitions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "atomicity": {"type": "string", "minLength": 10}
+      }
+    },
+    "failure_behavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fail_closed_conditions", "degraded_mode", "rollback", "reconciliation"],
+      "properties": {
+        "fail_closed_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 5}
+        },
+        "degraded_mode": {"type": "string", "minLength": 10},
+        "rollback": {"type": "string", "minLength": 10},
+        "reconciliation": {"type": "string", "minLength": 10}
+      }
+    },
+    "configuration_parameters": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "security_controls": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "allocated_requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 3}
+    },
+    "hazards": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^H-[0-9]{2}$"}
+    },
+    "hazard_basis": {"enum": ["source_explicit", "derived"]},
+    "hazard_rationale": {"type": ["string", "null"]},
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vv_claims", "methods"],
+      "properties": {
+        "vv_claims": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 3}},
+        "methods": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"enum": ["I", "T", "A", "D", "HFE"]}
+        },
+        "executable_suites": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "blocking_decisions": {"type": "array", "items": {"type": "string", "pattern": "^D-ENG-[0-9]{3}$"}},
+    "notes": {"type": ["string", "null"]}
+  },
+  "allOf": [
+    {
+      "$comment": "A reviewed or approved component carries reviewed hazards and a named reviewer.",
+      "if": {
+        "properties": {"construction_state": {"enum": ["reviewed", "approved"]}},
+        "required": ["construction_state"]
+      },
+      "then": {
+        "required": ["reviewed_by", "review_date", "hazard_rationale"],
+        "properties": {
+          "hazard_basis": {"const": "source_explicit"},
+          "reviewed_by": {"type": "string", "minLength": 1},
+          "hazard_rationale": {"type": "string", "minLength": 20}
+        }
+      }
+    }
+  ]
+}

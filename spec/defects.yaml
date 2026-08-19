@@ -2,7 +2,7 @@ schema_version: "0.1"
 register_id: DRR-001
 title: GCPL / NL-TPS Defect Resolution Register
 review_date: "2026-08-19"
-source: second-pass corpus and tooling defect review
+source: second-pass corpus and tooling defect review; third-pass construction-readiness review
 status: corrective_action_in_progress_with_controlled_residuals
 closure_policy: >-
   Corrected means the repository change and its automated regression evidence
@@ -203,3 +203,160 @@ defects:
       - .gitignore
     verification: git status represents generated outputs only as staged index removals and ignores subsequent builds
     residual: Published controlled PDFs should be released through an explicit artifact process, not incidental source tracking.
+
+  # Third-pass review, 19 August 2026: construction readiness. The A/B/C series above
+  # covered the corpus and its tooling. The K series covers what the records that
+  # component, sub-requirement, and requirement construction will build on contained.
+  - id: K1
+    severity: Blocker
+    title: Component records carried a label or a name instead of a responsibility
+    disposition: corrected
+    correction: >-
+      The trace importer took whichever column happened to be longest, which resolved
+      to the layer label for all 78 category components and to the name for the 45 core
+      and 61 interface components. Every component catalog uses one five-column layout
+      (id, layer, name, responsibility, lead team), so the importer now selects the
+      catalog row explicitly and captures layer, name, responsibility, and lead team as
+      four typed fields. The eight MQA subassemblies use a four-column layout and are
+      handled the same way, including their recorded component allocations.
+    evidence:
+      - tools/spec/build_trace_graph.py
+      - spec/schemas/traceability.schema.json
+      - mps/import/traceability.json
+      - tests/test_construction_gates.py
+    verification: >-
+      All 192 component-class records carry a responsibility of at least 60 characters;
+      the schema rejects a name-length responsibility; regression tests cover the
+      catalog row, the label-length rejection, and view-scoped uniqueness.
+    residual: >-
+      Recovering the source text is not construction. Each responsibility still has to be
+      elaborated into a component specification under spec/schemas/component.schema.json.
+
+  - id: K2
+    severity: Blocker
+    title: No schema defined what a constructed entity contains
+    disposition: corrected
+    correction: >-
+      The realization deliverables and definition of done existed only as prose, so
+      nothing could be enforced. Component, requirement, and sub-requirement schemas now
+      carry the field set, with additionalProperties false and conditional rules that
+      require an interface contract, failure and degraded behavior, an acceptance
+      criterion, and a named reviewer before a record can claim reviewed or approved
+      state. One exemplar of each class is committed for review at n=3.
+    evidence:
+      - spec/schemas/component.schema.json
+      - spec/schemas/requirement.schema.json
+      - spec/schemas/subrequirement.schema.json
+      - spec/construction/exemplars.yaml
+      - tools/spec/check_construction_records.py
+    verification: >-
+      The construction gate validates every record, cross-checks its identifier and
+      statement hash against the trace graph, and rejects name-only components,
+      contract-free components, unknown fields, and unsourced quantitative acceptance.
+    residual: >-
+      The field set is proposed. The exemplar review is where it gets argued about, and
+      it is expected to change before the first hundred records are written.
+
+  - id: K3
+    severity: High
+    title: Component views overlap without a reconciliation relation
+    disposition: engineering_control_complete_decision_pending
+    correction: >-
+      Forty-three overlap groups are derived from the trace graph with evidence tiers.
+      Two groups share a responsibility verbatim, seven share a name, and thirty-four
+      share only an identifier stem, which is materially less duplication than a stem
+      count alone suggests. Each group carries a proposed relation derived from that
+      evidence and stays pending_review; the construction gate refuses to approve a
+      component whose group is undecided.
+    evidence:
+      - spec/component_crosswalk.yaml
+      - tools/spec/build_component_crosswalk.py
+      - tools/spec/check_construction_records.py
+    verification: >-
+      Crosswalk evidence drift fails the gate while reviewer decisions survive
+      regeneration; no component appears in more than one group.
+    residual: >-
+      D-ENG-004 remains open. SAME_AS, REFINES, and DISTINCT are proposed additions to
+      the ADR-001 TraceLink vocabulary and require that decision to be amended.
+
+  - id: K4
+    severity: High
+    title: Gating engineering decisions were not machine-readable
+    disposition: corrected
+    correction: >-
+      D-ENG-001 through D-ENG-010 existed only in the printed plan, so the plan's
+      work-permitted-meanwhile column could not be enforced. They are now a controlled
+      register with owner, needed-by gate, status, and explicit blocks_gates and
+      blocks_entities lists.
+    evidence:
+      - spec/engineering_decisions.yaml
+      - tools/spec/check_construction_records.py
+      - tools/spec/check_controlled_specs.py
+    verification: >-
+      Every decision declares what it blocks; a construction record naming an open
+      blocking decision cannot reach approved state.
+    residual: All ten decisions remain open. Recording a decision does not approve it.
+
+  - id: K5
+    severity: High
+    title: Hazard links were present everywhere and discriminating almost nowhere
+    disposition: engineering_control_complete_review_pending
+    correction: >-
+      Interface requirements and sub-interface requirements averaged 13.8 of 18 hazards,
+      all 56 MQA records shared one set, and only 3 percent of the graph carried a
+      source-explicit mapping. Rather than launch a separate re-analysis of 2,144 hazard
+      sets, every record now carries an explicit hazard_specificity field and a reviewed
+      source-explicit set is a precondition for reviewed or approved construction state.
+      Hazard refinement becomes a by-product of construction.
+    evidence:
+      - tools/spec/build_trace_graph.py
+      - spec/schemas/component.schema.json
+      - spec/schemas/requirement.schema.json
+      - spec/schemas/subrequirement.schema.json
+      - spec/construction_policy.yaml
+    verification: >-
+      The schemas reject a reviewed or approved record whose hazard basis is derived;
+      the regression suite covers that rejection.
+    residual: >-
+      2,068 of 2,144 records remain derived. The declared progress metric is percent of
+      constructed entities with reviewed source-explicit hazards, not record count.
+
+  - id: K6
+    severity: Medium
+    title: MQA entity taxonomy collapsed three classes into one
+    disposition: corrected
+    correction: >-
+      The header declared MQA-REQ 12, MQA-SUB 36, and MQA-COMP 8 while every record
+      carried the single type MQA. The totals reconciled, so the count gate passed. The
+      three classes are now typed apart with distinct V&V claim prefixes, and count
+      reconciliation compares per key rather than by sum.
+    evidence:
+      - tools/spec/build_trace_graph.py
+      - spec/schemas/traceability.schema.json
+      - tests/test_construction_gates.py
+    verification: >-
+      Declared entity_type_counts equal the per-type record counts; regression tests
+      cover the three identifier forms, their V&V prefixes, and per-key reconciliation.
+    residual: none
+
+  - id: K7
+    severity: High
+    title: Construction scope had no recorded treatment policy
+    disposition: engineering_control_complete_approval_pending
+    correction: >-
+      2,144 identifiers cannot all receive an individually authored specification within
+      any capacity this program has recorded, and the existing templated risk conditions
+      show what happens when that arithmetic is left implicit. Each entity type is now
+      assigned hand, derived, or inherited treatment, with an exception mechanism that
+      requires a named approver. All identifiers and all V&V claims are retained.
+    evidence:
+      - spec/construction_policy.yaml
+      - tools/spec/check_construction_records.py
+      - tools/spec/check_controlled_specs.py
+    verification: >-
+      The declared effort shape of 281 hand, 792 derived, and 1,071 inherited is
+      recomputed from the per-type assignment and the materialized entity counts; a
+      record departing from policy without a recorded exception fails the gate.
+    residual: >-
+      The policy is proposed and requires accountable approval. The counts are a planning
+      shape, not a commitment.

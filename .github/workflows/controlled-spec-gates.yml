@@ -53,6 +53,12 @@ jobs:
       - name: Check hazard-derived risk register
         run: python tools/spec/build_risk_register.py --check --gate 0
 
+      - name: Check component view crosswalk
+        run: python tools/spec/build_component_crosswalk.py --check
+
+      - name: Check constructed component, requirement, and sub-requirement records
+        run: python tools/spec/check_construction_records.py
+
       - name: Check controlled specification reconciliation
         run: python tools/spec/check_controlled_specs.py
 

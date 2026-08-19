@@ -32,6 +32,19 @@ ENTITY_SOURCES = {
     "MQA": ("NL_TPS_Monthly_QA_Integration_Profile.tex", re.compile(r"^MQA-(?:\d{3}(?:-\d{2})?|A\d{2})$")),
 }
 
+# Every component catalog uses one five-column layout:
+#   id & layer & name & realization responsibility & lead team
+# The responsibility is the normative content a component specification elaborates,
+# so it is captured explicitly instead of whichever column happened to be longest.
+COMPONENT_TYPES = ("CORE-COMP", "IF-COMP", "CAT-COMP")
+COMPONENT_CATALOG_COLUMNS = 5
+COMPONENT_RESPONSIBILITY_MIN_CHARS = 60
+
+# MQA identifiers carry three distinct entity classes that the V&V matrix separates as
+# VVC-MQA-R, VVC-MQA-S, and VVC-MQA-C. They are typed apart rather than pooled.
+MQA_TYPES = ("MQA-REQ", "MQA-SUB", "MQA-COMP")
+MQA_SUBASSEMBLY_COLUMNS = 4
+
 
 def sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
@@ -61,6 +74,18 @@ def to_plain(value: str) -> str:
     return " ".join(result.split())
 
 
+def strip_row_terminator(value: str) -> str:
+    return re.sub(r"\\\\\s*$", "", value).strip()
+
+
+def mqa_type_for(entity_id: str) -> str:
+    if re.fullmatch(r"MQA-\d{3}", entity_id):
+        return "MQA-REQ"
+    if re.fullmatch(r"MQA-\d{3}-\d{2}", entity_id):
+        return "MQA-SUB"
+    return "MQA-COMP"
+
+
 def parse_entities() -> dict[str, dict[str, Any]]:
     entities: dict[str, dict[str, Any]] = {}
     for entity_type, (filename, id_pattern) in ENTITY_SOURCES.items():
@@ -74,20 +99,119 @@ def parse_entities() -> dict[str, dict[str, Any]]:
                 continue
             if entity_type == "HLR" and " shall " not in f" {parts[1].lower()} ":
                 continue
+
+            if entity_type in COMPONENT_TYPES:
+                # Only the catalog row carries a responsibility; summary and allocation
+                # rows for the same identifier are deliberately ignored.
+                if len(parts) != COMPONENT_CATALOG_COLUMNS:
+                    continue
+                statement = parts[3]
+                record = {
+                    "id": entity_id,
+                    "entity_type": entity_type,
+                    "layer": to_plain(parts[1]),
+                    "name": to_plain(parts[2]),
+                    "lead_team": to_plain(strip_row_terminator(parts[4])),
+                    "statement_latex": statement,
+                    "statement_plain": to_plain(statement),
+                    "source_file": f"overleaf/{filename}",
+                    "source_line": line_number,
+                    "columns": parts,
+                }
+                existing = entities.get(entity_id)
+                if existing is not None:
+                    if existing["statement_plain"] != record["statement_plain"]:
+                        raise ValueError(
+                            f"{entity_id} has conflicting catalog rows at "
+                            f"{existing['source_file']}:{existing['source_line']} and "
+                            f"{record['source_file']}:{line_number}"
+                        )
+                    continue
+                entities[entity_id] = record
+                continue
+
+            resolved_type = mqa_type_for(entity_id) if entity_type == "MQA" else entity_type
+
+            if resolved_type == "MQA-COMP":
+                # Subassembly table: id & name & responsibility & allocated components
+                if len(parts) != MQA_SUBASSEMBLY_COLUMNS:
+                    continue
+                statement = parts[2]
+                entities[entity_id] = {
+                    "id": entity_id,
+                    "entity_type": resolved_type,
+                    "name": to_plain(parts[1]),
+                    "layer": "MQA package subassembly",
+                    "lead_team": "",
+                    "allocated_components": [
+                        item.strip()
+                        for item in to_plain(strip_row_terminator(parts[3])).split(";")
+                        if item.strip()
+                    ],
+                    "statement_latex": statement,
+                    "statement_plain": to_plain(statement),
+                    "source_file": f"overleaf/{filename}",
+                    "source_line": line_number,
+                    "columns": parts,
+                }
+                continue
+
             statement = parts[1]
             existing = entities.get(entity_id)
             if existing and len(existing["statement_latex"]) >= len(statement):
                 continue
             entities[entity_id] = {
                 "id": entity_id,
-                "entity_type": entity_type,
+                "entity_type": resolved_type,
                 "statement_latex": statement,
                 "statement_plain": to_plain(statement),
                 "source_file": f"overleaf/{filename}",
                 "source_line": line_number,
                 "columns": parts,
             }
+    validate_component_fields(entities)
     return entities
+
+
+def validate_component_fields(entities: dict[str, dict[str, Any]]) -> None:
+    """Reject component records that carry a label where a specification belongs."""
+    errors: list[str] = []
+    # Uniqueness is scoped within a view. Repetition across the core, interface, and
+    # category views is a reconciliation question owned by spec/component_crosswalk.yaml,
+    # not an import failure.
+    responsibilities: dict[tuple[str, str], str] = {}
+    names: dict[tuple[str, str], str] = {}
+    for entity in entities.values():
+        entity_type = entity["entity_type"]
+        if entity_type not in COMPONENT_TYPES:
+            continue
+        entity_id = entity["id"]
+        responsibility = entity["statement_plain"]
+        name = entity["name"]
+        if len(responsibility) < COMPONENT_RESPONSIBILITY_MIN_CHARS:
+            errors.append(
+                f"{entity_id} responsibility is {len(responsibility)} characters; "
+                f"at least {COMPONENT_RESPONSIBILITY_MIN_CHARS} are required"
+            )
+        if not name:
+            errors.append(f"{entity_id} has no component name")
+        if not entity["lead_team"].startswith("T-"):
+            errors.append(f"{entity_id} has no lead team")
+        responsibility_key = (entity_type, responsibility)
+        if responsibility_key in responsibilities:
+            errors.append(
+                f"{entity_id} duplicates the responsibility of "
+                f"{responsibilities[responsibility_key]} within {entity_type}"
+            )
+        else:
+            responsibilities[responsibility_key] = entity_id
+        name_key = (entity_type, name)
+        if name_key in names:
+            errors.append(f"{entity_id} duplicates the name of {names[name_key]} within {entity_type}")
+        else:
+            names[name_key] = entity_id
+    if errors:
+        raise ValueError("component catalog validation failed:\n- " + "\n- ".join(errors))
 
 
 def domain_for(entity_id: str, entity_type: str) -> str | None:
@@ -106,29 +230,38 @@ def parent_for(entity_id: str, entity_type: str) -> str | None:
         return "-".join(entity_id.split("-")[1:-1])
     if entity_type == "SIR":
         return "IF-" + "-".join(entity_id.split("-")[1:-1])
-    if entity_type == "MQA":
-        if re.fullmatch(r"MQA-\d{3}-\d{2}", entity_id):
-            return entity_id.rsplit("-", 1)[0]
+    if entity_type == "MQA-SUB":
+        return entity_id.rsplit("-", 1)[0]
     return None
 
 
+VV_CLAIM_PREFIXES = {
+    "HLR": "VVC-HLR",
+    "SUB": "VVC-SUB",
+    "HLIR": "VVC-HLIR",
+    "SIR": "VVC-SIR",
+    "CORE-COMP": "VVC-COMP",
+    "IF-COMP": "VVC-ICOMP",
+    "CAT-COMP": "VVC-CCOMP",
+    "MQA-REQ": "VVC-MQA-R",
+    "MQA-SUB": "VVC-MQA-S",
+    "MQA-COMP": "VVC-MQA-C",
+}
+
+
 def vv_claim_id(entity_id: str, entity_type: str) -> str:
-    prefixes = {
-        "HLR": "VVC-HLR",
-        "SUB": "VVC-SUB",
-        "HLIR": "VVC-HLIR",
-        "SIR": "VVC-SIR",
-        "CORE-COMP": "VVC-COMP",
-        "IF-COMP": "VVC-ICOMP",
-        "CAT-COMP": "VVC-CCOMP",
-    }
-    if entity_type in prefixes:
-        return f"{prefixes[entity_type]}:{entity_id}"
-    if re.fullmatch(r"MQA-\d{3}", entity_id):
-        return f"VVC-MQA-R:{entity_id}"
-    if re.fullmatch(r"MQA-\d{3}-\d{2}", entity_id):
-        return f"VVC-MQA-S:{entity_id}"
-    return f"VVC-MQA-C:{entity_id}"
+    return f"{VV_CLAIM_PREFIXES[entity_type]}:{entity_id}"
+
+
+def hazard_specificity(mapping_basis: list[str]) -> str:
+    """Classify how much engineering judgment a hazard set actually carries.
+
+    Construction replaces a derived set with a reviewed, source-explicit one; the
+    construction gate uses this field rather than re-deriving the distinction.
+    """
+    if "entity_override" in mapping_basis or "source_explicit" in mapping_basis:
+        return "source_explicit"
+    return "derived"
 
 
 def materialize() -> dict[str, Any]:
@@ -138,21 +271,16 @@ def materialize() -> dict[str, Any]:
     entities = parse_entities()
 
     expected = dict(policy["coverage_policy"]["required_entity_sets"])
-    actual = Counter()
-    for entity in entities.values():
-        entity_type = entity["entity_type"]
-        if entity_type == "MQA":
-            entity_id = entity["id"]
-            if re.fullmatch(r"MQA-\d{3}", entity_id):
-                actual["MQA-REQ"] += 1
-            elif re.fullmatch(r"MQA-\d{3}-\d{2}", entity_id):
-                actual["MQA-SUB"] += 1
-            else:
-                actual["MQA-COMP"] += 1
-        else:
-            actual[entity_type] += 1
-    if dict(actual) != expected:
-        raise ValueError(f"entity counts differ: expected {expected}, found {dict(actual)}")
+    actual = Counter(entity["entity_type"] for entity in entities.values())
+
+    # Reconcile per key, not by total. A taxonomy that collapses three entity classes
+    # into one still sums correctly, which is exactly the defect this rejects.
+    count_errors: list[str] = []
+    for key in sorted(set(expected) | set(actual)):
+        if expected.get(key) != actual.get(key):
+            count_errors.append(f"{key}: expected {expected.get(key)}, found {actual.get(key)}")
+    if count_errors:
+        raise ValueError("entity counts differ by type:\n- " + "\n- ".join(count_errors))
 
     mappings: dict[str, list[str]] = {}
     overrides = policy["entity_overrides"]
@@ -165,7 +293,12 @@ def materialize() -> dict[str, Any]:
 
     ordered = sorted(
         entities.values(),
-        key=lambda item: ({"HLR": 0, "SUB": 1, "HLIR": 2, "SIR": 3}.get(item["entity_type"], 4), item["id"]),
+        key=lambda item: (
+            {"HLR": 0, "SUB": 1, "HLIR": 2, "SIR": 3, "MQA-REQ": 4, "MQA-SUB": 5}.get(
+                item["entity_type"], 6
+            ),
+            item["id"],
+        ),
     )
     records: list[dict[str, Any]] = []
     for entity in ordered:
@@ -195,15 +328,22 @@ def materialize() -> dict[str, Any]:
             for family in families:
                 hazards.extend(family_hazards.get(family, []))
             mapping_basis.extend(["parent_inheritance", "interface_family"])
-        elif entity_type in {"CORE-COMP", "IF-COMP", "CAT-COMP"}:
+        elif entity_type in COMPONENT_TYPES:
             for pattern, assigned in component_rules:
                 if pattern.search(entity_id):
                     hazards.extend(assigned)
                     mapping_basis.append(f"component_rule:{pattern.pattern}")
                     break
+        elif entity_type in MQA_TYPES:
+            parent_hazards = mappings.get(parent_id or "", [])
+            if parent_hazards:
+                hazards.extend(parent_hazards)
+                mapping_basis.append("parent_inheritance")
+            else:
+                hazards.extend(policy["mqa_default_hazards"])
+                mapping_basis.append("mqa_default")
         else:
-            hazards.extend(policy["mqa_default_hazards"])
-            mapping_basis.append("mqa_default")
+            raise ValueError(f"{entity_id} has unhandled entity type {entity_type}")
 
         unique_hazards = sorted(set(hazards), key=lambda value: int(value.split("-")[1]))
         unknown = sorted(set(unique_hazards) - hazard_ids)
@@ -212,27 +352,33 @@ def materialize() -> dict[str, Any]:
         if len(unique_hazards) < policy["coverage_policy"]["minimum_hazards_per_entity"]:
             raise ValueError(f"{entity_id} has no hazard allocation")
         mappings[entity_id] = unique_hazards
-        records.append(
-            {
-                "id": entity_id,
-                "entity_type": entity_type,
-                "domain": domain_for(entity_id, entity_type),
-                "parent_id": parent_id,
-                "hazards": unique_hazards,
-                "mapping_basis": mapping_basis,
-                "vv_claim_id": vv_claim_id(entity_id, entity_type),
-                "statement_plain": entity["statement_plain"],
-                "statement_sha256": sha256_text(entity["statement_latex"]),
-                "source_file": entity["source_file"],
-                "source_line": entity["source_line"],
-            }
-        )
+        record = {
+            "id": entity_id,
+            "entity_type": entity_type,
+            "domain": domain_for(entity_id, entity_type),
+            "parent_id": parent_id,
+            "hazards": unique_hazards,
+            "mapping_basis": mapping_basis,
+            "hazard_specificity": hazard_specificity(mapping_basis),
+            "vv_claim_id": vv_claim_id(entity_id, entity_type),
+            "statement_plain": entity["statement_plain"],
+            "statement_sha256": sha256_text(entity["statement_latex"]),
+            "source_file": entity["source_file"],
+            "source_line": entity["source_line"],
+        }
+        if entity_type in COMPONENT_TYPES or entity_type == "MQA-COMP":
+            record["name"] = entity["name"]
+            record["layer"] = entity["layer"]
+            record["lead_team"] = entity["lead_team"]
+        if "allocated_components" in entity:
+            record["allocated_components"] = entity["allocated_components"]
+        records.append(record)
 
     claim_ids = [record["vv_claim_id"] for record in records]
     if len(claim_ids) != len(set(claim_ids)):
         raise ValueError("duplicate V&V claim ID")
     return {
-        "schema_version": "0.1",
+        "schema_version": "0.2",
         "authority_stage": "A_mirror",
         "authoritative": False,
         "policy_source": "spec/allocations.yaml",

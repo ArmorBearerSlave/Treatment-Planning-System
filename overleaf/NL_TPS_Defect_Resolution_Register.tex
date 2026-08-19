@@ -102,8 +102,64 @@ B7 & Major & Corrected & The planned Stage A specification artifacts, schemas, r
 C1 & Operational & Managed worktree prepared; not executed & A strict location gate and managed Git worktree procedure exist; the current checkout remains affected. \\
 \addlinespace[2pt]
 C2 & Operational & Corrected & Generated outputs are ignored and previously tracked build products are removed from the source index. \\
+\addlinespace[2pt]
+K1 & Blocker & Corrected & Component records carry layer, name, realization responsibility, and lead team as typed fields instead of whichever column was longest. \\
+\addlinespace[2pt]
+K2 & Blocker & Corrected & Component, requirement, and sub-requirement construction schemas define and enforce what a constructed record contains. \\
+\addlinespace[2pt]
+K3 & Major & Engineering control complete; decision pending & Forty-three component overlap groups carry derived evidence and a proposed relation; approval is blocked until D-ENG-004 is decided. \\
+\addlinespace[2pt]
+K4 & Major & Corrected & D-ENG-001 through D-ENG-010 are a controlled register that names the gates and entities each decision blocks. \\
+\addlinespace[2pt]
+K5 & Major & Engineering control complete; review pending & Hazard specificity is explicit and a reviewed source-explicit set is a precondition for reviewed or approved construction state. \\
+\addlinespace[2pt]
+K6 & Moderate & Corrected & MQA realization requirements, sub-requirements, and subassemblies are typed apart and reconciled per key rather than by sum. \\
+\addlinespace[2pt]
+K7 & Major & Engineering control complete; approval pending & Each entity type carries a recorded hand, derived, or inherited construction treatment with a named-approver exception path. \\
 \end{longtable}
 \end{small}
+
+\section{Construction-readiness findings}
+
+\subsection{K1 and K2 --- Records that can carry a specification}
+
+The component catalogs share one five-column layout of identifier, layer, name,
+realization responsibility, and lead team. The trace importer previously kept whichever
+column was longest, which resolved to the layer label for all 78 category components and
+to the name for the 45 core and 61 interface components, so no component record carried
+the responsibility that construction elaborates. The importer now selects the catalog row
+explicitly and captures four typed fields; the eight machine-QA subassemblies are handled
+the same way, including their recorded component allocations. The correction propagates
+into the risk register, whose component records previously carried a layer label as their
+requirement context.
+
+Construction schemas now define what a constructed component, requirement, or
+sub-requirement contains, with unknown fields rejected and conditional rules requiring an
+interface contract, failure and degraded behavior, an acceptance criterion, and a named
+reviewer before a record may claim reviewed or approved state. One exemplar of each class
+is committed so the field set is reviewed at three records rather than at four hundred.
+
+\subsection{K3, K4, and K7 --- Decisions that constrain construction}
+
+Component overlap across the core, interface, and category views is derived rather than
+asserted: 43 groups, of which two share a responsibility verbatim, seven share a name, and
+thirty-four share only an identifier stem. Each group carries a proposed relation and stays
+pending review, and no component in an undecided group may be approved. The ten open
+engineering decisions are now machine-readable with explicit blocked gates and entities, so
+the plan's work-permitted-meanwhile column is enforced rather than intended. The
+construction treatment policy assigns hand, derived, or inherited treatment to each entity
+type, retaining every identifier and every verification claim while directing individual
+review to the records that carry engineering judgement.
+
+\subsection{K5 and K6 --- Discrimination and taxonomy}
+
+Interface and sub-interface requirements averaged 13.8 of 18 hazards, all machine-QA records
+shared one set, and 3 percent of the graph carried a source-explicit mapping. Hazard
+refinement is therefore made a construction obligation rather than a separate project: a
+record cannot reach reviewed or approved state on an inherited hazard set. Machine-QA
+realization requirements, sub-requirements, and subassemblies are typed apart, and entity
+counts reconcile per key rather than by sum, which is the check the previous taxonomy
+defect passed.
 
 \section{Critical findings}
 

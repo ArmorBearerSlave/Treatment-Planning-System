@@ -1,0 +1,135 @@
+schema_version: "0.1"
+register_id: DENG-001
+title: Open engineering decisions
+status: controlled_mirror_of_eng_pkg_01_open_decisions
+human_readable_source: overleaf/NL_TPS_Engineering_Architecture_and_MVP_Implementation_Plan.tex
+baseline: ENG-PKG-01-v0.6
+
+purpose: >-
+  The plan's open decisions existed only as printed prose, so no gate could refuse
+  work that depends on them. This register makes each decision machine-readable and
+  names what it blocks, so the plan's "work permitted meanwhile" column becomes an
+  enforced constraint rather than an intention.
+
+blocking_semantics:
+  - A blocked entity may be constructed and reviewed but shall not reach approved state.
+  - blocks_entities lists identifier prefixes evaluated against construction records.
+  - blocks_gates lists release gates that cannot be recommended while the decision is open.
+  - An empty blocks_entities means the decision constrains the program, not a record set.
+  - Recording a decision here does not approve it; approval_state carries that.
+
+decisions:
+  - id: D-ENG-001
+    decision: Intended use and function-by-function regulatory determination
+    needed_by: Gate 0/1
+    owner: Sponsor/T-GOV
+    work_permitted_meanwhile: >-
+      Build controlled records and architecture to the stricter plausible lifecycle;
+      make no market or exemption claim.
+    status: open
+    approval_state: pending_named_approval
+    blocks_gates: [1]
+    blocks_entities: []
+
+  - id: D-ENG-002
+    decision: First clinical disease-site and workflow slice
+    needed_by: During Slice 2
+    owner: T-CLIN/T-PLAN
+    work_permitted_meanwhile: >-
+      MQA, generic context viewer, schema, and non-clinical kernel work.
+    status: open
+    approval_state: pending_named_approval
+    blocks_gates: [2]
+    blocks_entities: [CLN-, PLN-, C-PBT-01, C-SEG-01, C-REG-01]
+
+  - id: D-ENG-003
+    decision: Authoritative systems and available interfaces
+    needed_by: Gate 0
+    owner: T-INT/T-DATA
+    work_permitted_meanwhile: >-
+      Inventory and request conformance statements; design DICOM-first contracts.
+    status: open
+    approval_state: pending_named_approval
+    blocks_gates: [1]
+    blocks_entities: [IC-, C-DICOM-01, C-DICOM-02, C-TPS-01, C-FHIR-01]
+
+  - id: D-ENG-004
+    decision: F/SA/O backlog authority and legacy/core migration policy
+    needed_by: Before backlog cutover
+    owner: T-SYS/T-GOV
+    work_permitted_meanwhile: Build crosswalk and dual reports; no supersession.
+    status: open
+    approval_state: pending_named_approval
+    blocks_gates: [1]
+    blocks_entities: []
+    enforced_by: spec/component_crosswalk.yaml
+    note: >-
+      Per-component blocking is evaluated through the crosswalk rather than a prefix
+      list, because only components in an unresolved overlap group are affected.
+
+  - id: D-ENG-005
+    decision: Trust-zone deployment, signing, key custody, and network policy
+    needed_by: Before integrated prototype
+    owner: T-SEC/T-SYS
+    work_permitted_meanwhile: Threat model and pure kernel; no clinical credentials.
+    status: open
+    approval_state: pending_named_approval
+    blocks_gates: [2]
+    blocks_entities: [C-IAM-01, C-SAFE-01, C-SEC-01, C-SBX-01]
+
+  - id: D-ENG-006
+    decision: >-
+      Remaining runtime technology selections and support model; ADR-001 resolves only
+      the offline MPS governance-compiler direction
+    needed_by: Per slice
+    owner: Architecture board
+    work_permitted_meanwhile: >-
+      Time-boxed non-clinical evaluations against acceptance conditions.
+    status: partially_resolved
+    approval_state: pending_named_approval
+    partially_resolved_by: [ADR-001]
+    blocks_gates: [2]
+    blocks_entities: []
+
+  - id: D-ENG-007
+    decision: Hosting, data residency, retention, backup, and continuity
+    needed_by: Gate 1
+    owner: T-OPS/T-SEC
+    work_permitted_meanwhile: Local synthetic environment and infrastructure design.
+    status: open
+    approval_state: pending_named_approval
+    blocks_gates: [1]
+    blocks_entities: [C-RES-01, C-OBJ-01, C-AUD-01]
+
+  - id: D-ENG-008
+    decision: Funded staffing, quality system, independent V&V, and decision capacity
+    needed_by: Gate 0
+    owner: Sponsor
+    work_permitted_meanwhile: >-
+      MQA-scoped plan with explicit capacity and stop-work thresholds.
+    status: open
+    approval_state: pending_named_approval
+    blocks_gates: [0]
+    blocks_entities: []
+
+  - id: D-ENG-009
+    decision: Approved evidence corpus and publication workflow
+    needed_by: Gate 1
+    owner: T-EVD/T-GOV
+    work_permitted_meanwhile: >-
+      Inventory metadata and non-authoritative retrieval evaluation.
+    status: open
+    approval_state: pending_named_approval
+    blocks_gates: [1]
+    blocks_entities: [C-EVID-01, C-RULE-01, EVD-]
+
+  - id: D-ENG-010
+    decision: TPS-PROFILE-001 values, vendor participation, and test access
+    needed_by: Before Gate 2
+    owner: T-INT/T-PLAN
+    work_permitted_meanwhile: >-
+      Profile template, synthetic fixtures, and read-only import design.
+    status: open
+    approval_state: pending_named_approval
+    blocks_gates: [2]
+    blocks_entities: [C-DICOM-01, C-DICOM-02, C-TPS-01, C-DOSE-01, C-PLAN-01]

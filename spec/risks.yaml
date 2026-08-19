@@ -58305,8 +58305,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Accreditation Profile and Applicability Registry
-  normative_text_sha256: 1d7601170d0b39df8d584c628ae49d760236048ce0875fb9519fee26f18a1353
+  full_normative_text: Controls source program, authority, edition, integrity, atomic assertions, applicability, supersession, approval, and signed
+    runtime-profile publication.
+  normative_text_sha256: 0cd8d023f81d11271909e38b1b5f967fe441271657d7675fa21d3943f3cfda64
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -58330,8 +58331,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Accreditation Evidence, Deficiency, and Export Workspace
-  normative_text_sha256: 27b59044e44ea224956695e03ac63f9080d213082f04b9b17c25af7011c1302f
+  full_normative_text: Links privacy-controlled evidence to controls and manages attestation, deficiency, CAPA, review, readiness reporting, and
+    authorized export without deciding accreditation.
+  normative_text_sha256: eb34cf2d32cfdd227f29cf482b136cd5f89f694d5f8e9689371851eefde1947f
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -58353,8 +58355,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Architecture and Interface Contract Registry
-  normative_text_sha256: 4371a111c1667cc9ecd013bf8c58fda8bcc252cbefd8b553a9d26a2b49b25056
+  full_normative_text: Controls system boundaries, service contracts, data ownership, interface-control documents, and component compatibility.
+  normative_text_sha256: 45bf2b912e8e1b6ec8fcaf5131d02c61acdd8908e35f10a981279c4e6f8f2099
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -58385,8 +58387,9 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Tamper-Evident Audit Ledger
-  normative_text_sha256: bc79b9697b8012f669ab76c5b8431ac91e361deb7d5b4dcb9b3b69cbc63ab102
+  full_normative_text: Records ordered commands, context, evidence, versions, outputs, warnings, edits, approvals, QA, transfers, failures, overrides,
+    and reconciliation.
+  normative_text_sha256: d314f62d3c312db7b6c8090e30c33530f9a0f8870054c6dd597b0cbf72389dfd
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -58414,8 +58417,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Clinical Context and Case Manifest Service
-  normative_text_sha256: be730ca73b71523d8b5eb5c7bd4a11a9bb1655bb00743f03a9b0c7d5eaeea406
+  full_normative_text: Binds patient, course, studies, frames, prescriptions, anatomy, prior treatment, task, mode, and destination into an immutable
+    case context.
+  normative_text_sha256: 61323786fe40861626e96d9a9595ee299fd8a95b1491c3c58b46e7d9bbe73eb9
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -58442,8 +58446,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Configuration, Policy, and Release Registry
-  normative_text_sha256: 3ad550a244f40ea67d78ca06494e159892d0ebb50b9d0b323104a078e21bd5e3
+  full_normative_text: Locks approved scope, modes, rules, thresholds, services, models, machines, interfaces, operating responses, and release
+    manifests.
+  normative_text_sha256: f35b406acf466da1643d338cd7b7d5eb1719a59ddb5a3e0d5cc879ad0c4690e7
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -58468,8 +58473,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-01
-  full_normative_text: DICOM and DICOM-RT Exchange Gateway
-  normative_text_sha256: 4b1ee523a075e4c09bf82ac8ce62180acfc57199107924b7122186972dda5cf4
+  full_normative_text: Provides approved DICOM query, retrieve, storage, import, export, and routing for imaging and radiotherapy objects at external
+    system boundaries.
+  normative_text_sha256: 2491b1ab9e4f69328aaf24aa0fb34fc2b6cb81d0b31f7233e4f3a952d5c664ea
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -58537,8 +58543,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-01
-  full_normative_text: DICOM Conformance, Validation, and Reconciliation Service
-  normative_text_sha256: 53a40ad207a9fe2f3544c286b7806d3c6639801409a65499252b0c5a6c180cc0
+  full_normative_text: Validates identities, UIDs, references, frames, geometry, units, required attributes, completeness, and source-to-destination
+    fidelity.
+  normative_text_sha256: 4010b3fb1e17c6f123773207ad931d9536095329f751562ff8e691f177c7af9b
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -58582,8 +58589,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Clinical Documentation Completeness and Temporal Gate
-  normative_text_sha256: fb8fab90e2aaa0c2812f38d4c43682b167ae3414dd8e436ac8fbefb1ec260b09
+  full_normative_text: Evaluates required fields, signatures, status, effective time, authoritative source, prerequisites, and review schedules
+    without creating professional findings or signatures.
+  normative_text_sha256: 613403157dbb371d8d3eee1f751f4948c807415981e7f0463ba0b7edd279caf9
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -58606,8 +58614,9 @@ records:
   - H-11
   - H-17
   primary_hazard: H-04
-  full_normative_text: Commissioned Optimizer and Dose-Service Adapter
-  normative_text_sha256: f2b6d08b697a42aa5b619ea15abe2f28951d72f03d8c290eb46973092b9771fb
+  full_normative_text: Provides a controlled adapter to commissioned planning, optimization, robustness, and dose engines without generative dose
+    calculation.
+  normative_text_sha256: b468fc7d4a4b8ac35cbda833d263d7c706dc2ef8ce6ee2b700ecacb3e8f6eb18
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -58636,8 +58645,8 @@ records:
   - H-15
   - H-18
   primary_hazard: H-03
-  full_normative_text: Approved Evidence Repository and Retrieval Service
-  normative_text_sha256: 1de67ee141c2cd5580e701172c586030f6a4e4b95b433565e4d21bf5b087554e
+  full_normative_text: Stores and retrieves institution-approved, versioned, applicable evidence without unrestricted clinical-mode internet retrieval.
+  normative_text_sha256: 44d8aa7c58eed75afcdaea15f5b783f1ea69c7a947289978c16878831fa537a5
   failure_condition: A clinical recommendation, evidence item, or dose constraint is hallucinated, outdated, conflicted, or inapplicable.
   potential_effect: A candidate or review may be represented as evidence-based when its rule does not apply.
   mitigation: Use approved closed evidence, exact source and version, applicability and conflict rules, lifecycle control, and explicit no-applicable-rule
@@ -58695,8 +58704,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: IHE-RO, FHIR, and CodeX Adapter
-  normative_text_sha256: 95fc1c006cb9d98c95609109687df8bc6bc11ff690d480acbc3790e6880bdbe3
+  full_normative_text: Implements approved profiles or guides for workflow and non-DICOM clinical exchanges where deployment scope requires them.
+  normative_text_sha256: 3b8d9e7dec102f6fb1aa7a25370c8a22d5c1706378f6ad68614062f322d1aa13
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -58716,8 +58725,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Clinical Governance and Release Authority
-  normative_text_sha256: bc21b3b628bceac7883b79f65c5af49c3cc3cb93c7bad6c6f5f63e9424080f3f
+  full_normative_text: Owns intended use, scope, residual-risk acceptance, evidence policy, clinical authority, and release decisions.
+  normative_text_sha256: c3c6fc64568cd3373a6235f74fe58d0f6c143956350225494745698e23f51bbd
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -58778,8 +58787,8 @@ records:
   - H-13
   - H-18
   primary_hazard: H-01
-  full_normative_text: Human-Factors, Training, and Competency Program
-  normative_text_sha256: 5078d8fd6adea21f6548e4aa336451fc2eb4a69048f03d0ec7c8196bd2a926c5
+  full_normative_text: Defines critical tasks, formative and summative validation, role curricula, competency, renewal, and use-safety evidence.
+  normative_text_sha256: 0a01b68157324d3a0168481a42e89384845273add8042747d0007f39ac8a4cc0
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -58806,8 +58815,8 @@ records:
   - H-13
   - H-14
   primary_hazard: H-04
-  full_normative_text: Identity, Role, and Approval Service
-  normative_text_sha256: f1800537d9b55f89a4fcb99ca75717040388a8d0d84de5d52e68363c487b2e74
+  full_normative_text: Provides authentication, role and context authorization, separation of duties, approval identity, and access review evidence.
+  normative_text_sha256: e274b95537314e4996da9c48151dd5965bf93255abdea1a8801135e05680cf93
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -58898,8 +58907,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Incident, Near-Miss, and CAPA Workflow
-  normative_text_sha256: 06427c7bb4d6f4ff01d31e0f92c5783006a64fc1f0ba9ae89e8988f06d8c358b
+  full_normative_text: Supports reporting, triage, containment, patient-impact assessment, investigation, evidence preservation, trends, CAPA,
+    and closure.
+  normative_text_sha256: d46e09cd6e9ef5929899ea373b384b58263ef6a5f7dad64c3941f35dc53b18e7
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -58941,8 +58951,9 @@ records:
   - H-02
   - H-18
   primary_hazard: H-02
-  full_normative_text: Typed Intent Compiler and Deterministic Validator
-  normative_text_sha256: 669e520f701f8520b0cfacf7f788a4e6834ebc2337b56cf991f0243861bfb56f
+  full_normative_text: Converts text or confirmed speech into versioned typed intent and validates units, negation, laterality, objects, and required
+    fields.
+  normative_text_sha256: ee1549accb5aca4bd4410da92daf5985581622ac432e5ab1e40929a7ee6eb1e4
   failure_condition: Speech or language processing misinterprets negation, number, unit, laterality, object, priority, or an ambiguous instruction.
   potential_effect: The typed intent may request an unintended planning action or parameter.
   mitigation: Require transcript confirmation, deterministic parsing, structured read-back, correction, clarification, and no voice signature
@@ -58974,8 +58985,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Atomic Job and Transaction Coordinator
-  normative_text_sha256: 74370a47d9bbd6158ea8510c61ec6a4ae24d1b89b82f74975af0ef39f0367b78
+  full_normative_text: Controls pending, running, complete, failed, canceled, timed-out, partial, commit, cleanup, and reconciliation states.
+  normative_text_sha256: 66c118eb7911924996a364d32424f37965bc114cd69fdfd345e2264340882710
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -59021,8 +59032,9 @@ records:
   - H-15
   - H-18
   primary_hazard: H-03
-  full_normative_text: Clinical Model Gateway and Runtime Contract Validator
-  normative_text_sha256: 2224d5b78a5e7dff410d0ab10e474de6baa3af2682ffb3c6f2070c80a32e973d
+  full_normative_text: Resolves approved locked models, validates intended use and input contracts, executes inference, and enforces abstention
+    and routing.
+  normative_text_sha256: c1a4951a632120f9503e318b265e66a04ded56db60c086ffc2410b14528c7e31
   failure_condition: A clinical recommendation, evidence item, or dose constraint is hallucinated, outdated, conflicted, or inapplicable.
   potential_effect: A candidate or review may be represented as evidence-based when its rule does not apply.
   mitigation: Use approved closed evidence, exact source and version, applicability and conflict rules, lifecycle control, and explicit no-applicable-rule
@@ -59081,8 +59093,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Monitoring, Alerting, and Service-Level Service
-  normative_text_sha256: 58701c65285079f7a8e65cb4f4bdc476fe325c6609289c5fe46b25949005722a
+  full_normative_text: Calculates safety, model, evidence, workflow, reliability, subgroup, and security signals and invokes approved actions.
+  normative_text_sha256: e8a78d14690cd12468055e34b7caee5334e5dda786f5eeda2d7c704f61f18730
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -59126,8 +59138,9 @@ records:
   - H-07
   - H-17
   primary_hazard: H-06
-  full_normative_text: Model and Dependency Registry
-  normative_text_sha256: d19f8b6314027da1f832d2e02232d03f4f461ce3039d4f88f5b5916afaf68587
+  full_normative_text: Controls model versions, provenance, intended use, artifacts, signatures, configurations, limitations, dependencies, and
+    software bills of materials.
+  normative_text_sha256: 1d549db61e1d49ffeacc1f19b08788c2877a48707fbda63b659cb7ee9a0a6681
   failure_condition: A rigid or deformable registration is unsuitable and propagates incorrect anatomy, geometry, or accumulated dose.
   potential_effect: Contours or dose may be interpreted in the wrong spatial relationship.
   mitigation: Invoke commissioned registration, retain transform identity and uncertainty, provide fusion review and QA, require registration
@@ -59185,8 +59198,9 @@ records:
   - H-15
   - H-18
   primary_hazard: H-03
-  full_normative_text: Model Validation and Production Monitoring Service
-  normative_text_sha256: e19a8de37a9e5510baf5540c900089f5bf53a8b2661515f8128d426cb576e9b6
+  full_normative_text: Manages evaluation datasets, subgroup and calibration measures, failure detection, edit burden, thresholds, drift, and
+    change regression.
+  normative_text_sha256: 06ef0c6523e45a716ef78289d04107952d1190bb9486d00f19aab6fd35251a80
   failure_condition: A clinical recommendation, evidence item, or dose constraint is hallucinated, outdated, conflicted, or inapplicable.
   potential_effect: A candidate or review may be represented as evidence-based when its rule does not apply.
   mitigation: Use approved closed evidence, exact source and version, applicability and conflict rules, lifecycle control, and explicit no-applicable-rule
@@ -59213,8 +59227,8 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Versioned Clinical Object Repository
-  normative_text_sha256: 42915ba36c154394f6cdde43f46ad4e3d22a35b403369d5e7a16c388c547079b
+  full_normative_text: Stores immutable object versions, lifecycle state, ownership, integrity values, approvals, and source linkage.
+  normative_text_sha256: 335028caacca327bf6803391a0dc5e362aa03d40c4e6fc0d9d30b410838a4733
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -59283,8 +59297,9 @@ records:
   - H-11
   - H-17
   primary_hazard: H-04
-  full_normative_text: Proton Planning and QA Profile Adapter
-  normative_text_sha256: c7b96273155fa6a1780e9b4733eb807d67dfdcfd054b681a190b4174d03d368f
+  full_normative_text: Binds commissioned proton modes, machines, CT configurations, algorithms, robustness, QA, external validation, beamline,
+    readiness, and review controls to the active case and release.
+  normative_text_sha256: 999c8605dbed2d46b019a618c8c78fbe8f04a6e3d885b828aa68877081250831
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -59309,8 +59324,9 @@ records:
   - H-11
   - H-17
   primary_hazard: H-04
-  full_normative_text: Planning Intent and Candidate Orchestrator
-  normative_text_sha256: 93772a1efefb9799317999d30611d0bf7708fc3854a93379fac3c3e1b3a098f2
+  full_normative_text: Builds structured planning intent and coordinates commissioned optimizers, dose services, robustness, diversity, and candidate
+    lineage.
+  normative_text_sha256: cf630133f30710b801630aaf0af1606af1003c9af3a91093f9fe694ce0c3896e
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -59342,8 +59358,9 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Provenance and Dependency Graph
-  normative_text_sha256: be273e148458cb617160c2a4a1d2fe4b3d7266d41410967d05a421e5f8c1c126
+  full_normative_text: Traces derived objects to inputs, transformations, software, models, evidence, configurations, users, approvals, and downstream
+    impact.
+  normative_text_sha256: 0ac966685d23217a236ccc876f312ec74752db5c1d42076481852a7e44c6dc33
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -59366,8 +59383,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-08
-  full_normative_text: QA Routing and Independent Verification Coordinator
-  normative_text_sha256: 60e80d1ff0819bd495dc1f9ddb6de77737f81aa58e3399e3a32bd89d4d16a4f9
+  full_normative_text: Routes independent calculation, patient-specific QA, transfer QA, technique checks, and physics review while preserving
+    independence.
+  normative_text_sha256: 4e5e32182e6a422c9109da7cf8b8a57846e538bfa8b9bc6944ecfa312783b609
   failure_condition: A dose calculation, optimizer, machine model, or technique is used outside its commissioned envelope.
   potential_effect: A candidate may contain unverified dose or machine behavior and appear clinically usable.
   mitigation: Lock machine, model, algorithm, technique, and configuration; enforce commissioned envelopes at call time; retain runtime attestations;
@@ -59401,8 +59419,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Quality, Change, Document, and CAPA System
-  normative_text_sha256: 14fa56f739aaa5f1ac11c53b07489b15673607732e137b7d665c7a58c4bc1809
+  full_normative_text: Controls documents, changes, deviations, suppliers, incidents, CAPA, approvals, and quality records.
+  normative_text_sha256: 91cb093539eccc31a535c3ef40c196ea7b27fb72a9a40b28a9c1e779181d6bc9
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -59466,8 +59484,9 @@ records:
   - H-07
   - H-17
   primary_hazard: H-06
-  full_normative_text: Registration and Derived-Dose Service
-  normative_text_sha256: 7f968aa88df35499e72deb9fa5cda97cab02f7c871affd92938ecd3922f8492b
+  full_normative_text: Invokes commissioned registration and accumulation methods and retains transforms, visualization, uncertainty, approval,
+    and lineage.
+  normative_text_sha256: 4e65fedf3156f802cb0cb4c6c4e5b5b0d5751b74d7c96a3ea0ac14a38b77a7b3
   failure_condition: A rigid or deformable registration is unsuitable and propagates incorrect anatomy, geometry, or accumulated dose.
   potential_effect: Contours or dose may be interpreted in the wrong spatial relationship.
   mitigation: Invoke commissioned registration, retain transform identity and uncertainty, provide fusion review and QA, require registration
@@ -59488,8 +59507,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Requirements, Risk, and Traceability Repository
-  normative_text_sha256: 5a0829d162cfe533740c41e39b634041b6b18b4ecc05001c1d6f7b1a4a84129f
+  full_normative_text: Maintains bidirectional links from ConOps through requirements, hazards, components, tests, results, anomalies, and releases.
+  normative_text_sha256: dad9f750de4be2ad658d20b9dba1cc086fb760b99103a5aaf649567c3ddaf8f1
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -59510,8 +59529,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Backup, Recovery, and Degraded Operations Service
-  normative_text_sha256: 51b861215e47329d96b62a7b0ecf772e6b8385a08b7d9d8b453cf4ced4bb0e8e
+  full_normative_text: Provides validated backups, staged restoration, downtime and read-only modes, known-good rollback, and reconciliation.
+  normative_text_sha256: 8a790e3372d5acff7a48d3d5a54fb9ea2251a5163bb277ae1091933043a4cf8e
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -59553,8 +59572,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Plan Comparison, Selection, and Approval Workspace
-  normative_text_sha256: 84a83fcdd1e09cb0bc82535c7d5969cdc24e4cdea41c83ee6f6e06f21f1b6cd1
+  full_normative_text: Presents consistent metrics, tradeoffs, spatial dose, robustness, uncertainty, provenance, comments, and role-specific
+    decisions.
+  normative_text_sha256: f9c0db4508775f68fd3b718e1c1e323d3f0b571123274678b5466f328361a2a9
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -59584,8 +59604,8 @@ records:
   - H-15
   - H-18
   primary_hazard: H-03
-  full_normative_text: Computable Rule and Authority Resolver
-  normative_text_sha256: 8836d68e864ff71e9e65bc22433842e03f12b3354cb3d4ddf1fcdfc7086d1afc
+  full_normative_text: Evaluates rule applicability, units, authority order, conflicts, lifecycle state, and no-applicable-rule outcomes.
+  normative_text_sha256: 97282063f83e787f7b3a04fffe35f3dba4fed12dc05e98bb433cae27dce88e46
   failure_condition: A clinical recommendation, evidence item, or dose constraint is hallucinated, outdated, conflicted, or inapplicable.
   potential_effect: A candidate or review may be represented as evidence-based when its rule does not apply.
   mitigation: Use approved closed evidence, exact source and version, applicability and conflict rules, lifecycle control, and explicit no-applicable-rule
@@ -59644,8 +59664,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Deterministic Safety Kernel
-  normative_text_sha256: cc657a8582175b8383c12470a6867ff29f9455a663fa40c1eb5e6e24a6930a47
+  full_normative_text: Evaluates authorization, context, scope, preconditions, hard stops, approval validity, and export eligibility independently
+    of generative models.
+  normative_text_sha256: c8749497a8fac2b21bfbd841d3b4773e1dfb88502169bc4866264486f89e55ef
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -59766,8 +59787,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-08
-  full_normative_text: Segregated Sandbox and Mode Environment
-  normative_text_sha256: 0d38906dce9ebdc48aac4e8c121c8cc344f3f75698c9d8deab1615e3694bb1e0
+  full_normative_text: Separates research, training, commissioning, shadow, clinical draft, approved, degraded, and read-only execution and destinations.
+  normative_text_sha256: 02607010afb4f8b6f7a86015ac4f4fd6d8c018359aa277fbcb623018bd4ff308
   failure_condition: A dose calculation, optimizer, machine model, or technique is used outside its commissioned envelope.
   potential_effect: A candidate may contain unverified dose or machine behavior and appear clinically usable.
   mitigation: Lock machine, model, algorithm, technique, and configuration; enforce commissioned envelopes at call time; retain runtime attestations;
@@ -59824,8 +59845,9 @@ records:
   - H-13
   - H-14
   primary_hazard: H-04
-  full_normative_text: Security and Privacy Control Plane
-  normative_text_sha256: b13072ebf7afef2bc3749bdb1a2d19e71dc02df3245b0bd783a67a2401c044b3
+  full_normative_text: Provides identity federation, encryption, segmentation, secrets, egress control, artifact verification, detection, and
+    privacy safeguards.
+  normative_text_sha256: 5eaf7c744c5850b804bd0ee6646dc2f12151aa302acf40a550af7515c025b411
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -59859,8 +59881,8 @@ records:
   - H-06
   - H-17
   primary_hazard: H-05
-  full_normative_text: Contouring Gateway and Anatomy Review Service
-  normative_text_sha256: 8ecf4abf9968a98ec2d5774de556dd727657c59b5f21af2653cfee0270ca31e2
+  full_normative_text: Controls contour-model applicability, draft generation, uncertainty, validation, editing, review, approval, and nomenclature.
+  normative_text_sha256: 5ec635c93e0d55f02a71b4b93ead8ae9be3f14be660bc064d0d9f2e3f77b05db
   failure_condition: A contour is missing, mislabeled, geometrically implausible, truncated, or clinically incorrect.
   potential_effect: Optimization or dose evaluation may use incorrect target or organ-at-risk anatomy.
   mitigation: Enforce approved nomenclature, applicability and input checks, completeness and topology rules, uncertainty display, edit lineage,
@@ -59887,8 +59909,8 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Clinical Lifecycle and Workflow State Engine
-  normative_text_sha256: 6640a2892682fb2f508a99efec0f5546ccd5fb69a21553cebf5b943069006957
+  full_normative_text: Controls draft, review, approval, QA, transfer, degraded, invalidated, and superseded states with atomic transitions.
+  normative_text_sha256: 25f88b393a573b96de1d92e3623562a0c83d9e5d6bd018db0024b3e789ace52e
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -60008,8 +60030,8 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Terminology, Units, Coordinates, and Nomenclature Service
-  normative_text_sha256: 1bc5d71f9dd81c61afe6dbea7a134628f1b194e4c376d5389eff7e535791eaa7
+  full_normative_text: Controls codes, structure names, units, dose basis, coordinate systems, mappings, conversions, and rounding rules.
+  normative_text_sha256: 1b8dd604cb2be8d4eef622c263ee95ce9e17632e0ad6a68b92ddd5f9ec54d292
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -60054,8 +60076,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-08
-  full_normative_text: Locked Reference and Challenge Case Library
-  normative_text_sha256: 26c600c41863ac9789be6abe17cbdf01a434dc50e918cbd5ef1bb427883b8499
+  full_normative_text: Controls representative, boundary, wrong-context, failure, adversarial, recovery, interoperability, and clinical challenge
+    cases with expected results.
+  normative_text_sha256: c54d3b38f36d2b06b935ec5235d6dd53d910f8eaf75614659c70c3ad0a8dedf2
   failure_condition: A dose calculation, optimizer, machine model, or technique is used outside its commissioned envelope.
   potential_effect: A candidate may contain unverified dose or machine behavior and appear clinically usable.
   mitigation: Lock machine, model, algorithm, technique, and configuration; enforce commissioned envelopes at call time; retain runtime attestations;
@@ -60109,8 +60132,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-01
-  full_normative_text: Existing TPS Adapter Framework
-  normative_text_sha256: 477c966eeee7d535e86643a2c9eb8add91f1909eddd4eff28dd9a8188bd76b05
+  full_normative_text: Encapsulates each commissioned external TPS, its DICOM/DICOM-RT conformance statement, supported workflows, optional approved
+    API, limitations, and site configuration.
+  normative_text_sha256: d0a90b96a62b7753096cbf38cef36758d6f91c6cfe083af12a49118f28cb6186
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -60169,8 +60193,8 @@ records:
   - H-13
   - H-18
   primary_hazard: H-01
-  full_normative_text: Clinical Command, Review, and Confirmation Workspace
-  normative_text_sha256: d01a9f63ff92b25dadd316b90f23ad8e557132602aa1e22d0675a6717a1fd13b
+  full_normative_text: Presents context, provenance, warnings, previews, comparisons, approvals, and human-controlled actions.
+  normative_text_sha256: b64e8b2ba87d0a39b2f2a2575afb5d62393224081f6a32ab377c9a998ea94339
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -60235,8 +60259,8 @@ records:
   - H-02
   - H-18
   primary_hazard: H-02
-  full_normative_text: Push-to-Talk and Transcript Confirmation Service
-  normative_text_sha256: eed241de617aed5133ca29ba09a6bf53b24052d6a4f91aa54f02dac4427cb2f6
+  full_normative_text: Provides bounded speech capture, transcription, safety-critical token flagging, correction, and confirmed transcript output.
+  normative_text_sha256: bf0781f1695992e779346a8476faadb626c9c889536c5996ee1d9a1e9dba23d4
   failure_condition: Speech or language processing misinterprets negation, number, unit, laterality, object, priority, or an ambiguous instruction.
   potential_effect: The typed intent may request an unintended planning action or parameter.
   mitigation: Require transcript confirmation, deterministic parsing, structured read-back, correction, clarification, and no voice signature
@@ -60267,8 +60291,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-08
-  full_normative_text: Verification, Validation, and Commissioning Harness
-  normative_text_sha256: 3f4646e026cbc3d0817464105761b535f2fecc7a68297bed66f8ab433cb19cb7
+  full_normative_text: Executes inspection, analysis, test, demonstration, HFE, site acceptance, commissioning, regression, shadow, and end-to-end
+    protocols.
+  normative_text_sha256: c3435ba4fbf069e036cda2f670d10f7ceaab5d0d85360a72a99c4d80f380b957
   failure_condition: A dose calculation, optimizer, machine model, or technique is used outside its commissioned envelope.
   potential_effect: A candidate may contain unverified dose or machine behavior and appear clinically usable.
   mitigation: Lock machine, model, algorithm, technique, and configuration; enforce commissioned envelopes at call time; retain runtime attestations;
@@ -60288,8 +60313,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Clinical Workflow Orchestrator
-  normative_text_sha256: 4d08a67cf55fbc648f79e3eafadc9ba27ef36f1e40f6a0d56c2bc9afa44aee19
+  full_normative_text: Coordinates governed tasks, human gates, clinical services, external TPS interactions, QA routing, cancellation, and recovery.
+  normative_text_sha256: 8ef680791aea2bcbc9e70543d3ea572f09d70dc651b5229c75bb05aa819e2ee7
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -60335,8 +60360,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Quality
-  normative_text_sha256: 1b2c08a8733d7ff1d06e726107a977124929c975066a3a606d19055dfd4e3dbd
+  full_normative_text: Publishes approved ACR ROPA and ASTRO APEx profiles, resolves scoped applicability, maintains atomic trace and evidence
+    state, and prevents system-generated accreditation claims.
+  normative_text_sha256: 16a27043f607b7010865820e4ed08c6a8965d43f39f99874e298e2c3aa1eb835
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -60359,8 +60385,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Controls functional boundaries, service contracts, data ownership, interface dependencies, and compatible component versions.
+  normative_text_sha256: 1a2b2c9b4a22651f2ee6f9365000c11cde2747aa7748c4ed7e31c451696ec361
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -60449,8 +60475,8 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Data
-  normative_text_sha256: cec3a9b89b2e391393d0f68e4bc12a9fa6cf358b3cdf79496dc442d52b8dd528
+  full_normative_text: Records ordered commands, context, evidence, outputs, warnings, edits, approvals, QA, transfers, failures, and reconciliation.
+  normative_text_sha256: 2f63044997c7dc795962d63a85ab8ef1b08e3199bf869a78070f021aef1daeb9
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -60525,8 +60551,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Clinical
-  normative_text_sha256: 94b7ace2708b3b33cafa4a9bff6be034573fc2056ac80f8413070e90edb2bbbf
+  full_normative_text: Binds patient, course, studies, frames, prescription, anatomy, prior treatment, task, mode, and destination.
+  normative_text_sha256: 43af810ae59385391c01c922a245df086a63af341b931b5e69e8fbc32419f5db
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -60558,8 +60584,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Locks approved functional scope, workflows, parameters, models, evidence, machines, interfaces, and release manifests.
+  normative_text_sha256: 2b5bfa3afc6faa3e96234874cfc3053b37b74729e9a178c77e2f0ac3418ddea6
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -60650,8 +60676,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-01
-  full_normative_text: Interface
-  normative_text_sha256: c26b3ed4ce70e202816608a9ca6cc14da9ed4a5cf14c7c758be0e2c20344ed82
+  full_normative_text: Provides approved query, retrieve, store, import, export, validation, and reconciliation for images and radiotherapy objects.
+  normative_text_sha256: d034979e8e19d2b632d6d9d3e162cb98040401b94abcdc9487008caee63dc2c1
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -60683,8 +60709,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Clinical safety
-  normative_text_sha256: 87f5e1c217a7141c1f01e59149ce8849dc6846cd7adb0e17671a3935fd7dfb12
+  full_normative_text: Reconciles required clinical artifacts, approval and amendment state, review and QA due events, exceptions, and responsible
+    roles and enforces configured transition gates.
+  normative_text_sha256: 73fe60cedd0f1751d6bb56308433d0d989d19fa8c7d97ea60f5f792fcab2a950
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -60708,8 +60735,8 @@ records:
   - H-11
   - H-17
   primary_hazard: H-04
-  full_normative_text: Clinical
-  normative_text_sha256: 94b7ace2708b3b33cafa4a9bff6be034573fc2056ac80f8413070e90edb2bbbf
+  full_normative_text: Connects only to commissioned optimization, robustness, and dose engines; it does not permit generative dose calculation.
+  normative_text_sha256: 9eb35ae920844bd85c3f7c35eb76dba2d3f9654caef4386c01634205212d7711
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -60739,8 +60766,9 @@ records:
   - H-15
   - H-18
   primary_hazard: H-03
-  full_normative_text: Clinical
-  normative_text_sha256: 94b7ace2708b3b33cafa4a9bff6be034573fc2056ac80f8413070e90edb2bbbf
+  full_normative_text: Stores and retrieves institution-approved, versioned, applicable literature and local policies without unrestricted clinical-mode
+    internet retrieval.
+  normative_text_sha256: d913b71312a2535c187b145b62ab9b79bd0ee3d14d0ba1a00e3e0f5aabf518ed
   failure_condition: A clinical recommendation, evidence item, or dose constraint is hallucinated, outdated, conflicted, or inapplicable.
   potential_effect: A candidate or review may be represented as evidence-based when its rule does not apply.
   mitigation: Use approved closed evidence, exact source and version, applicability and conflict rules, lifecycle control, and explicit no-applicable-rule
@@ -60766,8 +60794,8 @@ records:
   - H-13
   - H-14
   primary_hazard: H-04
-  full_normative_text: Control
-  normative_text_sha256: 32d7e82082479b8cb546187ff0af11e4915e4d17bc28e02dca7425288b79badd
+  full_normative_text: Authenticates users and services and enforces role, context, approval identity, and separation of duties.
+  normative_text_sha256: 09e81784f80284a190e277ac9dad1041dedc597bcfcf250339bf4a5f40e69100
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -60794,8 +60822,9 @@ records:
   - H-02
   - H-18
   primary_hazard: H-02
-  full_normative_text: Experience
-  normative_text_sha256: 8eab0f09df013b1bd69655991bb824cfa822d383b482905789153d4df8bfda78
+  full_normative_text: Converts text or confirmed speech into inspectable typed intent and validates objects, units, laterality, negation, and
+    required fields.
+  normative_text_sha256: cb87c9e385fb355888dfb2f2d843e41739e21c64c6eeefb3c710d6413da3cbf0
   failure_condition: Speech or language processing misinterprets negation, number, unit, laterality, object, priority, or an ambiguous instruction.
   potential_effect: The typed intent may request an unintended planning action or parameter.
   mitigation: Require transcript confirmation, deterministic parsing, structured read-back, correction, clarification, and no voice signature
@@ -60821,8 +60850,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Platform
-  normative_text_sha256: c78ffe19571018fbc93a78873969046fe1a80c3d21e5d20fbb2ca17c7c53a144
+  full_normative_text: Controls pending, running, complete, failed, canceled, timed-out, partial, commit, cleanup, and reconciliation states.
+  normative_text_sha256: 66c118eb7911924996a364d32424f37965bc114cd69fdfd345e2264340882710
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -60847,8 +60876,9 @@ records:
   - H-15
   - H-18
   primary_hazard: H-03
-  full_normative_text: AI
-  normative_text_sha256: 11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c
+  full_normative_text: Resolves approved locked models, validates intended use and input contracts, executes inference, and enforces abstention
+    and routing.
+  normative_text_sha256: c1a4951a632120f9503e318b265e66a04ded56db60c086ffc2410b14528c7e31
   failure_condition: A clinical recommendation, evidence item, or dose constraint is hallucinated, outdated, conflicted, or inapplicable.
   potential_effect: A candidate or review may be represented as evidence-based when its rule does not apply.
   mitigation: Use approved closed evidence, exact source and version, applicability and conflict rules, lifecycle control, and explicit no-applicable-rule
@@ -60875,8 +60905,8 @@ records:
   - H-07
   - H-17
   primary_hazard: H-06
-  full_normative_text: AI
-  normative_text_sha256: 11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c
+  full_normative_text: Controls model versions, provenance, intended use, artifacts, signatures, configurations, limitations, and dependencies.
+  normative_text_sha256: 9fcaf7b26efb0bc1200e479c209ee97be4667a57ef453d8d05279775a4e0a42d
   failure_condition: A rigid or deformable registration is unsuitable and propagates incorrect anatomy, geometry, or accumulated dose.
   potential_effect: Contours or dose may be interpreted in the wrong spatial relationship.
   mitigation: Invoke commissioned registration, retain transform identity and uncertainty, provide fusion review and QA, require registration
@@ -60903,8 +60933,8 @@ records:
   - H-15
   - H-18
   primary_hazard: H-03
-  full_normative_text: AI
-  normative_text_sha256: 11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c
+  full_normative_text: Manages validation datasets, subgroup and calibration measures, edit burden, thresholds, drift, and regression evidence.
+  normative_text_sha256: e7f85712ed4fadd3bcefcd903cf9b1e084e7a2088fbe1fcfdda6d2b399b3e779
   failure_condition: A clinical recommendation, evidence item, or dose constraint is hallucinated, outdated, conflicted, or inapplicable.
   potential_effect: A candidate or review may be represented as evidence-based when its rule does not apply.
   mitigation: Use approved closed evidence, exact source and version, applicability and conflict rules, lifecycle control, and explicit no-applicable-rule
@@ -60931,8 +60961,8 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Data
-  normative_text_sha256: cec3a9b89b2e391393d0f68e4bc12a9fa6cf358b3cdf79496dc442d52b8dd528
+  full_normative_text: Stores immutable object versions, lifecycle state, ownership, integrity values, approvals, and source links.
+  normative_text_sha256: acbf6818197cdd4e448fce2d27f616f864831999accbaf7a36d75f116e42743a
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -60993,8 +61023,8 @@ records:
   - H-11
   - H-17
   primary_hazard: H-04
-  full_normative_text: Clinical
-  normative_text_sha256: 94b7ace2708b3b33cafa4a9bff6be034573fc2056ac80f8413070e90edb2bbbf
+  full_normative_text: Builds structured planning intent and coordinates candidate generation, diversity, optimization, dose, and robustness services.
+  normative_text_sha256: 418ee5508e282245560371755dbb42fea5e71deb59782dbc7b146d3ca8e01bfa
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -61026,8 +61056,9 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Links each input, action, transformation, result, approval, and transfer to the exact actor, object, service, evidence,
+    model, and configuration versions.
+  normative_text_sha256: 335c8089363f19ee61f685f5ddb2af5059b996bb89340ad58d685504e200e3e4
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -61116,8 +61147,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-08
-  full_normative_text: Clinical
-  normative_text_sha256: 94b7ace2708b3b33cafa4a9bff6be034573fc2056ac80f8413070e90edb2bbbf
+  full_normative_text: Routes independent calculation, patient-specific QA, transfer verification, technique checks, and physics review while
+    preserving independence.
+  normative_text_sha256: 2dfcadf59368f2de4e02dcda21f1c28b698b0ed8b0c755828f942f4db9f5db5a
   failure_condition: A dose calculation, optimizer, machine model, or technique is used outside its commissioned envelope.
   potential_effect: A candidate may contain unverified dose or machine behavior and appear clinically usable.
   mitigation: Lock machine, model, algorithm, technique, and configuration; enforce commissioned envelopes at call time; retain runtime attestations;
@@ -61150,8 +61182,8 @@ records:
   - H-07
   - H-17
   primary_hazard: H-06
-  full_normative_text: Clinical
-  normative_text_sha256: 94b7ace2708b3b33cafa4a9bff6be034573fc2056ac80f8413070e90edb2bbbf
+  full_normative_text: Invokes commissioned registration and accumulation methods and retains transforms, uncertainty, approval, and lineage.
+  normative_text_sha256: d3be5030ecfe609c68ab8fdd808833a7d1df196ae8122d12af3d4dadca92271f
   failure_condition: A rigid or deformable registration is unsuitable and propagates incorrect anatomy, geometry, or accumulated dose.
   potential_effect: Contours or dose may be interpreted in the wrong spatial relationship.
   mitigation: Invoke commissioned registration, retain transform identity and uncertainty, provide fusion review and QA, require registration
@@ -61180,8 +61212,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Maintains bidirectional trace from ConOps and source HLRs through categorized requirements, hazards, tests, results, anomalies,
+    and releases.
+  normative_text_sha256: 41e3775d96287bddf42763d3cbde4970898a361771f1bacd98106797026f6222
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -61268,8 +61301,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Clinical
-  normative_text_sha256: 94b7ace2708b3b33cafa4a9bff6be034573fc2056ac80f8413070e90edb2bbbf
+  full_normative_text: Presents consistent metrics, spatial dose, tradeoffs, robustness, uncertainty, provenance, comments, and role-specific
+    decisions.
+  normative_text_sha256: 5501ad1741b0cf0db115b2bd5f5e23a56b20dc196f9a5ae4169336c37092d724
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -61301,8 +61335,8 @@ records:
   - H-15
   - H-18
   primary_hazard: H-03
-  full_normative_text: Clinical
-  normative_text_sha256: 94b7ace2708b3b33cafa4a9bff6be034573fc2056ac80f8413070e90edb2bbbf
+  full_normative_text: Evaluates evidence applicability, units, authority, conflicts, lifecycle state, and no-applicable-rule outcomes.
+  normative_text_sha256: 9df427bc105e9997f049ea55e16be9ae433fa722af9960f5227f551fdea2535a
   failure_condition: A clinical recommendation, evidence item, or dose constraint is hallucinated, outdated, conflicted, or inapplicable.
   potential_effect: A candidate or review may be represented as evidence-based when its rule does not apply.
   mitigation: Use approved closed evidence, exact source and version, applicability and conflict rules, lifecycle control, and explicit no-applicable-rule
@@ -61328,8 +61362,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Control
-  normative_text_sha256: 32d7e82082479b8cb546187ff0af11e4915e4d17bc28e02dca7425288b79badd
+  full_normative_text: Evaluates scope, context, preconditions, hard stops, human authority, approval validity, and export eligibility independently
+    of generative models.
+  normative_text_sha256: 0d2379ac4a1dff59d69515d51e73b98121f2800b59724cc54ff4ee34cc46535d
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -61383,8 +61418,8 @@ records:
   - H-06
   - H-17
   primary_hazard: H-05
-  full_normative_text: Clinical
-  normative_text_sha256: 94b7ace2708b3b33cafa4a9bff6be034573fc2056ac80f8413070e90edb2bbbf
+  full_normative_text: Controls contour-model applicability, draft generation, uncertainty, editing, review, approval, and nomenclature.
+  normative_text_sha256: d6525f8f51e5c777b3e1613a268e1b5d819ee093eca425d5903c0666e712b5b9
   failure_condition: A contour is missing, mislabeled, geometrically implausible, truncated, or clinically incorrect.
   potential_effect: Optimization or dose evaluation may use incorrect target or organ-at-risk anatomy.
   mitigation: Enforce approved nomenclature, applicability and input checks, completeness and topology rules, uncertainty display, edit lineage,
@@ -61413,8 +61448,8 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Control
-  normative_text_sha256: 32d7e82082479b8cb546187ff0af11e4915e4d17bc28e02dca7425288b79badd
+  full_normative_text: Controls draft, review, approval, QA, transfer, invalidated, degraded, and superseded object and workflow states.
+  normative_text_sha256: 7aec48e4938124348209079fc9c4d38fadf324e192523b3c9811e1f25d1fd86f
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -61471,8 +61506,8 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Data
-  normative_text_sha256: cec3a9b89b2e391393d0f68e4bc12a9fa6cf358b3cdf79496dc442d52b8dd528
+  full_normative_text: Controls codes, structure names, units, dose basis, coordinate systems, mappings, conversions, and rounding.
+  normative_text_sha256: fa232c711389e50baf330d5e38c44228f91d1569d7b1ae3ad1a0d495e2e94d51
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -61533,8 +61568,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-01
-  full_normative_text: Interface
-  normative_text_sha256: c26b3ed4ce70e202816608a9ca6cc14da9ed4a5cf14c7c758be0e2c20344ed82
+  full_normative_text: Encapsulates each commissioned TPS, its DICOM conformance, supported workflows, optional approved API, limitations, and
+    site configuration.
+  normative_text_sha256: 11c83492bc3bf3999bb65b79906472f9787fcc8576c4631ce6d0c7f5f5cddf32
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -61567,8 +61603,8 @@ records:
   - H-13
   - H-18
   primary_hazard: H-01
-  full_normative_text: Experience
-  normative_text_sha256: 8eab0f09df013b1bd69655991bb824cfa822d383b482905789153d4df8bfda78
+  full_normative_text: Presents context, sources, assumptions, warnings, previews, comparisons, edits, approvals, and human-controlled actions.
+  normative_text_sha256: 4a532a3cd11b691679c076fa391820328ee1fb35e0caaaa50e6c2e69b3bbb336
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -61614,8 +61650,9 @@ records:
   - H-02
   - H-18
   primary_hazard: H-02
-  full_normative_text: Experience
-  normative_text_sha256: 8eab0f09df013b1bd69655991bb824cfa822d383b482905789153d4df8bfda78
+  full_normative_text: Provides bounded speech capture, transcription, critical-token flagging, correction, read-back, and confirmed transcript
+    output.
+  normative_text_sha256: c0acf386ca95708da1ae56d1a4644a222d9afe7a1338e9fbb20ab3614cee8a97
   failure_condition: Speech or language processing misinterprets negation, number, unit, laterality, object, priority, or an ambiguous instruction.
   potential_effect: The typed intent may request an unintended planning action or parameter.
   mitigation: Require transcript confirmation, deterministic parsing, structured read-back, correction, clarification, and no voice signature
@@ -61643,8 +61680,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-08
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Executes positive, negative, boundary, recovery, interoperability, and end-to-end tests with retained objective evidence.
+  normative_text_sha256: 4d5baa50ea8de1113fb218150dc36b5d280f2a256bf836b588d3b86a93006f33
   failure_condition: A dose calculation, optimizer, machine model, or technique is used outside its commissioned envelope.
   potential_effect: A candidate may contain unverified dose or machine behavior and appear clinically usable.
   mitigation: Lock machine, model, algorithm, technique, and configuration; enforce commissioned envelopes at call time; retain runtime attestations;
@@ -61730,8 +61767,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Orchestration
-  normative_text_sha256: ed4fdd1721677737cffb2862fe34d5b63901c7cc76b8c67c51e92a467b31a5e7
+  full_normative_text: Coordinates governed clinical tasks, human gates, commissioned services, existing TPS interactions, QA routing, cancellation,
+    and recovery.
+  normative_text_sha256: 95f8aa05a46ede2abc6e4edca6dd014d8a0051ee4689fdf69b228395ee43fcfb
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -61773,8 +61811,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Outcome and Acknowledgment Service
-  normative_text_sha256: 004dd0b3648e841c6aab40631ce5ae18b1d8253e0fe6e0a70a3c662fe5963167
+  full_normative_text: Returns one correlated accepted, rejected, canceled, partial, failed, or degraded outcome and distinguishes transport,
+    storage, semantic import, review, approval, QA, and destination acceptance.
+  normative_text_sha256: 1448733bbb27891a8e38314bf766cc533621fb7362922141e2a5d6dc94d0b29b
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -61910,8 +61949,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Accreditation Profile Contract and Publisher
-  normative_text_sha256: 269b225d54d998511a03e2e3aea57e2a4fa5fcd4faa96ba8aed13911c426768a
+  full_normative_text: Versions approved ACR ROPA and ASTRO APEx profile content, applicability, local interpretation, authority, effective dates,
+    supersession, and machine-validatable publication without asserting accreditation.
+  normative_text_sha256: 2acc78bf8ef70c59c74940a988c3c245e6857129c7b55ddfb445c27896919de0
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -61938,8 +61978,9 @@ records:
   - H-15
   - H-18
   primary_hazard: H-03
-  full_normative_text: Model-Route Evaluation Harness
-  normative_text_sha256: 6807c7ed3406637df627d91470d46e5548be3498fbd9374b13abb0ca959abba6
+  full_normative_text: Tests the combined model and interface route for input contract, intended-use scope, subgroup behavior, uncertainty, abstention,
+    failure, lineage, review burden, drift, and safe non-action.
+  normative_text_sha256: 0010ad5390dffb537e2bdbdb3330a32935715be81f85df8ea8016487412dfcad
   failure_condition: A clinical recommendation, evidence item, or dose constraint is hallucinated, outdated, conflicted, or inapplicable.
   potential_effect: A candidate or review may be represented as evidence-based when its rule does not apply.
   mitigation: Use approved closed evidence, exact source and version, applicability and conflict rules, lifecycle control, and explicit no-applicable-rule
@@ -61985,8 +62026,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Alert and Incident Connector
-  normative_text_sha256: 6a074ce12dbed21ca07d2738a47d61856aa13b0b62d94ddda766bd4e22cb9a55
+  full_normative_text: Routes safety, clinical, interoperability, security, availability, and supplier events to accountable teams with severity,
+    context, evidence preservation, containment, escalation, and CAPA linkage.
+  normative_text_sha256: f0789d84f63dde8ea35a93a7f4cb4e697d95494af0ac35e1ee1d035c4ed6c98a
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -62124,8 +62166,9 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Immutable Interface Audit Ledger
-  normative_text_sha256: 0a4c5c3e44141ccb21d08ad8c0d9ea20b75a61e80a0bf445d0c44712c7424a1f
+  full_normative_text: Records correlated requests, decisions, versions, input and output identities, actors, timing, state changes, outcomes,
+    retries, approvals, transfers, exceptions, and administrative actions.
+  normative_text_sha256: 3597244b2f17fdb0fb03e6fcc08dce7096a9c48e6f12e134d321db9834fbb40b
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -62261,8 +62304,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Backup, Restore, and Continuity Coordinator
-  normative_text_sha256: 317c490f088f1ed2f78326e1c1766c01402f28482ce4256412048958f0a4d2ad
+  full_normative_text: Provides validated backup, restore, read-only or degraded operation, known-good configuration recovery, route reactivation,
+    and post-restoration reconciliation.
+  normative_text_sha256: 79cd75e7f3dc272fca8e35761fe764011463be534183dc97ce9b82d8c08a3e87
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -62312,8 +62356,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Boundary and Route Registry
-  normative_text_sha256: 185f62a56223542cdc6d1c3764fc724bc8a765232f8ef40aebf2af7e050997e4
+  full_normative_text: Creates the canonical identity for every human, service, file, message, DICOM, DICOMweb, IHE, and vendor-API producer-consumer
+    route and binds actors, endpoints, direction, trust zone, state, owner, and support status.
+  normative_text_sha256: 5d34ca323bbde66bcaa3c2828cb6834a379a800df4fab0d223d33c8bc8ec51ba
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -62449,8 +62494,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Capability and Compatibility Matrix
-  normative_text_sha256: 42c4e6b5b363b7f734df86321a5fcffa70cc2f78fb24a4d282cb0691669166d8
+  full_normative_text: Resolves the approved producer, consumer, vendor, version, site, machine, modality, technique, SOP Class, role, transfer
+    syntax, profile, API operation, and limitation combinations.
+  normative_text_sha256: a6a3a1c22b0f8973d65eca37bd52f72046e824b331533007a5b788dc01609e0c
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -62588,8 +62634,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Interface Configuration Baseline
-  normative_text_sha256: afd1ce64dba209807f66a9a6f6d97e85ba60e72e0302c8e0b6b32eaa744ff52d
+  full_normative_text: Publishes signed effective route, endpoint, trust, schema, terminology, timeout, retry, monitoring, feature, scope, and
+    dependency configuration and prevents activation of incomplete or inconsistent baselines.
+  normative_text_sha256: ef5913cd01f9f0ac7cd7e5488bc4485b5235bfb8998c4c90de13b3c86173199c
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -62726,8 +62773,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Interface Change, Migration, and Rollback Manager
-  normative_text_sha256: 13901ec2550eb3d8026e4cb8aa6ac4da75b9aad6ad14678ffcf761d74ab0785d
+  full_normative_text: Detects contract or endpoint changes, performs impact analysis, defines migration and regression scope, coordinates staged
+    activation, and restores or retires versions without silent route substitution.
+  normative_text_sha256: c91e23b46bd3db67975872fbe74bddfe069059f50e1d1146e37ba20d8eea53ea
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -62863,8 +62911,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Compensation and Rollback Controller
-  normative_text_sha256: cca3c36bd91233f7422b7d59eea349826b1c2e7914ac85fde8bc6d498c4067b0
+  full_normative_text: Executes the approved cleanup, compensating action, prior-version restoration, approval invalidation, and reconciliation
+    plan without bypassing a hard stop or erasing evidence.
+  normative_text_sha256: 321ccfe50662f530b5651658d164daf3c0f89c8ab1fc7ae6872c04ae98905cd9
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -63000,8 +63049,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Site Commissioning Package
-  normative_text_sha256: 2a221510c43335e7c939d1479429fd77049772f144c717fddac460e01ba0406e
+  full_normative_text: Binds the actual institution, vendor, product version, endpoint, machine, modality, technique, disease site, workflow,
+    configuration, users, and acceptance evidence to a release decision.
+  normative_text_sha256: d6aed356f89dfaf6c84667d756f181b6be87eb475a030e9264ac812fb7fa8297
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -63137,8 +63187,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Clinical Documentation and Temporal Gate Adapter
-  normative_text_sha256: b8828150e474ce64ed89afdab66cdf4a0d021258fea5a96276daa2f02d31883d
+  full_normative_text: Reconciles authoritative clinical artifacts, reviews, approvals, QA events, due-state, amendments, exceptions, and responsible
+    roles and prevents unsafe workflow transitions when required evidence is missing or stale.
+  normative_text_sha256: 145907f8c41efc0cf62c478a48931ffc4a161abc23a70e36aac293659c148e3c
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -63163,8 +63214,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Patient and Case Context Validator
-  normative_text_sha256: 0e72823a04dabcedfec1c3188f7b123398b10e32548e6c844a38afb56682fcef
+  full_normative_text: Validates user, patient, course, study, task, object, plan, frame, operating mode, destination, source, freshness, and
+    approval context and rejects missing or inconsistent bindings.
+  normative_text_sha256: 620729e1322203bf4c4b4d4908de4f8b9bf74454192c81a9b0a0df697a4930d9
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -63302,8 +63354,9 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Clinical Object Repository Adapter
-  normative_text_sha256: 024563e152d9682ac541de2cca9959ef75acd2012739c05cf85c8b27fdd13573
+  full_normative_text: Connects services to immutable versioned objects, terminology, identity, dependency lineage, integrity, audit, retention,
+    lifecycle state, and authoritative-source rules.
+  normative_text_sha256: 564a16652990dedb14ba2006354a7f2335236c834a13c48994120d22fd7f043d
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -63403,8 +63456,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: DICOM DIMSE Application Entity Gateway
-  normative_text_sha256: 71bbd94fe1d221d6e5dbee68409df90452e791b17e08bdea7e472dab66ec06dc
+  full_normative_text: Implements commissioned association negotiation and approved SCU or SCP services, SOP Classes, transfer syntaxes, statuses,
+    timeouts, and audit behavior for DICOM and DICOM-RT exchange.
+  normative_text_sha256: 59d62cbaa0aaaed0502ee6647704c4dc0f2cb29adecc3f0c0551389d94abffee
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -63482,8 +63536,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: DICOM Conformance and Semantic Validator
-  normative_text_sha256: 7559e67b81abb2f24b58bb650c36f07dcd3ef91c6fcb9bdc9238ec3f8136570d
+  full_normative_text: Performs paired conformance analysis, capability comparison, object validation, private-attribute policy, semantic round-trip
+    comparison, and source-to-destination fidelity assessment.
+  normative_text_sha256: 7329533b09528a8a6ce2ae702cfdfdc5c421f980f61052ec3a5a8c8674a0d6de
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -63561,8 +63616,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: DICOMweb Gateway
-  normative_text_sha256: 025f0d06dd855c99edccf3e31c40f67e7b5642dafe154d9107feb86b0dcd7e2b
+  full_normative_text: Implements approved user-agent or origin-server QIDO-RS, WADO-RS, STOW-RS, or other scoped DICOMweb behavior with authentication,
+    media negotiation, status interpretation, and reconciliation.
+  normative_text_sha256: eb0346a1b54d002048d5f140fe68755afc4a48dcff33a4d90d38fb2c676d2486
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -63640,8 +63696,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Evidence and Rule Boundary Gateway
-  normative_text_sha256: 1aedd7fc66c1cfb99f2872d7eb29f5c50894d76a7bc440af36aa2b7b85de34ad
+  full_normative_text: Connects the closed approved evidence service and computable-rule resolver to source authority, applicability, conflict,
+    exception, citation, lifecycle, and no-applicable-rule outcomes.
+  normative_text_sha256: a206d657be0b36b30f609e4008133f3decb82c148b2313f9f91ff02edcc25990
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -63691,8 +63748,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Evidence Link, Attestation, and Deficiency Exchange
-  normative_text_sha256: c3e58aa16be8cf916c0dfcf5c1703b5ffc8a7d9a3516f21351e7a37a0609c109
+  full_normative_text: Maintains evidence pointers, human attestations, findings, deficiencies, corrective actions, verification, retention, export
+    manifests, and minimum-necessary disclosure with immutable trace.
+  normative_text_sha256: c851a2ae332142fc3769dfb14bf662bd0d1c8cc0dd0e5301cd49b5ce786fdcb2
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -63717,8 +63775,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Examples and Test-Fixture Library
-  normative_text_sha256: cfc088d93f3d23bd25f577dd4aef5bc2a56aa8e1c87758d10fefdc160ad78e0c
+  full_normative_text: Maintains controlled valid, invalid, boundary, wrong-context, stale-version, private-attribute, partial, and recovery examples
+    linked to the exact contract and expected result.
+  normative_text_sha256: a92ff964dabd72f58f7473f6d7e55f23f6d8b33d9828703f2f3e7bb6d7b2229e
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -63854,8 +63913,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Trusted Interface Gateway
-  normative_text_sha256: 2bdf7ec18846e82f2c3432abacc3e920dfd4498ae6a5e7a07bfe217bfb3bb7ae
+  full_normative_text: Terminates the first trusted boundary, authenticates the route, applies allowlists and size or rate controls, establishes
+    correlation, and passes content to deterministic validation before mutation.
+  normative_text_sha256: f19a6e62c2ce08fdef8fa1f8231854120d341c92d131cae428b0831cc6a5da2a
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -63992,8 +64052,9 @@ records:
   - H-13
   - H-18
   primary_hazard: H-01
-  full_normative_text: Human-Factors Interface Validation Harness
-  normative_text_sha256: 18e09cc3fdbf8e25ae8fabdba17505b62397b4be587aa96b5bb3badd1047dca5
+  full_normative_text: Evaluates representative users and critical tasks including context confirmation, speech correction, warning, interruption,
+    comparison, approval, cancellation, recovery, and use-error scenarios.
+  normative_text_sha256: 24b5d2cd6d573e8cb8623a295b9489652a75c645adde2328a5b711f5f1c9ed0e
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -64047,8 +64108,9 @@ records:
   - H-13
   - H-14
   primary_hazard: H-04
-  full_normative_text: Identity, Role, and Approval Adapter
-  normative_text_sha256: 53be1c247b7c1231c3ec6ddf50de566c21f3be4d5aacb519ff512f82ab1df5a0
+  full_normative_text: Federates identity and maps actor or service, role, purpose, case, session, signature, approval meaning, revocation, and
+    separation-of-duties state into each interface decision.
+  normative_text_sha256: 76a3983d1000ae55c0eb337a610bf44277379d2b5bcfc2973a017b302f8720dd
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -64184,8 +64246,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Interface Control Definition Repository
-  normative_text_sha256: 338ba496e245fa620e9d30dec0fcd05158310f3de320bf92d1340de16e97fa7a
+  full_normative_text: Versions and approves the interface-control record, diagrams, responsibility boundaries, authority limits, normal and degraded
+    behavior, and references to executable contracts and acceptance evidence.
+  normative_text_sha256: b774dce33f65e62ac4daf1695cbe23bf25e545ea849e8f56466d829aae752efb
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -64321,8 +64384,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Idempotency, Ordering, and Duplicate Controller
-  normative_text_sha256: 9282e2d93d1ec4799a866c1cb44a5458a8620b82eb97c7427a591cb810016fdf
+  full_normative_text: Assigns request keys and sequence rules, detects replay, duplicate, stale, out-of-order, and conflicting work, and makes
+    safe retry behavior explicit.
+  normative_text_sha256: 5d98ac69e3f65512c0f88ae68789a977fba5313481713d054ddfedc410bb7e28
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -64462,8 +64526,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-01
-  full_normative_text: IHE-RO Profile Adapter
-  normative_text_sha256: aa1453a02d097c74ef6aa7e031a382f42ebfc16f55c84ec07b3408a852d8f249
+  full_normative_text: Implements approved IHE-RO actor, transaction, content-module, option, and version behavior and reconciles profile workflow
+    state with authoritative DICOM objects and clinical systems.
+  normative_text_sha256: 3af133309f1ede570723f395a2b873b55d2cd1351f8007f7bdb2c9ae8b3c25b2
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -64482,8 +64547,9 @@ records:
   - H-06
   - H-17
   primary_hazard: H-05
-  full_normative_text: Imaging, Registration, and Contouring Adapter
-  normative_text_sha256: ccfa9e4e872ecd77fc5e0a1457ee1514c15147302892db574ebd235458d540ea
+  full_normative_text: Connects case imaging, registration, accumulated dose, segmentation or contours, uncertainty, edit lineage, review, and
+    approval services through versioned clinical-object contracts.
+  normative_text_sha256: 3d1dbca7a1b79210e96e3c5e45a73f91623b70d5b06894f8c4c1ce7b88090e3a
   failure_condition: A contour is missing, mislabeled, geometrically implausible, truncated, or clinically incorrect.
   potential_effect: Optimization or dose evaluation may use incorrect target or organ-at-risk anatomy.
   mitigation: Enforce approved nomenclature, applicability and input checks, completeness and topology rules, uncertainty display, edit lineage,
@@ -64523,8 +64589,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Integrity and Freshness Validator
-  normative_text_sha256: b8e6711da1b90b350b2e0c1d22284a9df0866d304157c1aa8f6c6ede3ff9fea3
+  full_normative_text: Checks hashes or signatures where applicable, object completeness, replay and staleness, configuration and model identity,
+    source authenticity, and tamper evidence before acceptance.
+  normative_text_sha256: 41322b991ebe78aa2c44527effad3abed4c98e4914ce5b91f331c6fbe6c1f56d
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -64660,8 +64727,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Interoperability Test Laboratory
-  normative_text_sha256: 0eda10e5573ca172eabe05eec6a383b917f08decddb04423b5f668dbde06cd73
+  full_normative_text: Provides controlled producer, consumer, simulator, capture, reference-comparison, failure-injection, load, multi-vendor,
+    version, route, and semantic round-trip environments.
+  normative_text_sha256: 958e62635c770e538fa74f26aafb1f72bec8f1447529a572cd828b0f1f130b0f
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -64797,8 +64865,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Model Gateway and Runtime Adapter
-  normative_text_sha256: de41b765db4c7d7256d926113d59b47763602ba601079bb10ef8f2c87738d428
+  full_normative_text: Connects only approved signed model packages to contract-validated inputs, inference, uncertainty, abstention, draft outputs,
+    lineage, monitoring, and model-change controls.
+  normative_text_sha256: 55ee0c2377482624977300fa3cd19622e4bb5f8b777845ab6f846ecfd3ac648b
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -64845,8 +64914,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Interface Health and Safety Monitor
-  normative_text_sha256: b5b587e92c07d73c3040d68ec3b66cb506f2f423e24a86bd68a303e33a9dd518
+  full_normative_text: Calculates availability, latency, queue, validation, rejection, duplicate, partial, reconciliation, drift, security, and
+    safety signals and evaluates controlled thresholds.
+  normative_text_sha256: 96be68898d29d2dcd59a676909a8289eb9d2660b1d118f03bf296c5ec7a79ecb
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -64983,8 +65053,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Language and Intent Boundary Gateway
-  normative_text_sha256: c36a9daa29dc68a3c415678e6b106703b61221d6dab14c57c84d9cb55852ddeb
+  full_normative_text: Connects typed text and push-to-talk speech to confirmed transcript, typed intent, terminology, units, ambiguity handling,
+    clarification, read-back, abstention, and correction evidence.
+  normative_text_sha256: 0ea29416ad70e6a8dc942029759f1f2466e8863cdab57417d27c5491d25ab70f
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -65014,8 +65085,9 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Object and Message Profile Library
-  normative_text_sha256: 1f942f1fc47a9b3a918f20f199c881d80d66760c4da4727be9a99e015d1ec1b1
+  full_normative_text: Defines required identifiers, references, lifecycle fields, approval state, provenance, integrity, status, and family-specific
+    content for each exchanged object or message class.
+  normative_text_sha256: 75791e8f74205fdaba01e3bbfe1f89ab42d79394873cf3e5c9b53d0b5eb646ea
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -65151,8 +65223,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Interface Workflow Orchestrator
-  normative_text_sha256: a6f3c580ffec98d4b01a771dc3bbd5acbd10d4091777b9a48d67b3c01ff5eeab
+  full_normative_text: Coordinates producers, validators, human gates, clinical services, external systems, QA, acknowledgment, cancellation,
+    recovery, and release states through a controlled route plan.
+  normative_text_sha256: bb566eb418ecf545f5fc0cde3c68c87d9e6836afa5708ca81fb231f3d73fcb12
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -65288,8 +65361,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Ownership and Approval Matrix
-  normative_text_sha256: 7bef78c9c53638d24bcf4f03603540bf3ff985b285396e5eced17ecd89a9db06
+  full_normative_text: Assigns accountable producer, consumer, clinical, systems, data, security, operations, supplier, support, and independent-verification
+    authorities for each route and lifecycle decision.
+  normative_text_sha256: e9285ca31ddcbbee2697f5b3bc7af41757ff7ef53bc639352cbe33f5094f65c1
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -65425,8 +65499,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Proton Profile Boundary Adapter
-  normative_text_sha256: 46921f5508350edfd8986be4010558ab784262486a5a87177f9072c6972ee894
+  full_normative_text: Applies commissioned proton technique, RT Ion Plan, uncertainty, robustness, motion, image-guidance, delivery-compatibility,
+    patient-specific-QA, and change-revalidation profiles while preserving physics authority.
+  normative_text_sha256: 655f4a1724c73dbff68f356dafda5f09ad974f80bae7054aeeb9f9a9f53ecf66
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -65451,8 +65526,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Planning, Optimization, Robustness, and Dose Adapter
-  normative_text_sha256: dce2fc179be83fe160e88e29b6410a6c0bc0fc14c737f8dd64144ab092d78dcf
+  full_normative_text: Connects structured planning intent to commissioned optimization, dose, robustness, machine, technique, candidate, and
+    calculation services without generative dose calculation.
+  normative_text_sha256: 5c5ece45437e3e4aca643f196daaa62cc17e7b909683a8053a0f088a47c456c8
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -65497,8 +65573,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Authorization and Policy Decision Point
-  normative_text_sha256: 46d23f008753ae467d9002f3c2fa9a3aacbcc46b51f1343b1b4796df27b33cd4
+  full_normative_text: Evaluates human and service identity, role, purpose, case access, operating mode, intended-use scope, separation of duties,
+    approval authority, and time-bounded policy at request and commit.
+  normative_text_sha256: a9da78380d39743c8a025c4d9c1496dbff6a5e4b21129aab6b3ceffb26f77844
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -65634,8 +65711,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Interface Provenance and Integrity Manifest
-  normative_text_sha256: a3685a37a9c38f270b789944ab4a39c2cdca1f23e1b7ede6aeb82537b1e2c0da
+  full_normative_text: Links exchanged and derived objects to sources, transforms, schemas, services, models, configurations, evidence, users,
+    approvals, integrity values, and downstream dependencies.
+  normative_text_sha256: 690ae322aa72b27fd5f146f7750f64dad138d908b4201421f537684ea6c3adb4
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -65771,8 +65849,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Privacy and Minimum-Necessary Filter
-  normative_text_sha256: 9b5e12a5b0faa19313b35e17a09e0f6bc33d52b4dc3f831d72c01cecb2a1b0f8
+  full_normative_text: Enforces purpose-bound minimum-necessary content, field and object allowlists, de-identification where approved, destination
+    and residency rules, retention, and privacy-event evidence.
+  normative_text_sha256: 2cd46fbdae1d520ab4c300681908675f7ea69ad98011f14ffbd2f25db1c73733
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -65818,8 +65897,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Quarantine and Exception Store
-  normative_text_sha256: fee434b830ed7452bde5617c610889a36ee6d71039bc3d9308260128b80cd5fb
+  full_normative_text: Isolates malformed, incompatible, orphaned, partial, conflicting, suspicious, or unacknowledged content with reason, ownership,
+    retention, investigation, and controlled disposition.
+  normative_text_sha256: 6f14e02cd011a04d9b9624ddd2b211e8b7d1800c196d64ad3490095472d44050
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -65956,8 +66036,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Cross-System Reconciliation Engine
-  normative_text_sha256: cd34871634f9c0597d4d3506e371fe351c4f23dc403f24b9e7af0a3ca363b4e0
+  full_normative_text: Compares producer, consumer, repository, TPS, OIS, and destination identities, content, references, states, acknowledgments,
+    and integrity and creates controlled discrepancy work.
+  normative_text_sha256: 3b8387a7244905a2b5b8ccecc7e5333f6a8b3d4566bbb584cad0e7e7505ca8c5
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -66094,8 +66175,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Reference, Geometry, and Unit Validator
-  normative_text_sha256: 61faf5779ea57bbabeb2cb80919bba712d82dffceaa38cfde2910e4503f11e18
+  full_normative_text: Validates identifiers, UIDs, reference graphs, frames, transforms, dimensions, orientation, spacing, structure linkage,
+    dose quantity and basis, units, precision, and rounding across boundaries.
+  normative_text_sha256: c19a4dcaeceea2b801fda78658f6ee568fa7789eaf60d1329ae807f313cbade0
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -66231,8 +66313,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Review, QA, Approval, and Transfer Adapter
-  normative_text_sha256: e1ced5111f93a5c2f463236c681ddeb816395fdea781834a3df4c01ce48aa19c
+  full_normative_text: Connects candidates to comparison, selection, professional approval, physics review, independent verification, patient-specific
+    QA, transfer gating, and destination acknowledgment.
+  normative_text_sha256: c308b91e7a090dd1a934fddd9e80d10ef9fb64d5e2bac89977ab7fb3f1395788
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -66285,8 +66368,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Interface Activation and Release Gate
-  normative_text_sha256: cafd93fb48c3c65e3d227dbd3d1979b36d429f5d4cb38bb1fbc802bd248c0253
+  full_normative_text: Allows activation or continued use only when required approvals, compatibility, risk controls, tests, commissioning, limitations,
+    support, monitoring, rollback, and residual-risk decisions are current.
+  normative_text_sha256: 4cf08f1332007915c96469a70d78fa9d449e34110602aece8c04121defa8059e
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -66423,8 +66507,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Acceptance and Release Evidence Reporter
-  normative_text_sha256: bd211068ba73611263b1db99e2f34184d95584bae3909b3256c7aa59b68f38a6
+  full_normative_text: Produces reproducible signed coverage, actual-result, anomaly, deviation, residual-risk, limitation, approval, commissioning,
+    release, monitoring, and revalidation reports.
+  normative_text_sha256: d68a90a705f305af67c538e539bac7bf2338fc27dcd23bbe8e3562d51f417910
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -66560,8 +66645,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Radiotherapy Object and Reference Profile Validator
-  normative_text_sha256: f276ba8b39ea99d77cfa9004fdfd2c434eaef23df985d927a5b7259f6e2cea9b
+  full_normative_text: Applies site-approved RT object profiles and validates prescription, structure, plan, ion plan, dose, registration, treatment-record,
+    geometry, unit, machine, and reference semantics.
+  normative_text_sha256: 639434dbda89c73acd159fdfffe1c709fda0296097eb2f2e32d911b1f647ff16
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -66639,8 +66725,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Interface Safety and State Guard
-  normative_text_sha256: 9e58d6639cf756c4d54563be9e8b0ea4dffc382a5961f5bb2ee98670b80a5495
+  full_normative_text: Enforces deterministic preconditions, allowlisted transitions, hard stops, draft and approved separation, invalidation,
+    export eligibility, and fail-closed behavior independently of generative models.
+  normative_text_sha256: 6677d4ceef71626af22f2c04db4342acac58ca3696a639debec2972ae2eef3b6
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -66776,8 +66863,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Schema and DICOM Profile Registry
-  normative_text_sha256: 2da0b25dff8e96168554023c279f35e2698de7691821da17ddf2674427e0257a
+  full_normative_text: Stores machine-validatable message, API, event, file, DICOM object, DICOMweb resource, and IHE content profiles with cardinality,
+    conditionality, constraints, and validation rules.
+  normative_text_sha256: 0528c594ac0f417ab64a26cc16454810c34ec1a8f66615a92b4eec5079236ca5
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -66913,8 +67001,9 @@ records:
   - H-13
   - H-14
   primary_hazard: H-04
-  full_normative_text: Secure Transport and Endpoint Control
-  normative_text_sha256: 9048998607815b3ab3dcca6394ce8c445c554ab2919f916548fd9e15ae8c3b98
+  full_normative_text: Provides mutual endpoint trust, approved encryption, network segmentation, certificate and secret lifecycle, rate and egress
+    control, logging, detection, and response integration.
+  normative_text_sha256: b1dc88978d5661b58365992ddb763cf3242af31c43e6827c4f2e37c2d05f64b4
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -66960,8 +67049,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Clinical Semantic Dictionary
-  normative_text_sha256: 70c92e57823d0c86c0e6e12c6569a364c645074ea810d3d6b82b6a8a85bbc92e
+  full_normative_text: Controls clinical meaning, terminology, nomenclature, units, dose basis, coordinate systems, rounding, state meaning, authority,
+    provenance, and cross-system mappings without silent semantic coercion.
+  normative_text_sha256: 70dde4455d17aebe8463c7a0bbb740aa9ad529c54e6c9b22b67bc2d8f3846009
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -67097,8 +67187,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Time Synchronization and Correlation Service
-  normative_text_sha256: 6067a3cc2c0d91d93568fa62738f1877e225c7b2a8d38e129a24833191b324c4
+  full_normative_text: Maintains trusted time, clock-health evidence, correlation identifiers, ordering metadata, and explicit handling when timing
+    assurance is unavailable or outside tolerance.
+  normative_text_sha256: b8fd1ca330513c2def372d9c200382092e904f61994d77e88440c3ff9255a0f6
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -67234,8 +67325,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Timeout, Retry, and Cancellation Controller
-  normative_text_sha256: 59ca2973c2767a2e2f536787b455a3d031c7840c40247a0c5bc231dd22df4154
+  full_normative_text: Enforces bounded timeouts, backoff, retry limits, cancellation, late-result handling, dead-letter behavior, and safe user-visible
+    status for synchronous and asynchronous routes.
+  normative_text_sha256: e8791c24ff280b4dc690c6981ed4ee497fc916f43388d4541274ce37f7cbd0bb
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -67375,8 +67467,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-01
-  full_normative_text: Commissioned External TPS Adapter Framework
-  normative_text_sha256: 73ed9414a85a7587d061c280b5f924dbc4299543ea2739d489dfb4d99b7d8131
+  full_normative_text: Encapsulates each vendor, product version, site, machine, modality, technique, route, workflow, limitation, acknowledgment,
+    and support model while preserving the TPS commissioned authority boundary.
+  normative_text_sha256: 31ce47ec7c50738f0396869c08ea781f4ede070dab295a8a5278232e0716d673
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -67434,8 +67527,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Interface Traceability Repository
-  normative_text_sha256: fa8a64675e1043035e17c20ec65db315adbfea990f8dea9c2b21d8e86a09effa
+  full_normative_text: Maintains bidirectional links from ConOps, HLR, HLIR, SIR, family profile, hazard, component, contract, test, result, anomaly,
+    monitoring, change, and release records.
+  normative_text_sha256: 2fa23b1b7a75606bdcc610f3470a08a2ab0c913c71eb2573bceeddaedd7c0f12
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -67571,8 +67665,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Contract and Conformance Test Harness
-  normative_text_sha256: c651fdfcdf57a2bd94b2bd29b816ffb2a2256ebba459765d37838e81294284f1
+  full_normative_text: Executes schema, semantic, role, state, security, positive, negative, boundary, wrong-context, stale-version, timeout,
+    duplicate, cancellation, partial, recovery, and misuse tests.
+  normative_text_sha256: 3f24958d7d7e792fddb5d3518d600f8358cb5effc04afe5c99a7bf0e2946dbca
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -67708,8 +67803,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Atomic Transaction and State Controller
-  normative_text_sha256: efd6ca65d576f151684264c01336de89a2ad85622dc7af5c0f2e977853da0347
+  full_normative_text: Applies one approved state mutation or an explicit compensation, rechecks authorization at commit, and prevents a partial
+    technical outcome from becoming an approved clinical state.
+  normative_text_sha256: bebd40a324f6b8465fd7d4355f52dfbaf635c6c9f480034c9ff282c7ffb8fc73
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -67845,8 +67941,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Clinical Interaction Boundary
-  normative_text_sha256: 7b9dc9c64441fb82d4c5514832c7395529daa4f484e2e13397b687a313e4b46d
+  full_normative_text: Connects the clinical workspace to context, preview, comparison, warning, confirmation, cancellation, annotation, approval,
+    and outcome services while preserving human authority and accessibility.
+  normative_text_sha256: 5a727fc8dd87db0806f01ec3d59ea57ad4e2a86b21a65eb1641c4e27de32433f
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -67900,8 +67997,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Bounded Vendor API Adapter
-  normative_text_sha256: 7ac4cd17c659857ffa9bfc945cfca8d5ca60fe3442a74f910c27ba3943666b30
+  full_normative_text: Exposes only approved vendor operations with explicit authentication, authorization, schema, version, timeout, error, audit,
+    change, fallback, and reconciliation behavior and no treatment-delivery authority.
+  normative_text_sha256: ce496bada87593599a990c56a3b66c54f70b18bb7514d9f4cdaec376bc9bc8d9
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -67959,8 +68057,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Version and Compatibility Resolver
-  normative_text_sha256: 4b3eda8db5a34e87b7b4034022d54fb50a41789607cd4c20f1dce94b7d7398f5
+  full_normative_text: Negotiates or rejects contract, profile, model, configuration, endpoint, and dependency versions against the approved matrix
+    and prohibits unapproved downgrade or fallback.
+  normative_text_sha256: 3eb0540c221c776b8722c41889702127d884a65bea8b97532c3e5491cc48ad29
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -68096,8 +68195,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Human factors
-  normative_text_sha256: ef2bf0e6b5dca6f1f14e6db580b584a23a6c9e1c87379ad0692806d0d23d2db1
+  full_normative_text: Controls risk tier, presentation, acknowledgment, escalation, suppression, burden measures, and corrective review.
+  normative_text_sha256: 52e6f694724bf2554988c1b7277022e923abcdd4a5029d14eb521c3943ba0b6a
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -68124,8 +68223,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Defines safety, usability, privacy, security, integrity, observability, and fail-safe contracts at component and interface
+    boundaries.
+  normative_text_sha256: 1eb04f01b99aae0380bcbecf033373b99d3df7d7ef61c024a9a19742c71a3988
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -68168,8 +68268,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Security
-  normative_text_sha256: 8f6fb4eb7f42c0e245e29e63f5b82cc3ba19852681d1ed9aed291f59cf75ec0e
+  full_normative_text: Validates manifests, signatures, provenance, integrity, compatibility, approval, and revocation before clinical load or
+    use.
+  normative_text_sha256: c47cacfbc8a2abbc3c8ef8e7a102e363e71a79930f0db6f422fbcf491fbb1664
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -68197,8 +68298,9 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Assurance
-  normative_text_sha256: 9512d3fd28ca5b0a7485650fbc8414dd4323e03f8674bb57d46548b7484a7ec0
+  full_normative_text: Retains synchronized, integrity-protected evidence of context, controls, warnings, access, transfer, exceptions, incidents,
+    and response.
+  normative_text_sha256: e93f6a582ecd32691df77bcfe31e9af4695e9e53326ba996045fac6d4f806e98
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -68238,8 +68340,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Locks quality-attribute thresholds, safety policies, warning tiers, trust rules, security baselines, and approved exceptions.
+  normative_text_sha256: e235fba8b391549a252373175bde8ce67abcc1735999721d94c63fb0e0bba10f
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -68282,8 +68384,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Assurance
-  normative_text_sha256: 9512d3fd28ca5b0a7485650fbc8414dd4323e03f8674bb57d46548b7484a7ec0
+  full_normative_text: Enforces decision-support labeling, authenticated human applicability and compliance attestation, separation of duties,
+    and prohibition of automated accreditation, certification, or surveyor conclusions.
+  normative_text_sha256: 3a6e7b3341201edd9c6107ce1694a51e8084c5b9cde1d21b830dca93fed5ba70
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -68301,8 +68404,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Security
-  normative_text_sha256: 8f6fb4eb7f42c0e245e29e63f5b82cc3ba19852681d1ed9aed291f59cf75ec0e
+  full_normative_text: Controls approved encryption, keys, secrets, certificates, rotation, revocation, status, and recovery.
+  normative_text_sha256: af262d0015bf20d0aa44b4d2c5d70efe5ac45697526fae284f04447f79747782
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -68327,8 +68430,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Safety
-  normative_text_sha256: 726d11bd5b230253cc5f795cfcb3268117267cb11fee8df060a472e6448abc56
+  full_normative_text: Creates immutable action context, validates patient and object identity, and rejects stale, incomplete, or mismatched context.
+  normative_text_sha256: 72b1bd7bb6034317ad875686ebfb81f973795c64b9403fb903fc88bbd52710f2
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -68357,8 +68460,8 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Assurance
-  normative_text_sha256: 9512d3fd28ca5b0a7485650fbc8414dd4323e03f8674bb57d46548b7484a7ec0
+  full_normative_text: Validates completeness, identity, consistency, version, integrity, and provenance of data used by safety or security decisions.
+  normative_text_sha256: 08cc60a49b7f88af3e6123b5b2bc7f85ae23b0dd53df1e7bda4fc710b44af275
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -68395,8 +68498,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Security
-  normative_text_sha256: 8f6fb4eb7f42c0e245e29e63f5b82cc3ba19852681d1ed9aed291f59cf75ec0e
+  full_normative_text: Allowlists connectors, tenants, destinations, data classes, and purposes and blocks incompatible protected-data transfer.
+  normative_text_sha256: 119172006a6ebdf8693b6b0ddb8abd5f2ccc8fa481fe59ace092748d72815cc0
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -68428,8 +68531,8 @@ records:
   - H-13
   - H-18
   primary_hazard: H-01
-  full_normative_text: Human factors
-  normative_text_sha256: ef2bf0e6b5dca6f1f14e6db580b584a23a6c9e1c87379ad0692806d0d23d2db1
+  full_normative_text: Controls critical-task analysis, formative and summative evaluation, foreseeable misuse, training, competency, and remediation.
+  normative_text_sha256: e833e5db1ccdfe669fb9c409eeca7c7b2536cafa57b4b0ce6c468b18151bb8b6
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -68454,8 +68557,9 @@ records:
   - H-13
   - H-14
   primary_hazard: H-04
-  full_normative_text: Safety/security
-  normative_text_sha256: f8450a5681d8faeb6f75b5d6a867b290b349c5f99fda36209bf6257303c4cb5e
+  full_normative_text: Enforces unique identity, current role and context, least privilege, clinical approval identity, and incompatible-role
+    controls.
+  normative_text_sha256: 35ed0f133aeeb2ab8fc604524127ede29359dfdd0ccf71183b078a058679b613
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -68484,8 +68588,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Assurance
-  normative_text_sha256: 9512d3fd28ca5b0a7485650fbc8414dd4323e03f8674bb57d46548b7484a7ec0
+  full_normative_text: Coordinates triage, containment, patient-impact assessment, evidence preservation, communication, recovery, CAPA, and closure.
+  normative_text_sha256: faf7232157efc1e4b93014cfe4d629aeff92ed6fff95452930afa6110907a0e9
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -68513,8 +68617,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Security
-  normative_text_sha256: 8f6fb4eb7f42c0e245e29e63f5b82cc3ba19852681d1ed9aed291f59cf75ec0e
+  full_normative_text: Separates external content from policy and tool authority and sanitizes or rejects embedded authority-changing instructions.
+  normative_text_sha256: 92f1e2145778ef3c17442e73a396e3372fbf8ebe57123488f07497d07bd0b2db
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -68537,8 +68641,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Collects versioned safety, usability, security, integrity, and control-effectiveness measures with approved response thresholds.
+  normative_text_sha256: 857e28cf53e16769956bc9026edddcb88b96806ce8e953174d63f580d7a51903
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -68581,8 +68685,9 @@ records:
   - H-13
   - H-14
   primary_hazard: H-04
-  full_normative_text: Privacy
-  normative_text_sha256: 54a57c3147c49f33de5898b87084ad2b14c4ab308f762454bf92aca907478ad5
+  full_normative_text: Classifies protected data, enforces permitted purpose and destination, and limits disclosure to approved minimum-necessary
+    use.
+  normative_text_sha256: 6505fd1c107bdd0842e5339278849cd74f0fef46777d9d284b56c9ed97fd03c0
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -68609,8 +68714,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Maintains safety and assurance requirements, hazards, controls, verification, anomalies, residual-risk decisions, and release
+    trace.
+  normative_text_sha256: 1b486bb763022680629497332aa7d255a9ba16747576eb38a4140e31faea4610
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -68653,8 +68759,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Safety
-  normative_text_sha256: 726d11bd5b230253cc5f795cfcb3268117267cb11fee8df060a472e6448abc56
+  full_normative_text: Implements fail-closed preconditions, authority limits, hard stops, approval invalidation, and safe export rules.
+  normative_text_sha256: 9ab1958f52cb5f02c33a43f552932983612f8d943dd639b0f5818e3484063bf5
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -68686,8 +68792,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Security
-  normative_text_sha256: 8f6fb4eb7f42c0e245e29e63f5b82cc3ba19852681d1ed9aed291f59cf75ec0e
+  full_normative_text: Controls threat modeling, secure coding, review, vulnerability management, penetration testing, patching, SBOM, and supplier
+    risk.
+  normative_text_sha256: c574c9f8e0f22bd29ce070e6126f94166b60805f94671484635d47f2a357feb2
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -68712,8 +68819,8 @@ records:
   - H-13
   - H-14
   primary_hazard: H-04
-  full_normative_text: Security
-  normative_text_sha256: 8f6fb4eb7f42c0e245e29e63f5b82cc3ba19852681d1ed9aed291f59cf75ec0e
+  full_normative_text: Provides segmented trust boundaries, least-privilege services, secure configuration, endpoint control, detection, and enforcement.
+  normative_text_sha256: 1a281e17a9632aa4d8ca099819b7868a09bcfea1ddd703ede5ae266fe84a3e46
   failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
   potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
   mitigation: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after
@@ -68740,8 +68847,8 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Safety
-  normative_text_sha256: 726d11bd5b230253cc5f795cfcb3268117267cb11fee8df060a472e6448abc56
+  full_normative_text: Controls valid states and atomically invalidates affected approvals, QA, and transfer eligibility when dependencies change.
+  normative_text_sha256: cdb2e132908b40d52102a5f56ef9d7cea9fcd0ce122b848ee99872665fb4fccd
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -68773,8 +68880,8 @@ records:
   - H-13
   - H-18
   primary_hazard: H-01
-  full_normative_text: Human factors
-  normative_text_sha256: ef2bf0e6b5dca6f1f14e6db580b584a23a6c9e1c87379ad0692806d0d23d2db1
+  full_normative_text: Provides persistent context, semantic source labels, accessible multimodal status, confirmations, and usable recovery paths.
+  normative_text_sha256: 1a85c47ea07f925a4cce7abafd86e884d66f16eae5d77fab7d1a9cf927e65385
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -68808,8 +68915,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-08
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Runs safety, misuse, human-factors, security, resilience, integrity, and negative tests with retained acceptance evidence.
+  normative_text_sha256: d0e4decba698d6c261253aed5b03efa91e5a6b01081c73411c25f4f6cf62ebaf
   failure_condition: A dose calculation, optimizer, machine model, or technique is used outside its commissioned envelope.
   potential_effect: A candidate may contain unverified dose or machine behavior and appear clinically usable.
   mitigation: Lock machine, model, algorithm, technique, and configuration; enforce commissioned envelopes at call time; retain runtime attestations;
@@ -68853,8 +68960,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Quality operations
-  normative_text_sha256: 18ce14f5ce7fe0486ab87c880cc40b356c5aafaa0fc94c8a3ad0908e4347e521
+  full_normative_text: Coordinates QMP-governed TPS and model lifecycle evidence, organizational criterion ownership, credential and training
+    pointers, deficiencies, corrective actions, privacy-controlled exports, and periodic profile review.
+  normative_text_sha256: ec5696d2fb27eee887cc89d0f3e06e466fbff33a2bb860b77fba1dc1a4e2c9e7
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -68876,8 +68984,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Governance
-  normative_text_sha256: 86f8a694159b712f78f3b3c032028b92786201c5eec04c1d2cc234464127a429
+  full_normative_text: Administers role matrices, competency dependencies, exceptions, separation of duties, and periodic access review.
+  normative_text_sha256: da14822069ca58a32ba68a7ce912bcf4826dd8047e73aa327274a0a5fcc7739c
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -68905,8 +69013,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Operations
-  normative_text_sha256: 358cc201f87d9dc9defd3eac467a62fae720aa99a76be8b98e0fc9b3893a427d
+  full_normative_text: Evaluates thresholds, opens actionable records, routes escalation, records acknowledgment, and tracks disposition.
+  normative_text_sha256: e25fb05eeaec94541f03182e9b21f247f6cdcdcbc6647f785ea45fa471e71630
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -68933,8 +69041,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Assurance
-  normative_text_sha256: 9512d3fd28ca5b0a7485650fbc8414dd4323e03f8674bb57d46548b7484a7ec0
+  full_normative_text: Classifies discrepancies, blocks inappropriate acceptance, records investigation, and requires approved disposition and
+    retest.
+  normative_text_sha256: e31b7bece4031fc3bfa11f228f83d1e420f92cf3bb61d0dd5dfb61ceaf8b7fc5
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -68965,8 +69074,8 @@ records:
   - H-14
   - H-17
   primary_hazard: H-01
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Retains decisions, events, exercises, exceptions, results, approvals, actions, and immutable operational chronology.
+  normative_text_sha256: 05f7ab052b428bd8763bcd2a2a2dcc5a7c2c46f3f691d7b9dfd413334bfd698a
   failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
   potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
   mitigation: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation,
@@ -69008,8 +69117,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Resilience
-  normative_text_sha256: 32059a8788953c2efe16b09c8c23de1dedc260632c412a19e412ba7b3fd48321
+  full_normative_text: Protects approved objects and configurations and validates encrypted backup, retention, restoration authority, and restore
+    integrity.
+  normative_text_sha256: 0236a2e2361a565b8eb41771d8f14984141e35d8305b619d291e82a1875aedae
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -69033,8 +69143,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Operations
-  normative_text_sha256: 358cc201f87d9dc9defd3eac467a62fae720aa99a76be8b98e0fc9b3893a427d
+  full_normative_text: Controls root-cause analysis, assigned actions, due dates, effectiveness checks, trend review, and quality closure.
+  normative_text_sha256: 58782f75f1ed16ae7b4a9077babf36790e521f2c0ce2e5d4c4ddd2778bf6186c
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -69062,8 +69172,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Binds approved scope, modes, controls, thresholds, services, models, interfaces, procedures, and release manifests.
+  normative_text_sha256: 1bbe634db7a8df6f1c6fbdec0d1d7421a187b237ac7ecdfc2b35b21ad14a1f3c
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -69106,8 +69216,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Lifecycle
-  normative_text_sha256: 46459b1fa9194f6ab92c85c47b97e2fc12cbe1bc17ba956d74016cea9c26eed9
+  full_normative_text: Classifies changes, assesses impact, defines regression and migration, approves activation, and preserves known-good rollback.
+  normative_text_sha256: ef42f7aeaee5937d666d4ccbd0b82d0d54a3d1ca00e19c12a949fac84904d8b2
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -69145,8 +69255,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Assurance
-  normative_text_sha256: 9512d3fd28ca5b0a7485650fbc8414dd4323e03f8674bb57d46548b7484a7ec0
+  full_normative_text: Controls local configuration, machine and TPS interfaces, reference cases, clinical workflow tests, acceptance, and approval.
+  normative_text_sha256: 80d148f3dbe08ad41299c044d8aaa1f863daa4cc3e7ea6d2c411852fa4052936
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -69174,8 +69284,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Resilience
-  normative_text_sha256: 32059a8788953c2efe16b09c8c23de1dedc260632c412a19e412ba7b3fd48321
+  full_normative_text: Defines safe access, external work practices, communication, restrictions, reconciliation, and controlled restoration.
+  normative_text_sha256: efed5cbcac6652535e3e07fb0c215ae11950a0454b1d1d9620b4403da48cf996
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -69201,8 +69311,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Owns intended use, scope, clinical authority, residual-risk acceptance, evidence policy, and accountable decisions.
+  normative_text_sha256: ff8dddde988909ce2bb7b0f6c36a8bc4bc7479be113f5cd699e3fe4f62aceba2
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -69246,8 +69356,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Operations
-  normative_text_sha256: 358cc201f87d9dc9defd3eac467a62fae720aa99a76be8b98e0fc9b3893a427d
+  full_normative_text: Supports reporting, triage, containment, patient-impact assessment, evidence preservation, investigation, communication,
+    and closure.
+  normative_text_sha256: 9918669e0e3915c438c1c11c15eab832e24b2d0522b19b803e179ebd2720f84c
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -69274,8 +69385,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Governance
-  normative_text_sha256: 86f8a694159b712f78f3b3c032028b92786201c5eec04c1d2cc234464127a429
+  full_normative_text: Segregates research, training, commissioning, shadow, clinical-draft, clinical-approved, degraded, and read-only modes
+    and destinations.
+  normative_text_sha256: db81442f63b157a1274e179093626b237877c345b70899e0f1e08a3330364889
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -69314,8 +69426,9 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Operations
-  normative_text_sha256: 358cc201f87d9dc9defd3eac467a62fae720aa99a76be8b98e0fc9b3893a427d
+  full_normative_text: Monitors service health, workflow, model, evidence, interface, safety, quality, and subgroup indicators under controlled
+    definitions.
+  normative_text_sha256: d6de09f2590c9440b8a16fdf6207526f582af46d951c9e877a8af225714c02d0
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -69347,8 +69460,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Controls documents, changes, deviations, incidents, CAPA, approvals, records, and quality review.
+  normative_text_sha256: fa44747a6467f3db321ef48b10814e224779625b02a5fe479834fc8ee03fabc0
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -69392,8 +69505,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-14
-  full_normative_text: Resilience
-  normative_text_sha256: 32059a8788953c2efe16b09c8c23de1dedc260632c412a19e412ba7b3fd48321
+  full_normative_text: Exercises recovery objectives, known-good restoration, deviations, corrective actions, and continued adequacy.
+  normative_text_sha256: 72c4afd7885c0aa838ba05611472bdf06f57ee592c3292972ae49b1adb556d5f
   failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information
     leakage occurs.
   potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
@@ -69420,8 +69533,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Lifecycle
-  normative_text_sha256: 46459b1fa9194f6ab92c85c47b97e2fc12cbe1bc17ba956d74016cea9c26eed9
+  full_normative_text: Confirms approved baseline, residual risk, verification, commissioning, training, readiness, and authorization before clinical
+    activation.
+  normative_text_sha256: 01dc79e141e831cf40541dde2bc3e45a2df971a7fe8d68033f21d60eefe649f1
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -69463,8 +69577,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-13
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Maintains operational needs, procedures, risks, controls, exercises, results, anomalies, approvals, and release trace.
+  normative_text_sha256: c26fb77eea15d7d31f76dc822c52386ea023e405fe107dfd2d2a4b8c943044eb
   failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of
     authority.
   potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
@@ -69507,8 +69621,9 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Lifecycle
-  normative_text_sha256: 46459b1fa9194f6ab92c85c47b97e2fc12cbe1bc17ba956d74016cea9c26eed9
+  full_normative_text: Reviews field signals, scope, residual risk, controls, evidence, models, changes, and continued authorization at defined
+    intervals.
+  normative_text_sha256: e00d1ee84e107b5d41d55bd9a3c1e4eff82919d43881f0a2bf36f65595f4fe09
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -69540,8 +69655,8 @@ records:
   - H-17
   - H-18
   primary_hazard: H-16
-  full_normative_text: Governance
-  normative_text_sha256: 86f8a694159b712f78f3b3c032028b92786201c5eec04c1d2cc234464127a429
+  full_normative_text: Controls approved institutions, users, populations, sites, modalities, machines, techniques, tasks, and exclusions.
+  normative_text_sha256: 041e16b3f558a96edfaf4eb63ec8fe4e6c9b2c445819090b0f229d46f4e0ed04
   failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
   potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
   mitigation: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation,
@@ -69575,8 +69690,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-08
-  full_normative_text: Assurance
-  normative_text_sha256: 9512d3fd28ca5b0a7485650fbc8414dd4323e03f8674bb57d46548b7484a7ec0
+  full_normative_text: Controls representative, boundary, failure, misuse, recovery, interoperability, and clinical cases with expected results.
+  normative_text_sha256: 07160c7af0e0a9baacedb9f26960ba5cf6e2f6ec54c503c5b341c21712e9498a
   failure_condition: A dose calculation, optimizer, machine model, or technique is used outside its commissioned envelope.
   potential_effect: A candidate may contain unverified dose or machine behavior and appear clinically usable.
   mitigation: Lock machine, model, algorithm, technique, and configuration; enforce commissioned envelopes at call time; retain runtime attestations;
@@ -69610,8 +69725,8 @@ records:
   - H-16
   - H-17
   primary_hazard: H-08
-  full_normative_text: Universal
-  normative_text_sha256: b23b6b4d061476fd5593e7a314839fbe6e8039fcd59f2f31686b872625d900c8
+  full_normative_text: Executes inspections, exercises, commissioning, recovery, shadow, site-acceptance, and end-to-end operational protocols.
+  normative_text_sha256: bbcb37ded587358e5e9478583d171addf92f2d04c99dd82062eadfc64202841a
   failure_condition: A dose calculation, optimizer, machine model, or technique is used outside its commissioned envelope.
   potential_effect: A candidate may contain unverified dose or machine behavior and appear clinically usable.
   mitigation: Lock machine, model, algorithm, technique, and configuration; enforce commissioned envelopes at call time; retain runtime attestations;

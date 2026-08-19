@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gcpl:nltps:schema:subrequirement:0.1",
+  "title": "GCPL / NL-TPS constructed sub-requirement specification",
+  "$comment": "Records the treatment each child receives. Hand-authored children carry judgement; derived children carry a reviewed pattern; inherited children exist for trace only and are not represented as specifications.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "entity_class",
+    "parent_id",
+    "construction_state",
+    "treatment",
+    "canonical_statement_sha256",
+    "allocated_components",
+    "hazards",
+    "hazard_basis",
+    "vv_claim_id"
+  ],
+  "properties": {
+    "id": {"type": "string", "pattern": "^(SIR-)?(IF-)?[A-Z]{3}-[0-9]{3}(-[0-9]{2}){1,2}$"},
+    "entity_class": {"const": "subrequirement"},
+    "parent_id": {"type": "string", "minLength": 3},
+    "construction_state": {"enum": ["draft", "reviewed", "approved", "trace_only"]},
+    "treatment": {"enum": ["hand", "derived", "inherited"]},
+    "constructed_by": {"type": "string", "minLength": 1},
+    "reviewed_by": {"type": ["string", "null"]},
+    "review_date": {"type": ["string", "null"], "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "canonical_statement_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "pattern_id": {"type": ["string", "null"], "pattern": "^PAT-[A-Z]+-[0-9]{2}$"},
+    "override": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason", "authorized_by"],
+      "properties": {
+        "reason": {"type": "string", "minLength": 20},
+        "authorized_by": {"type": "string", "minLength": 1}
+      }
+    },
+    "treatment_exception": {
+      "$comment": "Required when treatment departs from spec/construction_policy.yaml.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy_treatment", "reason", "approved_by"],
+      "properties": {
+        "policy_treatment": {"enum": ["hand", "derived", "inherited"]},
+        "reason": {"type": "string", "minLength": 20},
+        "approved_by": {"type": "string", "minLength": 1}
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criterion"],
+      "properties": {
+        "criterion": {"type": "string", "minLength": 20},
+        "value": {"type": ["number", "string", "null"]},
+        "unit": {"type": ["string", "null"]},
+        "tolerance_source": {"type": ["string", "null"]}
+      }
+    },
+    "verification_methods": {
+      "type": "array",
+      "items": {"enum": ["I", "T", "A", "D", "HFE"]}
+    },
+    "allocated_components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "pattern": "^(C|IC|FC|NFC|OC)-[A-Z0-9-]+-[0-9]{2}$"}
+    },
+    "hazards": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^H-[0-9]{2}$"}
+    },
+    "hazard_basis": {"enum": ["source_explicit", "derived"]},
+    "hazard_rationale": {"type": ["string", "null"]},
+    "vv_claim_id": {"type": "string", "minLength": 5},
+    "blocking_decisions": {"type": "array", "items": {"type": "string", "pattern": "^D-ENG-[0-9]{3}$"}},
+    "notes": {"type": ["string", "null"]}
+  },
+  "allOf": [
+    {
+      "$comment": "A derived child names the reviewed pattern that produced it.",
+      "if": {
+        "properties": {"treatment": {"const": "derived"}},
+        "required": ["treatment"]
+      },
+      "then": {
+        "required": ["pattern_id"],
+        "properties": {"pattern_id": {"type": "string", "minLength": 5}}
+      }
+    },
+    {
+      "$comment": "A hand-authored child carries its own acceptance criterion.",
+      "if": {
+        "properties": {"treatment": {"const": "hand"}},
+        "required": ["treatment"]
+      },
+      "then": {"required": ["acceptance", "verification_methods"]}
+    },
+    {
+      "$comment": "An inherited child is trace-only and shall not be presented as constructed.",
+      "if": {
+        "properties": {"treatment": {"const": "inherited"}},
+        "required": ["treatment"]
+      },
+      "then": {"properties": {"construction_state": {"const": "trace_only"}}}
+    },
+    {
+      "$comment": "A reviewed or approved child carries reviewed hazards and a named reviewer.",
+      "if": {
+        "properties": {"construction_state": {"enum": ["reviewed", "approved"]}},
+        "required": ["construction_state"]
+      },
+      "then": {
+        "required": ["reviewed_by", "review_date", "hazard_rationale"],
+        "properties": {
+          "hazard_basis": {"const": "source_explicit"},
+          "reviewed_by": {"type": "string", "minLength": 1},
+          "hazard_rationale": {"type": "string", "minLength": 20}
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+schema_version: "0.1"
+register_id: CONPOL-001
+title: Construction treatment policy
+status: proposed_pending_accountable_approval
+baseline: ENG-PKG-01-v0.6
+
+problem: >-
+  There are 2,144 identifiers in the trace graph. Authoring a considered specification
+  for every one is well beyond the capacity this program has recorded, and the existing
+  corpus already shows what happens when authoring volume outruns authoring capacity:
+  templated failure conditions drawn from a pool of ten sentences, and derived children
+  whose text follows their parent's interface-family assignment rather than their own
+  content. That was arithmetic asserting itself, not carelessness.
+
+decision: >-
+  Every entity receives exactly one of three treatments, recorded before construction
+  begins rather than discovered part-way through. All 2,144 identifiers and all 2,144
+  V&V claims survive unchanged; what changes is where review effort is spent.
+
+treatments:
+  hand:
+    meaning: Carries original engineering judgement. A person decides what it says.
+    review: Reviewed individually by the accountable team and independent V&V.
+  derived:
+    meaning: >-
+      Generated from a hand-authored parent by a named, reviewed pattern. Overridable
+      by exception through the ADR-001 RequirementOverride mechanism.
+    review: The pattern is reviewed once; each override is reviewed individually.
+  inherited:
+    meaning: >-
+      Exists for trace and coverage only. Carries no independent specification content
+      and is never presented as one.
+    review: Not reviewed as content; promoted to derived or hand by exception.
+
+treatment_by_entity_type:
+  CORE-COMP: hand
+  IF-COMP: hand
+  CAT-COMP: derived
+  HLR: hand
+  SUB: derived
+  HLIR: derived
+  SIR: inherited
+  MQA-REQ: hand
+  MQA-SUB: hand
+  MQA-COMP: hand
+
+rationale:
+  CORE-COMP: The actual design work; no pattern can stand in for it.
+  IF-COMP: Each is a contract with a real external counterparty.
+  CAT-COMP: A classification view over the core and interface components, pending D-ENG-004.
+  HLR: Statements exist and are hash-bound; the measurable acceptance criterion does not.
+  SUB: The definition / runtime / evidence decomposition is already regular.
+  HLIR: The contract / behavior / evidence decomposition is already regular per family.
+  SIR: >-
+    Trace-only. Promote individually where a boundary genuinely needs bespoke text,
+    with the promotion recorded as an exception.
+  MQA-REQ: Platform Slice 0 is being built now against real institutional data.
+  MQA-SUB: Same; the sub-requirements drive the first real workflow.
+  MQA-COMP: Eight subassemblies with explicit component allocations already recorded.
+
+effort_shape:
+  hand_authored: 281
+  derived: 792
+  inherited: 1071
+  total: 2144
+  note: >-
+    281 hand-authored records and six reviewed derivation patterns, rather than 2,144
+    hand-authored records. The counts are a planning shape, not a commitment.
+
+exception_policy:
+  - A departure from treatment_by_entity_type requires a recorded exception naming the
+    entity, the treatment applied, the reason, and the approver.
+  - Promotion from inherited to derived or hand is always permitted and always recorded.
+  - Demotion from hand to derived requires the same approval as an exception.
+
+progress_metric:
+  primary: percent_of_constructed_entities_with_reviewed_source_explicit_hazards
+  rationale: >-
+    Record count is easy to satisfy with templates. A reviewed, source-explicit hazard
+    set is not, because it requires someone to have looked at the specific entity.
+  not_a_metric:
+    - number of records created
+    - percentage of identifiers with a non-empty field

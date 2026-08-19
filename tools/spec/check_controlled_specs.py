@@ -32,6 +32,9 @@ REQUIRED_SPECS = {
     "quality_attributes.yaml",
     "readiness.yaml",
     "defects.yaml",
+    "engineering_decisions.yaml",
+    "component_crosswalk.yaml",
+    "construction_policy.yaml",
 }
 
 
@@ -134,10 +137,31 @@ def main() -> int:
         errors.append("risk model contains data-losing four-dot truncation")
 
     defects = documents["defects.yaml"]["defects"]
-    expected_defects = {f"A{index}" for index in range(1, 8)} | {f"B{index}" for index in range(1, 8)} | {"C1", "C2"}
+    expected_defects = (
+        {f"A{index}" for index in range(1, 8)}
+        | {f"B{index}" for index in range(1, 8)}
+        | {"C1", "C2"}
+        | {f"K{index}" for index in range(1, 8)}
+    )
     actual_defects = {defect["id"] for defect in defects}
-    if len(defects) != 16 or actual_defects != expected_defects:
-        errors.append("defect register must contain exactly A1-A7, B1-B7, C1-C2")
+    if len(defects) != len(expected_defects) or actual_defects != expected_defects:
+        errors.append("defect register must contain exactly A1-A7, B1-B7, C1-C2, K1-K7")
+    for defect in defects:
+        for field in ("severity", "disposition", "correction", "evidence", "verification", "residual"):
+            if not defect.get(field):
+                errors.append(f"defect {defect['id']} is missing {field}")
+    # The human-readable register is hand-maintained; this keeps it from drifting away
+    # from the structured source, which is the failure the corpus already warns about.
+    register_tex = (REPO_ROOT / "overleaf" / "NL_TPS_Defect_Resolution_Register.tex").read_text(
+        encoding="utf-8"
+    )
+    undocumented = sorted(
+        defect["id"] for defect in defects if f"\n{defect['id']} &" not in register_tex
+    )
+    if undocumented:
+        errors.append(
+            f"defects {undocumented} are in spec/defects.yaml but not in the controlled register"
+        )
     readiness = documents["readiness.yaml"]["recommendations"]
     expected_readiness = {f"RRR-{index:03d}" for index in range(1, 13)}
     if len(readiness) != 12 or {item["id"] for item in readiness} != expected_readiness:
@@ -148,14 +172,61 @@ def main() -> int:
     if artifact_policy["release_controls"]["governed_release_artifact"]["release_authorized"]:
         errors.append("governed artifact release is unexpectedly authorized")
 
+    engineering_decisions = documents["engineering_decisions.yaml"]["decisions"]
+    expected_engineering = {f"D-ENG-{index:03d}" for index in range(1, 11)}
+    if {item["id"] for item in engineering_decisions} != expected_engineering:
+        errors.append("engineering decision register must contain exactly D-ENG-001 through D-ENG-010")
+    for item in engineering_decisions:
+        if "blocks_gates" not in item or "blocks_entities" not in item:
+            errors.append(f"{item['id']} does not declare what it blocks")
+
+    crosswalk = documents["component_crosswalk.yaml"]
+    if crosswalk["decision"] != "D-ENG-004":
+        errors.append("component crosswalk must cite D-ENG-004 as its governing decision")
+    crosswalk_ids = [member["id"] for entry in crosswalk["entries"] for member in entry["members"]]
+    if len(crosswalk_ids) != len(set(crosswalk_ids)):
+        errors.append("a component appears in more than one crosswalk group")
+
+    policy = documents["construction_policy.yaml"]
+    trace_types = set(trace["entity_type_counts"])
+    policy_types = set(policy["treatment_by_entity_type"])
+    if policy_types != trace_types:
+        errors.append(
+            f"construction policy covers {sorted(policy_types)} but the trace graph "
+            f"contains {sorted(trace_types)}"
+        )
+    shape = policy["effort_shape"]
+    if shape["hand_authored"] + shape["derived"] + shape["inherited"] != shape["total"]:
+        errors.append("construction effort shape does not sum to its declared total")
+    if shape["total"] != trace["entity_count"]:
+        errors.append("construction effort shape total differs from the materialized entity count")
+    policy_totals: dict[str, int] = {}
+    for entity_type, treatment in policy["treatment_by_entity_type"].items():
+        policy_totals[treatment] = policy_totals.get(treatment, 0) + trace["entity_type_counts"][entity_type]
+    declared_totals = {
+        "hand": shape["hand_authored"],
+        "derived": shape["derived"],
+        "inherited": shape["inherited"],
+    }
+    if policy_totals != declared_totals:
+        errors.append(
+            f"construction effort shape {declared_totals} does not match the per-type "
+            f"treatment assignment {policy_totals}"
+        )
+
     if errors:
         print("ERROR: controlled specification gate failed", file=sys.stderr)
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         return 1
+    schema_count = len(list((REPO_ROOT / "spec" / "schemas").glob("*.schema.json"))) + 2
     print(
-        "PASS: 15 controlled specs, 6 schemas, 18 hazards, 19 interface families, "
-        "2,144 trace/V&V claims, 2,088 risks, 16 defects, and 12 readiness dispositions reconcile"
+        f"PASS: {len(REQUIRED_SPECS)} controlled specs, {schema_count} schemas, "
+        f"{len(hazard_ids)} hazards, {len(required_families)} interface families, "
+        f"{trace['vv_claim_count']:,} trace/V&V claims, {len(risks['records']):,} risks, "
+        f"{len(defects)} defects, {len(readiness)} readiness dispositions, "
+        f"{len(engineering_decisions)} engineering decisions, and "
+        f"{len(crosswalk['entries'])} crosswalk groups reconcile"
     )
     return 0
 

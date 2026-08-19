@@ -1,0 +1,219 @@
+schema_version: "0.1"
+register_id: CON-EXEMPLAR-001
+title: Construction exemplars for schema review
+status: draft_for_accountable_review
+
+purpose: >-
+  One record of each class, hand-written against the construction schemas, so the
+  field set is argued about at n=3 rather than at n=400. These are exemplars of
+  shape and depth, not approved specifications. Every field is drawn from existing
+  controlled sources; nothing here adds a clinical or engineering claim the corpus
+  does not already make.
+
+review_questions:
+  - Does a component record at this depth let a sub-requirement be written against it?
+  - Is interface_contracts the right granularity, or should an ICD be its own record?
+  - Should quantitative acceptance be blocked entirely until QT targets exist, or drafted as here?
+  - Is trust_zone a component property, or does one component span zones?
+
+components:
+  - id: C-SAFE-01
+    entity_class: component
+    construction_state: draft
+    constructed_by: exemplar
+    reviewed_by: null
+    review_date: null
+    name: Deterministic Safety Kernel
+    layer: Control
+    responsibility: >-
+      Evaluates authorization, context, scope, preconditions, hard stops, approval
+      validity, and export eligibility independently of generative models.
+    responsibility_sha256: c8749497a8fac2b21bfbd841d3b4773e1dfb88502169bc4866264486f89e55ef
+    lead_team: T-SYS
+    partner_teams: [T-SEC, T-CLIN, T-VV]
+    trust_zone: Z1-KERNEL
+    build_decision: build
+    interface_contracts:
+      - icd: ICD-001
+        family: IF-SAF-01
+        direction: consumes
+        counterparty: Z0-LANG typed intent compiler
+        payload: >-
+          Candidate PlanIntent document with schema version, size bound, canonical
+          encoding, content hash, and untrusted-provenance marking.
+        units_and_basis: >-
+          Every dose quantity carries unit and dose basis; the kernel rejects an
+          implicit conversion between physical and RBE-weighted dose.
+        error_semantics: >-
+          Rejection returns field-specific findings with stable codes; no generic
+          refusal, no partial acceptance, no silent normalization.
+      - icd: ICD-001
+        family: IF-SAF-01
+        direction: produces
+        counterparty: Z2-EXEC job coordinator and adapters
+        payload: >-
+          Signed single-use ExecutionCapability plus the immutable
+          KernelDecisionRecord that authorized it.
+        units_and_basis: Not applicable; the token carries object versions, not quantities.
+        error_semantics: >-
+          Expired, replayed, redirected, or state-mismatched tokens are refused by the
+          consumer and the attempt is retained.
+      - icd: ICD-008
+        family: IF-IAM-01
+        direction: consumes
+        counterparty: C-IAM-01 identity, role, and approval service
+        payload: >-
+          Authenticated actor, role exercised, privilege state, separation-of-duties
+          result, and referenced ProfessionalDecision identities.
+        error_semantics: >-
+          An unavailable identity service fails closed; no cached authorization is
+          honored for a state-changing action.
+    state_behavior:
+      states:
+        - received
+        - schema_validated
+        - context_asserted
+        - policy_evaluated
+        - clarification_required
+        - confirmation_required
+        - eligible
+        - rejected
+        - blocked
+      transitions:
+        - received -> schema_validated | rejected
+        - schema_validated -> context_asserted | rejected
+        - context_asserted -> policy_evaluated | rejected
+        - policy_evaluated -> eligible | clarification_required | confirmation_required | rejected | blocked
+        - eligible -> (token issued, single use, expires)
+      atomicity: >-
+        One evaluation produces exactly one KernelDecisionRecord, committed with the
+        decision. A decision is never amended in place; re-evaluation creates a new record.
+    failure_behavior:
+      fail_closed_conditions:
+        - a safety-critical field is missing, ambiguous, inconsistent, or expired
+        - context hash differs between read-back and execute
+        - the identity or evidence service is unavailable
+        - the requested action is outside the approved release profile or commissioned envelope
+        - required ProfessionalDecision references are absent or invalidated
+        - the audit ledger cannot durably commit the decision
+      degraded_mode: >-
+        Read-only evaluation with explanation only; no ExecutionCapability is issued in
+        degraded operation and the state is displayed rather than inferred.
+      rollback: >-
+        The kernel performs no external effect, so rollback is the absence of token
+        issue; issued-but-unconsumed tokens expire and are recorded as unused.
+      reconciliation: >-
+        Every issued token is reconciled against its adapter outcome; an unmatched token
+        raises an integrity alert rather than being aged out silently.
+    configuration_parameters:
+      - approved release profile identifier and hash
+      - role and separation-of-duties policy version
+      - commissioned use envelope version
+      - token lifetime and clock-skew allowance
+      - hard-stop catalogue version
+    security_controls:
+      - no network egress and no clinical credentials in the kernel process
+      - signing key held in the platform key service, never in kernel configuration
+      - deterministic pure functions with no ambient state or wall-clock reads
+      - decision records written before the token is released to the caller
+    allocated_requirements:
+      - SAF-001
+      - SAF-002
+      - SAF-004
+      - SAF-005
+      - SAF-007
+      - SAF-008
+      - GOV-003
+      - GOV-005
+    hazards: [H-01, H-03, H-04, H-08, H-11, H-13, H-16, H-17, H-18]
+    hazard_basis: derived
+    hazard_rationale: null
+    verification:
+      vv_claims: [VVC-COMP:C-SAFE-01]
+      methods: [I, T, A]
+      executable_suites:
+        - ETS-KERNEL-AUTH-001
+        - ETS-KERNEL-FAILCLOSED-001
+        - ETS-KERNEL-TOKEN-REPLAY-001
+    blocking_decisions: [D-ENG-005]
+    notes: >-
+      hazard_basis is deliberately left derived. Promotion to source_explicit is a
+      reviewed act and is what moves this record to construction_state reviewed.
+
+requirements:
+  - id: SAF-001
+    entity_class: requirement
+    construction_state: draft
+    constructed_by: exemplar
+    reviewed_by: null
+    review_date: null
+    canonical_statement_sha256: c4e834b1dc5a639628d53f4b8e379415f943cb4b4b86d817dc1c75e3c040dc3e
+    domain: SAF
+    classification: cross_cutting_safety_and_assurance_constraint
+    acceptance_kind: qualitative
+    acceptance:
+      criterion: >-
+        No A4 action is representable in the PlanIntent schema, and for every A4 action
+        the kernel refuses an authenticated, otherwise-valid request naming it. Each of
+        the six prohibited acts is exercised as a negative test with the actor holding
+        the highest privilege the system grants.
+      value: null
+      unit: null
+      tolerance: null
+      tolerance_source: null
+      quality_target_id: null
+    verification_methods: [I, T]
+    evidence_binding:
+      record_class: ETS
+      record_id: ETS-KERNEL-A4-PROHIBITION-001
+    applicability:
+      modes: [training, commissioning, shadow, clinical_draft, clinical_approved, degraded]
+      slices: [all]
+      machines: []
+      techniques: []
+    allocated_components: [C-SAFE-01, C-IAM-01, C-INTENT-01, C-STATE-01, C-WF-01]
+    hazards: [H-04, H-13, H-18]
+    hazard_basis: source_explicit
+    hazard_rationale: null
+    vv_claim_id: VVC-HLR:SAF-001
+    blocking_decisions: []
+    notes: >-
+      Qualitative by nature: the criterion is absence of a capability, which has no
+      tolerance. The evidence binding is what makes it verifiable.
+
+subrequirements:
+  - id: SAF-001-01
+    entity_class: subrequirement
+    parent_id: SAF-001
+    construction_state: draft
+    treatment: hand
+    constructed_by: exemplar
+    reviewed_by: null
+    review_date: null
+    canonical_statement_sha256: 0b84a99a41677edd5de3a7279966fd8ff806473a80dfa70f50b8a45ca5c1d579
+    pattern_id: null
+    treatment_exception:
+      policy_treatment: derived
+      reason: >-
+        SAF-001-01 defines the compiled capability allowlist that SAF-001 depends on.
+        It is the mechanism, not an instance of the definition/runtime/evidence pattern,
+        so pattern derivation would produce text that does not describe it.
+      approved_by: exemplar_pending_named_approval
+    acceptance:
+      criterion: >-
+        The generated capability allowlist compiled into the kernel contains no entry
+        whose effect is prescription, clinical signature, QA waiver, plan release, or
+        delivery command, and the build fails if one is added.
+      value: null
+      unit: null
+      tolerance_source: null
+    verification_methods: [I, T]
+    allocated_components: [C-SAFE-01, C-INTENT-01]
+    hazards: [H-04, H-13, H-18]
+    hazard_basis: derived
+    hazard_rationale: null
+    vv_claim_id: VVC-SUB:SAF-001-01
+    blocking_decisions: []
+    notes: >-
+      Hand treatment because the allowlist is the mechanism SAF-001 depends on; it is
+      not a candidate for pattern derivation.

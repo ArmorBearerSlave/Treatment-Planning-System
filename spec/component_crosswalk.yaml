@@ -1,0 +1,1062 @@
+schema_version: '0.1'
+register_id: CWX-001
+title: Component view crosswalk
+status: derived_evidence_pending_accountable_decision
+decision: D-ENG-004
+source: mps/import/traceability.json
+authority: This file records observable overlap and a proposal derived from it. It confers no authority
+  to supersede a view and decides nothing.
+vocabulary_status: SAME_AS, REFINES, and DISTINCT are proposed additions to the ADR-001 TraceLink relation
+  vocabulary and require that decision to be amended before any entry is treated as a controlled relation.
+relation_meanings:
+  SAME_AS: One responsibility recorded in more than one view; specify once.
+  REFINES: A view-scoped narrowing of a shared responsibility; specify the parent once.
+  DISTINCT: Genuinely separate responsibilities that happen to share a stem.
+  UNRESOLVED: Evidence is insufficient to propose; a reviewer must classify.
+overlap_group_count: 43
+evidence_counts:
+  name_identical: 7
+  responsibility_identical: 2
+  stem_only: 34
+entries:
+- stem: ACC-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-ACC-01
+    view: CORE-COMP
+    name: Accreditation Profile and Applicability Registry
+    lead_team: T-EVD
+    responsibility_sha256: 0cd8d023f81d11271909e38b1b5f967fe441271657d7675fa21d3943f3cfda64
+  - id: FC-ACC-01
+    view: CAT-COMP
+    name: Accreditation Profile Runtime
+    lead_team: T-GOV
+    responsibility_sha256: 16a27043f607b7010865820e4ed08c6a8965d43f39f99874e298e2c3aa1eb835
+  - id: OC-ACC-01
+    view: CAT-COMP
+    name: Accreditation Evidence and Lifecycle Program
+    lead_team: T-GOV
+    responsibility_sha256: ec5696d2fb27eee887cc89d0f3e06e466fbff33a2bb860b77fba1dc1a4e2c9e7
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: ALERT-01
+  views:
+  - CAT-COMP
+  members:
+  - id: NFC-ALERT-01
+    view: CAT-COMP
+    name: Warning, Notification, and Alert-Burden Controller
+    lead_team: T-UX
+    responsibility_sha256: 52e6f694724bf2554988c1b7277022e923abcdd4a5029d14eb521c3943ba0b6a
+  - id: OC-ALERT-01
+    view: CAT-COMP
+    name: Operational Alert and Escalation Service
+    lead_team: T-OPS
+    responsibility_sha256: e25fb05eeaec94541f03182e9b21f247f6cdcdcbc6647f785ea45fa471e71630
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: ARCH-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-ARCH-01
+    view: CORE-COMP
+    name: Architecture and Interface Contract Registry
+    lead_team: T-SYS
+    responsibility_sha256: 45bf2b912e8e1b6ec8fcaf5131d02c61acdd8908e35f10a981279c4e6f8f2099
+  - id: FC-ARCH-01
+    view: CAT-COMP
+    name: Functional Architecture and Contract Registry
+    lead_team: T-SYS
+    responsibility_sha256: 1a2b2c9b4a22651f2ee6f9365000c11cde2747aa7748c4ed7e31c451696ec361
+  - id: NFC-ARCH-01
+    view: CAT-COMP
+    name: Quality-Attribute Contract Registry
+    lead_team: T-SYS
+    responsibility_sha256: 1eb04f01b99aae0380bcbecf033373b99d3df7d7ef61c024a9a19742c71a3988
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: AUD-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  - IF-COMP
+  members:
+  - id: C-AUD-01
+    view: CORE-COMP
+    name: Tamper-Evident Audit Ledger
+    lead_team: T-DATA
+    responsibility_sha256: d314f62d3c312db7b6c8090e30c33530f9a0f8870054c6dd597b0cbf72389dfd
+  - id: FC-AUD-01
+    view: CAT-COMP
+    name: Tamper-Evident Clinical Audit Ledger
+    lead_team: T-DATA
+    responsibility_sha256: 2f63044997c7dc795962d63a85ab8ef1b08e3199bf869a78070f021aef1daeb9
+  - id: IC-AUD-01
+    view: IF-COMP
+    name: Immutable Interface Audit Ledger
+    lead_team: T-DATA
+    responsibility_sha256: 3597244b2f17fdb0fb03e6fcc08dce7096a9c48e6f12e134d321db9834fbb40b
+  - id: NFC-AUD-01
+    view: CAT-COMP
+    name: Protected Safety and Security Audit Ledger
+    lead_team: T-DATA
+    responsibility_sha256: e93f6a582ecd32691df77bcfe31e9af4695e9e53326ba996045fac6d4f806e98
+  - id: OC-AUD-01
+    view: CAT-COMP
+    name: Operational Evidence and Audit Repository
+    lead_team: T-DATA
+    responsibility_sha256: 05f7ab052b428bd8763bcd2a2a2dcc5a7c2c46f3f691d7b9dfd413334bfd698a
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: CASE-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-CASE-01
+    view: CORE-COMP
+    name: Clinical Context and Case Manifest Service
+    lead_team: T-IMG
+    responsibility_sha256: 61323786fe40861626e96d9a9595ee299fd8a95b1491c3c58b46e7d9bbe73eb9
+  - id: FC-CASE-01
+    view: CAT-COMP
+    name: Case Context and Manifest Service
+    lead_team: T-IMG
+    responsibility_sha256: 43af810ae59385391c01c922a245df086a63af341b931b5e69e8fbc32419f5db
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: CFG-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  - IF-COMP
+  members:
+  - id: C-CFG-01
+    view: CORE-COMP
+    name: Configuration, Policy, and Release Registry
+    lead_team: T-SYS
+    responsibility_sha256: f35b406acf466da1643d338cd7b7d5eb1719a59ddb5a3e0d5cc879ad0c4690e7
+  - id: FC-CFG-01
+    view: CAT-COMP
+    name: Functional Configuration and Policy Registry
+    lead_team: T-SYS
+    responsibility_sha256: 2b5bfa3afc6faa3e96234874cfc3053b37b74729e9a178c77e2f0ac3418ddea6
+  - id: IC-CFG-01
+    view: IF-COMP
+    name: Interface Configuration Baseline
+    lead_team: T-SYS
+    responsibility_sha256: ef5913cd01f9f0ac7cd7e5488bc4485b5235bfb8998c4c90de13b3c86173199c
+  - id: NFC-CFG-01
+    view: CAT-COMP
+    name: Controlled Threshold and Policy Registry
+    lead_team: T-SYS
+    responsibility_sha256: e235fba8b391549a252373175bde8ce67abcc1735999721d94c63fb0e0bba10f
+  - id: OC-CFG-01
+    view: CAT-COMP
+    name: Operational Configuration and Release Registry
+    lead_team: T-SYS
+    responsibility_sha256: 1bbe634db7a8df6f1c6fbdec0d1d7421a187b237ac7ecdfc2b35b21ad14a1f3c
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: CHG-01
+  views:
+  - CAT-COMP
+  - IF-COMP
+  members:
+  - id: IC-CHG-01
+    view: IF-COMP
+    name: Interface Change, Migration, and Rollback Manager
+    lead_team: T-GOV
+    responsibility_sha256: c91e23b46bd3db67975872fbe74bddfe069059f50e1d1146e37ba20d8eea53ea
+  - id: OC-CHG-01
+    view: CAT-COMP
+    name: Change, Impact, Migration, and Rollback Control
+    lead_team: T-GOV
+    responsibility_sha256: ef42f7aeaee5937d666d4ccbd0b82d0d54a3d1ca00e19c12a949fac84904d8b2
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: CTX-01
+  views:
+  - CAT-COMP
+  - IF-COMP
+  members:
+  - id: IC-CTX-01
+    view: IF-COMP
+    name: Patient and Case Context Validator
+    lead_team: T-IMG
+    responsibility_sha256: 620729e1322203bf4c4b4d4908de4f8b9bf74454192c81a9b0a0df697a4930d9
+  - id: NFC-CTX-01
+    view: CAT-COMP
+    name: Patient and Action Context Assurance
+    lead_team: T-SYS
+    responsibility_sha256: 72b1bd7bb6034317ad875686ebfb81f973795c64b9403fb903fc88bbd52710f2
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: DICOM-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-DICOM-01
+    view: CORE-COMP
+    name: DICOM and DICOM-RT Exchange Gateway
+    lead_team: T-INT
+    responsibility_sha256: 2491b1ab9e4f69328aaf24aa0fb34fc2b6cb81d0b31f7233e4f3a952d5c664ea
+  - id: FC-DICOM-01
+    view: CAT-COMP
+    name: DICOM and DICOM-RT Gateway
+    lead_team: T-INT
+    responsibility_sha256: d034979e8e19d2b632d6d9d3e162cb98040401b94abcdc9487008caee63dc2c1
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: DOC-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-DOC-01
+    view: CORE-COMP
+    name: Clinical Documentation Completeness and Temporal Gate
+    lead_team: T-SYS
+    responsibility_sha256: 613403157dbb371d8d3eee1f751f4948c807415981e7f0463ba0b7edd279caf9
+  - id: FC-DOC-01
+    view: CAT-COMP
+    name: Clinical Documentation and Temporal Gate
+    lead_team: T-REV
+    responsibility_sha256: 73fe60cedd0f1751d6bb56308433d0d989d19fa8c7d97ea60f5f792fcab2a950
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: DOSE-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-DOSE-01
+    view: CORE-COMP
+    name: Commissioned Optimizer and Dose-Service Adapter
+    lead_team: T-PLAN
+    responsibility_sha256: b468fc7d4a4b8ac35cbda833d263d7c706dc2ef8ce6ee2b700ecacb3e8f6eb18
+  - id: FC-DOSE-01
+    view: CAT-COMP
+    name: Commissioned Optimizer and Dose Adapter
+    lead_team: T-PLAN
+    responsibility_sha256: 9eb35ae920844bd85c3f7c35eb76dba2d3f9654caef4386c01634205212d7711
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: EVID-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-EVID-01
+    view: CORE-COMP
+    name: Approved Evidence Repository and Retrieval Service
+    lead_team: T-EVD
+    responsibility_sha256: 44d8aa7c58eed75afcdaea15f5b783f1ea69c7a947289978c16878831fa537a5
+  - id: FC-EVID-01
+    view: CAT-COMP
+    name: Approved Evidence Repository
+    lead_team: T-EVD
+    responsibility_sha256: d913b71312a2535c187b145b62ab9b79bd0ee3d14d0ba1a00e3e0f5aabf518ed
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: GOV-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-GOV-01
+    view: CORE-COMP
+    name: Clinical Governance and Release Authority
+    lead_team: T-GOV
+    responsibility_sha256: c3c6fc64568cd3373a6235f74fe58d0f6c143956350225494745698e23f51bbd
+  - id: OC-GOV-01
+    view: CAT-COMP
+    name: Clinical Governance and Decision Authority
+    lead_team: T-GOV
+    responsibility_sha256: ff8dddde988909ce2bb7b0f6c36a8bc4bc7479be113f5cd699e3fe4f62aceba2
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: HFE-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  - IF-COMP
+  members:
+  - id: C-HFE-01
+    view: CORE-COMP
+    name: Human-Factors, Training, and Competency Program
+    lead_team: T-UX
+    responsibility_sha256: 0a01b68157324d3a0168481a42e89384845273add8042747d0007f39ac8a4cc0
+  - id: IC-HFE-01
+    view: IF-COMP
+    name: Human-Factors Interface Validation Harness
+    lead_team: T-UX
+    responsibility_sha256: 24b5d2cd6d573e8cb8623a295b9489652a75c645adde2328a5b711f5f1c9ed0e
+  - id: NFC-HFE-01
+    view: CAT-COMP
+    name: Human-Factors Engineering and Competency Program
+    lead_team: T-UX
+    responsibility_sha256: e833e5db1ccdfe669fb9c409eeca7c7b2536cafa57b4b0ce6c468b18151bb8b6
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: IAM-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  - IF-COMP
+  members:
+  - id: C-IAM-01
+    view: CORE-COMP
+    name: Identity, Role, and Approval Service
+    lead_team: T-SEC
+    responsibility_sha256: e274b95537314e4996da9c48151dd5965bf93255abdea1a8801135e05680cf93
+  - id: FC-IAM-01
+    view: CAT-COMP
+    name: Clinical Identity and Approval Service
+    lead_team: T-SEC
+    responsibility_sha256: 09e81784f80284a190e277ac9dad1041dedc597bcfcf250339bf4a5f40e69100
+  - id: IC-IAM-01
+    view: IF-COMP
+    name: Identity, Role, and Approval Adapter
+    lead_team: T-SEC
+    responsibility_sha256: 76a3983d1000ae55c0eb337a610bf44277379d2b5bcfc2973a017b302f8720dd
+  - id: NFC-IAM-01
+    view: CAT-COMP
+    name: Identity, Authorization, and Separation-of-Duties Service
+    lead_team: T-SEC
+    responsibility_sha256: 35ed0f133aeeb2ab8fc604524127ede29359dfdd0ccf71183b078a058679b613
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: INC-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-INC-01
+    view: CORE-COMP
+    name: Incident, Near-Miss, and CAPA Workflow
+    lead_team: T-OPS
+    responsibility_sha256: d46e09cd6e9ef5929899ea373b384b58263ef6a5f7dad64c3941f35dc53b18e7
+  - id: NFC-INC-01
+    view: CAT-COMP
+    name: Safety, Privacy, and Security Incident Workflow
+    lead_team: T-OPS
+    responsibility_sha256: faf7232157efc1e4b93014cfe4d629aeff92ed6fff95452930afa6110907a0e9
+  - id: OC-INC-01
+    view: CAT-COMP
+    name: Incident and Near-Miss Management
+    lead_team: T-OPS
+    responsibility_sha256: 9918669e0e3915c438c1c11c15eab832e24b2d0522b19b803e179ebd2720f84c
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: INTENT-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-INTENT-01
+    view: CORE-COMP
+    name: Typed Intent Compiler and Deterministic Validator
+    lead_team: T-NLI
+    responsibility_sha256: ee1549accb5aca4bd4410da92daf5985581622ac432e5ab1e40929a7ee6eb1e4
+  - id: FC-INTENT-01
+    view: CAT-COMP
+    name: Typed Intent Compiler
+    lead_team: T-NLI
+    responsibility_sha256: cb87c9e385fb355888dfb2f2d843e41739e21c64c6eeefb3c710d6413da3cbf0
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: JOB-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-JOB-01
+    view: CORE-COMP
+    name: Atomic Job and Transaction Coordinator
+    lead_team: T-OPS
+    responsibility_sha256: 66c118eb7911924996a364d32424f37965bc114cd69fdfd345e2264340882710
+  - id: FC-JOB-01
+    view: CAT-COMP
+    name: Atomic Job and Transaction Coordinator
+    lead_team: T-OPS
+    responsibility_sha256: 66c118eb7911924996a364d32424f37965bc114cd69fdfd345e2264340882710
+  evidence: responsibility_identical
+  proposed_relation: SAME_AS
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: MGW-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-MGW-01
+    view: CORE-COMP
+    name: Clinical Model Gateway and Runtime Contract Validator
+    lead_team: T-AI
+    responsibility_sha256: c1a4951a632120f9503e318b265e66a04ded56db60c086ffc2410b14528c7e31
+  - id: FC-MGW-01
+    view: CAT-COMP
+    name: Clinical Model Gateway
+    lead_team: T-AI
+    responsibility_sha256: c1a4951a632120f9503e318b265e66a04ded56db60c086ffc2410b14528c7e31
+  evidence: responsibility_identical
+  proposed_relation: SAME_AS
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: MON-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  - IF-COMP
+  members:
+  - id: C-MON-01
+    view: CORE-COMP
+    name: Monitoring, Alerting, and Service-Level Service
+    lead_team: T-OPS
+    responsibility_sha256: e8a78d14690cd12468055e34b7caee5334e5dda786f5eeda2d7c704f61f18730
+  - id: IC-MON-01
+    view: IF-COMP
+    name: Interface Health and Safety Monitor
+    lead_team: T-OPS
+    responsibility_sha256: 96be68898d29d2dcd59a676909a8289eb9d2660b1d118f03bf296c5ec7a79ecb
+  - id: NFC-MON-01
+    view: CAT-COMP
+    name: Quality and Safety Measurement Service
+    lead_team: T-OPS
+    responsibility_sha256: 857e28cf53e16769956bc9026edddcb88b96806ce8e953174d63f580d7a51903
+  - id: OC-MON-01
+    view: CAT-COMP
+    name: Clinical Operations Monitoring Service
+    lead_team: T-OPS
+    responsibility_sha256: d6de09f2590c9440b8a16fdf6207526f582af46d951c9e877a8af225714c02d0
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: MREG-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-MREG-01
+    view: CORE-COMP
+    name: Model and Dependency Registry
+    lead_team: T-AI
+    responsibility_sha256: 1d549db61e1d49ffeacc1f19b08788c2877a48707fbda63b659cb7ee9a0a6681
+  - id: FC-MREG-01
+    view: CAT-COMP
+    name: Model and Dependency Registry
+    lead_team: T-AI
+    responsibility_sha256: 9fcaf7b26efb0bc1200e479c209ee97be4667a57ef453d8d05279775a4e0a42d
+  evidence: name_identical
+  proposed_relation: REFINES
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: MVAL-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-MVAL-01
+    view: CORE-COMP
+    name: Model Validation and Production Monitoring Service
+    lead_team: T-AI
+    responsibility_sha256: 06ef0c6523e45a716ef78289d04107952d1190bb9486d00f19aab6fd35251a80
+  - id: FC-MVAL-01
+    view: CAT-COMP
+    name: Model Evaluation and Monitoring Service
+    lead_team: T-AI
+    responsibility_sha256: e7f85712ed4fadd3bcefcd903cf9b1e084e7a2088fbe1fcfdda6d2b399b3e779
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: OBJ-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  - IF-COMP
+  members:
+  - id: C-OBJ-01
+    view: CORE-COMP
+    name: Versioned Clinical Object Repository
+    lead_team: T-DATA
+    responsibility_sha256: 335028caacca327bf6803391a0dc5e362aa03d40c4e6fc0d9d30b410838a4733
+  - id: FC-OBJ-01
+    view: CAT-COMP
+    name: Versioned Clinical Object Repository
+    lead_team: T-DATA
+    responsibility_sha256: acbf6818197cdd4e448fce2d27f616f864831999accbaf7a36d75f116e42743a
+  - id: IC-OBJ-01
+    view: IF-COMP
+    name: Object and Message Profile Library
+    lead_team: T-DATA
+    responsibility_sha256: 75791e8f74205fdaba01e3bbfe1f89ab42d79394873cf3e5c9b53d0b5eb646ea
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: PLAN-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-PLAN-01
+    view: CORE-COMP
+    name: Planning Intent and Candidate Orchestrator
+    lead_team: T-PLAN
+    responsibility_sha256: cf630133f30710b801630aaf0af1606af1003c9af3a91093f9fe694ce0c3896e
+  - id: FC-PLAN-01
+    view: CAT-COMP
+    name: Planning Intent and Candidate Orchestrator
+    lead_team: T-PLAN
+    responsibility_sha256: 418ee5508e282245560371755dbb42fea5e71deb59782dbc7b146d3ca8e01bfa
+  evidence: name_identical
+  proposed_relation: REFINES
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: PROV-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-PROV-01
+    view: CORE-COMP
+    name: Provenance and Dependency Graph
+    lead_team: T-DATA
+    responsibility_sha256: 0ac966685d23217a236ccc876f312ec74752db5c1d42076481852a7e44c6dc33
+  - id: FC-PROV-01
+    view: CAT-COMP
+    name: Clinical Provenance and Dependency Graph
+    lead_team: T-DATA
+    responsibility_sha256: 335c8089363f19ee61f685f5ddb2af5059b996bb89340ad58d685504e200e3e4
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: QA-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-QA-01
+    view: CORE-COMP
+    name: QA Routing and Independent Verification Coordinator
+    lead_team: T-REV
+    responsibility_sha256: 4e5e32182e6a422c9109da7cf8b8a57846e538bfa8b9bc6944ecfa312783b609
+  - id: FC-QA-01
+    view: CAT-COMP
+    name: Independent QA and Transfer Coordinator
+    lead_team: T-REV
+    responsibility_sha256: 2dfcadf59368f2de4e02dcda21f1c28b698b0ed8b0c755828f942f4db9f5db5a
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: QMS-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-QMS-01
+    view: CORE-COMP
+    name: Quality, Change, Document, and CAPA System
+    lead_team: T-GOV
+    responsibility_sha256: 91cb093539eccc31a535c3ef40c196ea7b27fb72a9a40b28a9c1e779181d6bc9
+  - id: OC-QMS-01
+    view: CAT-COMP
+    name: Quality, Document, Change, and CAPA System
+    lead_team: T-GOV
+    responsibility_sha256: fa44747a6467f3db321ef48b10814e224779625b02a5fe479834fc8ee03fabc0
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: REC-01
+  views:
+  - CAT-COMP
+  - IF-COMP
+  members:
+  - id: IC-REC-01
+    view: IF-COMP
+    name: Cross-System Reconciliation Engine
+    lead_team: T-INT
+    responsibility_sha256: 3b8387a7244905a2b5b8ccecc7e5333f6a8b3d4566bbb584cad0e7e7505ca8c5
+  - id: OC-REC-01
+    view: CAT-COMP
+    name: Recovery and Continuity Exercise Program
+    lead_team: T-OPS
+    responsibility_sha256: 72c4afd7885c0aa838ba05611472bdf06f57ee592c3292972ae49b1adb556d5f
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: REG-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-REG-01
+    view: CORE-COMP
+    name: Registration and Derived-Dose Service
+    lead_team: T-IMG
+    responsibility_sha256: 4e65fedf3156f802cb0cb4c6c4e5b5b0d5751b74d7c96a3ea0ac14a38b77a7b3
+  - id: FC-REG-01
+    view: CAT-COMP
+    name: Registration and Derived-Dose Service
+    lead_team: T-IMG
+    responsibility_sha256: d3be5030ecfe609c68ab8fdd808833a7d1df196ae8122d12af3d4dadca92271f
+  evidence: name_identical
+  proposed_relation: REFINES
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: REQ-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-REQ-01
+    view: CORE-COMP
+    name: Requirements, Risk, and Traceability Repository
+    lead_team: T-SYS
+    responsibility_sha256: dad9f750de4be2ad658d20b9dba1cc086fb760b99103a5aaf649567c3ddaf8f1
+  - id: FC-REQ-01
+    view: CAT-COMP
+    name: Functional Requirements and Trace Repository
+    lead_team: T-SYS
+    responsibility_sha256: 41e3775d96287bddf42763d3cbde4970898a361771f1bacd98106797026f6222
+  - id: NFC-REQ-01
+    view: CAT-COMP
+    name: Quality, Risk, and Trace Repository
+    lead_team: T-SYS
+    responsibility_sha256: 1b486bb763022680629497332aa7d255a9ba16747576eb38a4140e31faea4610
+  - id: OC-REQ-01
+    view: CAT-COMP
+    name: Operational Requirements and Trace Repository
+    lead_team: T-SYS
+    responsibility_sha256: c26fb77eea15d7d31f76dc822c52386ea023e405fe107dfd2d2a4b8c943044eb
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: REV-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  - IF-COMP
+  members:
+  - id: C-REV-01
+    view: CORE-COMP
+    name: Plan Comparison, Selection, and Approval Workspace
+    lead_team: T-REV
+    responsibility_sha256: f9c0db4508775f68fd3b718e1c1e323d3f0b571123274678b5466f328361a2a9
+  - id: FC-REV-01
+    view: CAT-COMP
+    name: Plan Comparison, Selection, and Approval Workspace
+    lead_team: T-REV
+    responsibility_sha256: 5501ad1741b0cf0db115b2bd5f5e23a56b20dc196f9a5ae4169336c37092d724
+  - id: IC-REV-01
+    view: IF-COMP
+    name: Review, QA, Approval, and Transfer Adapter
+    lead_team: T-REV
+    responsibility_sha256: c308b91e7a090dd1a934fddd9e80d10ef9fb64d5e2bac89977ab7fb3f1395788
+  - id: OC-REV-01
+    view: CAT-COMP
+    name: Periodic Review and Revalidation Board
+    lead_team: T-GOV
+    responsibility_sha256: e00d1ee84e107b5d41d55bd9a3c1e4eff82919d43881f0a2bf36f65595f4fe09
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: RULE-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-RULE-01
+    view: CORE-COMP
+    name: Computable Rule and Authority Resolver
+    lead_team: T-EVD
+    responsibility_sha256: 97282063f83e787f7b3a04fffe35f3dba4fed12dc05e98bb433cae27dce88e46
+  - id: FC-RULE-01
+    view: CAT-COMP
+    name: Computable Rule and Authority Resolver
+    lead_team: T-EVD
+    responsibility_sha256: 9df427bc105e9997f049ea55e16be9ae433fa722af9960f5227f551fdea2535a
+  evidence: name_identical
+  proposed_relation: REFINES
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: SAFE-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-SAFE-01
+    view: CORE-COMP
+    name: Deterministic Safety Kernel
+    lead_team: T-SYS
+    responsibility_sha256: c8749497a8fac2b21bfbd841d3b4773e1dfb88502169bc4866264486f89e55ef
+  - id: FC-SAFE-01
+    view: CAT-COMP
+    name: Deterministic Safety Kernel
+    lead_team: T-SYS
+    responsibility_sha256: 0d2379ac4a1dff59d69515d51e73b98121f2800b59724cc54ff4ee34cc46535d
+  - id: NFC-SAFE-01
+    view: CAT-COMP
+    name: Deterministic Safety Enforcement Kernel
+    lead_team: T-SYS
+    responsibility_sha256: 9ab1958f52cb5f02c33a43f552932983612f8d943dd639b0f5818e3484063bf5
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: SEC-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  - IF-COMP
+  members:
+  - id: C-SEC-01
+    view: CORE-COMP
+    name: Security and Privacy Control Plane
+    lead_team: T-SEC
+    responsibility_sha256: 5eaf7c744c5850b804bd0ee6646dc2f12151aa302acf40a550af7515c025b411
+  - id: IC-SEC-01
+    view: IF-COMP
+    name: Secure Transport and Endpoint Control
+    lead_team: T-SEC
+    responsibility_sha256: b1dc88978d5661b58365992ddb763cf3242af31c43e6827c4f2e37c2d05f64b4
+  - id: NFC-SEC-01
+    view: CAT-COMP
+    name: Security Control Plane
+    lead_team: T-SEC
+    responsibility_sha256: 1a281e17a9632aa4d8ca099819b7868a09bcfea1ddd703ede5ae266fe84a3e46
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: SEG-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-SEG-01
+    view: CORE-COMP
+    name: Contouring Gateway and Anatomy Review Service
+    lead_team: T-IMG
+    responsibility_sha256: 5ec635c93e0d55f02a71b4b93ead8ae9be3f14be660bc064d0d9f2e3f77b05db
+  - id: FC-SEG-01
+    view: CAT-COMP
+    name: Contouring Gateway and Anatomy Review Service
+    lead_team: T-IMG
+    responsibility_sha256: d6525f8f51e5c777b3e1613a268e1b5d819ee093eca425d5903c0666e712b5b9
+  evidence: name_identical
+  proposed_relation: REFINES
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: STATE-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-STATE-01
+    view: CORE-COMP
+    name: Clinical Lifecycle and Workflow State Engine
+    lead_team: T-SYS
+    responsibility_sha256: 25f88b393a573b96de1d92e3623562a0c83d9e5d6bd018db0024b3e789ace52e
+  - id: FC-STATE-01
+    view: CAT-COMP
+    name: Clinical Lifecycle State Engine
+    lead_team: T-SYS
+    responsibility_sha256: 7aec48e4938124348209079fc9c4d38fadf324e192523b3c9811e1f25d1fd86f
+  - id: NFC-STATE-01
+    view: CAT-COMP
+    name: Safety-Critical State and Dependency Controller
+    lead_team: T-SYS
+    responsibility_sha256: cdb2e132908b40d52102a5f56ef9d7cea9fcd0ce122b848ee99872665fb4fccd
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: TERM-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-TERM-01
+    view: CORE-COMP
+    name: Terminology, Units, Coordinates, and Nomenclature Service
+    lead_team: T-DATA
+    responsibility_sha256: 1b8dd604cb2be8d4eef622c263ee95ce9e17632e0ad6a68b92ddd5f9ec54d292
+  - id: FC-TERM-01
+    view: CAT-COMP
+    name: Terminology, Units, Coordinates, and Nomenclature Service
+    lead_team: T-DATA
+    responsibility_sha256: fa232c711389e50baf330d5e38c44228f91d1569d7b1ae3ad1a0d495e2e94d51
+  evidence: name_identical
+  proposed_relation: REFINES
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: TEST-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-TEST-01
+    view: CORE-COMP
+    name: Locked Reference and Challenge Case Library
+    lead_team: T-VV
+    responsibility_sha256: c54d3b38f36d2b06b935ec5235d6dd53d910f8eaf75614659c70c3ad0a8dedf2
+  - id: OC-TEST-01
+    view: CAT-COMP
+    name: Reference, Challenge, and Regression Case Library
+    lead_team: T-VV
+    responsibility_sha256: 07160c7af0e0a9baacedb9f26960ba5cf6e2f6ec54c503c5b341c21712e9498a
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: TPS-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  - IF-COMP
+  members:
+  - id: C-TPS-01
+    view: CORE-COMP
+    name: Existing TPS Adapter Framework
+    lead_team: T-INT
+    responsibility_sha256: d0a90b96a62b7753096cbf38cef36758d6f91c6cfe083af12a49118f28cb6186
+  - id: FC-TPS-01
+    view: CAT-COMP
+    name: Existing TPS Adapter Framework
+    lead_team: T-INT
+    responsibility_sha256: 11c83492bc3bf3999bb65b79906472f9787fcc8576c4631ce6d0c7f5f5cddf32
+  - id: IC-TPS-01
+    view: IF-COMP
+    name: Commissioned External TPS Adapter Framework
+    lead_team: T-INT
+    responsibility_sha256: 31ce47ec7c50738f0396869c08ea781f4ede070dab295a8a5278232e0716d673
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: UX-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-UX-01
+    view: CORE-COMP
+    name: Clinical Command, Review, and Confirmation Workspace
+    lead_team: T-UX
+    responsibility_sha256: b64e8b2ba87d0a39b2f2a2575afb5d62393224081f6a32ab377c9a998ea94339
+  - id: FC-UX-01
+    view: CAT-COMP
+    name: Clinical Command and Review Workspace
+    lead_team: T-UX
+    responsibility_sha256: 4a532a3cd11b691679c076fa391820328ee1fb35e0caaaa50e6c2e69b3bbb336
+  - id: NFC-UX-01
+    view: CAT-COMP
+    name: Accessible Safety-Critical Presentation Layer
+    lead_team: T-UX
+    responsibility_sha256: 1a85c47ea07f925a4cce7abafd86e884d66f16eae5d77fab7d1a9cf927e65385
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: VOICE-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-VOICE-01
+    view: CORE-COMP
+    name: Push-to-Talk and Transcript Confirmation Service
+    lead_team: T-NLI
+    responsibility_sha256: bf0781f1695992e779346a8476faadb626c9c889536c5996ee1d9a1e9dba23d4
+  - id: FC-VOICE-01
+    view: CAT-COMP
+    name: Speech and Transcript Confirmation Service
+    lead_team: T-NLI
+    responsibility_sha256: c0acf386ca95708da1ae56d1a4644a222d9afe7a1338e9fbb20ab3614cee8a97
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: VV-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-VV-01
+    view: CORE-COMP
+    name: Verification, Validation, and Commissioning Harness
+    lead_team: T-VV
+    responsibility_sha256: c3435ba4fbf069e036cda2f670d10f7ceaab5d0d85360a72a99c4d80f380b957
+  - id: FC-VV-01
+    view: CAT-COMP
+    name: Functional Verification Harness
+    lead_team: T-VV
+    responsibility_sha256: 4d5baa50ea8de1113fb218150dc36b5d280f2a256bf836b588d3b86a93006f33
+  - id: NFC-VV-01
+    view: CAT-COMP
+    name: Safety-Assurance Verification Harness
+    lead_team: T-VV
+    responsibility_sha256: d0e4decba698d6c261253aed5b03efa91e5a6b01081c73411c25f4f6cf62ebaf
+  - id: OC-VV-01
+    view: CAT-COMP
+    name: Operational Acceptance and Exercise Harness
+    lead_team: T-VV
+    responsibility_sha256: bbcb37ded587358e5e9478583d171addf92f2d04c99dd82062eadfc64202841a
+  evidence: stem_only
+  proposed_relation: UNRESOLVED
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null
+- stem: WF-01
+  views:
+  - CAT-COMP
+  - CORE-COMP
+  members:
+  - id: C-WF-01
+    view: CORE-COMP
+    name: Clinical Workflow Orchestrator
+    lead_team: T-SYS
+    responsibility_sha256: 8ef680791aea2bcbc9e70543d3ea572f09d70dc651b5229c75bb05aa819e2ee7
+  - id: FC-WF-01
+    view: CAT-COMP
+    name: Clinical Workflow Orchestrator
+    lead_team: T-SYS
+    responsibility_sha256: 95f8aa05a46ede2abc6e4edca6dd014d8a0051ee4689fdf69b228395ee43fcfb
+  evidence: name_identical
+  proposed_relation: REFINES
+  status: pending_review
+  decided_relation: null
+  reviewer: null
+  rationale: null

@@ -150,7 +150,14 @@ def seed_scores(hlr_ids: list[str]) -> dict[str, Any]:
 
 def load_inputs() -> tuple[list[dict[str, Any]], dict[str, dict[str, str]], dict[str, Any]]:
     trace = json.loads(TRACE_PATH.read_text(encoding="utf-8"))
-    risk_records = [record for record in trace["records"] if record["entity_type"] != "MQA"]
+    # MQA entities are subordinate realization records that do not add to the 119-HLR
+    # baseline, so they carry no separate risk record. They are typed as MQA-REQ,
+    # MQA-SUB, and MQA-COMP rather than pooled under one MQA type.
+    risk_records = [
+        record
+        for record in trace["records"]
+        if not record["entity_type"].startswith("MQA")
+    ]
     hazards = yaml.safe_load(HAZARD_PATH.read_text(encoding="utf-8"))
     hazard_map = {hazard["id"]: hazard for hazard in hazards["hazards"]}
     hlr_ids = sorted(record["id"] for record in risk_records if record["entity_type"] == "HLR")

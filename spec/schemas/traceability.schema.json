@@ -1,32 +1,115 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:gcpl:nltps:schema:traceability:0.1",
+  "$id": "urn:gcpl:nltps:schema:traceability:0.2",
   "title": "GCPL / NL-TPS materialized hazard trace",
   "type": "object",
-  "required": ["schema_version", "entity_count", "vv_claim_count", "records"],
+  "required": [
+    "schema_version",
+    "entity_count",
+    "vv_claim_count",
+    "entity_type_counts",
+    "records"
+  ],
+  "additionalProperties": true,
   "properties": {
-    "schema_version": {"const": "0.1"},
+    "schema_version": {"const": "0.2"},
     "entity_count": {"const": 2144},
     "vv_claim_count": {"const": 2144},
+    "entity_type_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "HLR", "SUB", "HLIR", "SIR",
+        "CORE-COMP", "IF-COMP", "CAT-COMP",
+        "MQA-REQ", "MQA-SUB", "MQA-COMP"
+      ],
+      "properties": {
+        "HLR": {"const": 119},
+        "SUB": {"const": 357},
+        "HLIR": {"const": 357},
+        "SIR": {"const": 1071},
+        "CORE-COMP": {"const": 45},
+        "IF-COMP": {"const": 61},
+        "CAT-COMP": {"const": 78},
+        "MQA-REQ": {"const": 12},
+        "MQA-SUB": {"const": 36},
+        "MQA-COMP": {"const": 8}
+      }
+    },
     "records": {
       "type": "array",
       "minItems": 2144,
       "maxItems": 2144,
       "items": {
         "type": "object",
-        "required": ["id", "entity_type", "hazards", "vv_claim_id", "statement_sha256"],
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "entity_type",
+          "hazards",
+          "mapping_basis",
+          "hazard_specificity",
+          "vv_claim_id",
+          "statement_plain",
+          "statement_sha256",
+          "source_file",
+          "source_line"
+        ],
         "properties": {
           "id": {"type": "string", "minLength": 1},
-          "entity_type": {"type": "string", "minLength": 1},
+          "entity_type": {
+            "enum": [
+              "HLR", "SUB", "HLIR", "SIR",
+              "CORE-COMP", "IF-COMP", "CAT-COMP",
+              "MQA-REQ", "MQA-SUB", "MQA-COMP"
+            ]
+          },
+          "domain": {"type": ["string", "null"]},
+          "parent_id": {"type": ["string", "null"]},
           "hazards": {
             "type": "array",
             "minItems": 1,
             "uniqueItems": true,
             "items": {"type": "string", "pattern": "^H-[0-9]{2}$"}
           },
+          "mapping_basis": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "hazard_specificity": {"enum": ["source_explicit", "derived"]},
           "vv_claim_id": {"type": "string", "minLength": 1},
-          "statement_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
-        }
+          "statement_plain": {"type": "string", "minLength": 1},
+          "statement_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "source_file": {"type": "string", "minLength": 1},
+          "source_line": {"type": "integer", "minimum": 1},
+          "name": {"type": "string", "minLength": 1},
+          "layer": {"type": "string", "minLength": 1},
+          "lead_team": {"type": "string"},
+          "allocated_components": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          }
+        },
+        "allOf": [
+          {
+            "$comment": "A component-class record carries a specification, not a label.",
+            "if": {
+              "properties": {
+                "entity_type": {
+                  "enum": ["CORE-COMP", "IF-COMP", "CAT-COMP", "MQA-COMP"]
+                }
+              },
+              "required": ["entity_type"]
+            },
+            "then": {
+              "required": ["name", "layer", "lead_team"],
+              "properties": {
+                "statement_plain": {"minLength": 60}
+              }
+            }
+          }
+        ]
       }
     }
   }
