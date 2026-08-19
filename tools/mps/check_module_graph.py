@@ -11,9 +11,11 @@ dependency graph:
                      visible in this language's structure aspect
   dependencies       module-level dependency, for behavior and classes
 
-The blueprint states depends_on without prescribing which mechanism realizes it, so
-this gate compares the union and separately reports the split, then checks acyclicity
-and the concept counts that distinguish one checkpoint from the next.
+The blueprint declares the exact kind per dependency, so this gate compares each kind
+separately. A dependency silently changed from Default to Extends in the IDE, or the
+reverse, is rejected: EXTENDS decides whether a concept may take a superconcept from the
+target, which is a structural decision, not an IDE convenience. The gate also checks
+acyclicity and the concept counts that distinguish one checkpoint from the next.
 """
 
 from __future__ import annotations
@@ -100,7 +102,13 @@ def find_cycle(graph: dict[str, set[str]]) -> list[str]:
 def check(max_concepts: int | None) -> tuple[list[str], dict[str, object]]:
     errors: list[str] = []
     blueprint = json.loads(BLUEPRINT_PATH.read_text(encoding="utf-8"))
-    expected = {entry["name"]: set(entry["depends_on"]) for entry in blueprint["languages"]}
+    expected: dict[str, dict[str, set[str]]] = {}
+    for entry in blueprint["languages"]:
+        by_kind: dict[str, set[str]] = {"extends": set(), "depends": set()}
+        for dependency in entry["dependencies"]:
+            key = "extends" if dependency["kind"] == "EXTENDS" else "depends"
+            by_kind[key].add(dependency["module"])
+        expected[entry["name"]] = by_kind
 
     if not PROJECT_ROOT.exists():
         return ([f"MPS project not found at {PROJECT_ROOT.relative_to(REPO_ROOT)}"], {})
@@ -117,13 +125,22 @@ def check(max_concepts: int | None) -> tuple[list[str], dict[str, object]]:
 
     combined: dict[str, set[str]] = {}
     for name, relations in modules.items():
-        union = relations["extends"] | relations["depends"]
-        combined[name] = union
-        if name in expected and union != expected[name]:
-            errors.append(
-                f"{name} depends on {sorted(union) or '[]'}, blueprint requires "
-                f"{sorted(expected[name]) or '[]'}"
-            )
+        combined[name] = relations["extends"] | relations["depends"]
+        if name not in expected:
+            continue
+        for kind, label in (("extends", "EXTENDS"), ("depends", "DEFAULT")):
+            actual = relations[kind]
+            wanted = expected[name][kind]
+            if actual == wanted:
+                continue
+            promoted = sorted(actual - wanted)
+            demoted = sorted(wanted - actual)
+            detail = []
+            if promoted:
+                detail.append(f"unexpected {label} on {promoted}")
+            if demoted:
+                detail.append(f"missing {label} on {demoted}")
+            errors.append(f"{name}: " + "; ".join(detail))
 
     cycle = find_cycle(combined)
     if cycle:

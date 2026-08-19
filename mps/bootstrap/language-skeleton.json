@@ -24,7 +24,7 @@
   "languages": [
     {
       "name": "nltps.foundation",
-      "depends_on": [],
+      "dependencies": [],
       "owns": [
         "stable identifiers and aliases",
         "versions and lifecycle vocabulary",
@@ -58,8 +58,11 @@
     },
     {
       "name": "nltps.governance",
-      "depends_on": [
-        "nltps.foundation"
+      "dependencies": [
+        {
+          "module": "nltps.foundation",
+          "kind": "EXTENDS"
+        }
       ],
       "owns": [
         "requirements and requirement patterns",
@@ -99,9 +102,15 @@
     },
     {
       "name": "nltps.clinicalintent",
-      "depends_on": [
-        "nltps.foundation",
-        "nltps.governance"
+      "dependencies": [
+        {
+          "module": "nltps.foundation",
+          "kind": "EXTENDS"
+        },
+        {
+          "module": "nltps.governance",
+          "kind": "DEFAULT"
+        }
       ],
       "owns": [
         "PlanIntent definition",
@@ -140,10 +149,19 @@
     },
     {
       "name": "nltps.realization",
-      "depends_on": [
-        "nltps.foundation",
-        "nltps.governance",
-        "nltps.clinicalintent"
+      "dependencies": [
+        {
+          "module": "nltps.foundation",
+          "kind": "EXTENDS"
+        },
+        {
+          "module": "nltps.governance",
+          "kind": "DEFAULT"
+        },
+        {
+          "module": "nltps.clinicalintent",
+          "kind": "DEFAULT"
+        }
       ],
       "owns": [
         "components and interface families",
@@ -220,5 +238,10 @@
     "invalid trace and unit examples fail at the intended node",
     "the headless build and model tests run without the agent toolkit",
     "no MPS persistence XML was hand-authored"
-  ]
+  ],
+  "dependency_kind_policy": {
+    "EXTENDS": "Target concepts are available as superconcepts in this language's structure aspect. Required wherever a concept declares a superconcept from the target.",
+    "DEFAULT": "Module dependency for behavior, constraints, and references only. A concept in this language shall not declare a superconcept from a DEFAULT target.",
+    "change_rule": "Upgrading DEFAULT to EXTENDS, or downgrading EXTENDS to DEFAULT, is a controlled change to this blueprint. It shall not be made silently in the IDE; the module graph gate compares each kind separately."
+  }
 }

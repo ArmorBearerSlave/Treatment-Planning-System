@@ -77,7 +77,10 @@ def main() -> int:
     errors.extend(collection_errors)
     for language in languages:
         name = language.get("name")
-        dependencies = language.get("depends_on", [])
+        # Dependencies are typed. Acyclicity and layering are checked over the flat
+        # module set; the EXTENDS/DEFAULT distinction is enforced against the live
+        # MPS graph by tools/mps/check_module_graph.py.
+        dependencies = [entry["module"] for entry in language.get("dependencies", [])]
         dependency_graph[name] = dependencies
         missing = sorted(set(dependencies) - known)
         if missing:

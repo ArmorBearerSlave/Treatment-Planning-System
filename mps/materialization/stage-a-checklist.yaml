@@ -1,6 +1,6 @@
 schema_version: "0.2"
 package_id: MPS-MAT-01
-status: not_started
+status: in_progress
 authority_stage: A_mirror
 patient_data_permitted: false
 clinical_credentials_permitted: false
@@ -29,6 +29,7 @@ pinned_toolchain:
     condition. A different build is a separate qualification decision.
 
 controlled_inputs:
+  - mps/bootstrap/mps1-concept-features.yaml
   - mps/bootstrap/language-skeleton.json
   - mps/bootstrap/language-skeleton.schema.json
   - mps/import/hlr-baseline.json
@@ -100,7 +101,7 @@ checkpoints:
       demonstrate that the constraints reject them.
     commit_boundary: true
     contains_hlr_roots: false
-    acceptance_items: [MPS-MAT-003, MPS-MAT-005]
+    acceptance_items: [MPS-MAT-003A, MPS-MAT-005A]
 
   - id: MPS-2
     title: Clinical intent and realization metamodel
@@ -110,7 +111,7 @@ checkpoints:
       verification claims. Validate negative examples before any corpus import.
     commit_boundary: true
     contains_hlr_roots: false
-    acceptance_items: [MPS-MAT-003, MPS-MAT-005]
+    acceptance_items: [MPS-MAT-003B, MPS-MAT-005B]
 
   - id: MPS-3
     title: 119-HLR import
@@ -144,9 +145,18 @@ acceptance_items:
       - mps/NLTPSGovernance/languages/nltps.clinicalintent/nltps.clinicalintent.mpl
       - mps/NLTPSGovernance/languages/nltps.realization/nltps.realization.mpl
       - "all persistence created by MPS; no file hand-authored or patched"
-  - id: MPS-MAT-003
+  - id: MPS-MAT-003A
     checkpoint: MPS-1
-    item: Root and non-root concepts are disjoint, exhaustive, and single-owner.
+    item: >-
+      Foundation and governance concepts are disjoint, exhaustive, and single-owner
+      against the blueprint inventory.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-003B
+    checkpoint: MPS-2
+    item: >-
+      Clinical-intent and realization concepts are disjoint, exhaustive, and single-owner
+      against the blueprint inventory.
     status: pending
     evidence: []
   - id: MPS-MAT-004A
@@ -171,11 +181,18 @@ acceptance_items:
       MPS-0 contains no normative instance model, so the persistence mode cannot yet be
       exercised. Split from MPS-MAT-004 because dependency direction is demonstrable at
       MPS-0 and persistence is not; a single item would have had to be part-claimed.
-  - id: MPS-MAT-005
+  - id: MPS-MAT-005A
     checkpoint: MPS-1
     item: >-
-      Constraints, typesystems, editors, and negative model tests pass, including
-      demonstrated rejection of deliberately invalid nodes.
+      Foundation and governance constraints, typesystems, editors, and negative model
+      tests pass, including demonstrated rejection of deliberately invalid nodes.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-005B
+    checkpoint: MPS-2
+    item: >-
+      Clinical-intent and realization constraints, typesystems, editors, and negative
+      model tests pass, including demonstrated rejection of deliberately invalid nodes.
     status: pending
     evidence: []
   - id: MPS-MAT-006

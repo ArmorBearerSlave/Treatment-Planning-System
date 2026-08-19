@@ -4,7 +4,8 @@
 The plan's value is the review boundary between checkpoints. This gate keeps that
 boundary enforceable rather than aspirational:
 
-  * every acceptance item belongs to exactly one checkpoint and is referenced by it;
+  * every acceptance item belongs to exactly one checkpoint and is referenced only by it;
+  * the package status follows from acceptance-item state rather than being asserted;
   * only the final checkpoint may contain HLR roots, so the first live-MPS commit
     cannot carry the corpus import;
   * the workspace requirement matches the relocation decision;
@@ -59,6 +60,23 @@ def check() -> list[str]:
     if not pinned.get("build"):
         errors.append("pinned_toolchain.build must record the exact MPS build")
 
+    statuses = {item.get("status") for item in plan.get("acceptance_items", [])}
+    complete_count = sum(
+        1 for item in plan.get("acceptance_items", []) if item.get("status") == "complete"
+    )
+    total_count = len(plan.get("acceptance_items", []))
+    if total_count and complete_count == total_count:
+        expected_status = "complete"
+    elif complete_count or statuses - {"pending"}:
+        expected_status = "in_progress"
+    else:
+        expected_status = "not_started"
+    if plan.get("status") != expected_status:
+        errors.append(
+            f"package status is {plan.get('status')!r} but acceptance-item state implies "
+            f"{expected_status!r} ({complete_count} of {total_count} complete)"
+        )
+
     checkpoints = plan.get("checkpoints", [])
     ids = [entry["id"] for entry in checkpoints]
     if ids != EXPECTED_CHECKPOINTS:
@@ -90,15 +108,23 @@ def check() -> list[str]:
     for item in items:
         item_id = item["id"]
         checkpoint = item.get("checkpoint")
+        owners = referenced.get(item_id, [])
         if checkpoint not in EXPECTED_CHECKPOINTS:
             errors.append(f"{item_id} declares unknown checkpoint {checkpoint!r}")
-        elif checkpoint not in referenced.get(item_id, []):
-            errors.append(
-                f"{item_id} declares checkpoint {checkpoint} but that checkpoint does "
-                f"not reference it"
-            )
-        if item_id not in referenced:
+        if not owners:
             errors.append(f"{item_id} is not referenced by any checkpoint")
+        elif len(owners) > 1:
+            # Shared ownership means neither checkpoint can be closed on its own,
+            # which removes the review boundary the checkpoints exist to create.
+            errors.append(
+                f"{item_id} is referenced by {sorted(owners)}; an acceptance item belongs "
+                f"to exactly one checkpoint"
+            )
+        elif owners[0] != checkpoint:
+            errors.append(
+                f"{item_id} declares checkpoint {checkpoint} but is referenced by "
+                f"{owners[0]}"
+            )
         if item.get("status") not in {"pending", "complete", "blocked"}:
             errors.append(f"{item_id} has unsupported status {item.get('status')!r}")
         if item.get("status") == "complete" and not item.get("evidence"):

@@ -1,0 +1,644 @@
+schema_version: "0.1"
+register_id: MPS1-CF-001
+title: MPS-1 and MPS-2 concept feature specification
+status: proposed_pending_accountable_review
+decision: ADR-001
+architecture_baseline: ENG-PKG-01-v0.6
+implementation_state: specification_not_live_mps_serialization
+
+purpose: >-
+  The language skeleton names 30 concepts for foundation and governance but stops at the
+  name. Superconcept, properties, children, references, cardinalities, datatypes, and
+  editor projection would otherwise be decided interactively in MPS, one dialog at a
+  time, with no controlled record of why. This file fixes those choices before the first
+  concept is created so MPS-1 is transcription against a reviewed design rather than
+  design at the keyboard.
+
+authority: >-
+  Proposed. Nothing here is approved, and creating a concept in MPS does not approve it.
+  Every enumeration value is drawn from an existing controlled source; where a value had
+  no source it is marked source: proposed so review can see exactly what is new.
+
+extends_discipline: >-
+  A concept may declare a superconcept only from its own language or from a language its
+  module declares with kind EXTENDS in language-skeleton.json. Foundation is the only
+  EXTENDS target in the graph, so every governance, clinical-intent, and realization
+  concept roots in GovernedElement, never in a governance concept from another language.
+  Upgrading a DEFAULT dependency to EXTENDS is a controlled blueprint change.
+
+datatypes:
+  - name: LifecycleStateEnum
+    kind: enumeration
+    source: spec/architecture.yaml lifecycle vocabulary
+    values: [draft, proposed, reviewed, approved, effective, superseded, retired, withdrawn]
+  - name: AuthorityClassEnum
+    kind: enumeration
+    source: NL_TPS_Monthly_QA_Integration_Profile authority classes; ConOps evidence tiers
+    values:
+      - patient_specific_authority
+      - protocol_authority
+      - institutional_standard
+      - institutional_procedure
+      - professional_guidance
+      - technical_guidance
+      - authoritative_qa_record
+      - commissioning_evidence
+      - peer_reviewed_evidence
+      - retrieval_evidence
+      - derived_analytics
+  - name: DoseBasisEnum
+    kind: enumeration
+    source: ConOps dose-constraint safety rule
+    values: [physical_absorbed, rbe_weighted, bed, eqd2, not_applicable]
+    note: >-
+      physical_absorbed and rbe_weighted are never implicitly interchangeable. bed and
+      eqd2 are representable only so a rule can state that it uses them; conversion
+      requires an approved, visible method.
+  - name: DimensionEnum
+    kind: enumeration
+    source: proposed
+    values: [dose, length, mass, time, energy, count, fraction, percentage, dimensionless]
+  - name: DomainEnum
+    kind: enumeration
+    source: spec/requirements.yaml canonical HLR domains
+    values: [GOV, SAF, NLI, EVD, CLN, PLN, REV, DAT, AIM, HFE, SEC, OPS, VAL, ACC]
+  - name: RequirementCategoryEnum
+    kind: enumeration
+    source: spec/quality_attributes.yaml authoritative F/SA/O view
+    values:
+      - functional
+      - cross_cutting_safety_and_assurance_constraint
+      - operational
+  - name: VerificationMethodEnum
+    kind: enumeration
+    source: NL_TPS_Verification_Validation_Check_Matrix methods
+    values: [I, T, A, D, HFE]
+  - name: TraceRelationEnum
+    kind: enumeration
+    source: ADR-001 trace_relations
+    values:
+      - DERIVES_FROM
+      - DECOMPOSES
+      - ALLOCATED_TO
+      - REALIZED_BY
+      - MITIGATES
+      - VERIFIED_BY
+      - EVIDENCED_BY
+      - DEPENDS_ON
+      - INVALIDATES
+      - SUPERSEDES
+      - APPLIES_TO
+      - APPROVED_BY
+  - name: ApprovalStateEnum
+    kind: enumeration
+    source: spec/decisions.yaml approval_state
+    values: [pending_named_approval, approved, withdrawn]
+  - name: RiskControlTypeEnum
+    kind: enumeration
+    source: ISO 14971 risk control option order
+    values: [inherent_safety_by_design, protective_measure, information_for_safety]
+
+languages:
+
+  nltps.foundation:
+    concepts:
+
+      - name: GovernedElement
+        rootable: false
+        abstract: true
+        superconcept: BaseConcept
+        intent: >-
+          Base of everything the model governs. Carries identity, version, lifecycle, and
+          provenance so no subconcept can omit them.
+        properties: []
+        children:
+          - {name: identifier, target: StableId, cardinality: "1"}
+          - {name: version, target: Version, cardinality: "1"}
+          - {name: aliases, target: Alias, cardinality: "0..n"}
+          - {name: provenance, target: ProvenanceRef, cardinality: "0..n"}
+        references:
+          - {name: lifecycleState, target: LifecycleState, cardinality: "1"}
+          - {name: authorityClass, target: AuthorityClass, cardinality: "0..1"}
+        editor: "[- <identifier> <version> (<lifecycleState>) -]"
+        constraints: [FND-C-001, FND-C-002]
+
+      - name: StableId
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: The immutable identifier a governed element keeps across versions.
+        properties:
+          - {name: value, type: string, cardinality: "1", pattern: "^[A-Z][A-Z0-9-]{2,}$"}
+          - {name: namespace, type: string, cardinality: "0..1"}
+        children: []
+        references: []
+        editor: "<namespace>:<value>"
+        constraints: [FND-C-001]
+
+      - name: Alias
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          A retired or parallel identifier preserved for trace compatibility, such as the
+          HNFR, NFSR, and NFC identifiers kept by the classification migration.
+        properties:
+          - {name: value, type: string, cardinality: "1"}
+          - {name: scheme, type: string, cardinality: "1"}
+          - {name: retired, type: boolean, cardinality: "1", default: false}
+        children: []
+        references: []
+        editor: "alias <scheme>:<value>"
+        constraints: []
+
+      - name: Version
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: Explicit version and effectivity for a governed element.
+        properties:
+          - {name: value, type: string, cardinality: "1", pattern: "^[0-9]+\\.[0-9]+$"}
+          - {name: effectiveDate, type: date, cardinality: "0..1"}
+          - {name: supersededDate, type: date, cardinality: "0..1"}
+        children: []
+        references: []
+        editor: "v<value>"
+        constraints: [FND-C-002]
+
+      - name: LifecycleState
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: One state in the controlled lifecycle vocabulary.
+        properties:
+          - {name: state, type: LifecycleStateEnum, cardinality: "1"}
+          - {name: ordinal, type: integer, cardinality: "1"}
+          - {name: terminal, type: boolean, cardinality: "1", default: false}
+        children: []
+        references: []
+        editor: "<state>"
+        constraints: []
+
+      - name: AuthorityClass
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          The authority tier a governed element carries, used for conflict precedence.
+        properties:
+          - {name: authority, type: AuthorityClassEnum, cardinality: "1"}
+          - {name: rank, type: integer, cardinality: "1"}
+          - {name: description, type: string, cardinality: "0..1"}
+        children: []
+        references: []
+        editor: "<authority> (rank <rank>)"
+        constraints: []
+
+      - name: PhysicalQuantity
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          A magnitude that always carries its unit and, for dose, its basis. Dimensionless
+          numbers are not modelled with this concept.
+        properties:
+          - {name: magnitude, type: real, cardinality: "1"}
+          - {name: doseBasis, type: DoseBasisEnum, cardinality: "1", default: not_applicable}
+        children: []
+        references:
+          - {name: unit, target: Unit, cardinality: "1"}
+        editor: "<magnitude> <unit> [<doseBasis>]"
+        constraints: [FND-C-003, FND-C-004]
+
+      - name: Unit
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: A unit of measure with an explicit dimension.
+        properties:
+          - {name: symbol, type: string, cardinality: "1"}
+          - {name: dimension, type: DimensionEnum, cardinality: "1"}
+          - {name: doseBasis, type: DoseBasisEnum, cardinality: "1", default: not_applicable}
+        children: []
+        references: []
+        editor: "<symbol>"
+        constraints: [FND-C-003, FND-C-004]
+
+      - name: ProvenanceRef
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          Binds a governed element to the controlled source it was mirrored from, by path,
+          line, and content hash, so Stage B equivalence is checkable.
+        properties:
+          - {name: sourcePath, type: string, cardinality: "1"}
+          - {name: sourceLine, type: integer, cardinality: "0..1"}
+          - {name: sha256, type: string, cardinality: "1", pattern: "^[0-9a-f]{64}$"}
+        children: []
+        references: []
+        editor: "<sourcePath>:<sourceLine> #<sha256>"
+        constraints: []
+
+      - name: ExternalReference
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          A citation to a source outside the model, such as a standard, guideline, or
+          vendor conformance statement.
+        properties:
+          - {name: title, type: string, cardinality: "1"}
+          - {name: locator, type: string, cardinality: "1"}
+          - {name: edition, type: string, cardinality: "0..1"}
+          - {name: retrievedDate, type: date, cardinality: "0..1"}
+          - {name: integrityValue, type: string, cardinality: "0..1"}
+        children: []
+        references: []
+        editor: "<title> [<edition>] <locator>"
+        constraints: []
+
+      - name: AuthorityVocabulary
+        rootable: true
+        abstract: false
+        superconcept: BaseConcept
+        intent: File-per-root container for the controlled authority classes.
+        properties:
+          - {name: name, type: string, cardinality: "1"}
+        children:
+          - {name: classes, target: AuthorityClass, cardinality: "0..n"}
+        references: []
+        editor: "authority vocabulary <name> { <classes> }"
+        constraints: []
+
+      - name: UnitCatalog
+        rootable: true
+        abstract: false
+        superconcept: BaseConcept
+        intent: File-per-root container for the controlled units.
+        properties:
+          - {name: name, type: string, cardinality: "1"}
+        children:
+          - {name: units, target: Unit, cardinality: "0..n"}
+        references: []
+        editor: "unit catalog <name> { <units> }"
+        constraints: [FND-C-004]
+
+      - name: LifecycleVocabulary
+        rootable: true
+        abstract: false
+        superconcept: BaseConcept
+        intent: File-per-root container for the controlled lifecycle states.
+        properties:
+          - {name: name, type: string, cardinality: "1"}
+        children:
+          - {name: states, target: LifecycleState, cardinality: "0..n"}
+        references: []
+        editor: "lifecycle vocabulary <name> { <states> }"
+        constraints: []
+
+    constraints:
+      - id: FND-C-001
+        statement: Stable identifiers are globally unique within a baseline.
+        source_constraint: stable IDs are globally unique within a baseline
+        negative_example: Two GovernedElements whose StableId.value is SAF-001.
+      - id: FND-C-002
+        statement: A governed element has an explicit version.
+        source_constraint: versions are explicit for governed elements
+        negative_example: A Requirement whose Version child is absent or empty.
+      - id: FND-C-003
+        statement: A physical quantity references a unit of a compatible dimension.
+        source_constraint: physical quantities reference a compatible unit
+        negative_example: A PhysicalQuantity of dimension dose referencing a unit of mm.
+      - id: FND-C-004
+        statement: >-
+          Physical absorbed dose and RBE-weighted dose are not implicitly interchangeable.
+          A comparison or assignment across bases fails typing.
+        source_constraint: physical and RBE-weighted dose are not implicitly interchangeable
+        negative_example: >-
+          Comparing a PhysicalQuantity with doseBasis physical_absorbed against one with
+          doseBasis rbe_weighted.
+
+  nltps.governance:
+    concepts:
+
+      - name: StakeholderNeed
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: An operational need from the ConOps that requirements derive from.
+        properties:
+          - {name: statement, type: string, cardinality: "1"}
+          - {name: stakeholder, type: string, cardinality: "1"}
+        children: []
+        references: []
+        editor: "need <identifier>: <statement> (<stakeholder>)"
+        constraints: []
+
+      - name: Requirement
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: A normative obligation on the system or the operating program.
+        properties:
+          - {name: statement, type: string, cardinality: "1"}
+          - {name: domain, type: DomainEnum, cardinality: "1"}
+          - {name: category, type: RequirementCategoryEnum, cardinality: "1"}
+          - {name: verificationMethods, type: VerificationMethodEnum, cardinality: "1..n"}
+        children: []
+        references:
+          - {name: hazards, target: Hazard, cardinality: "0..n"}
+          - {name: derivesFrom, target: StakeholderNeed, cardinality: "0..n"}
+        editor: "<identifier> [<domain>/<category>] <statement> -- verify <verificationMethods>"
+        constraints: [GOV-C-001]
+
+      - name: RequirementPattern
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: >-
+          The controlled decomposition rule that produces derived children, so the regular
+          three-child expansion is one reviewed pattern rather than repeated prose.
+        properties:
+          - {name: patternId, type: string, cardinality: "1", pattern: "^PAT-[A-Z]+-[0-9]{2}$"}
+          - {name: childSuffixTemplate, type: string, cardinality: "1"}
+          - {name: childCount, type: integer, cardinality: "1"}
+          - {name: emphasis, type: string, cardinality: "1..n"}
+        children: []
+        references: []
+        editor: "pattern <patternId> x<childCount> -> <childSuffixTemplate>"
+        constraints: [GOV-C-005]
+
+      - name: DerivedRequirement
+        rootable: false
+        abstract: false
+        superconcept: Requirement
+        intent: >-
+          A requirement produced by a pattern rather than authored. Its identifier is a
+          deterministic function of parent and pattern, never typed by hand.
+        properties:
+          - {name: derivedIndex, type: integer, cardinality: "1"}
+        children: []
+        references:
+          - {name: parent, target: Requirement, cardinality: "1"}
+          - {name: pattern, target: RequirementPattern, cardinality: "1"}
+        editor: "<identifier> (derived <derivedIndex> of <pattern>) <statement>"
+        constraints: [GOV-C-001, GOV-C-005]
+
+      - name: RequirementOverride
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: >-
+          The controlled escape from pattern derivation. Exists so a bespoke child is
+          visible as a decision with a rationale and an approver, not as silent drift.
+        properties:
+          - {name: rationale, type: string, cardinality: "1", minLength: 20}
+          - {name: approvalState, type: ApprovalStateEnum, cardinality: "1"}
+          - {name: overrideText, type: string, cardinality: "1"}
+        children: []
+        references:
+          - {name: target, target: DerivedRequirement, cardinality: "1"}
+          - {name: approver, target: GovernedElement, cardinality: "0..1"}
+        editor: "override <target> because <rationale> [<approvalState>]"
+        constraints: [GOV-C-006]
+
+      - name: Hazard
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: A potential source of harm, mirrored from the ConOps hazard analysis.
+        properties:
+          - {name: hazardId, type: string, cardinality: "1", pattern: "^H-[0-9]{2}$"}
+          - {name: description, type: string, cardinality: "1"}
+          - {name: harm, type: string, cardinality: "1"}
+        children: []
+        references: []
+        editor: "<hazardId> <description> -> harm: <harm>"
+        constraints: []
+
+      - name: HazardousSituation
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: >-
+          The circumstance in which a hazard exposes people to harm. Separated from Hazard
+          so exposure and sequence are stated rather than implied.
+        properties:
+          - {name: sequenceOfEvents, type: string, cardinality: "1"}
+          - {name: exposureCondition, type: string, cardinality: "1"}
+        children: []
+        references:
+          - {name: hazard, target: Hazard, cardinality: "1"}
+        editor: "situation for <hazard>: <sequenceOfEvents>"
+        constraints: []
+
+      - name: RiskControl
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: A measure that reduces risk from one or more hazards.
+        properties:
+          - {name: controlType, type: RiskControlTypeEnum, cardinality: "1"}
+          - {name: statement, type: string, cardinality: "1"}
+        children: []
+        references:
+          - {name: mitigates, target: Hazard, cardinality: "1..n"}
+        editor: "control <identifier> [<controlType>] <statement> mitigates <mitigates>"
+        constraints: [GOV-C-003]
+
+      - name: Decision
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: A recorded engineering or governance decision with its alternatives.
+        properties:
+          - {name: question, type: string, cardinality: "1"}
+          - {name: outcome, type: string, cardinality: "0..1"}
+          - {name: approvalState, type: ApprovalStateEnum, cardinality: "1"}
+          - {name: alternativesConsidered, type: string, cardinality: "0..n"}
+        children: []
+        references:
+          - {name: owner, target: GovernedElement, cardinality: "0..1"}
+          - {name: blocks, target: GovernedElement, cardinality: "0..n"}
+        editor: "decision <identifier>: <question> => <outcome> [<approvalState>]"
+        constraints: []
+
+      - name: ApprovalGate
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: >-
+          A point where named human authority is required. Models the requirement for an
+          approval; it never represents an approval being given.
+        properties:
+          - {name: gateName, type: string, cardinality: "1"}
+          - {name: requiredRoles, type: string, cardinality: "1..n"}
+          - {name: separationOfDutiesRequired, type: boolean, cardinality: "1", default: true}
+        children: []
+        references: []
+        editor: "approval gate <gateName> requires <requiredRoles>"
+        constraints: [GOV-C-007]
+
+      - name: ReleaseGate
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: One of the staged release gates, with the evidence it requires.
+        properties:
+          - {name: gateNumber, type: integer, cardinality: "1", range: "0..5"}
+          - {name: gateName, type: string, cardinality: "1"}
+          - {name: minimumEvidence, type: string, cardinality: "1..n"}
+        children: []
+        references:
+          - {name: blockedBy, target: Decision, cardinality: "0..n"}
+        editor: "gate <gateNumber> <gateName> requires <minimumEvidence>"
+        constraints: []
+
+      - name: TraceRelation
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: >-
+          A relation kind with its permitted source and target concepts. Making the
+          relation a governed node is what lets the constraint reject a wrong direction
+          instead of accepting free text.
+        properties:
+          - {name: relation, type: TraceRelationEnum, cardinality: "1"}
+          - {name: allowedSourceConcepts, type: string, cardinality: "1..n"}
+          - {name: allowedTargetConcepts, type: string, cardinality: "1..n"}
+          - {name: sourceCardinality, type: string, cardinality: "1"}
+          - {name: targetCardinality, type: string, cardinality: "1"}
+        children: []
+        references: []
+        editor: "<relation>: <allowedSourceConcepts> -> <allowedTargetConcepts>"
+        constraints: [GOV-C-002]
+
+      - name: TraceLink
+        rootable: false
+        abstract: false
+        superconcept: GovernedElement
+        intent: One typed edge in the trace graph.
+        properties:
+          - {name: rationale, type: string, cardinality: "0..1"}
+        children: []
+        references:
+          - {name: relation, target: TraceRelation, cardinality: "1"}
+          - {name: source, target: GovernedElement, cardinality: "1"}
+          - {name: target, target: GovernedElement, cardinality: "1"}
+        editor: "<source> --<relation>--> <target>"
+        constraints: [GOV-C-002, GOV-C-003, GOV-C-004]
+
+      - name: RequirementBaseline
+        rootable: true
+        abstract: false
+        superconcept: GovernedElement
+        intent: File-per-root container for a versioned requirement set.
+        properties:
+          - {name: name, type: string, cardinality: "1"}
+        children:
+          - {name: needs, target: StakeholderNeed, cardinality: "0..n"}
+          - {name: requirements, target: Requirement, cardinality: "0..n"}
+          - {name: patterns, target: RequirementPattern, cardinality: "0..n"}
+          - {name: overrides, target: RequirementOverride, cardinality: "0..n"}
+        references: []
+        editor: "requirement baseline <name> <version> { <requirements> }"
+        constraints: []
+
+      - name: RiskBaseline
+        rootable: true
+        abstract: false
+        superconcept: GovernedElement
+        intent: File-per-root container for hazards, situations, and controls.
+        properties:
+          - {name: name, type: string, cardinality: "1"}
+        children:
+          - {name: hazards, target: Hazard, cardinality: "0..n"}
+          - {name: situations, target: HazardousSituation, cardinality: "0..n"}
+          - {name: controls, target: RiskControl, cardinality: "0..n"}
+        references: []
+        editor: "risk baseline <name> <version> { <hazards> <controls> }"
+        constraints: []
+
+      - name: DecisionBaseline
+        rootable: true
+        abstract: false
+        superconcept: GovernedElement
+        intent: File-per-root container for decisions and gates.
+        properties:
+          - {name: name, type: string, cardinality: "1"}
+        children:
+          - {name: decisions, target: Decision, cardinality: "0..n"}
+          - {name: approvalGates, target: ApprovalGate, cardinality: "0..n"}
+          - {name: releaseGates, target: ReleaseGate, cardinality: "0..n"}
+        references: []
+        editor: "decision baseline <name> <version> { <decisions> }"
+        constraints: []
+
+      - name: TraceGraph
+        rootable: true
+        abstract: false
+        superconcept: GovernedElement
+        intent: File-per-root container for the typed trace edges and relation kinds.
+        properties:
+          - {name: name, type: string, cardinality: "1"}
+        children:
+          - {name: relations, target: TraceRelation, cardinality: "0..n"}
+          - {name: links, target: TraceLink, cardinality: "0..n"}
+        references: []
+        editor: "trace graph <name> { <relations> <links> }"
+        constraints: [GOV-C-002]
+
+    constraints:
+      - id: GOV-C-001
+        statement: A normative requirement statement contains the word shall.
+        source_constraint: normative requirements contain shall
+        negative_example: A Requirement whose statement reads "The system should log."
+      - id: GOV-C-002
+        statement: >-
+          A TraceLink is valid only when its source and target concepts appear in the
+          referenced TraceRelation's allowed source and target lists.
+        source_constraint: TraceLink relation constrains source and target concepts
+        negative_example: A TraceLink whose source is a Hazard on a relation permitting only RiskControl.
+      - id: GOV-C-003
+        statement: RiskControl MITIGATES Hazard is permitted.
+        source_constraint: RiskControl MITIGATES Hazard is permitted
+        negative_example: none; this is the positive case that must not be rejected.
+      - id: GOV-C-004
+        statement: Hazard MITIGATES VerificationCase is rejected.
+        source_constraint: Hazard MITIGATES VerificationCase is rejected
+        negative_example: A TraceLink from Hazard to a verification entity using MITIGATES.
+      - id: GOV-C-005
+        statement: >-
+          A DerivedRequirement identifier is a deterministic function of its parent
+          identifier, its pattern, and its index, and is not hand-editable.
+        source_constraint: derived requirement IDs are deterministic
+        negative_example: A DerivedRequirement whose StableId does not match parent plus suffix.
+      - id: GOV-C-006
+        statement: A RequirementOverride carries a rationale and an approval state.
+        source_constraint: overrides require rationale and approval state
+        negative_example: A RequirementOverride with an empty rationale.
+      - id: GOV-C-007
+        statement: >-
+          An ApprovalGate models the requirement for human authority and can never be
+          satisfied by a model node, a generator, or an automated actor.
+        source_constraint: proposed, from ADR-001 mechanism and policy separation
+        negative_example: >-
+          An ApprovalGate whose required role resolves to a generated or automated actor.
+
+review_questions:
+  - Is GovernedElement the right base, or should identity and version be an interface
+    that root containers implement differently?
+  - Should PhysicalQuantity carry doseBasis, or should that live only on Unit?
+  - Is TraceRelation as a governed node with allowed-concept lists the right mechanism,
+    or should relation validity be expressed directly in the typesystem?
+  - Should DerivedRequirement extend Requirement, or reference it, given that MPS
+    inheritance will also inherit the shall constraint?
+  - Are ApprovalGate and ReleaseGate distinct concepts, or one concept with a kind?
+
+counts:
+  foundation_concepts: 13
+  governance_concepts: 17
+  total: 30
+  foundation_constraints: 4
+  governance_constraints: 7
