@@ -4,7 +4,7 @@
 \graphicspath{{figures/}{overleaf/figures/}}
 \hypersetup{
   pdftitle={NL-TPS Controlled Documentation Suite},
-  pdfsubject={ConOps; requirements; component realization; risk and mitigation; trade-off analysis; verification and validation; and engineering implementation planning}
+  pdfsubject={ConOps; requirements; component realization; risk and mitigation; trade-off analysis; verification and validation; engineering planning; and architecture decisions}
 }
 \makeatletter
 \renewcommand{\@pnumwidth}{3.0em}
@@ -29,13 +29,13 @@
 }
 
 \begin{document}
-\NLSetPageStyle{NL-TPS DOCUMENTATION SUITE}{ConOps through Engineering Implementation Planning - Version 0.1}
+\NLSetPageStyle{NL-TPS DOCUMENTATION SUITE}{ConOps through Architecture Decisions - Version 0.1}
 \NLTitleBlock{CONTROLLED DOCUMENTATION SUITE}{Natural-Language Treatment Planning System}{ConOps, requirements, interfaces, and component realization}{\begin{minipage}{0.95\textwidth}
 \NLMeta{Suite version}{0.1 - Discussion Draft}
 \NLMeta{Date}{19 August 2026}
-\NLMeta{Included documents}{16}
-\NLMeta{Trace chain}{ConOps $\rightarrow$ controlled ACR\slash\allowbreak{}APEx applicability profile $\rightarrow$ 119 HLRs $\rightarrow$ 357 HLIRs $\rightarrow$ 1,071 SIRs $\rightarrow$ 61 interface components; categorized 69 functional, 25 non-functional, and 25 operational HLRs $\rightarrow$ 357 sub-requirements $\rightarrow$ 78 category-scoped components; legacy 357 detailed requirements $\rightarrow$ 45 components; 2,088 risk records $\rightarrow$ 2,088 trade matrices; MQA-PKG-01 machine-QA realization profile $\rightarrow$ 2,144 planned V\&V checks $\rightarrow$ ENG-PKG-01 frozen nonclinical architecture baseline and staged implementation plan; 15 accountable teams}
-\end{minipage}}{This file compiles the sixteen separately controlled NL-TPS documents into one review copy. The constituent source files and standalone Overleaf entry points remain authoritative and independently compilable. Nothing in this combined view authorizes clinical use, establishes accreditation, approves machine readiness, approves an engineering or regulatory decision, represents a V\&V check as executed, or replaces institutional interpretation of ACR ROPA or ASTRO APEx criteria.}
+\NLMeta{Included documents}{17}
+\NLMeta{Trace chain}{ConOps $\rightarrow$ controlled ACR\slash\allowbreak{}APEx applicability profile $\rightarrow$ 119 HLRs $\rightarrow$ 357 HLIRs $\rightarrow$ 1,071 SIRs $\rightarrow$ 61 interface components; categorized 69 functional, 25 non-functional, and 25 operational HLRs $\rightarrow$ 357 sub-requirements $\rightarrow$ 78 category-scoped components; legacy 357 detailed requirements $\rightarrow$ 45 components; 2,088 risk records $\rightarrow$ 2,088 trade matrices; MQA-PKG-01 machine-QA realization profile $\rightarrow$ 2,144 planned V\&V checks $\rightarrow$ ENG-PKG-01 v0.3 nonclinical architecture baseline $\rightarrow$ ADR-001 MPS offline governance compiler with staged authority transition; Stage A 119-HLR mirror; 15 accountable teams}
+\end{minipage}}{This file compiles the seventeen separately controlled NL-TPS documents into one review copy. Until the ADR-001 Stage C cutover criteria and named approvals are complete, the existing constituent source files and standalone Overleaf entry points remain authoritative and independently compilable. Nothing in this combined view authorizes clinical use, establishes accreditation, approves machine readiness, completes an authority cutover, represents a V\&V check as executed, or replaces institutional interpretation of ACR ROPA or ASTRO APEx criteria.}
 
 \tableofcontents
 \clearpage
@@ -58,5 +58,6 @@
 \NLTPSIncludeDocument{Document XIV: Machine QA Evidence and Readiness Integration Profile}{overleaf/NL_TPS_Monthly_QA_Integration_Profile.tex}{machineqa}
 \NLTPSIncludeDocument{Document XV: Verification and Validation Check Matrix}{overleaf/NL_TPS_Verification_Validation_Check_Matrix.tex}{vvchecks}
 \NLTPSIncludeDocument{Document XVI: Engineering Architecture and MVP Implementation Plan}{overleaf/NL_TPS_Engineering_Architecture_and_MVP_Implementation_Plan.tex}{engineeringplan}
+\NLTPSIncludeDocument{Document XVII: ADR-001 - MPS Authority, Scope, and Runtime Boundary}{overleaf/NL_TPS_ADR_001_MPS_Authority_Scope_and_Runtime_Boundary.tex}{adr001}
 
 \end{document}

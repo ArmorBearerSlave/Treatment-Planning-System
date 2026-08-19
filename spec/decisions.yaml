@@ -1,0 +1,58 @@
+schema_version: "0.1"
+
+decisions:
+  - id: ADR-001
+    title: MPS Authority, Scope, and Runtime Boundary
+    version: "0.1"
+    date: "2026-08-19"
+    status: provisionally_accepted_for_controlled_nonclinical_implementation
+    authority_cutover_status: not_approved
+    owner: architecture_board_proposed
+    human_readable_source: overleaf/NL_TPS_ADR_001_MPS_Authority_Scope_and_Runtime_Boundary.tex
+    related_architecture_baselines:
+      - AB-002
+      - AB-003
+      - AB-004
+      - AB-008
+      - AB-011
+    partially_resolves:
+      - D-ENG-006
+    decision: >-
+      Use JetBrains MPS as the proposed offline governance compiler. After a
+      separately approved, field-specific Stage C cutover, MPS may become the
+      semantic source of truth for the approved structured normative scope.
+      The clinical runtime consumes only immutable, versioned,
+      integrity-verified release bundles and never depends on a live MPS
+      repository.
+    current_authority: existing_controlled_source_documents
+    permits_now:
+      - Stage A mirror implementation
+      - preparation and execution of Stage B equivalence checks
+      - four-language bootstrap specification
+      - deterministic 119-HLR import bundle generation
+      - synthetic nonclinical MPS model and generator experiments
+    does_not_permit:
+      - authority cutover
+      - patient data in MPS
+      - MPS in the clinical runtime path
+      - clinical use of a generated artifact
+      - approval, signature, release, transfer, or delivery by AI or MPS
+      - direct text editing of MPS persistence XML
+    required_languages:
+      - nltps.foundation
+      - nltps.governance
+      - nltps.clinicalintent
+      - nltps.realization
+    alternatives_considered:
+      - permanent document authority
+      - YAML or JSON as sole semantic source
+      - conventional requirements database as sole semantic source
+      - MPS in the clinical runtime
+      - MPS offline with staged authority transition
+    stage_c_approval_required_from:
+      - architecture decision owner
+      - clinical governance
+      - quality and configuration management
+      - independent verification and validation
+      - cybersecurity and privacy
+    recorded_approvals: []

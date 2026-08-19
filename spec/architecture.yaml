@@ -1,13 +1,13 @@
-schema_version: "0.1"
+schema_version: "0.2"
 
 baseline:
   id: ENG-PKG-01-ARCH
   document_id: ENG-PKG-01
-  version: "0.2"
+  version: "0.3"
   effective_date: "2026-08-19"
   status: frozen_nonclinical_implementation_baseline
   human_readable_source: overleaf/NL_TPS_Engineering_Architecture_and_MVP_Implementation_Plan.tex
-  source_baseline: NL-TPS controlled documentation suite v0.1, Documents I-XV
+  source_baseline: NL-TPS controlled documentation suite v0.1, Documents I-XV, plus ADR-001
   review_status: pending_named_accountable_reviews_for_release_gates
   supersedes: null
   authorization:
@@ -242,6 +242,78 @@ architecture_decisions:
       - model ownership versus model release authority
       - planning versus all independent checks
       - artifact generation versus all required approvals
+
+  - id: AB-011
+    name: offline_governance_compiler
+    status: baselined_for_controlled_nonclinical_implementation
+    decision_record: ADR-001
+    statement: >-
+      JetBrains MPS is the proposed offline governance compiler and, only after
+      controlled Stage C cutover, semantic source of truth for explicitly
+      approved structured normative content. MPS is not a clinical runtime
+      dependency and does not hold patient instances, make professional
+      decisions, calculate dose, or execute clinical-system mutations.
+    authority_now: existing_controlled_source_documents
+    runtime_consumes:
+      - immutable versioned release bundle
+      - integrity-verified approved policy and schemas
+    runtime_prohibits:
+      - live MPS repository dependency
+      - unapproved working model
+      - generated policy expanding compiled mechanism allowlists
+    mechanism_policy_boundary:
+      mechanism: hand_maintained_deterministic_runtime_code
+      policy: MPS_modeled_generated_versioned_and_approved
+    implementation_languages:
+      - nltps.foundation
+      - nltps.governance
+      - nltps.clinicalintent
+      - nltps.realization
+
+mps_authority_transition:
+  decision_record: ADR-001
+  current_stage: A_mirror
+  stages:
+    - id: A
+      name: mirror
+      authority: existing_controlled_source_documents
+      exit_requires:
+        - reproducible import
+        - exact expected counts and unique IDs
+        - exact normative source text preservation
+        - source and record hashes
+        - no silent conflict resolution
+    - id: B
+      name: equivalence
+      authority: existing_controlled_source_documents
+      exit_requires:
+        - approved equivalence report
+        - zero unexplained discrepancy
+        - tested reverse export
+        - rollback rehearsal
+    - id: C
+      name: governance_cutover
+      authority: field_and_scope_specific_by_approved_change_record
+      exit_requires:
+        - named accountable approvals
+        - effective authority register
+        - configuration and document control updates
+        - training and contingency acceptance
+    - id: D
+      name: generation
+      authority: approved_MPS_baseline_for_cutover_scope
+      exit_requires:
+        - reproducible headless build
+        - independent release verification
+        - signed manifest
+        - generated-source drift gate
+  engineering_controls:
+    - never hand-edit MPS persistence XML
+    - file-per-root for normative roots unless an exception is approved
+    - no patient data, clinical credentials, or signing keys in MPS or agent context
+    - agent changes require Git review, model validation, tests, and CI
+    - pin MPS and plugin versions for governed builds
+    - use an approved space-free project path for the experimental MPS agent toolkit
 
 release_constraints:
   gate_2_configuration:

@@ -1,2 +1,6 @@
 # Microsoft Office lock files
 ~$*.docx
+
+# Local LaTeX compilation and PDF visual-QA intermediates
+tmp/pdfs/
+$out/

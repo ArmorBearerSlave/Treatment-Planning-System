@@ -1,0 +1,223 @@
+{
+  "schema_version": "0.1",
+  "skeleton_version": "0.1",
+  "decision": "ADR-001",
+  "architecture_baseline": "ENG-PKG-01-v0.3",
+  "implementation_state": "blueprint_not_live_mps_serialization",
+  "target_toolchain": {
+    "mps_version": "2026.1",
+    "version_policy": "pin_exact_version_for_each_governed_build",
+    "agent_toolkit": "optional_experimental_engineering_aid",
+    "headless_build_required": true
+  },
+  "project": {
+    "name": "NLTPSGovernance",
+    "namespace_prefix": "nltps",
+    "default_model_persistence": "file-per-root",
+    "patient_data_permitted": false,
+    "clinical_credentials_permitted": false,
+    "direct_persistence_xml_edit_permitted": false
+  },
+  "languages": [
+    {
+      "name": "nltps.foundation",
+      "depends_on": [],
+      "owns": [
+        "stable identifiers and aliases",
+        "versions and lifecycle vocabulary",
+        "authority classes",
+        "physical quantities and units",
+        "provenance and external references"
+      ],
+      "root_concepts": [
+        "AuthorityVocabulary",
+        "UnitCatalog",
+        "LifecycleVocabulary"
+      ],
+      "concepts": [
+        "GovernedElement",
+        "StableId",
+        "Alias",
+        "Version",
+        "LifecycleState",
+        "AuthorityClass",
+        "PhysicalQuantity",
+        "Unit",
+        "ProvenanceRef",
+        "ExternalReference"
+      ],
+      "required_constraints": [
+        "stable IDs are globally unique within a baseline",
+        "versions are explicit for governed elements",
+        "physical quantities reference a compatible unit",
+        "physical and RBE-weighted dose are not implicitly interchangeable"
+      ]
+    },
+    {
+      "name": "nltps.governance",
+      "depends_on": [
+        "nltps.foundation"
+      ],
+      "owns": [
+        "requirements and requirement patterns",
+        "hazards and risk controls",
+        "decisions and approval gates",
+        "typed traceability and release gates"
+      ],
+      "root_concepts": [
+        "RequirementBaseline",
+        "RiskBaseline",
+        "DecisionBaseline",
+        "TraceGraph"
+      ],
+      "concepts": [
+        "StakeholderNeed",
+        "Requirement",
+        "RequirementPattern",
+        "DerivedRequirement",
+        "RequirementOverride",
+        "Hazard",
+        "HazardousSituation",
+        "RiskControl",
+        "Decision",
+        "ApprovalGate",
+        "ReleaseGate",
+        "TraceLink",
+        "TraceRelation"
+      ],
+      "required_constraints": [
+        "normative requirements contain shall",
+        "TraceLink relation constrains source and target concepts",
+        "RiskControl MITIGATES Hazard is permitted",
+        "Hazard MITIGATES VerificationCase is rejected",
+        "derived requirement IDs are deterministic",
+        "overrides require rationale and approval state"
+      ]
+    },
+    {
+      "name": "nltps.clinicalintent",
+      "depends_on": [
+        "nltps.foundation",
+        "nltps.governance"
+      ],
+      "owns": [
+        "PlanIntent definition",
+        "roles, permissions, and modes",
+        "state transitions and computable rules",
+        "release profiles and commissioned-use envelopes"
+      ],
+      "root_concepts": [
+        "PlanIntentDefinition",
+        "AuthorityPolicy",
+        "WorkflowDefinition",
+        "ReleaseProfile"
+      ],
+      "concepts": [
+        "PlanIntentDefinition",
+        "ActionDefinition",
+        "ClinicalObjectType",
+        "ConstraintDefinition",
+        "RobustnessScenarioDefinition",
+        "Role",
+        "Permission",
+        "OperatingMode",
+        "WorkflowState",
+        "StateTransition",
+        "ComputableRule",
+        "EvidenceProfile",
+        "ReleaseProfile",
+        "CommissionedUseEnvelope",
+        "ModelProfile",
+        "MachineProfile"
+      ],
+      "required_constraints": [
+        "AI-creatable PlanIntent cannot represent A4 authority",
+        "state transitions have explicit source, target, actor, guard, and invalidation effects",
+        "release profiles bind intended use and commissioned scope",
+        "patient PlanIntent instances are prohibited from governance models"
+      ]
+    },
+    {
+      "name": "nltps.realization",
+      "depends_on": [
+        "nltps.foundation",
+        "nltps.governance",
+        "nltps.clinicalintent"
+      ],
+      "owns": [
+        "components and interface families",
+        "teams and allocations",
+        "verification claims and evidence expectations",
+        "external systems and adapter capabilities"
+      ],
+      "root_concepts": [
+        "ArchitectureRealization",
+        "InterfaceCatalog",
+        "VerificationBaseline",
+        "AdapterCatalog"
+      ],
+      "concepts": [
+        "Component",
+        "InterfaceFamily",
+        "InterfaceContract",
+        "Team",
+        "Allocation",
+        "VerificationClaim",
+        "AcceptanceCriterion",
+        "ExecutableSuiteRef",
+        "ManualEvidenceRef",
+        "EvidenceRequirement",
+        "ExternalSystem",
+        "AdapterCapability",
+        "ConfigurationBaseline"
+      ],
+      "required_constraints": [
+        "every realized obligation has an accountable owner",
+        "every VerificationClaim binds an executable suite or explicit manual evidence record",
+        "parent PASS is never inferred from child records",
+        "adapter capabilities declare read/write direction, trust zone, destination, and commissioned profile"
+      ]
+    }
+  ],
+  "trace_relations": [
+    "DERIVES_FROM",
+    "DECOMPOSES",
+    "ALLOCATED_TO",
+    "REALIZED_BY",
+    "MITIGATES",
+    "VERIFIED_BY",
+    "EVIDENCED_BY",
+    "DEPENDS_ON",
+    "INVALIDATES",
+    "SUPERSEDES",
+    "APPLIES_TO",
+    "APPROVED_BY"
+  ],
+  "initial_generators": [
+    "hlr-mirror-json",
+    "requirements-latex",
+    "traceability-json",
+    "release-profile-json",
+    "plan-intent-json-schema",
+    "vv-manifest-json",
+    "content-hash-manifest"
+  ],
+  "initial_test_families": [
+    "node-and-constraint-tests",
+    "typesystem-and-unit-tests",
+    "trace-relation-negative-tests",
+    "generator-golden-tests",
+    "migration-tests",
+    "generated-source-drift-test",
+    "ARCH-INVARIANT-001-no-language-equivalence"
+  ],
+  "materialization_acceptance": [
+    "all four language modules exist with the exact controlled names",
+    "module dependency graph is acyclic and matches this manifest",
+    "normative root models use file-per-root persistence",
+    "MPS model validation reports no error",
+    "invalid trace and unit examples fail at the intended node",
+    "the headless build and model tests run without the agent toolkit",
+    "no MPS persistence XML was hand-authored"
+  ]
+}

@@ -6,16 +6,16 @@
 }
 
 \begin{document}
-\NLSetPageStyle{NL-TPS ENGINEERING ARCHITECTURE AND MVP PLAN}{Controlled response to ConOps v0.1 and Documents II--XV}
+\NLSetPageStyle{NL-TPS ENGINEERING ARCHITECTURE AND MVP PLAN}{Controlled response to ConOps v0.1, Documents II--XV, and ADR-001}
 \fancyhead[R]{\small\bfseries\color{NLGOLD}ARCHITECTURE BASELINE}
 \NLTitleBlock{ENGINEERING RESPONSE AND IMPLEMENTATION PLAN}{Engineering Architecture and Minimum Viable Clinical Slice}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
-\NLMeta{Source baseline}{Controlled NL-TPS documentation suite v0.1, Documents I--XV}
+\NLMeta{Source baseline}{Controlled NL-TPS documentation suite v0.1, Documents I--XV, plus ADR-001}
 \NLMeta{Plan identifier}{ENG-PKG-01}
-\NLMeta{Document version}{0.2 - Engineering architecture baseline}
+\NLMeta{Document version}{0.3 - Engineering architecture baseline}
 \NLMeta{Date}{19 August 2026}
 \NLMeta{Status}{Frozen for controlled non-clinical implementation; no clinical or release authorization}
 \NLMeta{Planning horizon}{Platform Slice 0 (Machine QA) through one bounded candidate-planning slice}
-\end{minipage}}{This document proposes an engineering architecture and sequence. It does not change the intended use, supersede a controlled requirement, select a vendor, approve a regulatory strategy, commission an interface, authorize clinical use, approve machine readiness, or represent any verification or validation check as executed. Existing clinical systems, qualified professionals, institutional procedures, and release authorities remain controlling.}
+\end{minipage}}{This document proposes an engineering architecture and sequence. ADR-001 provisionally selects JetBrains MPS for the offline governance-compiler role only. This document does not change the intended use, supersede a controlled requirement, select a clinical-runtime vendor, approve a regulatory strategy, commission an interface, authorize clinical use, approve machine readiness, or represent any verification or validation check as executed. Existing clinical systems, qualified professionals, institutional procedures, and release authorities remain controlling.}
 
 \tableofcontents
 \clearpage
@@ -42,7 +42,7 @@ Document owner & NL-TPS Program; engineering ownership assigned to T-SYS with T-
 \addlinespace[2pt]
 Purpose & Convert the controlled documentation corpus into an implementable architecture, backlog policy, verification execution model, and staged delivery plan \\
 \addlinespace[2pt]
-Normative relationship & Documents I--XV remain normative within their approved scope. This plan proposes implementation decisions and records unresolved assumptions; it does not silently alter source requirements or allocations. \\
+Normative relationship & Documents I--XV remain normative within their approved scope. ADR-001 controls the proposed MPS engineering role but does not complete the authority cutover. This plan records implementation decisions and unresolved assumptions; it does not silently alter source requirements or allocations. \\
 \addlinespace[2pt]
 Change authority & Clinical governance, system engineering, qualified medical physics authority, quality management, security/privacy, interface control, independent V\&V, and regulatory/legal review as applicable \\
 \addlinespace[2pt]
@@ -70,7 +70,7 @@ The language model is never the deciding authority. \textbf{ARCH-INVARIANT-001 (
 
 \subsection{Purpose}
 
-This document answers how to begin building the NL-TPS while preserving the boundaries, traceability, risk controls, and human authority established by the controlled suite. It baselines the architecture interpretation, the \texttt{PlanIntent}, \texttt{ProfessionalDecision}, \texttt{KernelDecisionRecord}, and \texttt{ExecutionCapability} contracts, technology evaluation criteria, a build sequence, engineering translations of the release gates, a specification-as-data migration, a V\&V execution model, and the decisions that must be resolved before clinical scope expands.
+This document answers how to begin building the NL-TPS while preserving the boundaries, traceability, risk controls, and human authority established by the controlled suite. It baselines the architecture interpretation, the \texttt{PlanIntent}, \texttt{ProfessionalDecision}, \texttt{KernelDecisionRecord}, and \texttt{ExecutionCapability} contracts, technology evaluation criteria, a build sequence, engineering translations of the release gates, a specification-as-data migration, a V\&V execution model, and the decisions that must be resolved before clinical scope expands. ADR-001 adds MPS as the offline governance compiler with a staged, separately approved authority transition.
 
 \subsection{In scope}
 
@@ -112,7 +112,7 @@ Statements in this document use three statuses:
 \endfoot
 \bottomrule
 \endlastfoot
-Controlled fact & Directly represented in Documents I--XV or an approved institutional source & Preserve its identifier, authority, scope, and change process \\
+Controlled fact & Directly represented in Documents I--XV, ADR-001, or an approved institutional source & Preserve its identifier, authority, scope, and change process \\
 \addlinespace[2pt]
 Proposed decision & Recommended engineering direction requiring accountable approval & Record alternatives, risks, owner, decision date, and affected traces before implementation \\
 \addlinespace[2pt]
@@ -122,7 +122,7 @@ Planning assumption & Estimate or placeholder used to sequence work & Assign an 
 
 \section{Engineering architecture baseline freeze}
 
-Version 0.2 freezes the following interpretation as the implementation target for controlled non-clinical work. A change to one of these decisions requires a versioned architecture decision or change request, impact analysis across requirements, interfaces, components, hazards, tests, and documents, named review, and an approved effective version. The freeze constrains implementation; it does not approve clinical data use, commission a component or interface, authorize a release gate, or represent stakeholder concurrence that has not been recorded.
+Version 0.3 freezes the following interpretation as the implementation target for controlled non-clinical work. A change to one of these decisions requires a versioned architecture decision or change request, impact analysis across requirements, interfaces, components, hazards, tests, and documents, named review, and an approved effective version. The freeze constrains implementation; it does not approve clinical data use, commission a component or interface, authorize a release gate, or represent stakeholder concurrence that has not been recorded.
 
 \begin{small}
 \begin{longtable}{@{}L{0.14\textwidth}L{0.29\textwidth}L{0.47\textwidth}@{}}
@@ -158,6 +158,8 @@ AB-008 & Generic departmental primitives & The kernel implements Actor, Role, Au
 AB-009 & Build sequence & Machine QA is Platform Slice 0 for the universal governance stack. Patient-planning work begins with read-only context and comparison, then typed intent without execution, OAR drafting, and one bounded candidate-planning profile. \\
 \addlinespace[2pt]
 AB-010 & Accountability and independence & Fifteen teams are accountability domains, not a mandated headcount. The minimum organization may combine roles only where competency, capacity, separation of duties, and independent V\&V remain demonstrably protected. \\
+\addlinespace[2pt]
+AB-011 & Offline governance compiler & Under ADR-001, MPS models and generates governed semantics outside the clinical runtime. Existing documents remain authoritative through mirror and equivalence; MPS authority begins only for an explicitly approved Stage C scope. Runtime consumes approved immutable release bundles and never a live MPS repository. \\
 \end{longtable}
 \end{small}
 
@@ -447,6 +449,8 @@ Technology names below are candidates, not approved procurements or safety claim
 \endfoot
 \bottomrule
 \endlastfoot
+Governance compiler & JetBrains MPS 2026.1 or a later separately qualified pinned version, used offline under ADR-001 & Typed semantic graph, constraints/typesystem, projectional editors, generators, migrations, and structural agent access & Stage A/B equivalence; four-language boundary; reproducible headless build; file-per-root review; supported lifecycle; no patient data or live runtime dependency; named Stage C approval \\
+\addlinespace[2pt]
 Decision core & Python pure-function package; generated types; property, mutation, boundary, and risk-based structural coverage & Readability, rapid clinical review, mature schema/testing ecosystem & Deterministic build and results; prohibited dependencies; independent review; traceable coverage; performance and numeric-safety limits met \\
 \addlinespace[2pt]
 Contracts & JSON Schema with generated Pydantic and TypeScript bindings & One versioned definition and shared fixtures across kernel, API, and UI & Bidirectional conformance, canonical serialization, migration rules, negative corpus, and no silent unknown fields \\
@@ -595,11 +599,19 @@ The documents shall not be discarded. The proposed change is to establish a revi
 \end{longtable}
 \end{small}
 
+\subsection{MPS governance-compiler authority}
+
+ADR-001 selects MPS for the offline governance-compiler role and defines a four-stage transition: mirror, equivalence, governance cutover, and generation. The existing controlled documents remain authoritative during mirror and equivalence. MPS becomes authoritative only for the exact structured fields and scope named in a separately approved Stage C change record. Executed evidence, patient artifacts, commissioned calculations, and professional decisions remain in their assigned systems of record.
+
+The first four languages are \texttt{nltps.foundation}, \texttt{nltps.governance}, \texttt{nltps.clinicalintent}, and \texttt{nltps.realization}. Their implementation-neutral bootstrap manifest and the deterministic 119-HLR import bundle are maintained under \texttt{mps/}. MPS itself shall produce persistence files; text agents shall not hand-author or patch \texttt{.mps} XML.
+
+MPS-generated runtime inputs shall be packaged as immutable, versioned release bundles with model, generator, toolchain, approval, and content-hash provenance. The deterministic runtime implements safety mechanisms independently and consumes only approved policy and schemas. It never queries a live MPS repository.
+
 \subsection{Migration controls}
 
 \begin{enumerate}
 \item Parse the current documents into a candidate graph without changing any source document.
-\item Reconcile counts, exact text, aliases, allocations, risks, and V\&V mappings against Documents I--XV.
+\item Reconcile counts, exact text, aliases, allocations, risks, and V\&V mappings against Documents I--XV and the scope controlled by ADR-001.
 \item Review exceptions manually; prohibit automatic resolution of conflicting normative text.
 \item Generate comparison tables and prove byte- or field-level equivalence where feasible.
 \item Operate document and structured representations in parallel through an approved transition period.
@@ -788,7 +800,7 @@ D-ENG-004 & F/NF/O backlog authority and legacy/core migration policy & Before b
 \addlinespace[2pt]
 D-ENG-005 & Trust-zone deployment, signing, key custody, and network policy & Before integrated prototype & T-SEC/T-SYS & Threat model and pure kernel; no clinical credentials \\
 \addlinespace[2pt]
-D-ENG-006 & Technology selections and support model & Per slice & Architecture board & Time-boxed non-clinical evaluations against acceptance conditions \\
+D-ENG-006 & Remaining runtime technology selections and support model; ADR-001 resolves only the offline MPS governance-compiler direction & Per slice & Architecture board & Time-boxed non-clinical evaluations against acceptance conditions \\
 \addlinespace[2pt]
 D-ENG-007 & Hosting, data residency, retention, backup, and continuity & Gate 1 & T-OPS/T-SEC & Local synthetic environment and infrastructure design \\
 \addlinespace[2pt]
@@ -852,6 +864,7 @@ ENG-PKG-01 may advance beyond the controlled non-clinical architecture baseline 
 \item no unresolved high-consequence hazard or release blocker is hidden by a schedule, aggregate metric, model confidence, or structural trace result.
 \end{enumerate}
 
-Until those conditions are met, the frozen architecture may guide controlled non-clinical implementation but may not cross the applicable release gate. This document authorizes no clinical action, commissions nothing, and represents no V\&V check as executed.
+\enlargethispage{\baselineskip}
+Until then, this architecture authorizes controlled non-clinical implementation only; it authorizes no gate crossing, clinical action, commissioning, or executed V\&V claim.
 
 \end{document}

@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nltps.example/schemas/hlr-baseline.schema.json",
+  "title": "NL-TPS 119-HLR Stage A Mirror Bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_id",
+    "authority_stage",
+    "authoritative",
+    "source",
+    "expected_domain_counts",
+    "record_count",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "bundle_id": {
+      "const": "NLTPS-HLR-MIRROR-0.1"
+    },
+    "authority_stage": {
+      "const": "A_mirror"
+    },
+    "authoritative": {
+      "const": false
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "document_id",
+        "requirements_version",
+        "source_date",
+        "sha256"
+      ],
+      "properties": {
+        "path": {"type": "string"},
+        "document_id": {"const": "NL-TPS-HLR"},
+        "requirements_version": {"const": "0.1"},
+        "source_date": {"const": "2026-08-18"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "expected_domain_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "GOV", "SAF", "NLI", "EVD", "CLN", "PLN", "REV",
+        "DAT", "AIM", "HFE", "SEC", "OPS", "VAL", "ACC"
+      ],
+      "properties": {
+        "GOV": {"const": 7},
+        "SAF": {"const": 10},
+        "NLI": {"const": 8},
+        "EVD": {"const": 8},
+        "CLN": {"const": 9},
+        "PLN": {"const": 12},
+        "REV": {"const": 9},
+        "DAT": {"const": 10},
+        "AIM": {"const": 8},
+        "HFE": {"const": 6},
+        "SEC": {"const": 8},
+        "OPS": {"const": 7},
+        "VAL": {"const": 9},
+        "ACC": {"const": 8}
+      }
+    },
+    "record_count": {
+      "const": 119
+    },
+    "records": {
+      "type": "array",
+      "minItems": 119,
+      "maxItems": 119,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "domain",
+          "normative_text_latex",
+          "normative_text_plain",
+          "source_hazard_latex",
+          "source_hazard_plain",
+          "verification_methods",
+          "source_line",
+          "record_sha256"
+        ],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Z]{3}-[0-9]{3}$"},
+          "domain": {
+            "enum": [
+              "GOV", "SAF", "NLI", "EVD", "CLN", "PLN", "REV",
+              "DAT", "AIM", "HFE", "SEC", "OPS", "VAL", "ACC"
+            ]
+          },
+          "normative_text_latex": {"type": "string", "minLength": 1},
+          "normative_text_plain": {"type": "string", "minLength": 1},
+          "source_hazard_latex": {"type": "string", "minLength": 1},
+          "source_hazard_plain": {"type": "string", "minLength": 1},
+          "verification_methods": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"enum": ["I", "A", "T", "D", "HFE"]}
+          },
+          "source_line": {"type": "integer", "minimum": 1},
+          "record_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    }
+  }
+}

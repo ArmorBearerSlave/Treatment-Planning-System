@@ -1,0 +1,399 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage{nl_tps_common}
+\hypersetup{
+  pdftitle={ADR-001 - MPS Authority, Scope, and Runtime Boundary},
+  pdfsubject={NL-TPS architecture decision record for the offline governance compiler}
+}
+
+\begin{document}
+\NLSetPageStyle{NL-TPS ADR-001}{MPS Authority, Scope, and Runtime Boundary}
+\fancyhead[R]{\small\bfseries\color{NLGOLD}ARCHITECTURE DECISION}
+\NLTitleBlock{ARCHITECTURE DECISION RECORD}{ADR-001: MPS Authority, Scope, and Runtime Boundary}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
+\NLMeta{Decision identifier}{ADR-001}
+\NLMeta{Decision version}{0.1}
+\NLMeta{Date}{19 August 2026}
+\NLMeta{Status}{Provisionally accepted for controlled non-clinical implementation; authority cutover not approved}
+\NLMeta{Related baseline}{ENG-PKG-01 v0.3; AB-002, AB-003, AB-004, AB-008, and AB-011}
+\end{minipage}}{This decision controls an engineering and governance mechanism. It does not authorize patient data in MPS, clinical use, commissioning, plan approval, machine readiness, treatment transfer, or treatment delivery. Until the Stage C cutover criteria and named approvals are complete, the existing controlled source documents remain authoritative.}
+
+\tableofcontents
+\clearpage
+\ifdefined\NLTPSCombinedDocument\else\pagenumbering{arabic}\fi
+
+\NLFrontMatterSection{Document control}
+
+\begin{small}
+\begin{longtable}{@{}L{0.20\textwidth}L{0.70\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Controlled value} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Controlled value} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Decision owner & Architecture Board - proposed; named accountable owner and alternates require governance recording \\
+\addlinespace[2pt]
+Required reviewers & Systems engineering, clinical governance, quality, independent V\&V, safety/risk, cybersecurity, privacy, configuration management, software architecture, and affected clinical representatives \\
+\addlinespace[2pt]
+Decision scope & Offline specification authoring, semantic validation, generation, migration, and governed release packaging \\
+\addlinespace[2pt]
+Excluded scope & Clinical runtime, patient transactions, patient data, dose calculation, treatment delivery, professional decisions, executed evidence, and systems-of-record authority \\
+\addlinespace[2pt]
+Supersedes & None; this decision refines ENG-PKG-01 AB-002 and partially resolves D-ENG-006 for the governance-compiler role only \\
+\addlinespace[2pt]
+Recorded approvals & None in this document; provisional status is not evidence of named institutional approval \\
+\addlinespace[2pt]
+Next review & Before Stage B equivalence begins and before any MPS-generated artifact is used as an approved runtime input \\
+\end{longtable}
+\end{small}
+
+\NLFrontMatterSection{Decision summary}
+
+JetBrains MPS shall be adopted as the proposed \textbf{offline governance compiler} for NL-TPS. It shall model governed semantics, validate structural and domain constraints, and generate reviewable and machine-consumable artifacts. It shall not be placed in the patient-specific runtime path, hold patient instances, perform clinical calculations, make professional decisions, or serve as an online dependency of the deterministic safety kernel.
+
+Authority shall move only through four controlled stages: current documents to an MPS mirror; demonstrated equivalence; an explicitly approved governance cutover; and, only after cutover, generation of controlled human-readable and runtime artifacts from the MPS model. The present decision authorizes Stage A engineering and preparation for Stage B. It does not declare Stage C complete.
+
+The runtime shall consume only immutable, versioned, integrity-verified release bundles generated from an approved model baseline. Safety-critical mechanisms remain hand-maintained and independently verified. MPS supplies approved policy and semantic data; it does not generate arbitrary clinical behavior.
+
+\section{Context and problem statement}
+
+The NL-TPS corpus is already a large, interconnected assurance system: requirements, derived interface obligations, components, team allocations, risks, trade studies, V\&V claims, accreditation profiles, and implementation decisions. Much of the current prose is mechanically expanded, while the high-value engineering information lies in stable identifiers, normative statements, typed relationships, applicability, ownership, authority, and evidence expectations.
+
+The current Overleaf and source artifacts are human-reviewable and configuration controlled, but they do not by themselves prevent invalid trace relationships, inconsistent units, duplicate identifiers, unsupported lifecycle transitions, or divergence among repeated representations. Conversely, immediately declaring a new model authoritative would break the existing document-control chain before equivalence and rollback are proven.
+
+MPS is suited to direct abstract-syntax-tree authoring through concepts, properties, references, children, constraints, typesystems, editors, and generators. That capability is useful only if it is bounded from clinical runtime authority and introduced through controlled migration.
+
+\section{Decision}
+
+\subsection{Role of MPS}
+
+MPS shall provide the engineering and governance plane for:
+
+\begin{itemize}
+\item stable governed identifiers, versions, lifecycle state, provenance, and external references;
+\item requirements, hazards, risk controls, decisions, approval requirements, release gates, and typed traceability;
+\item definitions of PlanIntent, authority, roles, modes, state transitions, computable rules, physical quantities, units, and commissioned-use envelopes;
+\item components, interfaces, teams, allocations, V\&V claims, evidence requirements, adapters, and release profiles;
+\item structural validation, domain validation, deterministic derivation, document generation, runtime-schema generation, trace reports, migration, and release-bundle assembly.
+\end{itemize}
+
+MPS shall not provide:
+
+\begin{itemize}
+\item interactive availability required for an NL-TPS patient workflow;
+\item storage of patient images, registrations, structures, dose, plans, or patient-specific PlanIntent instances;
+\item prescription, approval, signature, attestation, QA waiver, return-to-service, release, transfer, or delivery authority;
+\item an independent dose engine, optimizer, DICOM system of record, audit ledger, or executed-evidence repository;
+\item a bypass around the deterministic Zone 1 kernel or token-gated Zone 2 execution boundary.
+\end{itemize}
+
+\subsection{Mechanism and policy separation}
+
+Safety mechanisms shall remain hand-maintained deterministic runtime code with independent tests and review. The initial mechanism set includes:
+
+\begin{itemize}
+\item \texttt{authorize()}, \texttt{assert\_context()}, and \texttt{validate\_state\_transition()};
+\item \texttt{validate\_release\_profile()} and \texttt{validate\_commissioned\_envelope()};
+\item \texttt{validate\_required\_approvals()} and \texttt{invalidate\_downstream()};
+\item \texttt{authorize\_export()} and \texttt{fail\_closed()}.
+\end{itemize}
+
+MPS may define and generate versioned policy consumed by those mechanisms: who may request which action, in which mode and state, for which profile and object version, under which dependencies and evidence, and with which approval requirements. Generated policy never expands the runtime mechanism's compiled allowlist and never grants A4 authority to AI or automation.
+
+\subsection{Runtime boundary}
+
+The engineering boundary is:
+
+\begin{center}
+\begin{minipage}{0.90\textwidth}
+\ttfamily\small
+MPS model baseline $\rightarrow$ validate $\rightarrow$ generate $\rightarrow$ review/approve $\rightarrow$ hash/sign release bundle\\
+\hfill runtime boundary\\
+release bundle $\rightarrow$ deterministic loader $\rightarrow$ Zone 1 kernel $\rightarrow$ capability-gated Zone 2 adapters $\rightarrow$ Zone 3 systems
+\end{minipage}
+\end{center}
+
+No runtime component shall query a live MPS repository or accept an unapproved working model. The bundle identifier and content hashes shall be bound into the runtime configuration, KernelDecisionRecord, ExecutionCapability where applicable, and audit evidence.
+
+\section{Authority transition}
+
+\begin{small}
+\begin{longtable}{@{}L{0.11\textwidth}L{0.16\textwidth}L{0.32\textwidth}L{0.31\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Stage} & \textbf{Authority} & \textbf{Permitted work} & \textbf{Exit control} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Stage} & \textbf{Authority} & \textbf{Permitted work} & \textbf{Exit control} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+A - Mirror & Existing controlled source documents & Import without altering source meaning; create typed nodes and links; report exceptions & Exact expected counts; unique IDs; source hashes; no silent conflict resolution; reproducible import \\
+\addlinespace[2pt]
+B - Equivalence & Existing controlled source documents & Compare IDs, exact normative text, domains, methods, allocations, risks, V\&V, and generated views & Approved equivalence report; zero unexplained discrepancy; tested round trip; rollback rehearsal \\
+\addlinespace[2pt]
+C - Governance cutover & Changes only after named cutover approval & Baselined MPS model becomes authoritative for explicitly listed structured normative content & Change record; accountable approvals; effective date; repository and document-control updates; training; contingency and rollback acceptance \\
+\addlinespace[2pt]
+D - Generation & Approved MPS baseline for the cutover scope & Generate documents, schemas, policies, profiles, trace matrices, and test manifests & Reproducible CI; signed manifest; independent release verification; generated-source drift gate \\
+\end{longtable}
+\end{small}
+
+Authority is field- and scope-specific. Executed test results remain authoritative only in the approved evidence repository; patient artifacts remain in clinical systems or approved runtime stores; dose remains attributable to the commissioned calculation source; professional decisions remain attributable to authenticated qualified people.
+
+\section{Initial language family}
+
+The first MPS project shall contain four composable languages. The names and first responsibility boundaries are controlled by this decision; detailed concept design remains subject to model review.
+
+\begin{small}
+\begin{longtable}{@{}L{0.22\textwidth}L{0.31\textwidth}L{0.37\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Language} & \textbf{Owns} & \textbf{Initial concepts and invariants} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Language} & \textbf{Owns} & \textbf{Initial concepts and invariants} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\texttt{nltps.foundation} & IDs, versions, lifecycle, authority vocabulary, quantities, units, provenance, and external references & \texttt{GovernedElement}, \texttt{StableId}, \texttt{Version}, \texttt{LifecycleState}, \texttt{AuthorityClass}, \texttt{PhysicalQuantity}, \texttt{Unit}, \texttt{ProvenanceRef}; globally unique IDs and dimensionally valid quantities \\
+\addlinespace[2pt]
+\texttt{nltps.governance} & Requirements, hazards, controls, approvals, decisions, release gates, and traceability & \texttt{Requirement}, \texttt{RequirementPattern}, \texttt{DerivedRequirement}, \texttt{Hazard}, \texttt{RiskControl}, \texttt{Decision}, \texttt{ApprovalGate}, \texttt{TraceLink}; relation-specific source/target constraints \\
+\addlinespace[2pt]
+\texttt{nltps.}\allowbreak\texttt{clinicalintent} & Planning-intent definitions, roles, permissions, modes, state transitions, computable rules, and commissioned scope & \texttt{PlanIntentDefinition}, \texttt{ActionDefinition}, \texttt{Role}, \texttt{Permission}, \texttt{OperatingMode}, \texttt{StateTransition}, \texttt{ComputableRule}, \texttt{ReleaseProfile}, \texttt{CommissionedUseEnvelope}; A4 is not representable as AI authority \\
+\addlinespace[2pt]
+\texttt{nltps.realization} & Components, interface families, teams, allocations, V\&V claims, evidence expectations, and adapters & \texttt{Component}, \texttt{InterfaceFamily}, \texttt{InterfaceContract}, \texttt{Team}, \texttt{Allocation}, \texttt{VerificationClaim}, \texttt{ExecutableSuiteRef}, \texttt{ManualEvidenceRef}, \texttt{ExternalSystem}, \texttt{AdapterCapability}; every realized obligation has an owner and verification binding \\
+\end{longtable}
+\end{small}
+
+Dependency direction shall be acyclic: foundation is independent; governance depends on foundation; clinicalintent depends on foundation and governance vocabulary where necessary; realization depends on foundation and governance and may reference clinicalintent definitions. Domain extensions such as proton, Machine QA, accreditation, and disease-site profiles shall extend these languages without moving their specific policy into the universal foundation.
+
+\section{Typed trace graph and deterministic derivation}
+
+\texttt{TraceLink} shall be a governed node, not free text. The initial relation vocabulary shall include \texttt{DERIVES\_FROM}, \texttt{DECOMPOSES}, \texttt{ALLOCATED\_TO}, \texttt{REALIZED\_BY}, \texttt{MITIGATES}, \texttt{VERIFIED\_BY}, \texttt{EVIDENCED\_BY}, \texttt{DEPENDS\_ON}, \texttt{INVALIDATES}, \texttt{SUPERSEDES}, \texttt{APPLIES\_TO}, and \texttt{APPROVED\_BY}. Each relation shall constrain allowed source and target concepts, lifecycle state, cardinality where applicable, rationale, status, and version.
+
+Mechanical decomposition shall be represented by controlled patterns. For each applicable HLR, the interface pattern may derive exactly three obligations - contract, runtime behavior, and evidence/conformance - with deterministic stable identifiers. Derived nodes shall not contain independently editable duplicate prose except through a controlled, justified \texttt{RequirementOverride}. Generation must preserve the original HLR and existing child identifiers during the migration period.
+
+\section{PlanIntent definitions, quantities, and release profiles}
+
+MPS shall define the PlanIntent language and generate its schema and typed bindings. Patient-specific PlanIntent instances shall live in the runtime record and audit system, never in the governance model. The language shall make ambiguity, unresolved information, conflicts, expected outputs, basis, context, and version bindings explicit; professional approval effects shall be excluded from AI-creatable intent.
+
+Physical quantities shall be typed rather than represented as arbitrary strings. Dose, RBE-weighted dose, length, energy, fraction count, percentage, and dimensionless values shall have explicit units and conversion policy. Dimensionally invalid comparisons or implicit conversion between physical and RBE-weighted dose shall fail model validation.
+
+\texttt{ReleaseProfile} is the modeled unit approved for runtime consumption. A generated release bundle shall, as applicable, contain:
+
+\begin{itemize}
+\item \texttt{release-profile.json}, \texttt{intent.schema.json}, and typed-binding manifests;
+\item \texttt{safety-policy.json}, \texttt{evidence-profile.json}, and \texttt{commissioned-envelope.json};
+\item \texttt{adapter-capabilities.json}, \texttt{model-registry.json}, and approved monitoring configuration;
+\item \texttt{requirements.json}, \texttt{traceability.json}, and \texttt{vv-manifest.json};
+\item \texttt{hashes.json}, build provenance, generator versions, MPS version, model-baseline ID, approval references, and signature metadata.
+\end{itemize}
+
+The runtime loader shall reject a missing, altered, expired, unsigned when signature is required, incompatible, unapproved, or out-of-scope bundle.
+
+\section{MPS engineering controls}
+
+\subsection{Structural agent access}
+
+The MPS Projectional Agent Toolkit may be used only as an engineering aid. It is not required to build or operate NL-TPS. Because JetBrains labels the toolkit experimental, its output is untrusted until normal model validation, tests, review, and CI succeed.
+
+Controls are:
+
+\begin{itemize}
+\item no direct text editing of MPS persistence XML;
+\item expose only necessary \texttt{mps\_mcp\_*} tools and bind the service locally;
+\item no patient data, production credentials, signing keys, or clinical-system access in the MPS project or agent context;
+\item all agent changes are attributable, reviewed through Git, and subject to the same checks as human changes;
+\item an agent cannot approve its own change, alter recorded professional authority, or suppress validation findings;
+\item pin the MPS and plugin versions for each governed build.
+\end{itemize}
+
+JetBrains documents a current toolkit limitation: if any open MPS project path contains a space, MCP calls fail. The present repository path contains spaces. Live agent-assisted MPS work shall therefore use an approved space-free working path or other verified vendor-supported remedy, while preserving a single reviewed Git history. This ADR does not authorize moving the repository or creating an unmanaged duplicate.
+
+\subsection{Persistence, version control, and migration}
+
+Normative root models shall use file-per-root persistence unless a documented exception is approved. This reduces merge scope and makes identifier-level review practical. Small enumerations and closely coupled configuration roots may remain grouped when that is the clearer review unit.
+
+A change to a language concept, constraint, typesystem rule, editor contract, generator, or migration is a governed product change. It requires a language-version decision, migration script where needed, migration tests, model impact report, regeneration, regression, and baseline approval. Generated output shall never be edited as the source of a normative change.
+
+\subsection{Reproducible build and CI}
+
+The release pipeline shall run without an interactive MPS session and shall:
+
+\begin{enumerate}
+\item load the pinned MPS project and dependencies;
+\item check all models and fail on errors;
+\item run node, constraints, typesystem, generator, editor where applicable, and migration tests;
+\item generate derived models and release artifacts deterministically;
+\item compare generated output with committed or approved snapshots;
+\item run runtime schema, kernel, trace-completeness, and architecture-invariant tests;
+\item assemble a release manifest, calculate hashes, and submit the candidate bundle for independent review and signing.
+\end{enumerate}
+
+CI shall fail on duplicate or orphan identifiers, invalid trace endpoints, missing owner or allocation, risk controls without hazards or evidence expectations, V\&V claims without execution/manual bindings, invalid unit relations, broken references, unapproved evidence sources, missing commissioned-use scope, prohibited write capability in a default profile, generated drift, unapplied migration, or an unapproved release profile. Structural PASS never implies clinical V\&V PASS.
+
+\section{Initial implementation increment}
+
+\subsection{Four-language bootstrap}
+
+The repository shall hold an implementation-neutral bootstrap specification for the four languages, their dependency direction, initial concepts, constraints, generators, tests, and acceptance criteria. An MPS-aware engineer or structurally connected agent shall materialize that specification in the live MPS repository. Generated \texttt{.mps} serialization shall be produced by MPS and shall not be hand-authored.
+
+\subsection{119-HLR mirror importer}
+
+The first importer shall read the controlled HLR LaTeX source and produce a deterministic, schema-validated intermediate bundle containing all 119 requirements. For each record it shall preserve the stable ID and exact LaTeX normative text, provide normalized review text, carry the domain, source/hazard field, verification methods, source line, and content hash, and record the source-file hash.
+
+Importer acceptance criteria are:
+
+\begin{itemize}
+\item exactly 119 unique records and exact domain counts of GOV 7, SAF 10, NLI 8, EVD 8, CLN 9, PLN 12, REV 9, DAT 10, AIM 8, HFE 6, SEC 8, OPS 7, VAL 9, and ACC 8;
+\item sequential IDs within each domain and no unrecognized verification method;
+\item every normative statement contains ``shall'' and retains its exact source field;
+\item repeated execution against unchanged source is byte-for-byte reproducible;
+\item check mode detects source or output drift and returns failure;
+\item MPS import creates one governed HLR root per record under file-per-root persistence, creates no derived HLIR/SIR node in this increment, and reports rather than resolves conflicts;
+\item a reverse export and comparison demonstrate ID, exact-text, domain, method, and record-count equivalence before Stage B exit.
+\end{itemize}
+
+The full 357/1,071 derived interface tree, components, teams, risk controls, V\&V claims, and profiles shall be imported only after the four-language metamodel and HLR mirror pass review. This keeps the first increment small enough to diagnose semantics rather than merely move document volume.
+
+\section{Alternatives and trade-off decision}
+
+\begin{small}
+\begin{longtable}{@{}L{0.21\textwidth}L{0.24\textwidth}L{0.24\textwidth}L{0.21\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Alternative} & \textbf{Benefits} & \textbf{Principal limitations} & \textbf{Disposition} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Alternative} & \textbf{Benefits} & \textbf{Principal limitations} & \textbf{Disposition} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Keep LaTeX/Word as the permanent semantic source & Familiar review and immediate Overleaf publication & Weak structural constraints; repeated prose and trace drift remain expensive & Retain as authority during Stages A/B; do not select as the target semantic compiler \\
+\addlinespace[2pt]
+Use plain YAML/JSON as the sole source & Simple CI and broad tooling & Relationships, domain editors, migrations, and semantic constraints become custom application code & Retain generated interchange and review formats; reject as sole authoring model \\
+\addlinespace[2pt]
+Use a conventional requirements database only & Mature records, workflows, and reporting & Limited domain-language composition, type rules, and generated runtime contracts without extensive customization & May remain an integration or evidence system; not selected for semantic compilation \\
+\addlinespace[2pt]
+Place MPS in the clinical runtime & Immediate access to live model semantics & Adds interactive IDE/toolchain availability, attack surface, and uncontrolled working-state risk to patient workflows & Rejected \\
+\addlinespace[2pt]
+MPS offline with staged cutover and immutable bundles & Typed graph, projectional editing, constraints, generation, migration, and clean runtime separation & Specialized skills, toolchain pinning, migration burden, and experimental-agent limitations & Selected provisionally for controlled non-clinical implementation \\
+\end{longtable}
+\end{small}
+
+\section{Risks and mitigations}
+
+\begin{small}
+\begin{longtable}{@{}L{0.13\textwidth}L{0.25\textwidth}L{0.34\textwidth}L{0.18\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Risk} & \textbf{Failure condition} & \textbf{Required mitigation and evidence} & \textbf{Release effect} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Risk} & \textbf{Failure condition} & \textbf{Required mitigation and evidence} & \textbf{Release effect} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+ADR1-R-01 & Silent authority switch creates conflicting sources of truth & Four-stage transition, field-level authority register, exact equivalence, named cutover, rollback rehearsal & Blocks Stage C \\
+\addlinespace[2pt]
+ADR1-R-02 & Model or generator defect produces unsafe policy & Typed constraints, negative corpus, generator snapshots, independent policy review, runtime mechanism allowlist, fail-closed loader & Blocks bundle approval \\
+\addlinespace[2pt]
+ADR1-R-03 & Generated artifact is altered or stale & Deterministic build, content hashes, signed manifest, drift check, runtime hash binding & Runtime rejects bundle \\
+\addlinespace[2pt]
+ADR1-R-04 & MPS becomes a runtime single point of failure & Offline-only architecture; committed approved bundle; tested rollback and continuity & Prohibits live MPS dependency \\
+\addlinespace[2pt]
+ADR1-R-05 & Agent corrupts model or expands scope & Structural tools only, minimum exposure, local bind, no PHI/credentials, Git review, validation, CI, separation of approval & Change rejected \\
+\addlinespace[2pt]
+ADR1-R-06 & Experimental toolkit or space-containing path causes unreliable edits & Pin version; approved space-free work path; non-agent workflow remains available; no direct XML edit & Blocks agent-assisted work, not model build \\
+\addlinespace[2pt]
+ADR1-R-07 & MPS specialist dependency exceeds program capacity & Four-language limit, documented concepts, paired ownership, training, reproducible headless build, succession plan & Blocks Stage C if unsupported \\
+\addlinespace[2pt]
+ADR1-R-08 & Language evolution invalidates governed baselines & Versioned language, migrations, migration tests, impact analysis, old-bundle retention and replay & Blocks baseline change \\
+\addlinespace[2pt]
+ADR1-R-09 & File-per-root creates noisy or misleading review & Stable roots, logical grouping exceptions, semantic diff/merge checks, reviewer training & Requires remediation before merge \\
+\addlinespace[2pt]
+ADR1-R-10 & Structured consistency is mistaken for clinical correctness & Explicit evidence-state semantics; no inferred PASS; independent clinical, physics, HFE, commissioning, and V\&V records & Prohibits clinical claim \\
+\end{longtable}
+\end{small}
+
+\section{Verification and acceptance}
+
+ADR-001 shall be considered implemented for Stage A only when:
+
+\begin{enumerate}
+\item this ADR, ENG-PKG-01, and the machine-readable decision and architecture records agree on scope and authority;
+\item the four-language bootstrap manifest passes dependency and concept-ownership checks;
+\item the HLR import bundle is reproducibly generated and validates exactly 119 records with the controlled domain distribution;
+\item no MPS persistence XML was hand-authored and the live-model materialization procedure is ready for structural execution in MPS;
+\item the current controlled documents remain visibly authoritative and no runtime consumes the mirror;
+\item source, generated artifacts, tools, and reports are version controlled and reviewed.
+\end{enumerate}
+
+Stage B and C require separate recorded evidence. Stage C cannot be inferred from an accepted ADR title, an imported model, a passing structural test, a generated PDF, or an architecture-board recommendation.
+
+\section{Rollback and supersession}
+
+Before Stage C, rollback is deletion or archival of the non-authoritative MPS mirror and continuation from the unchanged controlled documents. After Stage C, rollback shall use the last approved MPS model baseline and last approved signed release bundle, with an impact-assessed change record; reverting to document authority requires an explicit authority decision and reconciliation of changes made after cutover.
+
+This ADR may be superseded only by a later decision that explicitly identifies the replacement governance compiler, authority model, migration evidence, runtime boundary, affected baselines, and rollback path.
+
+\section{Official implementation references}
+
+These references describe MPS capabilities and limitations; they do not constitute clinical validation or supplier approval.
+
+\begin{itemize}
+\item \href{https://www.jetbrains.com/help/mps/structure.html}{JetBrains MPS, \emph{Structure}}.
+\item \href{https://www.jetbrains.com/help/mps/constraints.html}{JetBrains MPS, \emph{Constraints}}.
+\item \href{https://www.jetbrains.com/help/mps/typesystem.html}{JetBrains MPS, \emph{Typesystem}}.
+\item \href{https://www.jetbrains.com/help/mps/mps-projectional-agent-toolkit.html}{JetBrains MPS 2026.1, \emph{Projectional Agent Toolkit}}.
+\item \href{https://www.jetbrains.com/help/mps/project-tool-window.html}{JetBrains MPS, \emph{Project tool window and persistence}}.
+\item \href{https://www.jetbrains.com/help/mps/build-language.html}{JetBrains MPS, \emph{Build Language}}.
+\item \href{https://www.jetbrains.com/help/mps/testing-languages.html}{JetBrains MPS, \emph{Testing languages}}.
+\item \href{https://www.jetbrains.com/help/mps/migrations.html}{JetBrains MPS, \emph{Migrations}}.
+\end{itemize}
+
+\phantomsection
+\pdfbookmark[1]{Approval record}{adr001.approval}
+\section*{Approval record}
+
+\begin{small}
+\begin{longtable}{@{}L{0.24\textwidth}L{0.20\textwidth}L{0.18\textwidth}L{0.28\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Accountability} & \textbf{Name} & \textbf{Decision/date} & \textbf{Conditions or dissent} \\
+\midrule
+Architecture decision owner & TBD & Not recorded & Provisional non-clinical direction only \\
+\addlinespace[2pt]
+Clinical governance & TBD & Not recorded & Required before authority cutover \\
+\addlinespace[2pt]
+Quality/configuration management & TBD & Not recorded & Required before authority cutover \\
+\addlinespace[2pt]
+Independent V\&V & TBD & Not recorded & Equivalence evidence review required \\
+\addlinespace[2pt]
+Cybersecurity/privacy & TBD & Not recorded & Required before agent tooling or governed build environment approval \\
+\bottomrule
+\end{longtable}
+\end{small}
+
+\end{document}
