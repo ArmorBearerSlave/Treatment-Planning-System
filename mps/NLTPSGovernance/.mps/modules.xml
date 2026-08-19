@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MPSProject">
+    <projectModules>
+      <modulePath path="$PROJECT_DIR$/languages/nltps.clinicalintent/nltps.clinicalintent.mpl" folder="" />
+      <modulePath path="$PROJECT_DIR$/languages/nltps.foundation/nltps.foundation.mpl" folder="" />
+      <modulePath path="$PROJECT_DIR$/languages/nltps.governance/nltps.governance.mpl" folder="" />
+      <modulePath path="$PROJECT_DIR$/languages/nltps.realization/nltps.realization.mpl" folder="" />
+    </projectModules>
+  </component>
+</project>

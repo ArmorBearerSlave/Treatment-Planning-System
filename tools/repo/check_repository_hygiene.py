@@ -21,6 +21,11 @@ GENERATED_SUFFIXES = {".aux", ".log", ".out", ".toc", ".synctex", ".fls", ".fdb_
 TEXT_SUFFIXES = {
     ".md", ".txt", ".tex", ".sty", ".py", ".ps1", ".json", ".yaml", ".yml", ".toml", ".xml", ".csv"
 }
+# MPS owns its persistence and writes CRLF on Windows. ADR-001 prohibits any text tool
+# from normalizing it, and no determinism gate reads it, so it is exempt from the
+# working-tree check below. The index-level check still covers it: .gitattributes
+# normalizes on add, so the committed bytes and every fresh checkout are LF.
+TOOL_OWNED_PERSISTENCE_PREFIXES = ("mps/NLTPSGovernance/",)
 SENSITIVE_PATTERNS = {
     "Windows user-profile path": re.compile(r"(?i)[A-Z]:[\\/]Users[\\/][A-Za-z0-9._-]+"),
     "Unix home path": re.compile(r"/home/[A-Za-z0-9._-]+/"),
@@ -39,6 +44,39 @@ def git_paths(*args: str) -> list[str]:
     if result.returncode:
         raise RuntimeError(result.stderr.decode("utf-8", errors="replace"))
     return [part.decode("utf-8") for part in result.stdout.split(b"\0") if part]
+
+
+def index_eol_errors() -> list[str]:
+    """Reject any tracked text file whose stored form is not LF.
+
+    A fresh checkout receives whatever the index holds, filtered by .gitattributes.
+    If the index carries CRLF or mixed endings, the determinism gates break for the
+    next person to clone, which is the defect this whole control exists to prevent.
+    """
+    result = subprocess.run(
+        ["git", "ls-files", "--eol", "-z"], cwd=REPO_ROOT,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False,
+    )
+    if result.returncode:
+        raise RuntimeError(result.stderr.decode("utf-8", errors="replace"))
+    offenders: list[str] = []
+    for entry in result.stdout.decode("utf-8", errors="replace").split("\0"):
+        if not entry.strip():
+            continue
+        fields = entry.split("\t", 1)
+        if len(fields) != 2:
+            continue
+        attrs, relative = fields
+        index_eol = next((part for part in attrs.split() if part.startswith("i/")), "")
+        if index_eol in {"i/crlf", "i/mixed"}:
+            offenders.append(f"{relative} ({index_eol})")
+    if offenders:
+        return [
+            f"{len(offenders)} tracked text files are stored with non-LF endings "
+            f"(first: {offenders[0]}); every fresh checkout would receive them and the "
+            "byte-comparison gates would fail. Check .gitattributes."
+        ]
+    return []
 
 
 def main() -> int:
@@ -72,17 +110,26 @@ def main() -> int:
             match = pattern.search(text)
             if match:
                 errors.append(f"{relative} contains {label}: {match.group(0)!r}")
-        # The determinism gates hash bytes and compare them, so a checkout that
-        # rewrites line endings makes them report drift that does not exist.
+        # The determinism gates read working-tree bytes, so local CRLF makes them
+        # report drift that does not exist. Files a third-party tool owns are exempt
+        # here and covered by the index check instead.
+        normalized_relative = relative.replace("\\", "/")
+        if normalized_relative.startswith(TOOL_OWNED_PERSISTENCE_PREFIXES):
+            continue
         if b"\r\n" in path.read_bytes():
             crlf_paths.append(relative)
 
     if crlf_paths:
         errors.append(
-            f"{len(crlf_paths)} controlled text files carry CRLF line endings "
-            f"(first: {crlf_paths[0]}); the byte-comparison gates require LF. "
-            "Confirm .gitattributes sets 'eol=lf' and refresh the checkout."
+            f"{len(crlf_paths)} controlled text files carry CRLF line endings in the "
+            f"working tree (first: {crlf_paths[0]}); the byte-comparison gates read "
+            "working-tree bytes and require LF."
         )
+
+    # The invariant that actually matters: what git stores, and therefore what every
+    # fresh checkout receives, is LF. This covers every tracked text file including
+    # tool-owned persistence.
+    errors.extend(index_eol_errors())
 
     if errors:
         print("ERROR: repository hygiene gate failed", file=sys.stderr)

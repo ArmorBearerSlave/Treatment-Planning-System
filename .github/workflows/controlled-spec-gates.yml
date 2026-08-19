@@ -41,6 +41,9 @@ jobs:
       - name: Check MPS materialization plan
         run: python tools/mps/check_materialization_plan.py
 
+      - name: Check MPS module graph against the blueprint
+        run: python tools/mps/check_module_graph.py --max-concepts 0
+
       - name: Check namespaced source relations
         run: python tools/spec/check_seed_namespace.py
 

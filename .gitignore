@@ -10,3 +10,25 @@ output/
 # Python tooling caches
 __pycache__/
 *.py[cod]
+
+# JetBrains MPS
+#
+# Versioned, deliberately NOT ignored: module descriptors (*.mpl, *.msd, *.devkit),
+# model persistence (models/**/*.mps), and the shared project configuration in
+# .mps/ (modules.xml, migration.xml). Those are the controlled artifacts MPS
+# produces and reviewers read under file-per-root persistence.
+#
+# Ignored below: per-user IDE state and regenerable build output only.
+.mps/workspace.xml
+.mps/tasks.xml
+.mps/tasks.ids
+.mps/usageStatistics.xml
+.mps/shelf/
+.mps/dictionaries/
+.mps/httpRequests/
+*.iml
+source_gen/
+source_gen.caches/
+classes_gen/
+test_gen/
+test_gen.caches/

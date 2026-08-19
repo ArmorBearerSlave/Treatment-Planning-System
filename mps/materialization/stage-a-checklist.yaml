@@ -50,6 +50,37 @@ execution_policy:
     Structural representation and hazard-specific engineering review are different
     claims. See spec/construction_policy.yaml, progress_metric.numerator_integrity.
 
+native_check_results:
+  - checkpoint: MPS-0
+    tool: MPS Check Project
+    errors: 0
+    warnings: 3
+    warning_class: >-
+      Superfluous extended module nltps.foundation, not referenced from structure aspect
+    warning_count_by_module:
+      nltps.governance: 1
+      nltps.clinicalintent: 1
+      nltps.realization: 1
+    disposition: EXPECTED_TRANSIENT_MPS0
+    quick_fix_applied: false
+    dependency_removed: false
+    rationale: >-
+      Each Extends relation to nltps.foundation is intentional and forward-looking. MPS
+      reports it unused because concept declarations live in the structure aspect and
+      MPS-0 deliberately contains none. Applying the quick fix would delete the
+      dependency graph that MPS-MAT-004A just verified, so a zero-warning result here
+      would be obtained by weakening the architecture.
+    expected_closure:
+      MPS-1: >-
+        Requirement, Hazard, RiskControl and peers extend GovernedElement, which should
+        clear the nltps.governance warning.
+      MPS-2: >-
+        PlanIntent, ReleaseProfile, Component and peers extend GovernedElement, which
+        should clear the nltps.clinicalintent and nltps.realization warnings.
+    reassessment_rule: >-
+      If a warning persists after its expected closure checkpoint, treat it as a finding
+      rather than carrying it forward as expected.
+
 checkpoints:
   - id: MPS-0
     title: Project and languages
@@ -58,7 +89,7 @@ checkpoints:
       the dependency graph and persistence policy. No domain concepts.
     commit_boundary: true
     contains_hlr_roots: false
-    acceptance_items: [MPS-MAT-001, MPS-MAT-002, MPS-MAT-004]
+    acceptance_items: [MPS-MAT-001, MPS-MAT-002, MPS-MAT-004A]
 
   - id: MPS-1
     title: Foundation and governance metamodel
@@ -89,7 +120,7 @@ checkpoints:
       representation and begin Stage B equivalence evidence.
     commit_boundary: true
     contains_hlr_roots: true
-    acceptance_items: [MPS-MAT-006, MPS-MAT-007, MPS-MAT-008, MPS-MAT-009]
+    acceptance_items: [MPS-MAT-004B, MPS-MAT-006, MPS-MAT-007, MPS-MAT-008, MPS-MAT-009]
 
 acceptance_items:
   - id: MPS-MAT-001
@@ -97,23 +128,49 @@ acceptance_items:
     item: >-
       Engineering workspace is an independent clone at a space-free path outside
       synchronized storage, with its Git common directory inside the clone.
-    status: pending
-    evidence: []
+    status: complete
+    evidence:
+      - spec/relocation_verification.yaml
+      - "tools/repo/check_workspace_location.py --enforce"
+      - "14/14 gates green from the relocated clone at 7fc8217"
   - id: MPS-MAT-002
     checkpoint: MPS-0
     item: NLTPSGovernance and all four controlled language modules are created through MPS.
-    status: pending
-    evidence: []
+    status: complete
+    evidence:
+      - mps/NLTPSGovernance/.mps/modules.xml
+      - mps/NLTPSGovernance/languages/nltps.foundation/nltps.foundation.mpl
+      - mps/NLTPSGovernance/languages/nltps.governance/nltps.governance.mpl
+      - mps/NLTPSGovernance/languages/nltps.clinicalintent/nltps.clinicalintent.mpl
+      - mps/NLTPSGovernance/languages/nltps.realization/nltps.realization.mpl
+      - "all persistence created by MPS; no file hand-authored or patched"
   - id: MPS-MAT-003
     checkpoint: MPS-1
     item: Root and non-root concepts are disjoint, exhaustive, and single-owner.
     status: pending
     evidence: []
-  - id: MPS-MAT-004
+  - id: MPS-MAT-004A
     checkpoint: MPS-0
-    item: Dependency direction and file-per-root persistence match the blueprint.
+    item: >-
+      Module dependency direction matches the blueprint and is acyclic. MPS realizes the
+      graph across two relation kinds and both count: extendedLanguages for concept-level
+      extension, dependencies for module-level use.
+    status: complete
+    evidence:
+      - "tools/mps/check_module_graph.py --max-concepts 0"
+      - "4 modules, graph matches blueprint, acyclic, 0 concept nodes"
+      - "extends: governance/clinicalintent/realization -> foundation"
+      - "depends: clinicalintent -> governance; realization -> governance, clinicalintent"
+  - id: MPS-MAT-004B
+    checkpoint: MPS-3
+    item: >-
+      File-per-root persistence is demonstrated on normative instance models.
     status: pending
     evidence: []
+    blocked_reason: >-
+      MPS-0 contains no normative instance model, so the persistence mode cannot yet be
+      exercised. Split from MPS-MAT-004 because dependency direction is demonstrable at
+      MPS-0 and persistence is not; a single item would have had to be part-claimed.
   - id: MPS-MAT-005
     checkpoint: MPS-1
     item: >-
