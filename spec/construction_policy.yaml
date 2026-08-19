@@ -81,3 +81,23 @@ progress_metric:
   not_a_metric:
     - number of records created
     - percentage of identifiers with a non-empty field
+    - number of entities materialized as MPS nodes
+  numerator_integrity:
+    rule: >-
+      Materializing an entity in MPS shall not increase the source-explicit numerator.
+      Structural representation and hazard-specific engineering review are different
+      claims, and only the second one moves this metric.
+    only_advances_on: >-
+      A named reviewer replacing an inherited or rule-derived hazard set with one
+      determined for that specific entity, recorded as hazard_basis source_explicit
+      with a hazard_rationale.
+    never_advances_on:
+      - import, mirror, or migration of an entity into MPS
+      - generation of a node, root, editor, or projection
+      - pattern derivation from a parent that already carries a reviewed set
+      - bulk assignment, domain default, interface-family union, or catch-all rule
+    enforcement: >-
+      hazard_specificity is computed from mapping_basis by the trace builder, not
+      supplied by an importer, so an import cannot assert the stronger claim. The
+      construction schemas additionally require a hazard_rationale and a named reviewer
+      before a record may reach reviewed or approved state.

@@ -1,0 +1,69 @@
+schema_version: "0.1"
+register_id: RELOC-001
+title: Workspace relocation verification
+status: verified
+classification: relocation_verification_not_a_corrective_action_cycle
+verification_date: "2026-08-19"
+
+purpose: >-
+  Records the evidence that closes C1 by relocation rather than by waiver. This is a
+  verification of an environmental transition, not another corrective-action cycle:
+  no controlled content changed, and every artifact is byte-identical across the move.
+
+baseline:
+  commit: 7fc821764e006770b4e082dab1524b887f1e2a3b
+  tag: gcpl-mps-stage-a-pre-materialization
+  branch: mps/stage-a-materialization
+  remote_recoverable: true
+  remote_refs:
+    - refs/heads/main
+    - refs/heads/mps/stage-a-materialization
+    - refs/tags/gcpl-mps-stage-a-pre-materialization
+
+workspace:
+  kind: independent_clone
+  path_class: >-
+    Local fixed disk, space-free, outside any file-synchronization root, no
+    user-profile component in the path.
+  git_common_directory: inside_the_clone_outside_synchronized_storage
+  supersedes:
+    kind: linked_worktree
+    reason: >-
+      A linked worktree relocates the working tree only. Its object database, refs,
+      worktree metadata, locks, and index state remain under the controlling common
+      directory, which was in synchronized storage. It was used to publish the
+      baseline and is retired.
+  prior_location:
+    status: retained_read_only_historical
+    gate_state: fails_workspace_location_by_design
+    engineering_use: prohibited
+
+toolchain:
+  python: 3.13.14
+  pyyaml: 6.0.3
+  git: 2.54.0.windows.1
+  pdflatex: MiKTeX 26.5
+
+results:
+  gates_green: 14
+  gates_total: 14
+  tests_passing: 26
+  tests_total: 26
+  records: 2144
+  vv_claims: 2144
+  identifier_loss: 0
+  hazard_set_alteration: 0
+  source_explicit_hazard_sets: 76
+  derived_hazard_sets: 2068
+  crlf_text_files: 0
+  controlled_artifacts_byte_identical: true
+  byte_identity_checked:
+    - mps/import/traceability.json
+    - mps/import/hlr-baseline.json
+    - spec/risks.yaml
+
+interpretation: >-
+  Structural and determinism gates only. This verification authorizes no gate crossing,
+  clinical action, commissioning, executed V&V claim, or Stage C authority transition.
+  It establishes that the engineering workspace is sound and that relocation preserved
+  the corpus exactly.

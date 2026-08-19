@@ -35,6 +35,7 @@ REQUIRED_SPECS = {
     "engineering_decisions.yaml",
     "component_crosswalk.yaml",
     "construction_policy.yaml",
+    "relocation_verification.yaml",
 }
 
 
