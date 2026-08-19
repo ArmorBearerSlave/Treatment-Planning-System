@@ -71,6 +71,14 @@ def main() -> int:
         visit(language_name)
 
     project = document.get("project", {})
+    if document.get("architecture_baseline") != "ENG-PKG-01-v0.4":
+        errors.append("architecture_baseline is not ENG-PKG-01-v0.4")
+    if project.get("technology_name") != "Governed Clinical Planning Language":
+        errors.append("technology_name does not match ADR-002")
+    if project.get("technology_acronym") != "GCPL":
+        errors.append("technology_acronym does not match ADR-002")
+    if project.get("implementation_alias") != "NL-TPS":
+        errors.append("implementation_alias does not match ADR-002")
     if project.get("default_model_persistence") != "file-per-root":
         errors.append("normative persistence default is not file-per-root")
     for prohibited_flag in (

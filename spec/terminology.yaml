@@ -1,0 +1,60 @@
+schema_version: "0.1"
+decision_record: ADR-002
+effective_date: "2026-08-19"
+status: provisional_controlled_nonclinical_program_use
+
+identity:
+  preferred_descriptive_title: Governed Clinical Language for AI-Assisted Radiation Treatment Planning
+  subtitle: A Model-Based, Safety-Constrained Orchestration Framework
+  technology:
+    name: Governed Clinical Planning Language
+    acronym: GCPL
+    meaning: >-
+      The governed, typed, machine-verifiable clinical semantics, policy,
+      traceability, release-profile, and orchestration method.
+  implementation:
+    name: Natural-Language Treatment Planning System
+    acronym: NL-TPS
+    meaning: >-
+      The current software implementation, repository, service family, and
+      historical controlled-corpus identifier.
+  combined_reference: GCPL / NL-TPS
+  concise_relationship: the NL-TPS implementation of GCPL
+  research_title: >-
+    Design and Realization of a Governed Clinical Planning Language for
+    AI-Assisted Radiotherapy: A Model-Based Framework for Intent Compilation,
+    Deterministic Safety, Traceability, and Commissioned Execution
+
+controlled_interpretations:
+  governed: requirements, evidence, authority, risks, release profiles, commissioned envelopes, models, interfaces, changes, and approvals are controlled and versioned
+  clinical_language: typed explicit reviewable and machine-verifiable semantics, not unrestricted natural-language execution
+  AI_assisted: AI may interpret, draft, retrieve, compare, predict, or orchestrate but has no professional or release authority
+  radiation_treatment_planning: photon and proton planning and related imaging, registration, contouring, dose, robustness, review, QA, and interoperability within approved scope
+  model_based: interconnected semantic models for requirements, hazards, interfaces, components, policies, units, traces, verification claims, and release definitions
+  safety_constrained_orchestration: deterministic eligibility, least-authority execution, reconciliation, provenance, and fail-closed coordination of commissioned systems
+
+compatibility_rules:
+  - Preserve existing controlled identifiers and exact historical source titles.
+  - Preserve NL_TPS filenames, repository links, and nltps namespaces.
+  - Define GCPL and NL-TPS on first use when both technology and implementation are in scope.
+  - Use GCPL only as the acronym for Governed Clinical Planning Language.
+  - Do not perform automated bulk replacement across controlled artifacts.
+  - Treat identifier or namespace renaming as an impact-assessed configuration change.
+  - Do not infer regulatory, clinical, safety, accreditation, or commissioning approval from the title.
+
+prohibited_claims:
+  - autonomous treatment planning authority
+  - replacement of professional judgment
+  - independent dose or treatment-delivery authority
+  - regulatory clearance or exemption by naming
+  - clinical validation or commissioning by naming
+
+aliases:
+  - alias: NL-TPS
+    target: GCPL implementation
+    lifecycle: active
+    removal_planned: false
+  - alias: Natural-Language Treatment Planning System
+    target: GCPL implementation
+    lifecycle: active
+    removal_planned: false

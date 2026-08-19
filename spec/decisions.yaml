@@ -56,3 +56,43 @@ decisions:
       - independent verification and validation
       - cybersecurity and privacy
     recorded_approvals: []
+
+  - id: ADR-002
+    title: Program Identity and Naming Hierarchy
+    version: "0.1"
+    date: "2026-08-19"
+    status: provisionally_accepted_for_controlled_nonclinical_program_use
+    owner: program_sponsor_and_architecture_board_proposed
+    human_readable_source: overleaf/NL_TPS_ADR_002_Program_Identity_and_Naming_Hierarchy.tex
+    related_architecture_baselines:
+      - AB-001
+      - AB-003
+      - AB-004
+      - AB-011
+      - AB-012
+    decision:
+      preferred_descriptive_title: Governed Clinical Language for AI-Assisted Radiation Treatment Planning
+      subtitle: A Model-Based, Safety-Constrained Orchestration Framework
+      technology_name: Governed Clinical Planning Language
+      technology_acronym: GCPL
+      implementation_name: Natural-Language Treatment Planning System
+      implementation_acronym: NL-TPS
+      concise_relationship: the NL-TPS implementation of GCPL
+      research_title: >-
+        Design and Realization of a Governed Clinical Planning Language for
+        AI-Assisted Radiotherapy: A Model-Based Framework for Intent
+        Compilation, Deterministic Safety, Traceability, and Commissioned
+        Execution
+    preserves:
+      - controlled requirement and assurance identifiers
+      - NL_TPS filenames and repository links
+      - nltps namespaces and machine identifiers
+      - exact historical document titles in citations
+      - current intended use and authority boundaries
+    does_not_permit:
+      - bulk corpus rename
+      - alteration of normative requirement meaning
+      - autonomous AI or clinical-authority claims
+      - regulatory, accreditation, commissioning, or validation claims
+      - repository or namespace migration without a separate decision
+    recorded_approvals: []

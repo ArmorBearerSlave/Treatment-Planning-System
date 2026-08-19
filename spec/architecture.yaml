@@ -1,13 +1,13 @@
-schema_version: "0.2"
+schema_version: "0.3"
 
 baseline:
   id: ENG-PKG-01-ARCH
   document_id: ENG-PKG-01
-  version: "0.3"
+  version: "0.4"
   effective_date: "2026-08-19"
   status: frozen_nonclinical_implementation_baseline
   human_readable_source: overleaf/NL_TPS_Engineering_Architecture_and_MVP_Implementation_Plan.tex
-  source_baseline: NL-TPS controlled documentation suite v0.1, Documents I-XV, plus ADR-001
+  source_baseline: NL-TPS controlled documentation suite v0.1, Documents I-XV, plus ADR-001 and ADR-002
   review_status: pending_named_accountable_reviews_for_release_gates
   supersedes: null
   authorization:
@@ -21,6 +21,23 @@ baseline:
       - machine readiness or return-to-service decisions
       - clinical plan approval, release, transfer, or treatment delivery
       - representation of any V&V claim as passed
+
+program_identity:
+  decision_record: ADR-002
+  preferred_descriptive_title: Governed Clinical Language for AI-Assisted Radiation Treatment Planning
+  subtitle: A Model-Based, Safety-Constrained Orchestration Framework
+  technology_name: Governed Clinical Planning Language
+  technology_acronym: GCPL
+  implementation_name: Natural-Language Treatment Planning System
+  implementation_acronym: NL-TPS
+  combined_reference: GCPL / NL-TPS
+  concise_relationship: the NL-TPS implementation of GCPL
+  compatibility:
+    retain_existing_requirement_and_assurance_ids: true
+    retain_NL_TPS_filenames: true
+    retain_nltps_namespaces: true
+    retain_repository_name: true
+    bulk_rename_authorized: false
 
 change_control:
   required_for_change:
@@ -269,6 +286,24 @@ architecture_decisions:
       - nltps.governance
       - nltps.clinicalintent
       - nltps.realization
+
+  - id: AB-012
+    name: program_identity_and_naming_hierarchy
+    status: baselined_for_controlled_nonclinical_documentation
+    decision_record: ADR-002
+    statement: >-
+      Governed Clinical Planning Language (GCPL) names the governed semantic
+      technology and method. Natural-Language Treatment Planning System
+      (NL-TPS) remains the current implementation, repository, namespace, and
+      historical trace identifier. The preferred full descriptive title is
+      Governed Clinical Language for AI-Assisted Radiation Treatment Planning,
+      with the subtitle A Model-Based, Safety-Constrained Orchestration
+      Framework.
+    consequences:
+      - future covers and summaries may lead with GCPL and retain the NL-TPS alias
+      - existing identifiers, filenames, namespaces, hashes, and citations remain stable
+      - no bulk rename is authorized
+      - naming does not change intended use, authority, regulatory status, or clinical authorization
 
 mps_authority_transition:
   decision_record: ADR-001

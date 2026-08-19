@@ -1,7 +1,9 @@
-# NL-TPS MPS governance compiler
+# GCPL / NL-TPS MPS governance compiler
 
-This directory implements the repository-side bootstrap for ADR-001. JetBrains
-MPS is the proposed offline governance compiler. It is not a clinical runtime
+This directory implements the repository-side bootstrap for ADR-001 and the
+naming hierarchy in ADR-002. Governed Clinical Planning Language (GCPL) names
+the technology; NL-TPS remains the implementation and namespace alias.
+JetBrains MPS is the proposed offline governance compiler. It is not a clinical runtime
 dependency, a patient-data store, a dose engine, an approval authority, or a
 system of record.
 

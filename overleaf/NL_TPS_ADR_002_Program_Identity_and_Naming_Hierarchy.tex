@@ -1,0 +1,305 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage{nl_tps_common}
+\hypersetup{
+  pdftitle={ADR-002 - Program Identity and Naming Hierarchy},
+  pdfsubject={Governed Clinical Planning Language and NL-TPS naming decision}
+}
+
+\begin{document}
+\NLSetPageStyle{GCPL / NL-TPS ADR-002}{Program Identity and Naming Hierarchy}
+\fancyhead[R]{\small\bfseries\color{NLGOLD}ARCHITECTURE DECISION}
+\NLTitleBlock{ARCHITECTURE DECISION RECORD}{ADR-002: Program Identity and Naming Hierarchy}{Governed Clinical Planning Language (GCPL)}{\begin{minipage}{0.95\textwidth}
+\NLMeta{Preferred descriptive title}{Governed Clinical Language for AI-Assisted Radiation Treatment Planning}
+\NLMeta{Subtitle}{A Model-Based, Safety-Constrained Orchestration Framework}
+\NLMeta{Implementation / working name}{Natural-Language Treatment Planning System (NL-TPS)}
+\NLMeta{Decision version}{0.1}
+\NLMeta{Date}{19 August 2026}
+\NLMeta{Status}{Provisionally accepted for controlled non-clinical program use; named institutional approval not recorded}
+\end{minipage}}{This decision changes program identity and terminology, not intended use, requirements, safety controls, professional authority, regulatory status, commissioning status, or clinical authorization. Existing NL-TPS identifiers, filenames, namespaces, and trace links remain valid.}
+
+\tableofcontents
+\clearpage
+\ifdefined\NLTPSCombinedDocument\else\pagenumbering{arabic}\fi
+
+\NLFrontMatterSection{Document control}
+
+\begin{small}
+\begin{longtable}{@{}L{0.20\textwidth}L{0.70\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Controlled value} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Controlled value} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Decision owner & Program sponsor and architecture board - proposed; named accountable owner requires governance recording \\
+\addlinespace[2pt]
+Decision scope & Program title, technology name, implementation alias, publication title, terminology interpretation, and controlled propagation \\
+\addlinespace[2pt]
+Excluded scope & Intended use, regulatory claims, requirement meaning, clinical workflow authority, release authorization, and repository renaming \\
+\addlinespace[2pt]
+Related decisions & ADR-001; ENG-PKG-01 AB-001 through AB-012 \\
+\addlinespace[2pt]
+Supersedes & No controlled requirement or identifier; prospectively supersedes use of ``Natural-Language Treatment Planning System'' as the only description of the program \\
+\addlinespace[2pt]
+Recorded approvals & None in this document; provisional adoption is not evidence of institutional, regulatory, clinical, or publication approval \\
+\end{longtable}
+\end{small}
+
+\NLFrontMatterSection{Decision summary}
+
+The program shall use \textbf{Governed Clinical Language for AI-Assisted Radiation Treatment Planning} as its preferred full descriptive title and \textbf{A Model-Based, Safety-Constrained Orchestration Framework} as its subtitle.
+
+The underlying technology shall be named \textbf{Governed Clinical Planning Language (GCPL)}. The current software implementation, repository, and historical product identifier shall remain \textbf{Natural-Language Treatment Planning System (NL-TPS)}. A concise implementation reference is therefore ``the NL-TPS implementation of GCPL.''
+
+The research and formal R\&D title shall be:
+
+\begin{quote}
+\textbf{Design and Realization of a Governed Clinical Planning Language for AI-Assisted Radiotherapy: A Model-Based Framework for Intent Compilation, Deterministic Safety, Traceability, and Commissioned Execution}
+\end{quote}
+
+This hierarchy recognizes that natural language is an input modality, while the principal contribution is a governed, typed, machine-verifiable clinical language operating through deterministic safety controls and commissioned services.
+
+\section{Context}
+
+The original NL-TPS name correctly described the initiating concept but can now be misread as either a chatbot added to a treatment planning system or an autonomous replacement TPS. The controlled architecture is materially different. It is a command, reasoning, collaboration, and execution-control layer over validated radiotherapy systems. Human or spoken language is compiled into typed intent; a deterministic kernel evaluates authority, state, evidence, context, and commissioned scope; governed adapters invoke approved services; accountable professionals retain decision authority; and external systems retain calculation and record authority.
+
+The name must therefore expose the safety and systems-engineering contribution without discarding the identifiers already embedded across requirements, interfaces, risks, tests, component allocations, scripts, namespaces, and repositories.
+
+\section{Controlled naming hierarchy}
+
+\begin{small}
+\begin{longtable}{@{}L{0.20\textwidth}L{0.34\textwidth}L{0.36\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Level} & \textbf{Controlled name} & \textbf{Required use} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Level} & \textbf{Controlled name} & \textbf{Required use} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Preferred descriptive title & Governed Clinical Language for AI-Assisted Radiation Treatment Planning & Program covers, executive summaries, external descriptions, and future controlled documents where the full descriptive title is appropriate \\
+\addlinespace[2pt]
+Subtitle & A Model-Based, Safety-Constrained Orchestration Framework & Accompanies the preferred descriptive title; describes architecture without implying autonomous clinical authority \\
+\addlinespace[2pt]
+Technology / method & Governed Clinical Planning Language (GCPL) & Names the typed semantic language, governance model, safety policy, release profiles, and orchestration method \\
+\addlinespace[2pt]
+Implementation / product & Natural-Language Treatment Planning System (NL-TPS) & Names the current implementation, repository, service family, historical controlled corpus, and trace-compatible product identifier \\
+\addlinespace[2pt]
+Combined reference & GCPL / NL-TPS or ``the NL-TPS implementation of GCPL'' & Used during transition and whenever technology and implementation must be distinguished \\
+\addlinespace[2pt]
+Research title & Design and Realization of a Governed Clinical Planning Language for AI-Assisted Radiotherapy: A Model-Based Framework for Intent Compilation, Deterministic Safety, Traceability, and Commissioned Execution & Dissertation, formal R\&D program, or paper-series title, subject to the applicable academic or publication approval \\
+\end{longtable}
+\end{small}
+
+GCPL is the acronym for \emph{Governed Clinical Planning Language}. It is not presented as the initialism of every word in the longer descriptive title. Authors shall not introduce a competing acronym for the descriptive title.
+
+\section{Meaning of the title}
+
+\begin{small}
+\begin{longtable}{@{}L{0.19\textwidth}L{0.71\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Term} & \textbf{Controlled interpretation} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Term} & \textbf{Controlled interpretation} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Governed & Requirements, evidence, authority, risks, release profiles, commissioned-use envelopes, models, interfaces, changes, and approvals are controlled and versioned rather than inferred from conversational text at runtime. \\
+\addlinespace[2pt]
+Clinical language & Clinical intent is represented through typed, explicit, reviewable, and machine-verifiable semantics. ``Language'' includes the formal semantic model and does not mean unrestricted natural-language execution. \\
+\addlinespace[2pt]
+AI-assisted & AI may interpret, draft, retrieve, compare, predict, or orchestrate within an approved envelope. AI does not prescribe, approve, sign, waive QA, release, return equipment to service, or command treatment delivery. \\
+\addlinespace[2pt]
+Radiation treatment planning & The domain includes photon and proton planning and related imaging, registration, contouring, dose, robustness, review, QA, and interoperability functions within approved scope. \\
+\addlinespace[2pt]
+Model-based & Requirements, hazards, interfaces, components, policies, units, traces, verification claims, and release definitions are connected semantic models. The term is not limited to inference models. \\
+\addlinespace[2pt]
+Safety-constrained orchestration & The implementation coordinates commissioned systems through deterministic eligibility decisions, least-authority execution capabilities, reconciliation, provenance, and fail-closed behavior. It does not replace professional or commissioned-system authority. \\
+\end{longtable}
+\end{small}
+
+\section{Architecture interpretation}
+
+GCPL names the governed semantic layer that defines what a request can mean, what information it must contain, which uncertainties and conflicts remain, which actors may request or decide an action, which evidence and commissioned profile apply, and which artifacts may be generated.
+
+NL-TPS names the implementation that accepts typed or natural-language input, produces candidate PlanIntent, applies deterministic kernel decisions, obtains human ProfessionalDecision records where required, issues scoped ExecutionCapability tokens, orchestrates commissioned services, and preserves provenance and audit evidence.
+
+The naming decision does not change the four trust zones, ARCH-INVARIANT-001, the separation of PlanIntent from ProfessionalDecision, the mechanism/policy boundary, or the authority of commissioned systems and qualified people.
+
+\section{Identifier and compatibility policy}
+
+No bulk rename shall be performed merely to reflect this decision. The following remain stable unless a separate impact-assessed change is approved:
+
+\begin{itemize}
+\item requirement, interface, component, risk, trade, V\&V, team, architecture, decision, and release identifiers;
+\item filenames beginning with \texttt{NL\_TPS};
+\item repository name and existing links;
+\item namespaces beginning with \texttt{nltps};
+\item schema identifiers, API names, audit fields, and database values already released or under controlled review;
+\item citations to the historical ConOps and requirements baselines.
+\end{itemize}
+
+New human-readable covers and summaries may lead with GCPL while carrying the NL-TPS implementation alias. New machine identifiers shall use the existing \texttt{nltps} namespace until a separate compatibility decision defines aliases, migration, deprecation, and rollback. An identifier rename is a configuration change, not an editorial correction.
+
+\section{Communication rules}
+
+\begin{enumerate}
+\item On first use in a document, write ``Governed Clinical Planning Language (GCPL)'' and identify NL-TPS as its current implementation where relevant.
+\item Use the preferred descriptive title when explaining the complete program to clinical, engineering, governance, academic, or external audiences.
+\item Do not describe GCPL or NL-TPS as an autonomous TPS, replacement for professional judgment, dose authority, or treatment-delivery controller.
+\item Do not imply that ``governed,'' ``clinical,'' ``model-based,'' or ``safety-constrained'' constitutes regulatory clearance, accreditation, commissioning, validation, or proof of safety.
+\item Preserve exact historical titles in citations and trace records. Add the GCPL alias outside the quoted title when clarification is needed.
+\item Use ``radiotherapy'' and ``radiation treatment planning'' according to audience and publication style; neither changes the controlled domain scope.
+\end{enumerate}
+
+\section{Propagation plan}
+
+\begin{small}
+\begin{longtable}{@{}L{0.12\textwidth}L{0.27\textwidth}L{0.33\textwidth}L{0.18\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Phase} & \textbf{Artifacts} & \textbf{Action} & \textbf{Acceptance} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Phase} & \textbf{Artifacts} & \textbf{Action} & \textbf{Acceptance} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+1 & ADR-002, terminology registry, architecture baseline, suite cover, and README & Record hierarchy and introduce GCPL / NL-TPS combined identity & Exact names agree; no identifier change; documents compile \\
+\addlinespace[2pt]
+2 & New controlled documents, diagrams, schemas, UI copy, and repository guidance & Apply naming rules prospectively and maintain alias metadata & Terminology lint and review; trace links preserved \\
+\addlinespace[2pt]
+3 & Existing Documents I--XVII & Revise only under normal document change control when substantive updates occur & Change record, semantic diff, citations preserved, no accidental requirement change \\
+\addlinespace[2pt]
+4 & External publications, dissertation, grants, contracts, and regulatory records & Select the controlled program or research title appropriate to the venue & Sponsor, legal/regulatory, academic, communications, and authorship review as applicable \\
+\end{longtable}
+\end{small}
+
+This decision does not authorize retrospective automated replacement across the corpus. Such replacement could alter exact normative text, citations, source hashes, generated mirrors, schemas, tests, or evidence links.
+
+\section{Alternatives considered}
+
+\begin{small}
+\begin{longtable}{@{}L{0.22\textwidth}L{0.25\textwidth}L{0.25\textwidth}L{0.18\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Alternative} & \textbf{Benefit} & \textbf{Limitation} & \textbf{Disposition} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Alternative} & \textbf{Benefit} & \textbf{Limitation} & \textbf{Disposition} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Retain NL-TPS as the sole name & Maximum continuity & Overemphasizes interface modality and can imply a replacement TPS or chatbot & Rejected as the sole program identity \\
+\addlinespace[2pt]
+Rename everything to GCPL immediately & Uniform visible identity & Breaks stable references, hashes, repository paths, namespaces, and controlled history & Rejected \\
+\addlinespace[2pt]
+Use only the long descriptive title & High explanatory accuracy & Impractical for implementation references and identifiers & Retained as the preferred descriptive title, not the sole short name \\
+\addlinespace[2pt]
+Use GCPL for technology and NL-TPS for implementation & Accurate conceptual hierarchy with backward compatibility & Requires disciplined first-use definitions and alias management & Selected \\
+\end{longtable}
+\end{small}
+
+\section{Risks and mitigations}
+
+\begin{small}
+\begin{longtable}{@{}L{0.14\textwidth}L{0.27\textwidth}L{0.36\textwidth}L{0.13\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Risk} & \textbf{Failure condition} & \textbf{Mitigation and evidence} & \textbf{Effect} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Risk} & \textbf{Failure condition} & \textbf{Mitigation and evidence} & \textbf{Effect} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+ADR2-R-01 & GCPL and NL-TPS are treated as competing systems & Controlled hierarchy, first-use definition, terminology registry, and architecture cross-reference & Correct before release \\
+\addlinespace[2pt]
+ADR2-R-02 & Bulk renaming breaks traceability or hashes & Stable identifier policy; prospective propagation; semantic diff and import regeneration only through change control & Blocks rename \\
+\addlinespace[2pt]
+ADR2-R-03 & ``Clinical'' or ``safety'' is interpreted as an approval claim & Mandatory non-authorization notice and communications review & Correct claim \\
+\addlinespace[2pt]
+ADR2-R-04 & ``AI-assisted'' is interpreted as autonomous authority & Preserve A0--A4 boundaries, professional-decision separation, and explicit prohibited-action language & Blocks misleading use \\
+\addlinespace[2pt]
+ADR2-R-05 & ``Model-based'' is confused with inference models only & Define MBSE/semantic-model meaning and separately identify inference-model lifecycle & Correct terminology \\
+\addlinespace[2pt]
+ADR2-R-06 & Acronym proliferation creates inconsistent citations & Reserve GCPL for Governed Clinical Planning Language; retain NL-TPS as alias; prohibit a competing acronym without decision & Blocks new acronym \\
+\addlinespace[2pt]
+ADR2-R-07 & External title changes obscure historical baselines & Preserve exact source titles and versioned alias metadata in citations and manifests & Requires correction \\
+\end{longtable}
+\end{small}
+
+\section{Verification and acceptance}
+
+ADR-002 is implemented for the current documentation increment when:
+
+\begin{enumerate}
+\item the preferred descriptive title, subtitle, GCPL technology name, NL-TPS implementation alias, and research title exactly match this decision;
+\item the machine-readable terminology and architecture records carry the same hierarchy;
+\item the architecture baseline identifies GCPL and NL-TPS without changing the product boundary or authority model;
+\item the controlled suite lists all constituent documents, includes ADR-002, and retains the legacy file and identifier structure;
+\item terminology and trace checks find no accidental identifier rename or unsupported authority claim;
+\item the updated standalone documents and combined review suite compile and render without new fatal or unresolved-reference errors.
+\end{enumerate}
+
+Approval of a dissertation, paper title, trademark, external brand, regulatory name, contract term, or clinical product label remains outside this ADR and requires the applicable authority.
+
+\section{Rollback and supersession}
+
+Before external adoption, rollback consists of returning covers to the NL-TPS-only presentation while retaining ADR-002 as a superseded decision record. After external adoption, a replacement decision shall define alias continuity, affected publications and agreements, identifier impact, redirect policy, and correction responsibilities.
+
+Any successor title shall preserve the product boundary: AI assists; deterministic policy decides eligibility; commissioned systems perform their assigned calculations and records functions; qualified people retain clinical authority.
+
+\phantomsection
+\pdfbookmark[1]{Approval record}{adr002.approval}
+\section*{Approval record}
+
+\begin{small}
+\begin{longtable}{@{}L{0.24\textwidth}L{0.20\textwidth}L{0.18\textwidth}L{0.28\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Accountability} & \textbf{Name} & \textbf{Decision/date} & \textbf{Conditions or dissent} \\
+\midrule
+Program sponsor & TBD & Not recorded & Program identity and external-use approval \\
+\addlinespace[2pt]
+Architecture board & TBD & Not recorded & Terminology and architecture consistency \\
+\addlinespace[2pt]
+Clinical governance & TBD & Not recorded & Clinical interpretation and authority boundary \\
+\addlinespace[2pt]
+Quality/configuration management & TBD & Not recorded & Controlled propagation and trace preservation \\
+\addlinespace[2pt]
+Regulatory, legal, and\newline communications & TBD & Not recorded & Required for applicable external claims and use \\
+\bottomrule
+\end{longtable}
+\end{small}
+
+\end{document}

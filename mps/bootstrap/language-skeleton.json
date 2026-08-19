@@ -2,7 +2,7 @@
   "schema_version": "0.1",
   "skeleton_version": "0.1",
   "decision": "ADR-001",
-  "architecture_baseline": "ENG-PKG-01-v0.3",
+  "architecture_baseline": "ENG-PKG-01-v0.4",
   "implementation_state": "blueprint_not_live_mps_serialization",
   "target_toolchain": {
     "mps_version": "2026.1",
@@ -12,6 +12,9 @@
   },
   "project": {
     "name": "NLTPSGovernance",
+    "technology_name": "Governed Clinical Planning Language",
+    "technology_acronym": "GCPL",
+    "implementation_alias": "NL-TPS",
     "namespace_prefix": "nltps",
     "default_model_persistence": "file-per-root",
     "patient_data_permitted": false,

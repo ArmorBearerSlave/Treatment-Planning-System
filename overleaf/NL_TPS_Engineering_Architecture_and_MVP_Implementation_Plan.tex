@@ -1,21 +1,21 @@
 \documentclass[11pt,letterpaper]{article}
 \usepackage{nl_tps_common}
 \hypersetup{
-  pdftitle={NL-TPS Engineering Architecture and MVP Implementation Plan},
-  pdfsubject={Controlled engineering response to the NL-TPS ConOps and derived baseline}
+  pdftitle={GCPL / NL-TPS Engineering Architecture and MVP Implementation Plan},
+  pdfsubject={Controlled engineering response for the Governed Clinical Planning Language and NL-TPS implementation}
 }
 
 \begin{document}
-\NLSetPageStyle{NL-TPS ENGINEERING ARCHITECTURE AND MVP PLAN}{Controlled response to ConOps v0.1, Documents II--XV, and ADR-001}
+\NLSetPageStyle{GCPL / NL-TPS ENGINEERING ARCHITECTURE}{Controlled response to ConOps v0.1, Documents II--XV, ADR-001, and ADR-002}
 \fancyhead[R]{\small\bfseries\color{NLGOLD}ARCHITECTURE BASELINE}
-\NLTitleBlock{ENGINEERING RESPONSE AND IMPLEMENTATION PLAN}{Engineering Architecture and Minimum Viable Clinical Slice}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
-\NLMeta{Source baseline}{Controlled NL-TPS documentation suite v0.1, Documents I--XV, plus ADR-001}
+\NLTitleBlock{ENGINEERING RESPONSE AND IMPLEMENTATION PLAN}{Engineering Architecture and Minimum Viable Clinical Slice}{Governed Clinical Planning Language (GCPL) / NL-TPS Implementation}{\begin{minipage}{0.95\textwidth}
+\NLMeta{Source baseline}{Controlled NL-TPS documentation suite v0.1, Documents I--XV, ADR-001, and ADR-002}
 \NLMeta{Plan identifier}{ENG-PKG-01}
-\NLMeta{Document version}{0.3 - Engineering architecture baseline}
+\NLMeta{Document version}{0.4 - Engineering architecture baseline}
 \NLMeta{Date}{19 August 2026}
 \NLMeta{Status}{Frozen for controlled non-clinical implementation; no clinical or release authorization}
 \NLMeta{Planning horizon}{Platform Slice 0 (Machine QA) through one bounded candidate-planning slice}
-\end{minipage}}{This document proposes an engineering architecture and sequence. ADR-001 provisionally selects JetBrains MPS for the offline governance-compiler role only. This document does not change the intended use, supersede a controlled requirement, select a clinical-runtime vendor, approve a regulatory strategy, commission an interface, authorize clinical use, approve machine readiness, or represent any verification or validation check as executed. Existing clinical systems, qualified professionals, institutional procedures, and release authorities remain controlling.}
+\end{minipage}}{This document proposes an engineering architecture and sequence. ADR-001 provisionally selects JetBrains MPS for the offline governance-compiler role; ADR-002 establishes GCPL as the technology name and retains NL-TPS as the implementation alias. Neither decision changes intended use, supersedes a controlled requirement, selects a clinical-runtime vendor, approves a regulatory strategy, commissions an interface, authorizes clinical use, approves machine readiness, or represents a verification or validation check as executed.}
 
 \tableofcontents
 \clearpage
@@ -38,11 +38,11 @@
 \endfoot
 \bottomrule
 \endlastfoot
-Document owner & NL-TPS Program; engineering ownership assigned to T-SYS with T-GOV, T-CLIN, T-VV, T-SEC, T-INT, T-DATA, T-OPS, and affected specialty teams \\
+Document owner & GCPL / NL-TPS Program; engineering ownership assigned to T-SYS with T-GOV, T-CLIN, T-VV, T-SEC, T-INT, T-DATA, T-OPS, and affected specialty teams \\
 \addlinespace[2pt]
 Purpose & Convert the controlled documentation corpus into an implementable architecture, backlog policy, verification execution model, and staged delivery plan \\
 \addlinespace[2pt]
-Normative relationship & Documents I--XV remain normative within their approved scope. ADR-001 controls the proposed MPS engineering role but does not complete the authority cutover. This plan records implementation decisions and unresolved assumptions; it does not silently alter source requirements or allocations. \\
+Normative relationship & Documents I--XV remain normative within their approved scope. ADR-001 controls the proposed MPS engineering role but does not complete the authority cutover. ADR-002 controls the GCPL / NL-TPS naming hierarchy without renaming existing identifiers. This plan does not silently alter source requirements or allocations. \\
 \addlinespace[2pt]
 Change authority & Clinical governance, system engineering, qualified medical physics authority, quality management, security/privacy, interface control, independent V\&V, and regulatory/legal review as applicable \\
 \addlinespace[2pt]
@@ -54,7 +54,9 @@ Supersession & None \\
 
 \NLFrontMatterSection{Executive summary}
 
-The NL-TPS is not initially an independent, dose-authoritative replacement treatment planning system. It is to be engineered as a governed treatment-planning orchestration, decision, collaboration, and execution-control layer over commissioned radiotherapy services and authoritative clinical systems. It does not replace the commissioned dose engine, optimizer, segmentation authority, PACS, oncology information system, external TPS, independent verification system, or accountable professional. Its differentiated responsibility is to compile human language into a typed and inspectable intent, apply deterministic policy and safety decisions, orchestrate approved services, and preserve an attributable departmental record across team boundaries. This boundary does not deny that the NL-TPS materially participates in treatment planning or predetermine the regulatory status of any software function.
+\textbf{Governed Clinical Planning Language (GCPL)} names the governed semantic technology; \textbf{Natural-Language Treatment Planning System (NL-TPS)} remains its current implementation and trace-compatible working name. The preferred descriptive title is \emph{Governed Clinical Language for AI-Assisted Radiation Treatment Planning}, with the subtitle \emph{A Model-Based, Safety-Constrained Orchestration Framework}.
+
+The NL-TPS implementation of GCPL is not initially an independent, dose-authoritative replacement treatment planning system. It is to be engineered as a governed treatment-planning orchestration, decision, collaboration, and execution-control layer over commissioned radiotherapy services and authoritative clinical systems. It does not replace the commissioned dose engine, optimizer, segmentation authority, PACS, oncology information system, external TPS, independent verification system, or accountable professional. Its differentiated responsibility is to compile human language into a typed and inspectable intent, apply deterministic policy and safety decisions, orchestrate approved services, and preserve an attributable departmental record across team boundaries. This boundary does not deny that the implementation materially participates in treatment planning or predetermine the regulatory status of any software function.
 
 The baseline architecture contains four trust zones. Untrusted language services may create candidate intent only. A deterministic kernel decides whether a candidate is complete, consistent, authorized, within the commissioned envelope, and eligible for a named action. Governed adapters execute only a narrowly scoped signed capability. External clinical systems retain their commissioned and record authority. Provenance, object identity, audit, monitoring, and reconciliation cross all zones.
 
@@ -70,7 +72,7 @@ The language model is never the deciding authority. \textbf{ARCH-INVARIANT-001 (
 
 \subsection{Purpose}
 
-This document answers how to begin building the NL-TPS while preserving the boundaries, traceability, risk controls, and human authority established by the controlled suite. It baselines the architecture interpretation, the \texttt{PlanIntent}, \texttt{ProfessionalDecision}, \texttt{KernelDecisionRecord}, and \texttt{ExecutionCapability} contracts, technology evaluation criteria, a build sequence, engineering translations of the release gates, a specification-as-data migration, a V\&V execution model, and the decisions that must be resolved before clinical scope expands. ADR-001 adds MPS as the offline governance compiler with a staged, separately approved authority transition.
+This document answers how to build the NL-TPS implementation of GCPL while preserving the boundaries, traceability, risk controls, and human authority established by the controlled suite. It baselines the architecture interpretation, the \texttt{PlanIntent}, \texttt{ProfessionalDecision}, \texttt{KernelDecisionRecord}, and \texttt{ExecutionCapability} contracts, technology evaluation criteria, a build sequence, engineering translations of the release gates, a specification-as-data migration, a V\&V execution model, and the decisions that must be resolved before clinical scope expands. ADR-001 adds MPS as the offline governance compiler; ADR-002 controls program identity and terminology.
 
 \subsection{In scope}
 
@@ -122,7 +124,7 @@ Planning assumption & Estimate or placeholder used to sequence work & Assign an 
 
 \section{Engineering architecture baseline freeze}
 
-Version 0.3 freezes the following interpretation as the implementation target for controlled non-clinical work. A change to one of these decisions requires a versioned architecture decision or change request, impact analysis across requirements, interfaces, components, hazards, tests, and documents, named review, and an approved effective version. The freeze constrains implementation; it does not approve clinical data use, commission a component or interface, authorize a release gate, or represent stakeholder concurrence that has not been recorded.
+Version 0.4 freezes the following interpretation as the implementation target for controlled non-clinical work. A change to one of these decisions requires a versioned architecture decision or change request, impact analysis across requirements, interfaces, components, hazards, tests, and documents, named review, and an approved effective version. The freeze constrains implementation; it does not approve clinical data use, commission a component or interface, authorize a release gate, or represent stakeholder concurrence that has not been recorded.
 
 \begin{small}
 \begin{longtable}{@{}L{0.14\textwidth}L{0.29\textwidth}L{0.47\textwidth}@{}}
@@ -160,10 +162,12 @@ AB-009 & Build sequence & Machine QA is Platform Slice 0 for the universal gover
 AB-010 & Accountability and independence & Fifteen teams are accountability domains, not a mandated headcount. The minimum organization may combine roles only where competency, capacity, separation of duties, and independent V\&V remain demonstrably protected. \\
 \addlinespace[2pt]
 AB-011 & Offline governance compiler & Under ADR-001, MPS models and generates governed semantics outside the clinical runtime. Existing documents remain authoritative through mirror and equivalence; MPS authority begins only for an explicitly approved Stage C scope. Runtime consumes approved immutable release bundles and never a live MPS repository. \\
+\addlinespace[2pt]
+AB-012 & Program identity and naming hierarchy & GCPL names the governed semantic technology; NL-TPS remains the implementation, repository, namespace, and historical trace alias. Future descriptions may lead with GCPL, but no bulk rename, identifier migration, new authority claim, or change of intended use is authorized. \\
 \end{longtable}
 \end{small}
 
-The machine-readable counterpart is \texttt{spec/architecture.yaml}. It is a configuration-controlled implementation constraint, not a replacement for the approved source requirements or this human-reviewable document.
+The machine-readable counterparts are \texttt{spec/architecture.yaml} and \texttt{spec/terminology.yaml}. They are configuration-controlled implementation constraints, not replacements for the approved source requirements or this human-reviewable document.
 
 \section{What the controlled corpus specifies}
 
@@ -172,6 +176,12 @@ The machine-readable counterpart is \texttt{spec/architecture.yaml}. It is a con
 The external TPS remains authoritative within its commissioned role. Clinical dose is accepted only from approved commissioned calculation services. Commissioned segmentation, registration, optimization, independent verification, OIS, PACS, and institutional evidence sources retain their assigned authorities. The NL-TPS may draft, request, compare, route, reconcile, and record; it may not silently reinterpret unsupported data or bypass professional approvals.
 
 The phrase ``command layer'' narrows the implementation boundary but does not remove planning responsibilities already allocated to the NL-TPS. The product still owns structured intent, deterministic eligibility decisions, orchestration, candidate lineage, comparative review surfaces, evidence applicability, state control, audit, monitoring, and failure recovery.
+
+\subsection{Naming hierarchy}
+
+ADR-002 distinguishes the intellectual contribution from its current implementation. GCPL is the typed, governed clinical language and model-based orchestration method. NL-TPS is the software implementation, repository, service family, and historical requirements identifier. During transition, ``GCPL / NL-TPS'' or ``the NL-TPS implementation of GCPL'' is the preferred combined reference.
+
+Existing \texttt{NL\_TPS} filenames, \texttt{nltps} namespaces, requirement and assurance IDs, source titles, hashes, and trace links remain stable. This prospective naming change is not authority to rewrite the controlled corpus or imply autonomy, validation, commissioning, accreditation, or regulatory status.
 
 \subsection{The trace graph is the engineering asset}
 
