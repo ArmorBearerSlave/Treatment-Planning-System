@@ -3,4 +3,10 @@
 
 # Local LaTeX compilation and PDF visual-QA intermediates
 tmp/pdfs/
-$out/
+output/
+/$out/
+/$build/
+
+# Python tooling caches
+__pycache__/
+*.py[cod]

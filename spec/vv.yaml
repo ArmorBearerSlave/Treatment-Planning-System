@@ -1,0 +1,15 @@
+schema_version: "0.1"
+status: planned_unexecuted
+source_document: overleaf/NL_TPS_Verification_Validation_Check_Matrix.tex
+generator: scripts/generate_vv_check_matrix.ps1
+materialized_trace: mps/import/traceability.json
+counts:
+  controlled_corpus_claims: 2088
+  machine_qa_claims: 56
+  total_claims: 2144
+requirements:
+  - Every claim carries one or more hazard IDs from spec/allocations.yaml.
+  - Every claim remains Planned until approved objective evidence and review are linked.
+  - Parent PASS requires direct emergent-outcome evidence in addition to child closure.
+  - A model or generator cannot approve a result, anomaly, residual risk, commissioning state, or release.
+  - Claim identifiers remain unique even when executable suites are consolidated.

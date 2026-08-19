@@ -1,0 +1,26 @@
+schema_version: "0.1"
+status: controlled_stage_a_component_catalog
+source_documents:
+  core: overleaf/NL_TPS_Component_Realization.tex
+  interface: overleaf/NL_TPS_Interface_Component_Realization.tex
+  category: overleaf/NL_TPS_Functional_Non_Functional_Operational_Component_Realization.tex
+counts:
+  core_components: 45
+  interface_components: 61
+  category_components: 78
+hazard_allocation_source: spec/allocations.yaml
+materialized_trace: mps/import/traceability.json
+clinical_adapter_allocation_minimums:
+  C-ARCH-01: 1
+  C-INTENT-01: 15
+  C-REG-01: 6
+  C-SEG-01: 9
+  C-PBT-01: 4
+  C-DOSE-01: 12
+allocation_policy:
+  - Clinical orchestration requirements shall allocate beyond C-PLAN-01 to the adapter that performs the bounded work.
+  - Dose and optimization work shall allocate to C-DOSE-01.
+  - Registration and derived-dose work shall allocate to C-REG-01.
+  - Contouring and anatomy-review work shall allocate to C-SEG-01.
+  - Proton-specific work shall allocate to C-PBT-01.
+  - Interface-contract and conformance work shall allocate to C-ARCH-01.

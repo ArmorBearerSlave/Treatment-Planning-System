@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gcpl:nltps:schema:mps-language-skeleton:0.2",
+  "title": "GCPL / NL-TPS MPS language-skeleton blueprint",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "skeleton_version",
+    "decision",
+    "architecture_baseline",
+    "implementation_state",
+    "project",
+    "languages"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.2"},
+    "skeleton_version": {"const": "0.2"},
+    "decision": {"const": "ADR-001"},
+    "architecture_baseline": {"type": "string", "pattern": "^ENG-PKG-01-v[0-9]+\\.[0-9]+$"},
+    "implementation_state": {"const": "blueprint_not_live_mps_serialization"},
+    "project": {
+      "type": "object",
+      "required": [
+        "name",
+        "namespace_prefix",
+        "default_model_persistence",
+        "patient_data_permitted",
+        "clinical_credentials_permitted",
+        "direct_persistence_xml_edit_permitted"
+      ],
+      "properties": {
+        "name": {"const": "NLTPSGovernance"},
+        "namespace_prefix": {"const": "nltps"},
+        "default_model_persistence": {"const": "file-per-root"},
+        "patient_data_permitted": {"const": false},
+        "clinical_credentials_permitted": {"const": false},
+        "direct_persistence_xml_edit_permitted": {"const": false}
+      }
+    },
+    "languages": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "depends_on",
+          "owns",
+          "root_concepts",
+          "non_root_concepts",
+          "required_constraints"
+        ],
+        "properties": {
+          "name": {"type": "string", "pattern": "^nltps\\.[a-z]+$"},
+          "depends_on": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "owns": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "root_concepts": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "non_root_concepts": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "required_constraints": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

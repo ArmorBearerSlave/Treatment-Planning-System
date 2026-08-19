@@ -2,13 +2,14 @@
 \usepackage{nl_tps_common}
 \hypersetup{pdftitle={NL-TPS Component Realization and Team-of-Teams Allocation},pdfsubject={NL-TPS controlled documentation}}
 \begin{document}
-\NLSetPageStyle{NL-TPS COMPONENT REALIZATION}{Derived from NL-TPS Detailed Requirements v0.1}
+\NLSetPageStyle{NL-TPS COMPONENT REALIZATION}{Derived from NL-TPS Detailed Requirements v0.1 with corrected clinical-adapter allocation}
 \NLTitleBlock{SYSTEM ARCHITECTURE BASELINE}{Component and Team Realization}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
 \NLMeta{Source baseline}{NL-TPS Detailed and Subsystem Requirements, Version 0.1}
-\NLMeta{Architecture version}{0.1 - Proposed component allocation}
-\NLMeta{Date}{18 August 2026}
+\NLMeta{Architecture version}{0.2 - Hazard-linked corrected component allocation}
+\NLMeta{Date}{19 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
 \NLMeta{Coverage}{119 high-level parents; 357 sub-requirements; 45 components; 15 teams}
+\NLMeta{Hazard trace}{\texttt{spec/allocations.yaml} materialized in \texttt{mps/import/traceability.json}}
 \end{minipage}}{This document proposes components, team ownership, and interface responsibilities needed to realize the NL-TPS requirements. It is not a detailed design, DICOM conformance statement, commissioning report, regulatory determination, or authorization for patient use.}
 
 \tableofcontents
@@ -280,7 +281,7 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \endlastfoot
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent GOV-001.} The NL-TPS shall operate as a human-supervised treatment-planning support system and shall not be represented as a substitute for the professional judgment of radiation oncologists, medical dosimetrists, qualified medical physicists, or other authorized clinical staff.} \\
 \addlinespace[2pt]
-\mbox{GOV-001-01} & The user interface, labeling, training material, and controlled product communications shall identify AI-produced content as decision support or draft output and shall identify the authorized human roles retaining clinical authority. & U-STACK + C-UX-01; C-GOV-01; C-QMS-01; C-IAM-01; C-SAFE-01; C-STATE-01 & Lead: T-UX; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{GOV-001-01} & The user interface, labeling, training material, and controlled product communications shall identify AI-produced content as decision support or draft output and shall identify the authorized human roles retaining clinical authority. & U-STACK + C-UX-01; C-GOV-01; C-QMS-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-ARCH-01 & Lead: T-UX; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \mbox{GOV-001-02} & The deterministic safety kernel shall reject any state transition in which model output, an automated service identity, or an unauthenticated actor is presented as professional review, approval, or judgment. & U-STACK + C-SAFE-01; C-STATE-01; C-IAM-01; C-MGW-01; C-MREG-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
@@ -304,17 +305,17 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent GOV-004.} The NL-TPS shall provide segregated training\slash\allowbreak{}research, commissioning, shadow, clinical-draft, clinical-approved, and degraded\slash\allowbreak{}read-only operating modes with mode-specific permissions and destinations.} \\
 \addlinespace[2pt]
-\mbox{GOV-004-01} & The configuration service shall define, for each operating mode, the permitted actions, data classes, model and evidence versions, approval states, interfaces, and destinations. & U-STACK + C-SBX-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-DICOM-01; C-DICOM-02; C-TERM-01; C-MGW-01; C-MREG-01; C-EVID-01; C-RULE-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{GOV-004-01} & The configuration service shall define, for each operating mode, the permitted actions, data classes, model and evidence versions, approval states, interfaces, and destinations. & U-STACK + C-SBX-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-DICOM-01; C-DICOM-02; C-TERM-01; C-MGW-01; C-MREG-01; C-EVID-01; C-RULE-01; C-ARCH-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{GOV-004-02} & Identity, safety-kernel, and user-interface controls shall enforce the active mode's permissions and shall display the active mode continuously during user interaction. & U-STACK + C-IAM-01; C-SAFE-01; C-STATE-01; C-UX-01 & Lead: T-SEC; partners: T-SYS\slash\allowbreak{}T-UX\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{GOV-004-02} & Identity, safety-kernel, and user-interface controls shall enforce the active mode's permissions and shall display the active mode continuously during user interaction. & U-STACK + C-IAM-01; C-SAFE-01; C-STATE-01; C-UX-01; C-ARCH-01 & Lead: T-SEC; partners: T-SYS\slash\allowbreak{}T-UX\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{GOV-004-03} & The data and interface services shall prevent promotion or transfer of objects between operating modes except through an approved, versioned, and audited transition workflow. & U-STACK + C-OBJ-01; C-DICOM-01; C-DICOM-02; C-TPS-01; C-TERM-01; C-SBX-01 & Lead: T-DATA; partners: T-INT\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{GOV-004-03} & The data and interface services shall prevent promotion or transfer of objects between operating modes except through an approved, versioned, and audited transition workflow. & U-STACK + C-OBJ-01; C-DICOM-01; C-DICOM-02; C-TPS-01; C-TERM-01; C-SBX-01; C-ARCH-01 & Lead: T-DATA; partners: T-INT\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent GOV-005.} The NL-TPS shall enforce institution-approved role authority and separation-of-duties rules for radiation oncologists, dosimetrists, medical physicists, therapists, informatics staff, quality staff, and system developers.} \\
 \addlinespace[2pt]
-\mbox{GOV-005-01} & The identity service shall implement an institution-approved role-permission matrix that identifies allowed functions and incompatible responsibilities for each authorized clinical and technical role. & U-STACK + C-IAM-01; C-GOV-01; C-QMS-01; C-SAFE-01; C-STATE-01 & Lead: T-SEC; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{GOV-005-01} & The identity service shall implement an institution-approved role-permission matrix that identifies allowed functions and incompatible responsibilities for each authorized clinical and technical role. & U-STACK + C-IAM-01; C-GOV-01; C-QMS-01; C-SAFE-01; C-STATE-01; C-ARCH-01 & Lead: T-SEC; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{GOV-005-02} & The safety kernel shall prevent one actor or service identity from satisfying approval steps that the active separation-of-duties policy defines as incompatible. & U-STACK + C-SAFE-01; C-STATE-01; C-IAM-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{GOV-005-02} & The safety kernel shall prevent one actor or service identity from satisfying approval steps that the active separation-of-duties policy defines as incompatible. & U-STACK + C-SAFE-01; C-STATE-01; C-IAM-01; C-ARCH-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \mbox{GOV-005-03} & The quality program shall perform and retain periodic access, role, exception, and separation-of-duties reviews, including disposition of identified conflicts. & U-STACK + C-GOV-01; C-QMS-01; C-IAM-01; C-SAFE-01; C-STATE-01 & Lead: T-GOV; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
@@ -632,19 +633,19 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent CLN-002.} The NL-TPS shall acquire and bind the approved image studies, frame of reference, registrations, structure sets, prior-treatment information, and signed clinical intent required for the active planning task.} \\
 \addlinespace[2pt]
-\mbox{CLN-002-01} & The planning-context manifest shall identify the approved image studies, frames of reference, registrations, structure sets, prior-treatment information, and signed clinical intent by unique version. & U-STACK + C-CASE-01; C-DICOM-01; C-DICOM-02; C-OBJ-01; C-TPS-01; C-WF-01 & Lead: T-IMG; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{CLN-002-01} & The planning-context manifest shall identify the approved image studies, frames of reference, registrations, structure sets, prior-treatment information, and signed clinical intent by unique version. & U-STACK + C-CASE-01; C-DICOM-01; C-DICOM-02; C-OBJ-01; C-TPS-01; C-WF-01; C-REG-01; C-SEG-01 & Lead: T-IMG; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{CLN-002-02} & Context validation shall reject a planning task with a missing, conflicting, stale, or incorrectly referenced required input. & U-STACK + C-CASE-01; C-DICOM-01; C-DICOM-02; C-SAFE-01; C-STATE-01; C-TPS-01; C-WF-01 & Lead: T-IMG; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{CLN-002-02} & Context validation shall reject a planning task with a missing, conflicting, stale, or incorrectly referenced required input. & U-STACK + C-CASE-01; C-DICOM-01; C-DICOM-02; C-SAFE-01; C-STATE-01; C-TPS-01; C-WF-01; C-REG-01 & Lead: T-IMG; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{CLN-002-03} & The system shall preserve the validated planning-context manifest and bind it to every derived anatomy, intent, and candidate-plan version. & U-STACK + C-TPS-01; C-WF-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{CLN-002-03} & The system shall preserve the validated planning-context manifest and bind it to every derived anatomy, intent, and candidate-plan version. & U-STACK + C-TPS-01; C-WF-01; C-REG-01; C-SEG-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent CLN-003.} The NL-TPS shall permit rigid or deformable registration and derived dose accumulation only through commissioned methods with registration-specific visualization, quality review, uncertainty documentation, and approval.} \\
 \addlinespace[2pt]
-\mbox{CLN-003-01} & The registration service shall allow only commissioned rigid-registration, deformable-registration, and dose-accumulation methods for the active anatomy, image conditions, and clinical purpose. & U-STACK + C-REG-01; C-DICOM-01; C-DICOM-02; C-SBX-01 & Lead: T-IMG; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{CLN-003-01} & The registration service shall allow only commissioned rigid-registration, deformable-registration, and dose-accumulation methods for the active anatomy, image conditions, and clinical purpose. & U-STACK + C-REG-01; C-DICOM-01; C-DICOM-02; C-SBX-01; C-SEG-01 & Lead: T-IMG; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \mbox{CLN-003-02} & The review workflow shall provide registration-specific visualization, quality measures, uncertainty documentation, and an authorized approval step before derived dose is used. & U-STACK + C-REG-01; C-DICOM-01; C-DICOM-02; C-UX-01; C-IAM-01; C-SAFE-01; C-STATE-01 & Lead: T-IMG; partners: T-UX\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{CLN-003-03} & The system shall retain the source and target images, transform, method and version, settings, quality results, uncertainty, reviewer, approval, and accumulated-dose lineage. & U-STACK + C-REG-01; C-DICOM-01; C-DICOM-02; C-IAM-01; C-SAFE-01; C-STATE-01 & Lead: T-IMG; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{CLN-003-03} & The system shall retain the source and target images, transform, method and version, settings, quality results, uncertainty, reviewer, approval, and accumulated-dose lineage. & U-STACK + C-REG-01; C-DICOM-01; C-DICOM-02; C-IAM-01; C-SAFE-01; C-STATE-01; C-SEG-01 & Lead: T-IMG; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent CLN-004.} The NL-TPS shall invoke contouring models only for approved anatomy, imaging conditions, structures, populations, and use cases and shall retain all model-generated contours as drafts pending review.} \\
 \addlinespace[2pt]
@@ -652,13 +653,13 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \addlinespace[2pt]
 \mbox{CLN-004-02} & Every model-generated contour shall be created in a draft state and shall retain its model, input, configuration, and applicability decision. & U-STACK + C-SEG-01; C-MGW-01; C-DICOM-01; C-OBJ-01; C-MREG-01 & Lead: T-IMG; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{CLN-004-03} & The system shall prohibit a model or automated service from approving a generated contour or promoting it directly to an approved clinical state. & U-STACK + C-SAFE-01; C-STATE-01; C-MGW-01; C-MREG-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{CLN-004-03} & The system shall prohibit a model or automated service from approving a generated contour or promoting it directly to an approved clinical state. & U-STACK + C-SAFE-01; C-STATE-01; C-MGW-01; C-MREG-01; C-SEG-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent CLN-005.} The NL-TPS shall display contour-model uncertainty, input anomalies, and out-of-distribution status and shall abstain or route to manual contouring when the commissioned use envelope is not satisfied.} \\
 \addlinespace[2pt]
 \mbox{CLN-005-01} & The contouring service shall calculate the commissioned uncertainty, input-quality, anomaly, and out-of-distribution indicators defined for the active model use. & U-STACK + C-SEG-01; C-MGW-01; C-DICOM-01; C-MREG-01 & Lead: T-IMG; partners: T-AI\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{CLN-005-02} & The service shall abstain or route to manual contouring when an approved applicability threshold is not met and shall display the specific condition and required action. & U-STACK + C-SAFE-01; C-STATE-01; C-UX-01; C-MON-01 & Lead: T-SYS; partners: T-UX\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{CLN-005-02} & The service shall abstain or route to manual contouring when an approved applicability threshold is not met and shall display the specific condition and required action. & U-STACK + C-SAFE-01; C-STATE-01; C-UX-01; C-MON-01; C-SEG-01 & Lead: T-SYS; partners: T-UX\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \mbox{CLN-005-03} & The system shall record all applicability indicators, thresholds, decisions, user responses, and performance against commissioned abstention and failure-detection cases. & U-STACK + C-TEST-01; C-MGW-01; C-MREG-01; C-MON-01 & Lead: T-DATA; partners: T-VV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
@@ -666,17 +667,17 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \addlinespace[2pt]
 \mbox{CLN-006-01} & Contour validation shall evaluate structure identity, approved nomenclature mapping, laterality, required presence, completeness, topology, image coverage, and configured geometric plausibility rules. & U-STACK + C-SEG-01; C-MGW-01; C-DICOM-01; C-OBJ-01; C-TERM-01 & Lead: T-IMG; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{CLN-006-02} & The lifecycle service shall block promotion to clinical-candidate status while any required contour validation is failed, unresolved, or stale. & U-STACK + C-SAFE-01; C-STATE-01; C-TPS-01; C-WF-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{CLN-006-02} & The lifecycle service shall block promotion to clinical-candidate status while any required contour validation is failed, unresolved, or stale. & U-STACK + C-SAFE-01; C-STATE-01; C-TPS-01; C-WF-01; C-SEG-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{CLN-006-03} & The system shall provide and retain a validation report identifying each check, result, affected structure, evidence, disposition, and reviewer. & U-STACK + C-UX-01; C-EVID-01; C-RULE-01 & Lead: T-UX; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{CLN-006-03} & The system shall provide and retain a validation report identifying each check, result, affected structure, evidence, disposition, and reviewer. & U-STACK + C-UX-01; C-EVID-01; C-RULE-01; C-SEG-01 & Lead: T-UX; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent CLN-007.} The NL-TPS shall preserve each contour's input study, frame of reference, model and version, configuration, naming map, confidence information, edits, reviewer, approval state, and lineage.} \\
 \addlinespace[2pt]
 \mbox{CLN-007-01} & Each contour version shall reference its input study, frame of reference, model and version, configuration, naming map, confidence information, and parent contour version. & U-STACK + C-OBJ-01; C-SEG-01; C-MGW-01; C-DICOM-01; C-DICOM-02; C-TERM-01; C-MREG-01 & Lead: T-DATA; partners: T-IMG\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{CLN-007-02} & User edits shall create a new contour version and shall retain the changed region, editor, time, reason when required, and pre-edit geometry. & U-STACK + C-OBJ-01; C-UX-01 & Lead: T-DATA; partners: T-UX\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{CLN-007-02} & User edits shall create a new contour version and shall retain the changed region, editor, time, reason when required, and pre-edit geometry. & U-STACK + C-OBJ-01; C-UX-01; C-SEG-01 & Lead: T-DATA; partners: T-UX\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{CLN-007-03} & Approval and export records shall identify the exact contour version, lineage, reviewer, approval state, and integrity value transferred downstream. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-TERM-01 & Lead: T-DATA; partners: T-INT\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{CLN-007-03} & Approval and export records shall identify the exact contour version, lineage, reviewer, approval state, and integrity value transferred downstream. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-TERM-01; C-SEG-01 & Lead: T-DATA; partners: T-INT\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent CLN-008.} The NL-TPS shall provide slice, surface, difference, and clinically relevant error-review views and shall capture the location and extent of user edits.} \\
 \addlinespace[2pt]
@@ -684,15 +685,15 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \addlinespace[2pt]
 \mbox{CLN-008-02} & The editing service shall capture the location, spatial extent, operation type, and before-and-after geometry for each user edit. & U-STACK + C-UX-01; C-OBJ-01 & Lead: T-UX; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{CLN-008-03} & Human-factors evaluation shall verify that representative users can find, interpret, edit, and confirm clinically important contour errors using the provided views. & U-STACK + C-HFE-01; C-UX-01; C-TEST-01 & Lead: T-UX; partners: T-VV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-CLIN \\
+\mbox{CLN-008-03} & Human-factors evaluation shall verify that representative users can find, interpret, edit, and confirm clinically important contour errors using the provided views. & U-STACK + C-HFE-01; C-UX-01; C-TEST-01; C-SEG-01 & Lead: T-UX; partners: T-VV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent CLN-009.} The NL-TPS shall require radiation-oncologist approval for clinical target contours and shall enforce institution-approved approval roles for organs at risk and other derived structures.} \\
 \addlinespace[2pt]
-\mbox{CLN-009-01} & The approval configuration shall identify the authorized approval role for targets, organs at risk, derived structures, and each supported clinical workflow. & U-STACK + C-IAM-01; C-SBX-01; C-SAFE-01; C-STATE-01 & Lead: T-SEC; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{CLN-009-01} & The approval configuration shall identify the authorized approval role for targets, organs at risk, derived structures, and each supported clinical workflow. & U-STACK + C-IAM-01; C-SBX-01; C-SAFE-01; C-STATE-01; C-SEG-01 & Lead: T-SEC; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{CLN-009-02} & The state engine shall require radiation-oncologist approval for clinical targets and shall enforce the configured authorized role before any structure becomes approved. & U-STACK + C-SAFE-01; C-STATE-01; C-IAM-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{CLN-009-02} & The state engine shall require radiation-oncologist approval for clinical targets and shall enforce the configured authorized role before any structure becomes approved. & U-STACK + C-SAFE-01; C-STATE-01; C-IAM-01; C-SEG-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{CLN-009-03} & Each structure approval shall bind the approver, role, contour version, review time, approval decision, and any conditions, and later edits shall invalidate the approval. & U-STACK + C-OBJ-01; C-IAM-01; C-SAFE-01; C-STATE-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{CLN-009-03} & Each structure approval shall bind the approver, role, contour version, review time, approval decision, and any conditions, and later edits shall invalidate the approval. & U-STACK + C-OBJ-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-SEG-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \end{longtable}
 \end{scriptsize}
@@ -716,99 +717,99 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \endlastfoot
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-001.} The NL-TPS shall create a versioned structured planning intent from the signed prescription, approved anatomy, patient-specific instructions, applicable protocol, institutional planning standard, and confirmed user priorities.} \\
 \addlinespace[2pt]
-\mbox{PLN-001-01} & The planning-intent schema shall reference the signed prescription, approved anatomy, patient-specific instructions, applicable protocol, institutional planning standard, and confirmed user priorities by version. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-OBJ-01 & Lead: T-PLAN; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-001-01} & The planning-intent schema shall reference the signed prescription, approved anatomy, patient-specific instructions, applicable protocol, institutional planning standard, and confirmed user priorities by version. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-OBJ-01; C-INTENT-01 & Lead: T-PLAN; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-001-02} & Intent compilation shall identify missing inputs and conflicts among authoritative sources and shall block candidate generation until required conflicts are resolved. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-SAFE-01; C-STATE-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-001-02} & Intent compilation shall identify missing inputs and conflicts among authoritative sources and shall block candidate generation until required conflicts are resolved. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-SAFE-01; C-STATE-01; C-DOSE-01; C-INTENT-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-001-03} & Each planning-intent version shall retain its source versions, normalized content, assumptions, clarifications, author or confirmer, integrity value, and supersession relationship. & U-STACK + C-TPS-01; C-WF-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-001-03} & Each planning-intent version shall retain its source versions, normalized content, assumptions, clarifications, author or confirmer, integrity value, and supersession relationship. & U-STACK + C-TPS-01; C-WF-01; C-PLAN-01; C-INTENT-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-002.} The NL-TPS shall generate or modify candidate plans only through commissioned planning, optimization, robustness, and dose-calculation services operating within the validated machine, technique, and algorithm envelope.} \\
 \addlinespace[2pt]
-\mbox{PLN-002-01} & The release configuration shall list each commissioned planning, optimization, robustness, and dose-calculation service with its validated machine, technique, algorithm, and use envelope. & U-STACK + C-SBX-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01 & Lead: T-SYS; partners: T-PLAN\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-002-01} & The release configuration shall list each commissioned planning, optimization, robustness, and dose-calculation service with its validated machine, technique, algorithm, and use envelope. & U-STACK + C-SBX-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-DOSE-01 & Lead: T-SYS; partners: T-PLAN\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-002-02} & The planning orchestrator shall verify the active request and configuration against the commissioned-use envelope before invoking a clinical planning or dose service. & U-STACK + C-SAFE-01; C-STATE-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01 & Lead: T-SYS; partners: T-PLAN\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-002-02} & The planning orchestrator shall verify the active request and configuration against the commissioned-use envelope before invoking a clinical planning or dose service. & U-STACK + C-SAFE-01; C-STATE-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-DOSE-01 & Lead: T-SYS; partners: T-PLAN\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-002-03} & The system shall record the service identity, version, approved configuration, envelope decision, input identity, and output identity for every candidate calculation. & U-STACK + C-TPS-01; C-WF-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-002-03} & The system shall record the service identity, version, approved configuration, envelope decision, input identity, and output identity for every candidate calculation. & U-STACK + C-TPS-01; C-WF-01; C-PLAN-01; C-DOSE-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-003.} The NL-TPS shall prevent language, speech, disease-site, or generative models from directly calculating clinical dose or substituting for a commissioned dose engine.} \\
 \addlinespace[2pt]
-\mbox{PLN-003-01} & The architecture shall separate language, speech, disease-site, and generative-model services from commissioned numerical dose-calculation components and credentials. & U-STACK + C-SAFE-01; C-STATE-01; C-VOICE-01; C-MGW-01; C-MREG-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{PLN-003-01} & The architecture shall separate language, speech, disease-site, and generative-model services from commissioned numerical dose-calculation components and credentials. & U-STACK + C-SAFE-01; C-STATE-01; C-VOICE-01; C-MGW-01; C-MREG-01; C-PLAN-01; C-DOSE-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{PLN-003-02} & The planning orchestrator shall accept clinical dose only from an approved commissioned dose service and shall reject model-supplied dose arrays, dose metrics, or calculation attestations. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-OBJ-01; C-MGW-01; C-MREG-01 & Lead: T-PLAN; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-003-02} & The planning orchestrator shall accept clinical dose only from an approved commissioned dose service and shall reject model-supplied dose arrays, dose metrics, or calculation attestations. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-OBJ-01; C-MGW-01; C-MREG-01; C-DOSE-01 & Lead: T-PLAN; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-003-03} & Testing shall demonstrate rejection of spoofed, mislabeled, malformed, or model-generated dose results at every supported interface boundary. & U-STACK + C-TEST-01; C-SEC-01; C-IAM-01; C-MGW-01; C-MREG-01 & Lead: T-VV; partners: T-SEC\slash\allowbreak{}T-SYS\slash\allowbreak{}T-CLIN \\
+\mbox{PLN-003-03} & Testing shall demonstrate rejection of spoofed, mislabeled, malformed, or model-generated dose results at every supported interface boundary. & U-STACK + C-TEST-01; C-SEC-01; C-IAM-01; C-MGW-01; C-MREG-01; C-PLAN-01; C-DOSE-01 & Lead: T-VV; partners: T-SEC\slash\allowbreak{}T-SYS\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-004.} The structured planning intent shall distinguish hard constraints, planning goals, optimization objectives, preferences, and reporting-only metrics.} \\
 \addlinespace[2pt]
-\mbox{PLN-004-01} & Each planning-intent criterion shall have an explicit type of hard constraint, planning goal, optimization objective, preference, or reporting-only metric. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-OBJ-01 & Lead: T-PLAN; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-004-01} & Each planning-intent criterion shall have an explicit type of hard constraint, planning goal, optimization objective, preference, or reporting-only metric. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-OBJ-01; C-DOSE-01; C-INTENT-01 & Lead: T-PLAN; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-004-02} & The planning workspace shall display criterion type, priority, units, source, and status without presenting a preference or reporting metric as a hard constraint. & U-STACK + C-UX-01; C-TPS-01; C-WF-01; C-TERM-01 & Lead: T-UX; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-004-02} & The planning workspace shall display criterion type, priority, units, source, and status without presenting a preference or reporting metric as a hard constraint. & U-STACK + C-UX-01; C-TPS-01; C-WF-01; C-TERM-01; C-PLAN-01; C-DOSE-01; C-INTENT-01 & Lead: T-UX; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-004-03} & Optimization and eligibility logic shall apply behavior consistent with the declared criterion type and shall prevent implicit type conversion. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-SAFE-01; C-STATE-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-004-03} & Optimization and eligibility logic shall apply behavior consistent with the declared criterion type and shall prevent implicit type conversion. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-SAFE-01; C-STATE-01; C-DOSE-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-005.} The NL-TPS shall prevent silent relaxation of a hard constraint and shall require an authorized explicit action, documented rationale, and pre\slash\allowbreak{}post difference review for any permitted relaxation.} \\
 \addlinespace[2pt]
-\mbox{PLN-005-01} & The state engine shall prohibit modification or relaxation of a hard constraint unless the active policy permits it and the user holds the required authorization. & U-STACK + C-SAFE-01; C-STATE-01; C-IAM-01 & Lead: T-SYS; partners: T-SEC\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{PLN-005-01} & The state engine shall prohibit modification or relaxation of a hard constraint unless the active policy permits it and the user holds the required authorization. & U-STACK + C-SAFE-01; C-STATE-01; C-IAM-01; C-PLAN-01; C-DOSE-01; C-INTENT-01 & Lead: T-SYS; partners: T-SEC\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{PLN-005-02} & A permitted relaxation shall require an explicit action, structured rationale, and a pre-change and post-change difference review before recalculation or promotion. & U-STACK + C-UX-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01 & Lead: T-UX; partners: T-PLAN\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-005-02} & A permitted relaxation shall require an explicit action, structured rationale, and a pre-change and post-change difference review before recalculation or promotion. & U-STACK + C-UX-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-DOSE-01 & Lead: T-UX; partners: T-PLAN\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-005-03} & The relaxed constraint shall create a new planning-intent version and shall retain the actor, authority, rationale, old and new values, affected candidates, and required reapprovals. & U-STACK + C-OBJ-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-TPS-01; C-WF-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-005-03} & The relaxed constraint shall create a new planning-intent version and shall retain the actor, authority, rationale, old and new values, affected candidates, and required reapprovals. & U-STACK + C-OBJ-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-TPS-01; C-WF-01; C-PLAN-01; C-DOSE-01; C-INTENT-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-006.} The NL-TPS shall generate the number of candidate plans requested by an authorized user when feasible and shall identify when the requested candidate set cannot be produced.} \\
 \addlinespace[2pt]
-\mbox{PLN-006-01} & The candidate-generation request shall contain the authorized requested candidate count and shall assign a unique identity to each attempted candidate. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-IAM-01; C-SAFE-01; C-STATE-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-006-01} & The candidate-generation request shall contain the authorized requested candidate count and shall assign a unique identity to each attempted candidate. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-DOSE-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-006-02} & The system shall report generated, failed, infeasible, canceled, and pending candidates and shall state why the requested set was not completed. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-UX-01 & Lead: T-PLAN; partners: T-UX\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-006-02} & The system shall report generated, failed, infeasible, canceled, and pending candidates and shall state why the requested set was not completed. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-UX-01; C-DOSE-01; C-PBT-01 & Lead: T-PLAN; partners: T-UX\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-006-03} & The audit record shall retain the requested count, generation attempts, parameters, job states, results, and user decision to continue, retry, or accept a partial set. & U-STACK + C-JOB-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{PLN-006-03} & The audit record shall retain the requested count, generation attempts, parameters, job states, results, and user decision to continue, retry, or accept a partial set. & U-STACK + C-JOB-01; C-PLAN-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-007.} The NL-TPS shall document the planning strategy, parameter variation, objective tradeoff, beam or modality variation, or other method used to create meaningful candidate diversity.} \\
 \addlinespace[2pt]
-\mbox{PLN-007-01} & Each candidate shall identify the planning strategy and the parameter, objective, beam, modality, robustness, or other controlled variation used to distinguish it from its peers. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-OBJ-01 & Lead: T-PLAN; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-007-01} & Each candidate shall identify the planning strategy and the parameter, objective, beam, modality, robustness, or other controlled variation used to distinguish it from its peers. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-OBJ-01; C-DOSE-01; C-INTENT-01 & Lead: T-PLAN; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-007-02} & The system shall calculate and present configured diversity descriptors against the parent candidate set without claiming clinically meaningful diversity from an unapproved threshold. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-REV-01; C-QA-01; C-MON-01 & Lead: T-PLAN; partners: T-REV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-007-02} & The system shall calculate and present configured diversity descriptors against the parent candidate set without claiming clinically meaningful diversity from an unapproved threshold. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-REV-01; C-QA-01; C-MON-01; C-DOSE-01 & Lead: T-PLAN; partners: T-REV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-007-03} & The candidate-set record shall retain the diversity method, configuration, descriptors, related candidates, and any user-directed variation. & U-STACK + C-TPS-01; C-WF-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-007-03} & The candidate-set record shall retain the diversity method, configuration, descriptors, related candidates, and any user-directed variation. & U-STACK + C-TPS-01; C-WF-01; C-PLAN-01; C-DOSE-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-008.} The NL-TPS shall identify infeasible candidates and candidates dominated by another candidate under the declared evaluation criteria.} \\
 \addlinespace[2pt]
-\mbox{PLN-008-01} & The planning service shall use versioned feasibility rules and declared dominance criteria appropriate to the active modality, technique, and evaluation set. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-SBX-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-008-01} & The planning service shall use versioned feasibility rules and declared dominance criteria appropriate to the active modality, technique, and evaluation set. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-SBX-01; C-DOSE-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-008-02} & The system shall label infeasible candidates and candidates dominated under the declared criteria and shall expose the specific failed conditions or comparison results. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-REV-01; C-QA-01 & Lead: T-PLAN; partners: T-REV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-008-02} & The system shall label infeasible candidates and candidates dominated under the declared criteria and shall expose the specific failed conditions or comparison results. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-REV-01; C-QA-01; C-DOSE-01 & Lead: T-PLAN; partners: T-REV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-008-03} & The feasibility and dominance record shall retain rule versions, input metrics, comparator results, excluded candidates, and any authorized human disposition. & U-STACK + C-IAM-01; C-SAFE-01; C-STATE-01; C-TPS-01; C-WF-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-008-03} & The feasibility and dominance record shall retain rule versions, input metrics, comparator results, excluded candidates, and any authorized human disposition. & U-STACK + C-IAM-01; C-SAFE-01; C-STATE-01; C-TPS-01; C-WF-01; C-PLAN-01; C-DOSE-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-009.} The NL-TPS shall attest at runtime to the active machine model, energy or beam type, technique, dose algorithm, grid, optimizer, biological model if used, and approved configuration before plan calculation.} \\
 \addlinespace[2pt]
-\mbox{PLN-009-01} & Each commissioned calculation service shall expose a signed runtime manifest containing machine model, energy or beam type, technique, dose algorithm, grid, optimizer, biological model, and configuration identifiers. & U-STACK + C-DOSE-01; C-TPS-01; C-DICOM-01; C-SBX-01; C-WF-01; C-MGW-01; C-MREG-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-009-01} & Each commissioned calculation service shall expose a signed runtime manifest containing machine model, energy or beam type, technique, dose algorithm, grid, optimizer, biological model, and configuration identifiers. & U-STACK + C-DOSE-01; C-TPS-01; C-DICOM-01; C-SBX-01; C-WF-01; C-MGW-01; C-MREG-01; C-PLAN-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-009-02} & The planning orchestrator shall compare the runtime manifest with the approved release configuration and shall block calculation on a missing or mismatched field. & U-STACK + C-SAFE-01; C-STATE-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01 & Lead: T-SYS; partners: T-PLAN\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-009-02} & The planning orchestrator shall compare the runtime manifest with the approved release configuration and shall block calculation on a missing or mismatched field. & U-STACK + C-SAFE-01; C-STATE-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-DOSE-01 & Lead: T-SYS; partners: T-PLAN\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-009-03} & The exact runtime manifest and comparison result shall be bound to each calculation output and candidate-plan version. & U-STACK + C-OBJ-01; C-TPS-01; C-WF-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-009-03} & The exact runtime manifest and comparison result shall be bound to each calculation output and candidate-plan version. & U-STACK + C-OBJ-01; C-TPS-01; C-WF-01; C-PLAN-01; C-DOSE-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-010.} The NL-TPS shall represent physical dose, RBE-weighted dose, fractionation, normalization, BED or EQD2 when approved, and proton-specific assumptions explicitly and without implicit conversion.} \\
 \addlinespace[2pt]
-\mbox{PLN-010-01} & Every dose quantity shall identify numeric units, physical or RBE-weighted basis, fractionation, normalization, biological transformation when approved, and applicable proton-specific assumptions. & U-STACK + C-OBJ-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-TERM-01 & Lead: T-DATA; partners: T-PLAN\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-010-01} & Every dose quantity shall identify numeric units, physical or RBE-weighted basis, fractionation, normalization, biological transformation when approved, and applicable proton-specific assumptions. & U-STACK + C-OBJ-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-TERM-01; C-DOSE-01; C-PBT-01; C-INTENT-01 & Lead: T-DATA; partners: T-PLAN\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-010-02} & The system shall prevent comparison, summation, or conversion of incompatible dose quantities unless an approved explicit transformation and its assumptions are applied. & U-STACK + C-SAFE-01; C-STATE-01; C-REV-01; C-QA-01; C-TPS-01; C-DICOM-01 & Lead: T-SYS; partners: T-REV\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-010-02} & The system shall prevent comparison, summation, or conversion of incompatible dose quantities unless an approved explicit transformation and its assumptions are applied. & U-STACK + C-SAFE-01; C-STATE-01; C-REV-01; C-QA-01; C-TPS-01; C-DICOM-01; C-PLAN-01; C-DOSE-01 & Lead: T-SYS; partners: T-REV\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-010-03} & Displays, reports, and audit exports shall present the dose basis and assumptions adjacent to each value and shall retain every transformation and source quantity. & U-STACK + C-UX-01; C-TERM-01 & Lead: T-UX; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{PLN-010-03} & Displays, reports, and audit exports shall present the dose basis and assumptions adjacent to each value and shall retain every transformation and source quantity. & U-STACK + C-UX-01; C-TERM-01; C-PLAN-01; C-DOSE-01 & Lead: T-UX; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-011.} The NL-TPS shall apply and record the institution-approved setup, range, motion, interplay, and other robustness scenarios required for the active technique before candidate eligibility.} \\
 \addlinespace[2pt]
-\mbox{PLN-011-01} & The active technique configuration shall define the required setup, range, motion, interplay, and other robustness scenarios, including parameter values and evaluation rules. & U-STACK + C-SBX-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01 & Lead: T-SYS; partners: T-PLAN\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-011-01} & The active technique configuration shall define the required setup, range, motion, interplay, and other robustness scenarios, including parameter values and evaluation rules. & U-STACK + C-SBX-01; C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-DOSE-01; C-PBT-01 & Lead: T-SYS; partners: T-PLAN\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-011-02} & The planning service shall execute every required scenario and shall block candidate eligibility when a scenario is missing, failed, stale, or outside the approved configuration. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-SAFE-01; C-STATE-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-011-02} & The planning service shall execute every required scenario and shall block candidate eligibility when a scenario is missing, failed, stale, or outside the approved configuration. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-SAFE-01; C-STATE-01; C-DOSE-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-011-03} & The candidate record and review workspace shall retain and present each scenario definition, result, aggregate, warning, and eligibility decision. & U-STACK + C-OBJ-01; C-REV-01; C-QA-01; C-TPS-01; C-DICOM-01; C-WF-01 & Lead: T-DATA; partners: T-REV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-011-03} & The candidate record and review workspace shall retain and present each scenario definition, result, aggregate, warning, and eligibility decision. & U-STACK + C-OBJ-01; C-REV-01; C-QA-01; C-TPS-01; C-DICOM-01; C-WF-01; C-PLAN-01; C-DOSE-01 & Lead: T-DATA; partners: T-REV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent PLN-012.} The NL-TPS shall preserve candidate-plan identity, parent intent, parameters, calculation outputs, warnings, configuration, evaluation results, and lineage through iterative refinement.} \\
 \addlinespace[2pt]
-\mbox{PLN-012-01} & Each candidate-plan version shall have a unique immutable identity and shall reference its parent intent, predecessor candidate, parameters, configuration, and calculation outputs. & U-STACK + C-OBJ-01; C-TPS-01; C-WF-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-012-01} & Each candidate-plan version shall have a unique immutable identity and shall reference its parent intent, predecessor candidate, parameters, configuration, and calculation outputs. & U-STACK + C-OBJ-01; C-TPS-01; C-WF-01; C-PLAN-01; C-DOSE-01; C-INTENT-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-012-02} & Each refinement shall create a new candidate version without overwriting prior parameters, results, warnings, evaluation states, or lineage. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-012-02} & Each refinement shall create a new candidate version without overwriting prior parameters, results, warnings, evaluation states, or lineage. & U-STACK + C-PLAN-01; C-WF-01; C-TPS-01; C-DICOM-01; C-DOSE-01 & Lead: T-PLAN; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{PLN-012-03} & Authorized users shall be able to compare any retained candidate versions and reconstruct the ordered refinement history and decision trail. & U-STACK + C-REV-01; C-QA-01; C-TPS-01; C-DICOM-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-WF-01 & Lead: T-REV; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{PLN-012-03} & Authorized users shall be able to compare any retained candidate versions and reconstruct the ordered refinement history and decision trail. & U-STACK + C-REV-01; C-QA-01; C-TPS-01; C-DICOM-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-WF-01; C-PLAN-01; C-DOSE-01 & Lead: T-REV; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \end{longtable}
 \end{scriptsize}
@@ -924,7 +925,7 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \endlastfoot
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent DAT-001.} The NL-TPS shall assign a unique identity, version, lifecycle state, owner, and source linkage to each clinical context, prescription intent, anatomy set, evidence package, planning strategy, candidate plan, review decision, QA record, and transfer record.} \\
 \addlinespace[2pt]
-\mbox{DAT-001-01} & The clinical-object schema shall require a globally unique identity, version, lifecycle state, owner, creation source, and source linkage for every controlled object type. & U-STACK + C-OBJ-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{DAT-001-01} & The clinical-object schema shall require a globally unique identity, version, lifecycle state, owner, creation source, and source linkage for every controlled object type. & U-STACK + C-OBJ-01; C-ARCH-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \mbox{DAT-001-02} & The repository shall reject identifier collision, missing ownership, invalid lifecycle transition, or creation of a derived object without a valid source link. & U-STACK + C-OBJ-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
@@ -942,13 +943,13 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \addlinespace[2pt]
 \mbox{DAT-003-01} & The information model shall define canonical units, coordinate systems, dose quantities and bases, structure definitions, and rounding rules for each stored and exchanged field. & U-STACK + C-OBJ-01; C-SBX-01; C-DICOM-01; C-DICOM-02; C-TERM-01; C-MGW-01; C-MREG-01 & Lead: T-DATA; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{DAT-003-02} & Every boundary conversion shall be explicit, versioned, dimensionally validated, and rejected when the source or destination representation is ambiguous or unsupported. & U-STACK + C-OBJ-01; C-DICOM-01; C-DICOM-02; C-TPS-01; C-TERM-01 & Lead: T-DATA; partners: T-INT\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{DAT-003-02} & Every boundary conversion shall be explicit, versioned, dimensionally validated, and rejected when the source or destination representation is ambiguous or unsupported. & U-STACK + C-OBJ-01; C-DICOM-01; C-DICOM-02; C-TPS-01; C-TERM-01; C-ARCH-01 & Lead: T-DATA; partners: T-INT\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{DAT-003-03} & Verification shall cover storage, calculation, display, export, round-trip, precision, rounding, coordinate-transform, and incompatible-unit cases. & U-STACK + C-TEST-01; C-DICOM-01; C-DICOM-02; C-TERM-01 & Lead: T-VV; partners: T-SYS\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{DAT-003-03} & Verification shall cover storage, calculation, display, export, round-trip, precision, rounding, coordinate-transform, and incompatible-unit cases. & U-STACK + C-TEST-01; C-DICOM-01; C-DICOM-02; C-TERM-01; C-ARCH-01 & Lead: T-VV; partners: T-SYS\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent DAT-004.} The NL-TPS shall validate DICOM patient and study identities, SOP Instance UIDs, references, frame-of-reference UIDs, required attributes, coordinate transformations, units, and destination fidelity for every clinical transfer.} \\
 \addlinespace[2pt]
-\mbox{DAT-004-01} & The DICOM gateway shall validate patient and study identity, SOP Instance UIDs, object references, frame-of-reference UIDs, required attributes, transformations, and units for each transfer package. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01; C-TERM-01 & Lead: T-INT; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{DAT-004-01} & The DICOM gateway shall validate patient and study identity, SOP Instance UIDs, object references, frame-of-reference UIDs, required attributes, transformations, and units for each transfer package. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01; C-TERM-01; C-ARCH-01 & Lead: T-INT; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \mbox{DAT-004-02} & The gateway shall reject or quarantine a transfer containing a missing, duplicate, inconsistent, orphaned, or destination-altered required element. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01; C-SAFE-01; C-STATE-01; C-TERM-01 & Lead: T-INT; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
@@ -956,19 +957,19 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent DAT-005.} The NL-TPS shall support the approved DICOM objects and transactions required for images, registrations, segmentations or structures, RT Plan, RT Ion Plan, RT Dose, treatment records, and related provenance in the active deployment.} \\
 \addlinespace[2pt]
-\mbox{DAT-005-01} & The deployment conformance statement shall list the supported DICOM SOP classes, roles, transfer syntaxes, transactions, required attributes, and known limitations for each approved interface. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01; C-SBX-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-TERM-01; C-JOB-01 & Lead: T-INT; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{DAT-005-01} & The deployment conformance statement shall list the supported DICOM SOP classes, roles, transfer syntaxes, transactions, required attributes, and known limitations for each approved interface. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01; C-SBX-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-TERM-01; C-JOB-01; C-ARCH-01 & Lead: T-INT; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{DAT-005-02} & The gateway shall import, validate, create, and export only the DICOM objects and transactions approved for the active deployment and operating mode. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01; C-TERM-01; C-JOB-01; C-SBX-01 & Lead: T-INT; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{DAT-005-02} & The gateway shall import, validate, create, and export only the DICOM objects and transactions approved for the active deployment and operating mode. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01; C-TERM-01; C-JOB-01; C-SBX-01; C-ARCH-01 & Lead: T-INT; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{DAT-005-03} & Conformance testing shall use representative and challenge objects for images, registrations, segmentations or structures, plans, ion plans, dose, treatment records, and provenance. & U-STACK + C-TEST-01; C-GOV-01; C-QMS-01 & Lead: T-VV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-CLIN \\
+\mbox{DAT-005-03} & Conformance testing shall use representative and challenge objects for images, registrations, segmentations or structures, plans, ion plans, dose, treatment records, and provenance. & U-STACK + C-TEST-01; C-GOV-01; C-QMS-01; C-ARCH-01 & Lead: T-VV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent DAT-006.} The NL-TPS shall use approved IHE-RO profiles and FHIR or CodeX radiation-therapy exchanges where implemented and shall document conformance and known limitations.} \\
 \addlinespace[2pt]
 \mbox{DAT-006-01} & Each implemented IHE-RO, FHIR, or CodeX exchange shall identify the profile or guide version, actor or resource role, supported transactions, terminology, and optional features. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01; C-SBX-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-JOB-01 & Lead: T-INT; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{DAT-006-02} & The interface shall validate conformance to the approved profile or guide and shall prevent use of an unsupported exchange as though it were conformant. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01 & Lead: T-INT; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{DAT-006-02} & The interface shall validate conformance to the approved profile or guide and shall prevent use of an unsupported exchange as though it were conformant. & U-STACK + C-DICOM-01; C-DICOM-02; C-TPS-01; C-ARCH-01 & Lead: T-INT; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{DAT-006-03} & The system shall maintain and make available a conformance statement and known-limitations record for every implemented exchange. & U-STACK + C-GOV-01; C-QMS-01; C-UX-01 & Lead: T-GOV; partners: T-UX\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{DAT-006-03} & The system shall maintain and make available a conformance statement and known-limitations record for every implemented exchange. & U-STACK + C-GOV-01; C-QMS-01; C-UX-01; C-ARCH-01 & Lead: T-GOV; partners: T-UX\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent DAT-007.} The NL-TPS shall reject incomplete, ambiguous, inconsistent, orphaned, or partially transferred clinical data rather than promoting it to a valid state.} \\
 \addlinespace[2pt]
@@ -976,7 +977,7 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \addlinespace[2pt]
 \mbox{DAT-007-02} & The lifecycle service shall prevent invalid or quarantined data from becoming active, approved, or eligible as input to a clinical calculation or transfer. & U-STACK + C-SAFE-01; C-STATE-01; C-DICOM-01; C-DICOM-02; C-TERM-01 & Lead: T-SYS; partners: T-VV\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
-\mbox{DAT-007-03} & The interface and audit record shall identify each detected condition, affected object, source, disposition, correction, and reconciliation result. & U-STACK + C-UX-01 & Lead: T-UX; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{DAT-007-03} & The interface and audit record shall identify each detected condition, affected object, source, disposition, correction, and reconciliation result. & U-STACK + C-UX-01; C-ARCH-01 & Lead: T-UX; partners: T-DATA\slash\allowbreak{}T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent DAT-008.} The NL-TPS shall maintain a tamper-evident, time-synchronized audit ledger of commands, context, inputs, versions, evidence, outputs, warnings, edits, approvals, QA, exports, failures, overrides, and reconciliation events.} \\
 \addlinespace[2pt]
@@ -1360,9 +1361,9 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent VAL-004.} End-to-end verification shall exercise normal, boundary, rare but foreseeable, wrong-context, partial-failure, timeout, rollback, post-approval change, and recovery scenarios through the official clinical interfaces.} \\
 \addlinespace[2pt]
-\mbox{VAL-004-01} & The end-to-end test plan shall include normal, boundary, rare but foreseeable, wrong-context, partial-failure, timeout, rollback, post-approval change, and recovery scenarios. & U-STACK + C-TEST-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-JOB-01; C-RES-01 & Lead: T-VV; partners: T-SYS\slash\allowbreak{}T-CLIN \\
+\mbox{VAL-004-01} & The end-to-end test plan shall include normal, boundary, rare but foreseeable, wrong-context, partial-failure, timeout, rollback, post-approval change, and recovery scenarios. & U-STACK + C-TEST-01; C-IAM-01; C-SAFE-01; C-STATE-01; C-JOB-01; C-RES-01; C-ARCH-01 & Lead: T-VV; partners: T-SYS\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
-\mbox{VAL-004-02} & Each scenario shall execute through the official user, model, clinical-service, and interface paths using the release-candidate configuration. & U-STACK + C-TEST-01; C-TPS-01; C-WF-01; C-MGW-01; C-MREG-01 & Lead: T-VV; partners: T-SYS\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
+\mbox{VAL-004-02} & Each scenario shall execute through the official user, model, clinical-service, and interface paths using the release-candidate configuration. & U-STACK + C-TEST-01; C-TPS-01; C-WF-01; C-MGW-01; C-MREG-01; C-ARCH-01 & Lead: T-VV; partners: T-SYS\slash\allowbreak{}T-CLIN\slash\allowbreak{}T-INT \\
 \addlinespace[2pt]
 \mbox{VAL-004-03} & Results shall retain ordered evidence, expected and observed behavior, data lineage, screenshots or logs when applicable, anomalies, dispositions, and regression linkage. & U-STACK + C-TEST-01; C-GOV-01; C-QMS-01; C-EVID-01; C-RULE-01 & Lead: T-VV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
@@ -1392,7 +1393,7 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \addlinespace[2pt]
 \rowcolor{NLLight}\multicolumn{4}{@{}L{0.94\textwidth}@{}}{\textbf{Parent VAL-008.} Each expansion to a new disease site, model, modality, machine, technique, institution, adaptive workflow, interface, or evidence package shall receive documented change-impact assessment, commissioning, human-factors assessment, regression testing, and monitoring approval.} \\
 \addlinespace[2pt]
-\mbox{VAL-008-01} & The change process shall classify expansions by disease site, model, modality, machine, technique, institution, adaptive workflow, interface, and evidence package and shall identify affected requirements and hazards. & U-STACK + C-GOV-01; C-QMS-01; C-MGW-01; C-MREG-01; C-EVID-01; C-RULE-01 & Lead: T-GOV; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
+\mbox{VAL-008-01} & The change process shall classify expansions by disease site, model, modality, machine, technique, institution, adaptive workflow, interface, and evidence package and shall identify affected requirements and hazards. & U-STACK + C-GOV-01; C-QMS-01; C-MGW-01; C-MREG-01; C-EVID-01; C-RULE-01; C-ARCH-01 & Lead: T-GOV; partners: T-SYS\slash\allowbreak{}T-VV\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
 \mbox{VAL-008-02} & The impact assessment shall prescribe the required commissioning, regression, human-factors, interoperability, cybersecurity, clinical, and monitoring activities for the expansion. & U-STACK + C-TEST-01; C-GOV-01; C-QMS-01; C-MON-01 & Lead: T-VV; partners: T-GOV\slash\allowbreak{}T-SYS\slash\allowbreak{}T-CLIN \\
 \addlinespace[2pt]
@@ -1412,7 +1413,7 @@ Each row's complete necessary component set is \textbf{U-STACK plus the listed d
 \subsection{Accreditation and practice-quality profiles (ACC)}
 
 \begin{scriptsize}
-\begin{longtable}{@{}L{0.14\textwidth}L{0.43\textwidth}L{0.25\textwidth}L{0.16\textwidth}@{}}
+\begin{longtable}{@{}L{0.14\textwidth}L{0.39\textwidth}L{0.25\textwidth}L{0.16\textwidth}@{}}
 \toprule
 \rowcolor{NLTableHeader}\textbf{Child} & \textbf{Requirement} & \textbf{Realization} & \textbf{Ownership} \\
 \midrule
@@ -1623,7 +1624,7 @@ C-QMS-01 & Quality, Change, Document, and CAPA System & 60 \\
 \addlinespace[2pt]
 C-REQ-01 & Requirements, Risk, and Traceability Repository & 3 \\
 \addlinespace[2pt]
-C-ARCH-01 & Architecture and Interface Contract Registry & 0 \\
+C-ARCH-01 & Architecture and Interface Contract Registry & 19 \\
 \addlinespace[2pt]
 C-IAM-01 & Identity, Role, and Approval Service & 115 \\
 \addlinespace[2pt]
@@ -1637,7 +1638,7 @@ C-HFE-01 & Human-Factors, Training, and Competency Program & 13 \\
 \addlinespace[2pt]
 C-VOICE-01 & Push-to-Talk and Transcript Confirmation Service & 17 \\
 \addlinespace[2pt]
-C-INTENT-01 & Typed Intent Compiler and Deterministic Validator & 12 \\
+C-INTENT-01 & Typed Intent Compiler and Deterministic Validator & 22 \\
 \addlinespace[2pt]
 C-WF-01 & Clinical Workflow Orchestrator & 54 \\
 \addlinespace[2pt]
@@ -1645,23 +1646,23 @@ C-EVID-01 & Approved Evidence Repository and Retrieval Service & 60 \\
 \addlinespace[2pt]
 C-RULE-01 & Computable Rule and Authority Resolver & 61 \\
 \addlinespace[2pt]
-C-ACC-01 & Accreditation Profile and Applicability Registry & 10 \\
+C-ACC-01 & Accreditation Profile and Applicability Registry & 9 \\
 \addlinespace[2pt]
 C-DOC-01 & Clinical Documentation Completeness and Temporal Gate & 6 \\
 \addlinespace[2pt]
-C-ACC-02 & Accreditation Evidence, Deficiency, and Export Workspace & 5 \\
+C-ACC-02 & Accreditation Evidence, Deficiency, and Export Workspace & 4 \\
 \addlinespace[2pt]
-C-PBT-01 & Proton Planning and QA Profile Adapter & 3 \\
+C-PBT-01 & Proton Planning and QA Profile Adapter & 6 \\
 \addlinespace[2pt]
 C-CASE-01 & Clinical Context and Case Manifest Service & 10 \\
 \addlinespace[2pt]
-C-REG-01 & Registration and Derived-Dose Service & 3 \\
+C-REG-01 & Registration and Derived-Dose Service & 6 \\
 \addlinespace[2pt]
-C-SEG-01 & Contouring Gateway and Anatomy Review Service & 6 \\
+C-SEG-01 & Contouring Gateway and Anatomy Review Service & 20 \\
 \addlinespace[2pt]
-C-PLAN-01 & Planning Intent and Candidate Orchestrator & 20 \\
+C-PLAN-01 & Planning Intent and Candidate Orchestrator & 37 \\
 \addlinespace[2pt]
-C-DOSE-01 & Commissioned Optimizer and Dose-Service Adapter & 1 \\
+C-DOSE-01 & Commissioned Optimizer and Dose-Service Adapter & 33 \\
 \addlinespace[2pt]
 C-REV-01 & Plan Comparison, Selection, and Approval Workspace & 17 \\
 \addlinespace[2pt]

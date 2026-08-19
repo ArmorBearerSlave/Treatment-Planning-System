@@ -1,14 +1,14 @@
 \documentclass[11pt,letterpaper]{article}
 \usepackage{nl_tps_common}
-\hypersetup{pdftitle={Functional, Non-Functional, and Operational Sub-Requirements},pdfsubject={NL-TPS controlled documentation}}
+\hypersetup{pdftitle={Functional, Safety-Assurance, and Operational Sub-Requirements},pdfsubject={NL-TPS controlled documentation}}
 \begin{document}
-\NLSetPageStyle{NL-TPS F/NF/O SUB-REQUIREMENTS}{NL-TPS categorized F/NF/O High-Level Requirements v0.1}
-\NLTitleBlock{SYSTEM REQUIREMENTS BASELINE}{Functional, Non-Functional, and Operational Sub-Requirements}{Complete decomposition and immutable source trace}{\begin{minipage}{0.95\textwidth}
-\NLMeta{Source baseline}{NL-TPS categorized F/NF/O High-Level Requirements v0.1}
-\NLMeta{Requirements version}{0.1 - Proposed baseline}
-\NLMeta{Date}{18 August 2026}
+\NLSetPageStyle{NL-TPS F/SA/O SUB-REQUIREMENTS}{NL-TPS categorized F/SA/O High-Level Requirements v0.2}
+\NLTitleBlock{SYSTEM REQUIREMENTS BASELINE}{Functional, Safety / Assurance, and Operational Sub-Requirements}{Complete decomposition and immutable source trace}{\begin{minipage}{0.95\textwidth}
+\NLMeta{Source baseline}{NL-TPS categorized F/SA/O High-Level Requirements v0.2}
+\NLMeta{Requirements version}{0.2 - Reclassified proposed baseline}
+\NLMeta{Date}{19 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
-\NLMeta{Coverage}{357 requirements: 207 functional; 75 non-functional; 75 operational}
+\NLMeta{Coverage}{357 requirements: 207 functional; 75 safety / assurance; 75 operational}
 \end{minipage}}{This document decomposes the categorized high-level baseline into proposed, testable sub-requirements. It is not a clinical protocol, commissioning report, regulatory determination, released product specification, or authorization for patient use.}
 
 \tableofcontents
@@ -35,11 +35,11 @@
 \endlastfoot
 Document owner & NL-TPS Program - proposed; final owner requires governance approval \\
 \addlinespace[2pt]
-Source document & NL-TPS High-Level Functional, Non-Functional, and Operational Requirements, Version 0.1 \\
+Source document & NL-TPS High-Level Functional, Safety-Assurance, and Operational Requirements, Version 0.1 \\
 \addlinespace[2pt]
 Baseline status & Proposed requirements and realization planning; not approved, implemented, commissioned, or allocated to a clinical release \\
 \addlinespace[2pt]
-Coverage & 357 requirements: 207 functional; 75 non-functional; 75 operational \\
+Coverage & 357 requirements: 207 functional; 75 safety / assurance; 75 operational \\
 \addlinespace[2pt]
 Identifier policy & Each category child ID retains the immutable original detailed-requirement alias. \\
 \addlinespace[2pt]
@@ -52,9 +52,9 @@ Supersession & None; this document preserves and traces to the existing controll
 
 \NLFrontMatterSection{Executive summary}
 
-This specification realizes the 119 categorized high-level requirements through all 357 existing lower-level obligations: 207 functional, 75 non-functional, and 75 operational sub-requirements. Each parent retains three children covering controlled definition or configuration, enforceable behavior or workflow, and retained verification or audit evidence.
+This specification realizes the 119 categorized high-level requirements through all 357 existing lower-level obligations: 207 functional, 75 cross-cutting safety and assurance, and 75 operational sub-requirements. Each parent retains three children covering controlled definition or configuration, enforceable behavior or workflow, and retained verification or audit evidence.
 
-No child obligation has been summarized away. The exact source text, legacy allocation code, and anticipated V\&V methods are preserved, while the new category ID provides an explicit functional, non-functional, or operational classification.
+No child obligation has been summarized away. The exact source text, legacy allocation code, and anticipated V\&V methods are preserved. HNFR, NFSR, and NFC identifiers remain stable legacy aliases while the authoritative class is functional, cross-cutting safety and assurance, or operational.
 
 \section{Purpose and decomposition rule}
 
@@ -103,13 +103,13 @@ Functional & AIM & AI and inference-model lifecycle & 8 & 24 \\
 \addlinespace[2pt]
 Functional & ACC & Accreditation-profile, clinical-documentation, QA, and proton capabilities & 5 & 15 \\
 \addlinespace[2pt]
-Non-functional & SAF & Safety boundaries and human authority & 10 & 30 \\
+Safety / assurance & SAF & Safety boundaries and human authority & 10 & 30 \\
 \addlinespace[2pt]
-Non-functional & HFE & Human factors, usability, and competency & 6 & 18 \\
+Safety / assurance & HFE & Human factors, usability, and competency & 6 & 18 \\
 \addlinespace[2pt]
-Non-functional & SEC & Privacy, cybersecurity, and secure development & 8 & 24 \\
+Safety / assurance & SEC & Privacy, cybersecurity, and secure development & 8 & 24 \\
 \addlinespace[2pt]
-Non-functional & ACC & Human accreditation authority and claim limitation & 1 & 3 \\
+Safety / assurance & ACC & Human accreditation authority and claim limitation & 1 & 3 \\
 \addlinespace[2pt]
 Operational & GOV & Governance, intended use, and scope & 7 & 21 \\
 \addlinespace[2pt]
@@ -763,7 +763,7 @@ TOTAL & All & Complete decomposed baseline & 119 & 357 \\
 \end{longtable}
 \end{scriptsize}
 
-\section{Non-functional sub-requirements}
+\section{Cross-cutting safety and assurance sub-requirements}
 
 \subsection{Safety boundaries and human authority (SAF)}
 
@@ -1297,7 +1297,7 @@ External TPS interoperability shall be accepted through the approved DICOM/DICOM
 \endlastfoot
 Functional & 69 & 207 & 207 & 3.00 & Pass \\
 \addlinespace[2pt]
-Non-functional & 25 & 75 & 75 & 3.00 & Pass \\
+Safety / assurance & 25 & 75 & 75 & 3.00 & Pass \\
 \addlinespace[2pt]
 Operational & 25 & 75 & 75 & 3.00 & Pass \\
 \addlinespace[2pt]

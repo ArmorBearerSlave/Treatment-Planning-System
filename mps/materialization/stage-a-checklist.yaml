@@ -1,0 +1,57 @@
+schema_version: "0.1"
+package_id: MPS-MAT-01
+status: not_started
+authority_stage: A_mirror
+patient_data_permitted: false
+clinical_credentials_permitted: false
+signing_keys_permitted: false
+required_worktree:
+  managed_git_worktree: true
+  synchronized_directory_permitted: false
+  whitespace_in_path_permitted: false
+  branch: mps/materialization
+controlled_inputs:
+  - mps/bootstrap/language-skeleton.json
+  - mps/bootstrap/language-skeleton.schema.json
+  - mps/import/hlr-baseline.json
+  - mps/import/hlr-baseline.schema.json
+  - spec/architecture.yaml
+  - spec/decisions.yaml
+  - spec/terminology.yaml
+acceptance_items:
+  - id: MPS-MAT-001
+    item: Managed space-free worktree is registered to the controlling Git common directory.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-002
+    item: NLTPSGovernance and all four controlled language modules are created through MPS.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-003
+    item: Root and non-root concepts are disjoint, exhaustive, and single-owner.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-004
+    item: Dependency direction and file-per-root persistence match the blueprint.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-005
+    item: Constraints, typesystems, editors, and negative model tests pass.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-006
+    item: The HLR importer accepts the schema-valid bundle and creates exactly 119 roots.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-007
+    item: Neutral reverse export has zero unexplained discrepancy from controlled input.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-008
+    item: Headless build and model tests pass without the experimental agent toolkit.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-009
+    item: Independent Stage A review confirms no patient data, credentials, signing keys, or authority cutover.
+    status: pending
+    evidence: []

@@ -4,7 +4,7 @@
 \graphicspath{{figures/}{overleaf/figures/}}
 \hypersetup{
   pdftitle={Governed Clinical Language for AI-Assisted Radiation Treatment Planning - Controlled Documentation Suite},
-  pdfsubject={ConOps; requirements; component realization; risk and mitigation; trade-off analysis; verification and validation; engineering planning; and architecture decisions}
+  pdfsubject={ConOps; requirements; component realization; risk and mitigation; trade-off analysis; verification and validation; engineering planning; architecture decisions; and corrective action}
 }
 \makeatletter
 \renewcommand{\@pnumwidth}{3.0em}
@@ -29,15 +29,15 @@
 }
 
 \begin{document}
-\NLSetPageStyle{GCPL / NL-TPS DOCUMENTATION SUITE}{ConOps through Architecture Decisions - Version 0.2}
+\NLSetPageStyle{GCPL / NL-TPS DOCUMENTATION SUITE}{ConOps through Corrective Action - Version 0.4}
 \NLTitleBlock{CONTROLLED DOCUMENTATION SUITE}{\raggedright Governed Clinical Language for\\AI-Assisted Radiation\\Treatment Planning}{A Model-Based, Safety-Constrained Orchestration Framework}{\begin{minipage}{0.95\textwidth}
 \NLMeta{Technology name}{Governed Clinical Planning Language (GCPL)}
 \NLMeta{Implementation / legacy alias}{Natural-Language Treatment Planning System (NL-TPS)}
-\NLMeta{Suite version}{0.2 - Discussion Draft}
+\NLMeta{Suite version}{0.4 - Repository-Readiness Discussion Draft}
 \NLMeta{Date}{19 August 2026}
-\NLMeta{Included documents}{18}
-\NLMeta{Trace chain}{ConOps $\rightarrow$ controlled ACR\slash\allowbreak{}APEx profile $\rightarrow$ 119 HLRs $\rightarrow$ 357 HLIRs $\rightarrow$ 1,071 SIRs $\rightarrow$ interface and component realizations $\rightarrow$ 2,088 risk/trade records $\rightarrow$ MQA-PKG-01 $\rightarrow$ 2,144 planned V\&V checks $\rightarrow$ ENG-PKG-01 v0.4 $\rightarrow$ ADR-001 MPS boundary $\rightarrow$ ADR-002 GCPL / NL-TPS naming hierarchy; Stage A 119-HLR mirror; 15 accountable teams}
-\end{minipage}}{This file compiles the eighteen separately controlled GCPL / NL-TPS documents into one review copy. ADR-002 changes program identity, not requirement meaning or identifiers. Until the ADR-001 Stage C cutover criteria and named approvals are complete, the existing constituent source files remain authoritative. Nothing in this combined view authorizes clinical use, establishes accreditation, approves machine readiness, completes an authority cutover, represents a V\&V check as executed, or replaces institutional interpretation of ACR ROPA or ASTRO APEx criteria.}
+\NLMeta{Included documents}{19}
+\NLMeta{Trace chain}{ConOps $\rightarrow$ controlled ACR\slash\allowbreak{}APEx profile $\rightarrow$ 119 HLRs $\rightarrow$ 357 HLIRs $\rightarrow$ 1,071 SIRs $\rightarrow$ interface and component realizations $\rightarrow$ 2,088 risk/trade records $\rightarrow$ MQA-PKG-01 $\rightarrow$ 2,144 planned V\&V checks $\rightarrow$ ENG-PKG-01 v0.6 $\rightarrow$ ADR-001/002 v0.2 $\rightarrow$ DRR-001 v0.2 and RRR-001; Stage A 119-HLR mirror; 15 accountable teams}
+\end{minipage}}{This file compiles the nineteen separately controlled GCPL / NL-TPS documents into one review copy. ADR-002 changes program identity, not requirement meaning or identifiers. DRR-001 distinguishes repository corrections from pending clinical approvals and operational migration. Until the ADR-001 Stage C cutover criteria and named approvals are complete, the existing constituent source files remain authoritative. Nothing in this combined view authorizes clinical use, establishes accreditation, approves machine readiness, completes an authority cutover, represents a V\&V check as executed, or replaces institutional interpretation of ACR ROPA or ASTRO APEx criteria.}
 
 \tableofcontents
 \clearpage
@@ -47,12 +47,12 @@
 \NLTPSIncludeDocument{Document I: Concept of Operations}{overleaf/NL_TPS_ConOps.tex}{conops}
 \NLTPSIncludeDocument{Document II: ACR ROPA and ASTRO APEx Applicability and Traceability Matrix}{overleaf/NL_TPS_ACR_APEx_Applicability_Traceability_Matrix.tex}{acrapex}
 \NLTPSIncludeDocument{Document III: High-Level Requirements}{overleaf/NL_TPS_High_Level_Requirements.tex}{hlr}
-\NLTPSIncludeDocument{Document IV: High-Level Functional, Non-Functional, and Operational Requirements}{overleaf/NL_TPS_High_Level_Functional_Non_Functional_Operational_Requirements.tex}{fnohlr}
+\NLTPSIncludeDocument{Document IV: High-Level Functional, Safety-Assurance, and Operational Requirements}{overleaf/NL_TPS_High_Level_Functional_Non_Functional_Operational_Requirements.tex}{fnohlr}
 \NLTPSIncludeDocument{Document V: High-Level Interface Requirements}{overleaf/NL_TPS_High_Level_Interface_Requirements.tex}{interfaces}
 \NLTPSIncludeDocument{Document VI: Sub-Interface Requirements}{overleaf/NL_TPS_Sub_Interface_Requirements.tex}{subinterfaces}
 \NLTPSIncludeDocument{Document VII: Interface Component and Team Realization}{overleaf/NL_TPS_Interface_Component_Realization.tex}{interfacecomponents}
-\NLTPSIncludeDocument{Document VIII: F/NF/O Sub-Requirements}{overleaf/NL_TPS_Functional_Non_Functional_Operational_Sub_Requirements.tex}{fnosubreq}
-\NLTPSIncludeDocument{Document IX: F/NF/O Component Realization}{overleaf/NL_TPS_Functional_Non_Functional_Operational_Component_Realization.tex}{fnocomponents}
+\NLTPSIncludeDocument{Document VIII: F/SA/O Sub-Requirements}{overleaf/NL_TPS_Functional_Non_Functional_Operational_Sub_Requirements.tex}{fnosubreq}
+\NLTPSIncludeDocument{Document IX: F/SA/O Component Realization}{overleaf/NL_TPS_Functional_Non_Functional_Operational_Component_Realization.tex}{fnocomponents}
 \NLTPSIncludeDocument{Document X: Detailed Functional Sub-Requirements}{overleaf/NL_TPS_Detailed_Requirements.tex}{subreq}
 \NLTPSIncludeDocument{Document XI: Functional Component and Team Realization}{overleaf/NL_TPS_Component_Realization.tex}{components}
 \NLTPSIncludeDocument{Document XII: Risk and Mitigation Register}{overleaf/NL_TPS_Risk_and_Mitigation_Register.tex}{riskregister}
@@ -62,5 +62,6 @@
 \NLTPSIncludeDocument{Document XVI: Engineering Architecture and MVP Implementation Plan}{overleaf/NL_TPS_Engineering_Architecture_and_MVP_Implementation_Plan.tex}{engineeringplan}
 \NLTPSIncludeDocument{Document XVII: ADR-001 - MPS Authority, Scope, and Runtime Boundary}{overleaf/NL_TPS_ADR_001_MPS_Authority_Scope_and_Runtime_Boundary.tex}{adr001}
 \NLTPSIncludeDocument{Document XVIII: ADR-002 - Program Identity and Naming Hierarchy}{overleaf/NL_TPS_ADR_002_Program_Identity_and_Naming_Hierarchy.tex}{adr002}
+\NLTPSIncludeDocument{Document XIX: Defect Resolution Register}{overleaf/NL_TPS_Defect_Resolution_Register.tex}{defects}
 
 \end{document}

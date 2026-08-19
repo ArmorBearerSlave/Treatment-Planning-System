@@ -1,0 +1,205 @@
+schema_version: "0.1"
+register_id: DRR-001
+title: GCPL / NL-TPS Defect Resolution Register
+review_date: "2026-08-19"
+source: second-pass corpus and tooling defect review
+status: corrective_action_in_progress_with_controlled_residuals
+closure_policy: >-
+  Corrected means the repository change and its automated regression evidence
+  exist. It does not mean a clinical value, risk acceptance, V&V result,
+  commissioning state, or release has been approved.
+defects:
+  - id: A1
+    severity: Critical
+    title: Hazard trace stops before interfaces, components, and V&V
+    disposition: corrected
+    correction: >-
+      Established hazards and allocation policy as controlled specifications;
+      materialized one or more hazard links for all 2,144 entities and carried
+      those links into every V&V check.
+    evidence:
+      - spec/hazards.yaml
+      - spec/allocations.yaml
+      - mps/import/traceability.json
+      - tools/spec/build_trace_graph.py
+      - overleaf/NL_TPS_Verification_Validation_Check_Matrix.tex
+    verification: build_trace_graph.py --check reports 2,144 hazard-linked entities and claims
+    residual: Hazard allocations remain subject to multidisciplinary review and change control.
+  - id: A2
+    severity: Critical
+    title: Risk failure conditions are template-derived and normative text is truncated
+    disposition: corrected
+    correction: >-
+      Rebuilt 2,088 records from controlled hazards and the full normative text;
+      retained full text and hashes in the structured risk model and used only
+      marked excerpts in the human-readable table.
+    evidence:
+      - spec/risks.yaml
+      - tools/spec/build_risk_register.py
+      - overleaf/NL_TPS_Risk_and_Mitigation_Register.tex
+    verification: risk builder checks 2,088 hazard-derived records and rejects data-losing four-dot truncation
+    residual: Hazard meaning and control sufficiency require accountable risk review.
+  - id: A3
+    severity: Critical
+    title: Risk records are unscored
+    disposition: engineering_control_complete_clinical_closure_pending
+    correction: >-
+      Created one controlled score record per HLR and deterministic inheritance
+      for children and components; Gate 1 fails closed while any score lacks an
+      approved S/O/D/RPN and decision.
+    evidence:
+      - spec/risk_scores.yaml
+      - tools/spec/build_risk_register.py
+      - tools/spec/check_gate_readiness.py
+    verification: Gate 0 passes structure; Gate 1 intentionally fails with 119 unapproved HLR scores
+    residual: Multidisciplinary facilitated scoring and approval of all 119 HLR records is required.
+  - id: A4
+    severity: Major
+    title: No quantitative non-functional targets
+    disposition: engineering_control_complete_owner_approval_pending
+    correction: >-
+      Added ten scoped quantitative quality-target records and a fail-closed
+      Gate 1 rule without fabricating clinical or operational values.
+    evidence:
+      - spec/quality_attributes.yaml
+      - tools/spec/check_gate_readiness.py
+    verification: Gate 0 validates target identities; Gate 1 rejects pending values
+    residual: Named owners must approve applicable values, units, evidence sources, scopes, and acceptance methods.
+  - id: A5
+    severity: Major
+    title: Safety and assurance constraints are mislabeled as non-functional requirements
+    disposition: corrected
+    correction: >-
+      Reclassified all 25 records as cross-cutting safety and assurance
+      constraints while preserving HNFR, NFSR, and NFC identifiers as aliases.
+    evidence:
+      - spec/quality_attributes.yaml
+      - tools/spec/apply_classification_migration.py
+      - overleaf/NL_TPS_High_Level_Functional_Non_Functional_Operational_Requirements.tex
+    verification: classification checker finds exactly 25 canonical records
+    residual: Legacy filenames and identifiers intentionally remain for trace compatibility.
+  - id: A6
+    severity: Major
+    title: ConOps seed identifiers collide with canonical HLR identifiers
+    disposition: corrected
+    correction: >-
+      Namespaced the 29 source seeds with CONOPS- and represented each mapping as
+      a typed SUPERSEDED_BY relation to extant canonical HLRs.
+    evidence:
+      - spec/requirements.yaml
+      - tools/spec/check_seed_namespace.py
+      - overleaf/NL_TPS_High_Level_Requirements.tex
+    verification: namespace checker validates 29 unique seeds and all targets
+    residual: Existing canonical HLR identifiers remain unchanged.
+  - id: A7
+    severity: Major
+    title: Clinical domain adapters are weakly allocated
+    disposition: corrected
+    correction: >-
+      Added explicit registration, segmentation, dose, proton, intent, and
+      architecture adapter allocations to applicable functional children.
+    evidence:
+      - spec/components.yaml
+      - tools/spec/fix_clinical_adapter_allocations.py
+      - overleaf/NL_TPS_Component_Realization.tex
+    verification: allocation checker enforces minimum and observed adapter counts
+    residual: Detailed design and commissioned use envelopes remain future controlled work.
+  - id: B1
+    severity: Major
+    title: LaTeX row parser splits escaped ampersands
+    disposition: corrected
+    correction: Applied negative-lookbehind separators to every controlled row parser.
+    evidence:
+      - tools/mps/build_hlr_import_bundle.py
+      - tools/spec/build_trace_graph.py
+      - tools/spec/build_risk_register.py
+      - tests/test_controlled_tooling.py
+    verification: unit regression preserves Q\\&A in one normative cell
+    residual: Nested or macro-generated table syntax remains outside the parser contract.
+  - id: B2
+    severity: Major
+    title: HLR import provenance is hardcoded
+    disposition: corrected
+    correction: Parsed document ID, version, and date from source metadata and bound them to the source hash.
+    evidence:
+      - tools/mps/build_hlr_import_bundle.py
+      - mps/import/hlr-baseline.json
+    verification: deterministic rebuild and schema validation pass
+    residual: Stage A bundle remains a non-authoritative mirror under ADR-001.
+  - id: B3
+    severity: Major
+    title: Continuous trace gates are not run by CI
+    disposition: corrected
+    correction: Added push and pull-request gates for tests, schemas, traces, risk, allocation, namespace, and Gate 0 readiness.
+    evidence:
+      - .github/workflows/controlled-spec-gates.yml
+    verification: workflow uses the same checked commands documented for local execution
+    residual: Hosted CI execution evidence begins with the first GitHub run after push.
+  - id: B4
+    severity: Major
+    title: Controlled specs are duplicated but unread by enforcement tools
+    disposition: corrected
+    correction: Made the HLR and MPS checkers consume architecture and terminology specifications and added an aggregate spec gate.
+    evidence:
+      - tools/mps/build_hlr_import_bundle.py
+      - tools/mps/check_language_skeleton.py
+      - tools/spec/check_controlled_specs.py
+    verification: baseline, naming, layering, and persistence values are compared across source and generated artifacts
+    residual: MPS Stage C authority cutover remains unapproved.
+  - id: B5
+    severity: Major
+    title: Committed JSON Schema is not enforced
+    disposition: corrected
+    correction: Added dependency-free schema validation for HLR and traceability bundles in generation and CI.
+    evidence:
+      - tools/mps/schema_subset.py
+      - mps/import/hlr-baseline.schema.json
+      - spec/schemas/traceability.schema.json
+    verification: negative schema unit test rejects an invalid bundle
+    residual: The validator intentionally supports only the committed schema subset.
+  - id: B6
+    severity: Major
+    title: MPS checker misses dependency direction and root-concept ownership
+    disposition: corrected
+    correction: Externalized the allowed dependency matrix and enforced exact direction plus disjoint, exhaustive, globally single-owner root and non-root concept collections.
+    evidence:
+      - spec/architecture.yaml
+      - tools/mps/check_language_skeleton.py
+    verification: checker reports four languages and 65 uniquely owned concepts under ADR-001 layering
+    residual: Live MPS model serialization and generator output remain Stage A work.
+  - id: B7
+    severity: Major
+    title: Planned specification artifacts are missing
+    disposition: corrected
+    correction: Added controlled requirements, hazards, interfaces, components, allocations, V&V, risks, quality, decisions, schemas, render, and test specifications.
+    evidence:
+      - spec/requirements.yaml
+      - spec/hazards.yaml
+      - spec/interfaces.yaml
+      - spec/components.yaml
+      - spec/allocations.yaml
+      - spec/vv.yaml
+      - spec/risks.yaml
+      - spec/quality_attributes.yaml
+      - spec/defects.yaml
+    verification: aggregate spec checker requires every artifact and reconciles controlled counts
+    residual: Stage A files constrain implementation but do not supersede source documents.
+  - id: C1
+    severity: Operational
+    title: Active repository is located in OneDrive and a path containing spaces
+    disposition: managed_worktree_prepared_not_executed
+    correction: Added a location gate and a managed Git worktree procedure for a space-free non-synchronized MPS workspace.
+    evidence:
+      - tools/repo/check_workspace_location.py
+      - scripts/create_mps_worktree.ps1
+    verification: strict location check rejects OneDrive or whitespace paths
+    residual: The current checkout remains in OneDrive until the user runs the migration after committing or stashing changes.
+  - id: C2
+    severity: Operational
+    title: Generated output is tracked and ignore rule is ineffective
+    disposition: corrected
+    correction: Corrected ignore rules, removed generated PDF and LaTeX intermediates from the Git index, and established ART-POL-001 for manifested CI or explicit release artifacts.
+    evidence:
+      - .gitignore
+    verification: git status represents generated outputs only as staged index removals and ignores subsequent builds
+    residual: Published controlled PDFs should be released through an explicit artifact process, not incidental source tracking.

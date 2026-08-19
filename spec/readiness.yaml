@@ -1,0 +1,79 @@
+schema_version: "0.1"
+register_id: RRR-001
+title: Repository Readiness Review Reconciliation
+review_basis: GitHub-backed inspection through commit 399244f
+reconciled_against: uncommitted local corrective work on 2026-08-19
+status: implemented_with_explicit_external_actions
+recommendations:
+  - id: RRR-001
+    priority: P0
+    topic: Remove tracked tmp/pdfs build products and prevent path disclosure.
+    disposition: corrected_pending_commit
+    evidence: [.gitignore, tools/repo/check_repository_hygiene.py, SECURITY.md]
+    residual: Historical path disclosure remains in Git history pending an owner-approved rewrite decision.
+  - id: RRR-002
+    priority: P0
+    topic: Regenerate the combined controlled-suite PDF.
+    disposition: corrected_review_artifact
+    evidence: [tools/docs/compile_controlled_docs.py, spec/artifacts.yaml]
+    residual: The review artifact is not a governed or clinically authorized release.
+  - id: RRR-003
+    priority: P0
+    topic: Establish CI for structural, document, drift, hygiene, and schema gates.
+    disposition: corrected_pending_first_hosted_run
+    evidence: [.github/workflows/controlled-spec-gates.yml]
+    residual: Hosted execution evidence begins after commit and push.
+  - id: RRR-004
+    priority: P0
+    topic: Resolve the MPS path problem with a managed Git worktree.
+    disposition: procedure_complete_execution_pending_clean_worktree
+    evidence: [scripts/create_mps_worktree.ps1, tools/repo/check_workspace_location.py]
+    residual: The active checkout remains in OneDrive and the worktree cannot be created while changes are uncommitted.
+  - id: RRR-005
+    priority: P1
+    topic: Materialize the actual MPS project.
+    disposition: not_started_external_tool_action
+    evidence: [mps/materialization/README.md, mps/materialization/stage-a-checklist.yaml]
+    residual: Live MPS languages, importer, generators, editors, constraints, and model tests do not yet exist.
+  - id: RRR-006
+    priority: P1
+    topic: Remove ambiguity between MPS root and concept collections.
+    disposition: corrected
+    evidence: [mps/bootstrap/language-skeleton.json, mps/bootstrap/language-skeleton.schema.json, tools/mps/check_language_skeleton.py]
+    residual: The invariant is verified in the blueprint; live MPS materialization remains pending.
+  - id: RRR-007
+    priority: P1
+    topic: Tighten schema governance and cross-file assertions.
+    disposition: corrected
+    evidence: [spec/schemas, tools/mps/schema_subset.py, tools/spec/check_controlled_specs.py]
+    residual: Stage A schemas constrain mirrors and do not approve Stage C authority.
+  - id: RRR-008
+    priority: P1
+    topic: Make approval state machine-unambiguous.
+    disposition: corrected
+    evidence: [spec/architecture.yaml, spec/decisions.yaml, spec/terminology.yaml, tools/spec/check_approval_state.py]
+    residual: All approval states remain pending and Stage C/release checks fail closed.
+  - id: RRR-009
+    priority: P1
+    topic: Establish a controlled generated-artifact policy.
+    disposition: corrected_ci_artifact_policy
+    evidence: [spec/artifacts.yaml, tools/release/build_pdf_manifest.py]
+    residual: Governed release authorization remains false.
+  - id: RRR-010
+    priority: P1-P2
+    topic: Add repository governance documents and quarantine legacy binaries.
+    disposition: corrected_with_license_decision_pending
+    evidence: [README.md, SECURITY.md, CONTRIBUTING.md, NOTICE.md, .github/CODEOWNERS, archive/legacy-docx/README.md]
+    residual: No reuse license is granted; owner and institutional license selection remains pending.
+  - id: RRR-011
+    priority: P2
+    topic: Give the V&V generator a true drift-check mode.
+    disposition: corrected
+    evidence: [scripts/generate_vv_check_matrix.ps1]
+    residual: None within structural drift scope; V&V checks remain planned and unexecuted.
+  - id: RRR-012
+    priority: P2
+    topic: Clarify the architecture source-baseline version phrase.
+    disposition: corrected
+    evidence: [spec/architecture.yaml, overleaf/NL_TPS_Engineering_Architecture_and_MVP_Implementation_Plan.tex]
+    residual: None; source corpus, supplements, and suite assembly versions are now distinct.

@@ -6,8 +6,9 @@
 \NLSetPageStyle{NL-TPS HIGH-LEVEL REQUIREMENTS}{Derived from Natural Language TPS ConOps v0.1}
 \NLTitleBlock{SYSTEM REQUIREMENTS BASELINE}{High-Level Requirements}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
 \NLMeta{Source baseline}{Natural Language Treatment Planning System ConOps, Version 0.1}
-\NLMeta{Requirements version}{0.1 - Proposed baseline}
-\NLMeta{Date}{18 August 2026}
+\NLMeta{Document identifier}{NL-TPS-HLR}
+\NLMeta{Requirements version}{0.2 - Namespaced proposed baseline}
+\NLMeta{Date}{19 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
 \end{minipage}}{This document defines proposed system-level requirements for design and verification planning. It is not a clinical protocol, commissioning report, regulatory determination, or authorization for patient use.}
 
@@ -686,11 +687,11 @@ The ConOps introduced 29 top-level operational requirement identifiers. The cros
 \begin{small}
 \begin{longtable}{@{}L{0.1474\textwidth}L{0.2457\textwidth}L{0.5268\textwidth}@{}}
 \toprule
-\rowcolor{NLTableHeader}\textbf{\textbf{ConOps seed ID}} & \textbf{\textbf{Derived HLR ID(s)}} & \textbf{\textbf{Disposition}} \\
+\rowcolor{NLTableHeader}\textbf{\textbf{Namespaced ConOps seed ID}} & \textbf{\textbf{Derived HLR ID(s)}} & \textbf{\textbf{Typed relation / disposition}} \\
 \midrule
 \endfirsthead
 \toprule
-\rowcolor{NLTableHeader}\textbf{\textbf{ConOps seed ID}} & \textbf{\textbf{Derived HLR ID(s)}} & \textbf{\textbf{Disposition}} \\
+\rowcolor{NLTableHeader}\textbf{\textbf{Namespaced ConOps seed ID}} & \textbf{\textbf{Derived HLR ID(s)}} & \textbf{\textbf{Typed relation / disposition}} \\
 \midrule
 \endhead
 \midrule
@@ -698,63 +699,63 @@ The ConOps introduced 29 top-level operational requirement identifiers. The cros
 \endfoot
 \bottomrule
 \endlastfoot
-SAF-001 & SAF-001 & Carried forward \\
+CONOPS-SAF-001 & SAF-001 & SUPERSEDED\_BY; carried forward \\
 \addlinespace[2pt]
-SAF-002 & SAF-002 & Carried forward \\
+CONOPS-SAF-002 & SAF-002 & SUPERSEDED\_BY; carried forward \\
 \addlinespace[2pt]
-SAF-003 & SAF-004 & Carried forward; fail-closed conditions clarified \\
+CONOPS-SAF-003 & SAF-004 & SUPERSEDED\_BY; fail-closed conditions clarified \\
 \addlinespace[2pt]
-SAF-004 & SAF-005 & Carried forward; draft-state scope clarified \\
+CONOPS-SAF-004 & SAF-005 & SUPERSEDED\_BY; draft-state scope clarified \\
 \addlinespace[2pt]
-SAF-005 & SAF-007; REV-008 & Decomposed into invalidation and re-review obligations \\
+CONOPS-SAF-005 & SAF-007; REV-008 & SUPERSEDED\_BY; decomposed into invalidation and re-review obligations \\
 \addlinespace[2pt]
-NL-001 & NLI-002; NLI-003 & Decomposed into typed-intent creation and required content \\
+CONOPS-NL-001 & NLI-002; NLI-003 & SUPERSEDED\_BY; decomposed into typed-intent creation and required content \\
 \addlinespace[2pt]
-NL-002 & NLI-006 & Carried forward as structured read-back \\
+CONOPS-NL-002 & NLI-006 & SUPERSEDED\_BY; carried forward as structured read-back \\
 \addlinespace[2pt]
-NL-003 & NLI-007 & Carried forward as safety-critical transcript confirmation \\
+CONOPS-NL-003 & NLI-007 & SUPERSEDED\_BY; carried forward as safety-critical transcript confirmation \\
 \addlinespace[2pt]
-EVD-001 & EVD-002; EVD-006 & Decomposed into provenance and computable-rule metadata \\
+CONOPS-EVD-001 & EVD-002; EVD-006 & SUPERSEDED\_BY; decomposed into provenance and computable-rule metadata \\
 \addlinespace[2pt]
-EVD-002 & EVD-005 & Carried forward as conflict and lifecycle blocking \\
+CONOPS-EVD-002 & EVD-005 & SUPERSEDED\_BY; carried forward as conflict and lifecycle blocking \\
 \addlinespace[2pt]
-EVD-003 & EVD-001 & Carried forward as the closed clinical evidence boundary \\
+CONOPS-EVD-003 & EVD-001 & SUPERSEDED\_BY; carried forward as the closed clinical evidence boundary \\
 \addlinespace[2pt]
-AI-001 & AIM-001; AIM-002 & Decomposed into model approval and case-contract checks \\
+CONOPS-AI-001 & AIM-001; AIM-002 & SUPERSEDED\_BY; decomposed into model approval and case-contract checks \\
 \addlinespace[2pt]
-AI-002 & AIM-003 & Carried forward as abstention or manual review \\
+CONOPS-AI-002 & AIM-003 & SUPERSEDED\_BY; carried forward as abstention or manual review \\
 \addlinespace[2pt]
-AI-003 & AIM-004; AIM-008 & Decomposed into production-lock and controlled change \\
+CONOPS-AI-003 & AIM-004; AIM-008 & SUPERSEDED\_BY; decomposed into production-lock and controlled change \\
 \addlinespace[2pt]
-CNT-001 & CLN-007 & Carried forward as contour provenance \\
+CONOPS-CNT-001 & CLN-007 & SUPERSEDED\_BY; carried forward as contour provenance \\
 \addlinespace[2pt]
-CNT-002 & CLN-009 & Carried forward as target-contour approval authority \\
+CONOPS-CNT-002 & CLN-009 & SUPERSEDED\_BY; carried forward as target-contour approval authority \\
 \addlinespace[2pt]
-PLN-001 & PLN-002; PLN-009 & Decomposed into commissioned execution and runtime attestation \\
+CONOPS-PLN-001 & PLN-002; PLN-009 & SUPERSEDED\_BY; decomposed into commissioned execution and runtime attestation \\
 \addlinespace[2pt]
-PLN-002 & PLN-004; PLN-005 & Decomposed into typed priorities and controlled relaxation \\
+CONOPS-PLN-002 & PLN-004; PLN-005 & SUPERSEDED\_BY; decomposed into typed priorities and controlled relaxation \\
 \addlinespace[2pt]
-PLN-003 & REV-002 & Carried forward as candidate review content \\
+CONOPS-PLN-003 & REV-002 & SUPERSEDED\_BY; carried forward as candidate review content \\
 \addlinespace[2pt]
-PLN-004 & PLN-007; PLN-008 & Decomposed into diversity provenance and dominated-plan status \\
+CONOPS-PLN-004 & PLN-007; PLN-008 & SUPERSEDED\_BY; decomposed into diversity provenance and dominated-plan status \\
 \addlinespace[2pt]
-QA-001 & SAF-009; REV-006 & Decomposed into preservation and routing of required QA \\
+CONOPS-QA-001 & SAF-009; REV-006 & SUPERSEDED\_BY; decomposed into preservation and routing of required QA \\
 \addlinespace[2pt]
-QA-002 & REV-009 & Carried forward as independence and common-cause analysis \\
+CONOPS-QA-002 & REV-009 & SUPERSEDED\_BY; carried forward as independence and common-cause analysis \\
 \addlinespace[2pt]
-INT-001 & DAT-004; DAT-007 & Decomposed into transfer validation and rejection behavior \\
+CONOPS-INT-001 & DAT-004; DAT-007 & SUPERSEDED\_BY; decomposed into transfer validation and rejection behavior \\
 \addlinespace[2pt]
-AUD-001 & DAT-008; DAT-009 & Decomposed into ledger completeness and integrity \\
+CONOPS-AUD-001 & DAT-008; DAT-009 & SUPERSEDED\_BY; decomposed into ledger completeness and integrity \\
 \addlinespace[2pt]
-SEC-001 & SEC-001 through SEC-008 & Decomposed into independently verifiable security controls \\
+CONOPS-SEC-001 & SEC-001 through SEC-008 & SUPERSEDED\_BY; decomposed into independently verifiable security controls \\
 \addlinespace[2pt]
-OPS-001 & OPS-001; OPS-007 & Decomposed into monitoring and approved thresholds \\
+CONOPS-OPS-001 & OPS-001; OPS-007 & SUPERSEDED\_BY; decomposed into monitoring and approved thresholds \\
 \addlinespace[2pt]
-OPS-002 & OPS-003 through OPS-005 & Decomposed into suspension, degraded operation, and recovery \\
+CONOPS-OPS-002 & OPS-003 through OPS-005 & SUPERSEDED\_BY; decomposed into suspension, degraded operation, and recovery \\
 \addlinespace[2pt]
-HFE-001 & HFE-005 & Carried forward as formative and summative validation \\
+CONOPS-HFE-001 & HFE-005 & SUPERSEDED\_BY; carried forward as formative and summative validation \\
 \addlinespace[2pt]
-VAL-001 & VAL-002; VAL-007; VAL-009 & Decomposed into integrated validation, gate control, and release blocking \\
+CONOPS-VAL-001 & VAL-002; VAL-007; VAL-009 & SUPERSEDED\_BY; decomposed into integrated validation, gate control, and release blocking \\
 \end{longtable}
 \end{small}
 

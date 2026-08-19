@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gcpl:nltps:schema:architecture:0.5",
+  "title": "GCPL / NL-TPS engineering architecture specification",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "baseline",
+    "program_identity",
+    "change_control",
+    "invariants",
+    "architecture_decisions",
+    "mps_authority_transition",
+    "mps_language_constraints",
+    "release_constraints",
+    "recorded_approvals"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.5"},
+    "baseline": {
+      "type": "object",
+      "required": [
+        "id",
+        "document_id",
+        "version",
+        "status",
+        "approval_state",
+        "source_baseline",
+        "review_status",
+        "required_approval_domains",
+        "authorization"
+      ],
+      "properties": {
+        "id": {"const": "ENG-PKG-01-ARCH"},
+        "document_id": {"const": "ENG-PKG-01"},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+$"},
+        "status": {"const": "frozen_nonclinical_implementation_baseline"},
+        "approval_state": {"enum": ["pending_named_approval", "approved", "withdrawn"]},
+        "source_baseline": {"type": "string", "minLength": 1},
+        "review_status": {"type": "string", "minLength": 1},
+        "required_approval_domains": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "authorization": {"type": "object"}
+      }
+    },
+    "program_identity": {"type": "object"},
+    "change_control": {"type": "object"},
+    "invariants": {"type": "array", "minItems": 1},
+    "architecture_decisions": {"type": "array", "minItems": 1},
+    "mps_authority_transition": {
+      "type": "object",
+      "required": ["decision_record", "current_stage", "stages", "engineering_controls"],
+      "properties": {
+        "decision_record": {"const": "ADR-001"},
+        "current_stage": {"enum": ["A_mirror", "B_equivalence", "C_governance_cutover", "D_generation"]},
+        "stages": {"type": "array", "minItems": 4, "maxItems": 4},
+        "engineering_controls": {"type": "array", "minItems": 1}
+      }
+    },
+    "mps_language_constraints": {
+      "type": "object",
+      "required": [
+        "decision_record",
+        "skeleton_schema_version",
+        "implementation_state",
+        "ordered_languages",
+        "allowed_dependencies",
+        "default_model_persistence",
+        "concept_collection_invariant"
+      ],
+      "properties": {
+        "decision_record": {"const": "ADR-001"},
+        "skeleton_schema_version": {"const": "0.2"},
+        "implementation_state": {"const": "blueprint_not_live_mps_serialization"},
+        "ordered_languages": {"type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true},
+        "allowed_dependencies": {"type": "object"},
+        "default_model_persistence": {"const": "file-per-root"},
+        "concept_collection_invariant": {"type": "string", "minLength": 1}
+      }
+    },
+    "release_constraints": {"type": "object"},
+    "recorded_approvals": {"type": "array"}
+  }
+}

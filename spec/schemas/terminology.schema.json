@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gcpl:nltps:schema:terminology:0.2",
+  "title": "GCPL / NL-TPS controlled terminology specification",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "decision_record",
+    "effective_date",
+    "status",
+    "approval_state",
+    "identity",
+    "controlled_interpretations",
+    "compatibility_rules",
+    "prohibited_claims",
+    "aliases"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.2"},
+    "decision_record": {"const": "ADR-002"},
+    "effective_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "status": {"const": "provisional_controlled_nonclinical_program_use"},
+    "approval_state": {"enum": ["pending_named_approval", "approved", "withdrawn"]},
+    "identity": {
+      "type": "object",
+      "required": ["technology", "implementation", "combined_reference", "concise_relationship"],
+      "properties": {
+        "technology": {
+          "type": "object",
+          "required": ["name", "acronym", "meaning"],
+          "properties": {
+            "name": {"const": "Governed Clinical Planning Language"},
+            "acronym": {"const": "GCPL"},
+            "meaning": {"type": "string", "minLength": 1}
+          }
+        },
+        "implementation": {
+          "type": "object",
+          "required": ["name", "acronym", "meaning"],
+          "properties": {
+            "name": {"const": "Natural-Language Treatment Planning System"},
+            "acronym": {"const": "NL-TPS"},
+            "meaning": {"type": "string", "minLength": 1}
+          }
+        },
+        "combined_reference": {"const": "GCPL / NL-TPS"},
+        "concise_relationship": {"const": "the NL-TPS implementation of GCPL"}
+      }
+    },
+    "controlled_interpretations": {"type": "object"},
+    "compatibility_rules": {"type": "array", "minItems": 1},
+    "prohibited_claims": {"type": "array", "minItems": 1},
+    "aliases": {"type": "array", "minItems": 1}
+  }
+}

@@ -1,0 +1,58 @@
+schema_version: "0.1"
+status: controlled_stage_a_mirror_policy
+canonical_hlr_source: overleaf/NL_TPS_High_Level_Requirements.tex
+materialized_hlr_bundle: mps/import/hlr-baseline.json
+canonical_hlr_count: 119
+canonical_child_count: 357
+
+identifier_namespaces:
+  conops_seed:
+    prefix: CONOPS-
+    authority: overleaf/NL_TPS_ConOps.tex
+    immutable: true
+  canonical_hlr:
+    pattern: ^[A-Z]{3}-[0-9]{3}$
+    authority: overleaf/NL_TPS_High_Level_Requirements.tex
+    immutable: true
+
+classification:
+  authoritative_view: F/SA/O
+  legacy_aliases_preserved: [HNFR, NFSR, NFC]
+  quality_attribute_source: spec/quality_attributes.yaml
+
+seed_relations:
+  - {source: CONOPS-SAF-001, relation: SUPERSEDED_BY, targets: [SAF-001]}
+  - {source: CONOPS-SAF-002, relation: SUPERSEDED_BY, targets: [SAF-002]}
+  - {source: CONOPS-SAF-003, relation: SUPERSEDED_BY, targets: [SAF-004]}
+  - {source: CONOPS-SAF-004, relation: SUPERSEDED_BY, targets: [SAF-005]}
+  - {source: CONOPS-SAF-005, relation: SUPERSEDED_BY, targets: [SAF-007, REV-008]}
+  - {source: CONOPS-NL-001, relation: SUPERSEDED_BY, targets: [NLI-002, NLI-003]}
+  - {source: CONOPS-NL-002, relation: SUPERSEDED_BY, targets: [NLI-006]}
+  - {source: CONOPS-NL-003, relation: SUPERSEDED_BY, targets: [NLI-007]}
+  - {source: CONOPS-EVD-001, relation: SUPERSEDED_BY, targets: [EVD-002, EVD-006]}
+  - {source: CONOPS-EVD-002, relation: SUPERSEDED_BY, targets: [EVD-005]}
+  - {source: CONOPS-EVD-003, relation: SUPERSEDED_BY, targets: [EVD-001]}
+  - {source: CONOPS-AI-001, relation: SUPERSEDED_BY, targets: [AIM-001, AIM-002]}
+  - {source: CONOPS-AI-002, relation: SUPERSEDED_BY, targets: [AIM-003]}
+  - {source: CONOPS-AI-003, relation: SUPERSEDED_BY, targets: [AIM-004, AIM-008]}
+  - {source: CONOPS-CNT-001, relation: SUPERSEDED_BY, targets: [CLN-007]}
+  - {source: CONOPS-CNT-002, relation: SUPERSEDED_BY, targets: [CLN-009]}
+  - {source: CONOPS-PLN-001, relation: SUPERSEDED_BY, targets: [PLN-002, PLN-009]}
+  - {source: CONOPS-PLN-002, relation: SUPERSEDED_BY, targets: [PLN-004, PLN-005]}
+  - {source: CONOPS-PLN-003, relation: SUPERSEDED_BY, targets: [REV-002]}
+  - {source: CONOPS-PLN-004, relation: SUPERSEDED_BY, targets: [PLN-007, PLN-008]}
+  - {source: CONOPS-QA-001, relation: SUPERSEDED_BY, targets: [SAF-009, REV-006]}
+  - {source: CONOPS-QA-002, relation: SUPERSEDED_BY, targets: [REV-009]}
+  - {source: CONOPS-INT-001, relation: SUPERSEDED_BY, targets: [DAT-004, DAT-007]}
+  - {source: CONOPS-AUD-001, relation: SUPERSEDED_BY, targets: [DAT-008, DAT-009]}
+  - {source: CONOPS-SEC-001, relation: SUPERSEDED_BY, targets: [SEC-001, SEC-002, SEC-003, SEC-004, SEC-005, SEC-006, SEC-007, SEC-008]}
+  - {source: CONOPS-OPS-001, relation: SUPERSEDED_BY, targets: [OPS-001, OPS-007]}
+  - {source: CONOPS-OPS-002, relation: SUPERSEDED_BY, targets: [OPS-003, OPS-004, OPS-005]}
+  - {source: CONOPS-HFE-001, relation: SUPERSEDED_BY, targets: [HFE-005]}
+  - {source: CONOPS-VAL-001, relation: SUPERSEDED_BY, targets: [VAL-002, VAL-007, VAL-009]}
+
+change_rules:
+  - A citation to an unqualified seed ID is invalid in structured data.
+  - Historical source text retains its original printed identifier.
+  - Importers shall resolve only explicit typed namespace relations.
+  - No relation authorizes a meaning change to the canonical target.

@@ -1,0 +1,78 @@
+schema_version: "0.1"
+source_document: overleaf/NL_TPS_ConOps.tex
+source_section: Safety hazard register
+status: controlled_stage_a_mirror
+
+hazards:
+  - id: H-01
+    failure_condition: Wrong patient, course, study, frame of reference, or plan version is selected or associated.
+    potential_effect: Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object.
+    control_strategy: Bind two patient identifiers, authoritative launch context, UIDs, frames, object versions, persistent context display, confirmation, and wrong-context hard stops.
+  - id: H-02
+    failure_condition: Speech or language processing misinterprets negation, number, unit, laterality, object, priority, or an ambiguous instruction.
+    potential_effect: The typed intent may request an unintended planning action or parameter.
+    control_strategy: Require transcript confirmation, deterministic parsing, structured read-back, correction, clarification, and no voice signature or direct voice execution.
+  - id: H-03
+    failure_condition: A clinical recommendation, evidence item, or dose constraint is hallucinated, outdated, conflicted, or inapplicable.
+    potential_effect: A candidate or review may be represented as evidence-based when its rule does not apply.
+    control_strategy: Use approved closed evidence, exact source and version, applicability and conflict rules, lifecycle control, and explicit no-applicable-rule behavior.
+  - id: H-04
+    failure_condition: A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly.
+    potential_effect: Planning may proceed against intent that was not authorized by the responsible clinician.
+    control_strategy: Preserve signed source intent, immutable versions, role restrictions, difference checks, hard stops, and renewed signature after change.
+  - id: H-05
+    failure_condition: A contour is missing, mislabeled, geometrically implausible, truncated, or clinically incorrect.
+    potential_effect: Optimization or dose evaluation may use incorrect target or organ-at-risk anatomy.
+    control_strategy: Enforce approved nomenclature, applicability and input checks, completeness and topology rules, uncertainty display, edit lineage, visual review, and professional approval.
+  - id: H-06
+    failure_condition: A rigid or deformable registration is unsuitable and propagates incorrect anatomy, geometry, or accumulated dose.
+    potential_effect: Contours or dose may be interpreted in the wrong spatial relationship.
+    control_strategy: Invoke commissioned registration, retain transform identity and uncertainty, provide fusion review and QA, require registration approval, and block unsupported accumulation.
+  - id: H-07
+    failure_condition: Dose basis, biological model, fractionation, BED or EQD2 basis, units, or structure definition is mismatched.
+    potential_effect: Dose objectives or comparisons may be numerically valid but clinically incommensurate.
+    control_strategy: Use typed quantities and units, explicit bases and assumptions, approved conversions, applicability checks, proton-specific labels, and ambiguity hard stops.
+  - id: H-08
+    failure_condition: A dose calculation, optimizer, machine model, or technique is used outside its commissioned envelope.
+    potential_effect: A candidate may contain unverified dose or machine behavior and appear clinically usable.
+    control_strategy: Lock machine, model, algorithm, technique, and configuration; enforce commissioned envelopes at call time; retain runtime attestations; and require physics-owned release evidence.
+  - id: H-09
+    failure_condition: Proton range, setup, motion, or interplay uncertainty is omitted, incomplete, or misconfigured.
+    potential_effect: A proton candidate may appear robust while clinically important uncertainty is not evaluated.
+    control_strategy: Require approved scenario packages, completeness checks, motion policy, robust evaluation, explicit uncertainty, and qualified medical physicist review.
+  - id: H-10
+    failure_condition: Candidate plans share a hidden systematic defect, lack meaningful diversity, or are infeasible or undeliverable.
+    potential_effect: Reviewers may select among alternatives that do not represent safe or deliverable choices.
+    control_strategy: Apply feasibility, diversity, complexity, deliverability, shared-input, independent calculation, and manual-baseline checks without opaque automatic winner selection.
+  - id: H-11
+    failure_condition: Optimization silently relaxes a hard constraint or changes a clinical priority.
+    potential_effect: A candidate may violate the approved planning intent without a visible decision trail.
+    control_strategy: Type hard and soft semantics, freeze the constraint set, require explicit relaxation and rationale, compare pre and post state, and block violated hard constraints.
+  - id: H-12
+    failure_condition: DICOM or another external transfer corrupts, omits, transforms, duplicates, or misassociates plan data.
+    potential_effect: Wrong or incomplete clinical objects may enter a TPS, PACS, OIS, QA, review, or treatment workflow.
+    control_strategy: Require paired conformance, UID and reference validation, coordinate and unit checks, completeness, integrity hashes, atomic transfer, source-destination comparison, and round-trip reconciliation.
+  - id: H-13
+    failure_condition: AI output weakens independent professional review through shared logic, data, automation bias, or false representation of authority.
+    potential_effect: A reviewer may accept an unsuitable result or fail to exercise required independent judgment.
+    control_strategy: Preserve human authority, separate incompatible review roles and QA paths, expose raw evidence and limitations, require active checks, and monitor overrides and misses.
+  - id: H-14
+    failure_condition: Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information leakage occurs.
+    potential_effect: Clinical data, system integrity, authority, or availability may be compromised.
+    control_strategy: Enforce least privilege, authentication, segmentation, signed artifacts, input isolation, encryption, egress control, secure development, logging, and tested incident response.
+  - id: H-15
+    failure_condition: Evidence, software, or model becomes stale, drifts, fails a subgroup, or degrades without detection.
+    potential_effect: A previously acceptable output may become unreliable while remaining available to users.
+    control_strategy: Control versions and expiry, use sentinel cases and subgroup monitoring, define alert and action thresholds, retain a kill switch and rollback, and require periodic revalidation and CAPA.
+  - id: H-16
+    failure_condition: An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid.
+    potential_effect: A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete.
+    control_strategy: Use durable atomic states, explicit progress and degradation, draft marking, fail-closed promotion, idempotent recovery, reconciliation, downtime procedures, and no silent fallback.
+  - id: H-17
+    failure_condition: A post-approval edit or dependency change invalidates contours, dose, QA, approval, or transfer status without detection.
+    potential_effect: Downstream evidence may remain apparently current after its basis has changed.
+    control_strategy: Maintain an immutable dependency graph, invalidate affected approvals automatically, require delta review and regression, and reconcile every destination.
+  - id: H-18
+    failure_condition: Users over-trust fluent explanations, under-trust valid alerts, or misunderstand system limits and state.
+    potential_effect: Human decisions may be biased by presentation rather than clinical evidence and professional judgment.
+    control_strategy: Apply human-factors engineering, calibrated limitations, evidence preview, non-anthropomorphic cues, warning comprehension testing, training, and alert-burden monitoring.

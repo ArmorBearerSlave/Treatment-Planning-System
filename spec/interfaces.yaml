@@ -1,0 +1,38 @@
+schema_version: "0.1"
+status: controlled_stage_a_interface_catalog
+source_documents:
+  high_level: overleaf/NL_TPS_High_Level_Interface_Requirements.tex
+  sub_interface: overleaf/NL_TPS_Sub_Interface_Requirements.tex
+  realization: overleaf/NL_TPS_Interface_Component_Realization.tex
+counts:
+  interface_families: 19
+  high_level_interface_requirements: 357
+  sub_interface_requirements: 1071
+  interface_components: 61
+hazard_allocation_source: spec/allocations.yaml
+materialized_trace: mps/import/traceability.json
+required_families:
+  - IF-UI-01
+  - IF-NLI-01
+  - IF-IAM-01
+  - IF-SAF-01
+  - IF-EVD-01
+  - IF-ACC-01
+  - IF-CTX-01
+  - IF-IMG-01
+  - IF-PLN-01
+  - IF-REV-01
+  - IF-DICOM-01
+  - IF-TPS-01
+  - IF-IHE-01
+  - IF-AI-01
+  - IF-DATA-01
+  - IF-CFG-01
+  - IF-OPS-01
+  - IF-SEC-01
+  - IF-VV-01
+gates:
+  - Every HLIR and SIR has at least one hazard link.
+  - H-12 is linked to every DICOM and external-TPS route.
+  - Producer and consumer contracts are validated as a pair.
+  - Unsupported, partial, or unreconciled transfer fails closed.

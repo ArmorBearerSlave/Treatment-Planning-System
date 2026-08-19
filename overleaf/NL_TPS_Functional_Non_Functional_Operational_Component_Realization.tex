@@ -1,14 +1,15 @@
 \documentclass[11pt,letterpaper]{article}
 \usepackage{nl_tps_common}
-\hypersetup{pdftitle={Functional, Non-Functional, and Operational Component Realization},pdfsubject={NL-TPS controlled documentation}}
+\hypersetup{pdftitle={Functional, Safety-Assurance, and Operational Component Realization},pdfsubject={NL-TPS controlled documentation}}
 \begin{document}
-\NLSetPageStyle{NL-TPS F/NF/O COMPONENT REALIZATION}{NL-TPS F/NF/O Sub-Requirements v0.1}
-\NLTitleBlock{SYSTEM REQUIREMENTS BASELINE}{Functional, Non-Functional, and Operational Component Realization}{Components and team-of-teams allocation}{\begin{minipage}{0.95\textwidth}
-\NLMeta{Source baseline}{NL-TPS F/NF/O Sub-Requirements v0.1}
-\NLMeta{Requirements version}{0.1 - Proposed baseline}
-\NLMeta{Date}{18 August 2026}
+\NLSetPageStyle{NL-TPS F/SA/O COMPONENT REALIZATION}{NL-TPS F/SA/O Sub-Requirements v0.2}
+\NLTitleBlock{SYSTEM REQUIREMENTS BASELINE}{Functional, Safety-Assurance, and Operational Component Realization}{Components and team-of-teams allocation}{\begin{minipage}{0.95\textwidth}
+\NLMeta{Source baseline}{NL-TPS F/SA/O Sub-Requirements v0.2}
+\NLMeta{Requirements version}{0.2 - Hazard-linked reclassified baseline}
+\NLMeta{Date}{19 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
 \NLMeta{Coverage}{357 sub-requirements; 78 category-scoped component responsibilities; 15 teams}
+\NLMeta{Hazard trace}{\texttt{spec/allocations.yaml} materialized in \texttt{mps/import/traceability.json}}
 \end{minipage}}{This document allocates proposed components and teams needed to realize the categorized sub-requirements. It is an architecture and program-planning baseline, not evidence of implementation, verification, commissioning, clinical validation, or authorization for patient use.}
 
 \tableofcontents
@@ -35,7 +36,7 @@
 \endlastfoot
 Document owner & NL-TPS Program - proposed; final owner requires governance approval \\
 \addlinespace[2pt]
-Source document & NL-TPS Functional, Non-Functional, and Operational Sub-Requirements, Version 0.1 \\
+Source document & NL-TPS Functional, Safety-Assurance, and Operational Sub-Requirements, Version 0.1 \\
 \addlinespace[2pt]
 Baseline status & Proposed requirements and realization planning; not approved, implemented, commissioned, or allocated to a clinical release \\
 \addlinespace[2pt]
@@ -52,7 +53,7 @@ Supersession & None; this document preserves and traces to the existing controll
 
 \NLFrontMatterSection{Executive summary}
 
-This specification defines 78 category-scoped component responsibilities: 32 functional, 23 non-functional, and 23 operational. It then maps all 357 categorized sub-requirements to the complete components and team-of-teams participation needed for realization.
+This specification defines 78 category-scoped component responsibilities: 32 functional, 23 safety and assurance, and 23 operational. It then maps all 357 categorized sub-requirements to the complete components and team-of-teams participation needed for realization.
 
 A component in this document is an accountable realization responsibility, not necessarily a separately deployed software service. One deployed service may implement several responsibilities, and one responsibility may span software, configuration, procedures, evidence, and people. Consolidation is permitted only when interfaces, independence, human authority, verification, and separation-of-duties obligations remain demonstrably satisfied.
 
@@ -66,7 +67,7 @@ Each category uses a mandatory universal stack plus direct components selected b
 
 \begin{itemize}
 \item \textbf{Functional realization} implements patient-specific and user-visible planning capabilities, governed data transformation, inference, review, and existing-TPS exchange.
-\item \textbf{Non-functional realization} implements cross-cutting safety, human-factors, privacy, security, integrity, and assurance constraints.
+\item \textbf{Safety / assurance realization} implements cross-cutting safety, human-factors, privacy, security, integrity, and assurance constraints.
 \item \textbf{Operational realization} implements institutional governance, deployment, monitoring, resilience, commissioning, release, change, and continued-authorization controls.
 \end{itemize}
 
@@ -89,7 +90,7 @@ Each category uses a mandatory universal stack plus direct components selected b
 \endlastfoot
 Functional & FC-REQ-01; FC-ARCH-01; FC-CFG-01; FC-PROV-01; FC-VV-01 & 207 & Required for every sub-requirement in this class \\
 \addlinespace[2pt]
-Non-functional & NFC-REQ-01; NFC-ARCH-01; NFC-CFG-01; NFC-MON-01; NFC-VV-01 & 75 & Required for every sub-requirement in this class \\
+Safety / assurance & NFC-REQ-01; NFC-ARCH-01; NFC-CFG-01; NFC-MON-01; NFC-VV-01 & 75 & Required for every sub-requirement in this class \\
 \addlinespace[2pt]
 Operational & OC-REQ-01; OC-GOV-01; OC-QMS-01; OC-CFG-01; OC-AUD-01; OC-VV-01 & 75 & Required for every sub-requirement in this class \\
 \addlinespace[2pt]
@@ -184,7 +185,7 @@ Universal stacks ensure that every child has requirements trace, controlled arch
 \end{longtable}
 \end{scriptsize}
 
-\subsection{Non-functional component responsibilities (23)}
+\subsection{Safety / assurance component responsibilities (23)}
 
 \begin{scriptsize}
 \begin{longtable}{@{}L{0.15\textwidth}L{0.11\textwidth}L{0.21\textwidth}L{0.38\textwidth}L{0.08\textwidth}@{}}
@@ -201,7 +202,7 @@ Universal stacks ensure that every child has requirements trace, controlled arch
 \endfoot
 \bottomrule
 \endlastfoot
-\mbox{NFC-REQ-01} & Universal & Quality, Risk, and Trace Repository & Maintains non-functional requirements, hazards, controls, verification, anomalies, residual-risk decisions, and release trace. & T-SYS \\
+\mbox{NFC-REQ-01} & Universal & Quality, Risk, and Trace Repository & Maintains safety and assurance requirements, hazards, controls, verification, anomalies, residual-risk decisions, and release trace. & T-SYS \\
 \addlinespace[2pt]
 \mbox{NFC-ARCH-01} & Universal & Quality-Attribute Contract Registry & Defines safety, usability, privacy, security, integrity, observability, and fail-safe contracts at component and interface boundaries. & T-SYS \\
 \addlinespace[2pt]
@@ -209,7 +210,7 @@ Universal stacks ensure that every child has requirements trace, controlled arch
 \addlinespace[2pt]
 \mbox{NFC-MON-01} & Universal & Quality and Safety Measurement Service & Collects versioned safety, usability, security, integrity, and control-effectiveness measures with approved response thresholds. & T-OPS \\
 \addlinespace[2pt]
-\mbox{NFC-VV-01} & Universal & Non-Functional Verification Harness & Runs safety, misuse, human-factors, security, resilience, integrity, and negative tests with retained acceptance evidence. & T-VV \\
+\mbox{NFC-VV-01} & Universal & Safety-Assurance Verification Harness & Runs safety, misuse, human-factors, security, resilience, integrity, and negative tests with retained acceptance evidence. & T-VV \\
 \addlinespace[2pt]
 \mbox{NFC-SAFE-01} & Safety & Deterministic Safety Enforcement Kernel & Implements fail-closed preconditions, authority limits, hard stops, approval invalidation, and safe export rules. & T-SYS \\
 \addlinespace[2pt]
@@ -1007,7 +1008,7 @@ The Systems Integration Council consists of all team leads, with T-CLIN, T-GOV, 
 \end{longtable}
 \end{scriptsize}
 
-\section{Non-functional sub-requirement realization}
+\section{Safety / assurance sub-requirement realization}
 
 \subsection{Safety boundaries and human authority (SAF)}
 
@@ -1543,7 +1544,7 @@ A sub-requirement is complete only when every allocated component has supplied a
 \endlastfoot
 Functional & 207 & 207 & 32 & 0 & Pass \\
 \addlinespace[2pt]
-Non-functional & 75 & 75 & 23 & 0 & Pass \\
+Safety / assurance & 75 & 75 & 23 & 0 & Pass \\
 \addlinespace[2pt]
 Operational & 75 & 75 & 23 & 0 & Pass \\
 \addlinespace[2pt]
@@ -1633,51 +1634,51 @@ Functional & FC-ACC-01 & Accreditation Profile Runtime & 9 & T-GOV \\
 \addlinespace[2pt]
 Functional & FC-DOC-01 & Clinical Documentation and Temporal Gate & 9 & T-REV \\
 \addlinespace[2pt]
-Non-functional & NFC-REQ-01 & Quality, Risk, and Trace Repository & 75 & T-SYS \\
+Safety / assurance & NFC-REQ-01 & Quality, Risk, and Trace Repository & 75 & T-SYS \\
 \addlinespace[2pt]
-Non-functional & NFC-ARCH-01 & Quality-Attribute Contract Registry & 75 & T-SYS \\
+Safety / assurance & NFC-ARCH-01 & Quality-Attribute Contract Registry & 75 & T-SYS \\
 \addlinespace[2pt]
-Non-functional & NFC-CFG-01 & Controlled Threshold and Policy Registry & 75 & T-SYS \\
+Safety / assurance & NFC-CFG-01 & Controlled Threshold and Policy Registry & 75 & T-SYS \\
 \addlinespace[2pt]
-Non-functional & NFC-MON-01 & Quality and Safety Measurement Service & 75 & T-OPS \\
+Safety / assurance & NFC-MON-01 & Quality and Safety Measurement Service & 75 & T-OPS \\
 \addlinespace[2pt]
-Non-functional & NFC-VV-01 & Non-Functional Verification Harness & 75 & T-VV \\
+Safety / assurance & NFC-VV-01 & Safety-Assurance Verification Harness & 75 & T-VV \\
 \addlinespace[2pt]
-Non-functional & NFC-SAFE-01 & Deterministic Safety Enforcement Kernel & 37 & T-SYS \\
+Safety / assurance & NFC-SAFE-01 & Deterministic Safety Enforcement Kernel & 37 & T-SYS \\
 \addlinespace[2pt]
-Non-functional & NFC-STATE-01 & Safety-Critical State and Dependency Controller & 34 & T-SYS \\
+Safety / assurance & NFC-STATE-01 & Safety-Critical State and Dependency Controller & 34 & T-SYS \\
 \addlinespace[2pt]
-Non-functional & NFC-IAM-01 & Identity, Authorization, and Separation-of-Duties Service & 29 & T-SEC \\
+Safety / assurance & NFC-IAM-01 & Identity, Authorization, and Separation-of-Duties Service & 29 & T-SEC \\
 \addlinespace[2pt]
-Non-functional & NFC-CTX-01 & Patient and Action Context Assurance & 30 & T-SYS \\
+Safety / assurance & NFC-CTX-01 & Patient and Action Context Assurance & 30 & T-SYS \\
 \addlinespace[2pt]
-Non-functional & NFC-HFE-01 & Human-Factors Engineering and Competency Program & 22 & T-UX \\
+Safety / assurance & NFC-HFE-01 & Human-Factors Engineering and Competency Program & 22 & T-UX \\
 \addlinespace[2pt]
-Non-functional & NFC-UX-01 & Accessible Safety-Critical Presentation Layer & 30 & T-UX \\
+Safety / assurance & NFC-UX-01 & Accessible Safety-Critical Presentation Layer & 30 & T-UX \\
 \addlinespace[2pt]
-Non-functional & NFC-ALERT-01 & Warning, Notification, and Alert-Burden Controller & 20 & T-UX \\
+Safety / assurance & NFC-ALERT-01 & Warning, Notification, and Alert-Burden Controller & 20 & T-UX \\
 \addlinespace[2pt]
-Non-functional & NFC-SEC-01 & Security Control Plane & 24 & T-SEC \\
+Safety / assurance & NFC-SEC-01 & Security Control Plane & 24 & T-SEC \\
 \addlinespace[2pt]
-Non-functional & NFC-PRIV-01 & Privacy and Minimum-Necessary Control & 24 & T-SEC \\
+Safety / assurance & NFC-PRIV-01 & Privacy and Minimum-Necessary Control & 24 & T-SEC \\
 \addlinespace[2pt]
-Non-functional & NFC-CRY-01 & Cryptography, Secrets, and Certificate Service & 24 & T-SEC \\
+Safety / assurance & NFC-CRY-01 & Cryptography, Secrets, and Certificate Service & 24 & T-SEC \\
 \addlinespace[2pt]
-Non-functional & NFC-EGRESS-01 & Connector and Data-Egress Guard & 31 & T-SEC \\
+Safety / assurance & NFC-EGRESS-01 & Connector and Data-Egress Guard & 31 & T-SEC \\
 \addlinespace[2pt]
-Non-functional & NFC-INPUT-01 & Untrusted Content and Prompt-Injection Boundary & 8 & T-SEC \\
+Safety / assurance & NFC-INPUT-01 & Untrusted Content and Prompt-Injection Boundary & 8 & T-SEC \\
 \addlinespace[2pt]
-Non-functional & NFC-ART-01 & Artifact Trust and Integrity Verifier & 25 & T-SEC \\
+Safety / assurance & NFC-ART-01 & Artifact Trust and Integrity Verifier & 25 & T-SEC \\
 \addlinespace[2pt]
-Non-functional & NFC-SDL-01 & Secure Development, SBOM, and Supplier Assurance & 24 & T-SEC \\
+Safety / assurance & NFC-SDL-01 & Secure Development, SBOM, and Supplier Assurance & 24 & T-SEC \\
 \addlinespace[2pt]
-Non-functional & NFC-AUD-01 & Protected Safety and Security Audit Ledger & 33 & T-DATA \\
+Safety / assurance & NFC-AUD-01 & Protected Safety and Security Audit Ledger & 33 & T-DATA \\
 \addlinespace[2pt]
-Non-functional & NFC-DATA-01 & Safety-Critical Data Integrity Service & 27 & T-DATA \\
+Safety / assurance & NFC-DATA-01 & Safety-Critical Data Integrity Service & 27 & T-DATA \\
 \addlinespace[2pt]
-Non-functional & NFC-CLM-01 & Accreditation Claim and Human-Authority Guard & 3 & T-GOV \\
+Safety / assurance & NFC-CLM-01 & Accreditation Claim and Human-Authority Guard & 3 & T-GOV \\
 \addlinespace[2pt]
-Non-functional & NFC-INC-01 & Safety, Privacy, and Security Incident Workflow & 13 & T-OPS \\
+Safety / assurance & NFC-INC-01 & Safety, Privacy, and Security Incident Workflow & 13 & T-OPS \\
 \addlinespace[2pt]
 Operational & OC-REQ-01 & Operational Requirements and Trace Repository & 75 & T-SYS \\
 \addlinespace[2pt]

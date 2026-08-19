@@ -1,0 +1,105 @@
+schema_version: "0.1"
+status: proposed_controlled_stage_a_allocation_policy
+hazard_catalog: spec/hazards.yaml
+generated_graph: mps/import/traceability.json
+source_authority: existing_controlled_latex_documents
+
+coverage_policy:
+  required_entity_sets:
+    HLR: 119
+    SUB: 357
+    HLIR: 357
+    SIR: 1071
+    CORE-COMP: 45
+    IF-COMP: 61
+    CAT-COMP: 78
+    MQA-REQ: 12
+    MQA-SUB: 36
+    MQA-COMP: 8
+  minimum_hazards_per_entity: 1
+  vv_claim_inherits_entity_hazards: true
+  child_inherits_parent_hazards: true
+  interface_requirement_adds_family_hazards: true
+  no_silent_default: true
+
+domain_hazard_defaults:
+  GOV: [H-13, H-18, H-17]
+  SAF: [H-01, H-03, H-04, H-08, H-13, H-16, H-17, H-18]
+  NLI: [H-02, H-18]
+  EVD: [H-03, H-15, H-18]
+  CLN: [H-01, H-05, H-06, H-07, H-17]
+  PLN: [H-04, H-07, H-08, H-09, H-10, H-11, H-17]
+  REV: [H-10, H-12, H-13, H-17, H-18]
+  DAT: [H-01, H-07, H-12, H-14, H-17]
+  AIM: [H-03, H-05, H-06, H-08, H-13, H-14, H-15, H-18]
+  HFE: [H-01, H-02, H-13, H-18]
+  SEC: [H-14, H-15, H-16]
+  OPS: [H-12, H-14, H-15, H-16, H-17]
+  VAL: [H-03, H-05, H-06, H-07, H-08, H-09, H-10, H-11, H-12, H-13, H-15, H-16, H-17, H-18]
+  ACC: [H-13, H-18]
+
+entity_overrides:
+  GOV-001: [H-13, H-18]
+  SAF-001: [H-04, H-13, H-18]
+  SAF-002: [H-01, H-17]
+  SAF-003: [H-01]
+  SAF-004: [H-01, H-03, H-08, H-16]
+  SAF-005: [H-05, H-06, H-08, H-16]
+  SAF-006: [H-01, H-16, H-17]
+  SAF-007: [H-17]
+  SAF-008: [H-01, H-03, H-04, H-08, H-11, H-12, H-14, H-16, H-17]
+  SAF-009: [H-13]
+  SAF-010: [H-16]
+
+interface_family_hazards:
+  IF-ACC-01: [H-13, H-18]
+  IF-AI-01: [H-03, H-05, H-06, H-08, H-13, H-14, H-15, H-18]
+  IF-CFG-01: [H-03, H-08, H-14, H-15, H-16, H-17]
+  IF-CTX-01: [H-01, H-04, H-17]
+  IF-DATA-01: [H-01, H-07, H-12, H-14, H-17]
+  IF-DICOM-01: [H-01, H-07, H-12, H-17]
+  IF-EVD-01: [H-03, H-15, H-18]
+  IF-IAM-01: [H-01, H-04, H-13, H-14, H-17]
+  IF-IHE-01: [H-12, H-17]
+  IF-IMG-01: [H-01, H-05, H-06, H-17]
+  IF-NLI-01: [H-02, H-18]
+  IF-OPS-01: [H-14, H-15, H-16, H-17]
+  IF-PLN-01: [H-04, H-07, H-08, H-09, H-10, H-11, H-17]
+  IF-REV-01: [H-10, H-12, H-13, H-17, H-18]
+  IF-SAF-01: [H-01, H-03, H-04, H-08, H-11, H-13, H-16, H-17, H-18]
+  IF-SEC-01: [H-14, H-15, H-16]
+  IF-TPS-01: [H-08, H-11, H-12, H-16, H-17]
+  IF-UI-01: [H-01, H-02, H-13, H-18]
+  IF-VV-01: [H-05, H-06, H-08, H-09, H-10, H-12, H-13, H-15, H-16, H-17]
+
+component_hazard_rules:
+  - pattern: (DICOM|IHE|TPS)
+    hazards: [H-01, H-07, H-08, H-11, H-12, H-16, H-17]
+  - pattern: (DOSE|PLAN|OPT|PBT|ROB)
+    hazards: [H-04, H-07, H-08, H-09, H-10, H-11, H-17]
+  - pattern: (REG)
+    hazards: [H-06, H-07, H-17]
+  - pattern: (SEG|IMG|CONTOUR)
+    hazards: [H-05, H-06, H-17]
+  - pattern: (VOICE|NLI|INTENT)
+    hazards: [H-02, H-18]
+  - pattern: (AI|MODEL|MGW|MREG|MVAL)
+    hazards: [H-03, H-13, H-14, H-15, H-18]
+  - pattern: (IAM|AUTH|SEC|PRIV)
+    hazards: [H-04, H-13, H-14]
+  - pattern: (EVID|RULE|LIT)
+    hazards: [H-03, H-15, H-18]
+  - pattern: (STATE|PROV|OBJ|AUD|DATA|DAT|TERM)
+    hazards: [H-01, H-07, H-12, H-14, H-17]
+  - pattern: (JOB|RES|OPS|MON|INC|BACKUP|REC)
+    hazards: [H-14, H-15, H-16, H-17]
+  - pattern: (HFE|UX)
+    hazards: [H-01, H-02, H-13, H-18]
+  - pattern: (QA|VV|TEST|SBX)
+    hazards: [H-08, H-12, H-13, H-15, H-16, H-17]
+  - pattern: (GOV|QMS|REQ|ARCH|CFG|RLS|ACC)
+    hazards: [H-13, H-14, H-16, H-17, H-18]
+  - pattern: .*
+    hazards: [H-16, H-17, H-18]
+
+mqa_default_hazards: [H-01, H-08, H-12, H-13, H-14, H-15, H-16, H-17, H-18]

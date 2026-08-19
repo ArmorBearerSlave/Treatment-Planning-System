@@ -1,11 +1,12 @@
-schema_version: "0.1"
+schema_version: "0.2"
 
 decisions:
   - id: ADR-001
     title: MPS Authority, Scope, and Runtime Boundary
-    version: "0.1"
+    version: "0.2"
     date: "2026-08-19"
     status: provisionally_accepted_for_controlled_nonclinical_implementation
+    approval_state: pending_named_approval
     authority_cutover_status: not_approved
     owner: architecture_board_proposed
     human_readable_source: overleaf/NL_TPS_ADR_001_MPS_Authority_Scope_and_Runtime_Boundary.tex
@@ -59,9 +60,10 @@ decisions:
 
   - id: ADR-002
     title: Program Identity and Naming Hierarchy
-    version: "0.1"
+    version: "0.2"
     date: "2026-08-19"
     status: provisionally_accepted_for_controlled_nonclinical_program_use
+    approval_state: pending_named_approval
     owner: program_sponsor_and_architecture_board_proposed
     human_readable_source: overleaf/NL_TPS_ADR_002_Program_Identity_and_Naming_Hierarchy.tex
     related_architecture_baselines:

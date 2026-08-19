@@ -1,7 +1,8 @@
-schema_version: "0.1"
+schema_version: "0.2"
 decision_record: ADR-002
 effective_date: "2026-08-19"
 status: provisional_controlled_nonclinical_program_use
+approval_state: pending_named_approval
 
 identity:
   preferred_descriptive_title: Governed Clinical Language for AI-Assisted Radiation Treatment Planning

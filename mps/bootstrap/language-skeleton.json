@@ -1,8 +1,8 @@
 {
-  "schema_version": "0.1",
-  "skeleton_version": "0.1",
+  "schema_version": "0.2",
+  "skeleton_version": "0.2",
   "decision": "ADR-001",
-  "architecture_baseline": "ENG-PKG-01-v0.4",
+  "architecture_baseline": "ENG-PKG-01-v0.6",
   "implementation_state": "blueprint_not_live_mps_serialization",
   "target_toolchain": {
     "mps_version": "2026.1",
@@ -37,7 +37,7 @@
         "UnitCatalog",
         "LifecycleVocabulary"
       ],
-      "concepts": [
+      "non_root_concepts": [
         "GovernedElement",
         "StableId",
         "Alias",
@@ -73,7 +73,7 @@
         "DecisionBaseline",
         "TraceGraph"
       ],
-      "concepts": [
+      "non_root_concepts": [
         "StakeholderNeed",
         "Requirement",
         "RequirementPattern",
@@ -115,8 +115,7 @@
         "WorkflowDefinition",
         "ReleaseProfile"
       ],
-      "concepts": [
-        "PlanIntentDefinition",
+      "non_root_concepts": [
         "ActionDefinition",
         "ClinicalObjectType",
         "ConstraintDefinition",
@@ -128,7 +127,6 @@
         "StateTransition",
         "ComputableRule",
         "EvidenceProfile",
-        "ReleaseProfile",
         "CommissionedUseEnvelope",
         "ModelProfile",
         "MachineProfile"
@@ -159,7 +157,7 @@
         "VerificationBaseline",
         "AdapterCatalog"
       ],
-      "concepts": [
+      "non_root_concepts": [
         "Component",
         "InterfaceFamily",
         "InterfaceContract",

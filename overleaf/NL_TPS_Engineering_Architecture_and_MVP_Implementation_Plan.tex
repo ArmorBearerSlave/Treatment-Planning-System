@@ -6,14 +6,15 @@
 }
 
 \begin{document}
-\NLSetPageStyle{GCPL / NL-TPS ENGINEERING ARCHITECTURE}{Controlled response to ConOps v0.1, Documents II--XV, ADR-001, and ADR-002}
+\NLSetPageStyle{GCPL / NL-TPS ENGINEERING ARCHITECTURE}{Controlled requirements corpus v0.1 assembled in suite v0.4}
 \fancyhead[R]{\small\bfseries\color{NLGOLD}ARCHITECTURE BASELINE}
 \NLTitleBlock{ENGINEERING RESPONSE AND IMPLEMENTATION PLAN}{Engineering Architecture and Minimum Viable Clinical Slice}{Governed Clinical Planning Language (GCPL) / NL-TPS Implementation}{\begin{minipage}{0.95\textwidth}
-\NLMeta{Source baseline}{Controlled NL-TPS documentation suite v0.1, Documents I--XV, ADR-001, and ADR-002}
+\NLMeta{Source baseline}{Controlled requirements corpus v0.1 (Documents I--XV), supplemented by ADR-001 and ADR-002; assembled with DRR-001 in suite v0.4}
 \NLMeta{Plan identifier}{ENG-PKG-01}
-\NLMeta{Document version}{0.4 - Engineering architecture baseline}
+\NLMeta{Document version}{0.6 - Repository-readiness engineering architecture baseline}
 \NLMeta{Date}{19 August 2026}
 \NLMeta{Status}{Frozen for controlled non-clinical implementation; no clinical or release authorization}
+\NLMeta{Approval state}{Pending named approval; recorded approvals: 0}
 \NLMeta{Planning horizon}{Platform Slice 0 (Machine QA) through one bounded candidate-planning slice}
 \end{minipage}}{This document proposes an engineering architecture and sequence. ADR-001 provisionally selects JetBrains MPS for the offline governance-compiler role; ADR-002 establishes GCPL as the technology name and retains NL-TPS as the implementation alias. Neither decision changes intended use, supersedes a controlled requirement, selects a clinical-runtime vendor, approves a regulatory strategy, commissions an interface, authorizes clinical use, approves machine readiness, or represents a verification or validation check as executed.}
 
@@ -42,7 +43,7 @@ Document owner & GCPL / NL-TPS Program; engineering ownership assigned to T-SYS 
 \addlinespace[2pt]
 Purpose & Convert the controlled documentation corpus into an implementable architecture, backlog policy, verification execution model, and staged delivery plan \\
 \addlinespace[2pt]
-Normative relationship & Documents I--XV remain normative within their approved scope. ADR-001 controls the proposed MPS engineering role but does not complete the authority cutover. ADR-002 controls the GCPL / NL-TPS naming hierarchy without renaming existing identifiers. This plan does not silently alter source requirements or allocations. \\
+Normative relationship & Documents I--XVIII remain normative within their approved scope. ADR-001 controls the proposed MPS engineering role but does not complete the authority cutover. ADR-002 controls the GCPL / NL-TPS naming hierarchy without renaming existing identifiers. The Defect Resolution Register records corrective changes and unresolved approvals. This plan does not silently alter source requirements or allocations. \\
 \addlinespace[2pt]
 Change authority & Clinical governance, system engineering, qualified medical physics authority, quality management, security/privacy, interface control, independent V\&V, and regulatory/legal review as applicable \\
 \addlinespace[2pt]
@@ -62,7 +63,7 @@ The baseline architecture contains four trust zones. Untrusted language services
 
 Implementation begins with \textbf{Platform Slice 0: MQA-PKG-01 Machine QA Evidence and Readiness Integration}. It exercises identity, roles, electronic approval, immutable evidence, state gating, provenance, jobs, configuration, deviation handling, and monitoring against real institutional data without patient planning mutations. Subsequent planning slices add read-only clinical context and plan comparison, an intent compiler with no execution path, OAR contour drafting, and candidate generation for exactly one approved TPS/version/machine/technique profile.
 
-The F/NF/O requirement view is proposed as the primary planning and backlog classification. Canonical source requirement identifiers, the 45 core component allocations, the 61 interface components, and all risk and V\&V traces remain controlled until an approved migration proves complete equivalence. The 2,144 V\&V identifiers remain individual acceptance claims. They may be executed through a smaller set of reusable automated suites and controlled manual, HFE, commissioning, and clinical-validation records only when a many-to-many evidence map preserves every expected result and approval.
+The F/SA/O requirement view is proposed as the primary planning and backlog classification. Legacy HNFR, NFSR, and NFC identifiers remain stable trace aliases; the 25 former non-functional records are classified as cross-cutting safety and assurance constraints. Canonical source requirement identifiers, the 45 core component allocations, the 61 interface components, and all risk and V\&V traces remain controlled until an approved migration proves complete equivalence. The 2,144 V\&V identifiers remain individual acceptance claims. They may be executed through a smaller set of reusable automated suites and controlled manual, HFE, commissioning, and clinical-validation records only when a many-to-many evidence map preserves every expected result and approval.
 
 \begin{nlnotice}{ENGINEERING SAFETY POSITION}
 The language model is never the deciding authority. \textbf{ARCH-INVARIANT-001 (No-language equivalence):} removing the language zone shall not remove any governed workflow. An authorized user must be able to submit an equivalent hand-authored typed intent and receive the same deterministic decision and governed execution path. No model output, schema value, test count, dashboard, or trace-completeness result may authorize prescription, approval, QA waiver, release, return to service, or treatment delivery.
@@ -114,7 +115,7 @@ Statements in this document use three statuses:
 \endfoot
 \bottomrule
 \endlastfoot
-Controlled fact & Directly represented in Documents I--XV, ADR-001, or an approved institutional source & Preserve its identifier, authority, scope, and change process \\
+Controlled fact & Directly represented in Documents I--XVIII, the Defect Resolution Register, or an approved institutional source & Preserve its identifier, authority, scope, and change process \\
 \addlinespace[2pt]
 Proposed decision & Recommended engineering direction requiring accountable approval & Record alternatives, risks, owner, decision date, and affected traces before implementation \\
 \addlinespace[2pt]
@@ -124,7 +125,7 @@ Planning assumption & Estimate or placeholder used to sequence work & Assign an 
 
 \section{Engineering architecture baseline freeze}
 
-Version 0.4 freezes the following interpretation as the implementation target for controlled non-clinical work. A change to one of these decisions requires a versioned architecture decision or change request, impact analysis across requirements, interfaces, components, hazards, tests, and documents, named review, and an approved effective version. The freeze constrains implementation; it does not approve clinical data use, commission a component or interface, authorize a release gate, or represent stakeholder concurrence that has not been recorded.
+Version 0.6 freezes the following interpretation as the implementation target for controlled non-clinical work. It incorporates the defect-review corrections for hazard traceability, risk derivation, classification, namespaces, specification-as-data enforcement, continuous integration, schema governance, explicit approval state, and the MPS concept-collection invariant. A change to one of these decisions requires a versioned architecture decision or change request, impact analysis across requirements, interfaces, components, hazards, tests, and documents, named review, and an approved effective version. The freeze constrains implementation; it does not approve clinical data use, commission a component or interface, authorize a release gate, or represent stakeholder concurrence that has not been recorded.
 
 \begin{small}
 \begin{longtable}{@{}L{0.14\textwidth}L{0.29\textwidth}L{0.47\textwidth}@{}}
@@ -143,7 +144,7 @@ Version 0.4 freezes the following interpretation as the implementation target fo
 \endlastfoot
 AB-001 & Product boundary & NL-TPS materially participates in planning but is not initially an independent dose-authoritative replacement TPS; commissioned systems and qualified professionals retain their assigned authority. \\
 \addlinespace[2pt]
-AB-002 & Requirements and interface authority & F/NF/O is the build and backlog view after controlled crosswalk approval; the HLIR--SIR interface branch remains authoritative; canonical and legacy allocations remain traceable until formal supersession. \\
+AB-002 & Requirements and interface authority & F/SA/O is the build and backlog view after controlled crosswalk approval; the HLIR--SIR interface branch remains authoritative; canonical and legacy allocations remain traceable until formal supersession. \\
 \addlinespace[2pt]
 AB-003 & Four enforceable trust zones & Z0 language is untrusted and has no direct side-effecting clinical-system I/O, authoritative credentials, or uncontrolled egress; Z1 decides deterministically; Z2 executes token-scoped work; Z3 retains system-of-record authority. \\
 \addlinespace[2pt]
@@ -206,7 +207,7 @@ Canonical system requirements & 119 HLRs and 357 detailed children & Normative b
 \addlinespace[2pt]
 Interface refinement & 357 HLIRs and 1,071 SIRs & Producer-consumer contracts, runtime transactions, conformance, failure, recovery, and evidence across 19 interface families \\
 \addlinespace[2pt]
-F/NF/O classification & 119 HLR aliases and 357 child aliases & Primary proposed planning view for functionality, quality attributes, and operational controls; aliases do not create new normative obligations \\
+F/SA/O classification & 119 HLR aliases and 357 child aliases & Primary proposed planning view for functionality, quality attributes, and operational controls; aliases do not create new normative obligations \\
 \addlinespace[2pt]
 Component realization & 45 core, 61 interface, and 78 category-scoped responsibilities & Multiple allocation views that must be reconciled before one backlog replaces another \\
 \addlinespace[2pt]
@@ -222,7 +223,7 @@ The regular three-child decompositions are useful completeness mechanisms. Engin
 
 \begin{enumerate}
 \item Canonical requirement text and source IDs remain normative.
-\item F/NF/O category is the proposed backlog grouping and reporting view.
+\item F/SA/O category is the proposed backlog grouping and reporting view.
 \item Core and interface component identifiers remain active allocation targets until a reviewed crosswalk proves that category-scoped responsibilities cover their contracts and consumers.
 \item MQA requirements remain subordinate realization requirements and do not increase the 119-HLR baseline.
 \item Risk, trade, and V\&V identifiers remain immutable even when multiple claims share one executable scenario.
@@ -585,7 +586,7 @@ The documents shall not be discarded. The proposed change is to establish a revi
 \endfoot
 \bottomrule
 \endlastfoot
-\texttt{spec/requirements.yaml} & Canonical HLR and child IDs, aliases, domain, F/NF/O category, normative statement, method, rationale, version, owner, and change record \\
+\texttt{spec/requirements.yaml} & Canonical HLR and child IDs, aliases, domain, F/SA/O category, normative statement, method, rationale, version, owner, and change record \\
 \addlinespace[2pt]
 \texttt{spec/interfaces.yaml} & Interface families, ICDs, producers, consumers, contracts, objects, transactions, failure behavior, conformance, and owners \\
 \addlinespace[2pt]
@@ -621,7 +622,7 @@ MPS-generated runtime inputs shall be packaged as immutable, versioned release b
 
 \begin{enumerate}
 \item Parse the current documents into a candidate graph without changing any source document.
-\item Reconcile counts, exact text, aliases, allocations, risks, and V\&V mappings against Documents I--XV and the scope controlled by ADR-001.
+\item Reconcile counts, exact text, aliases, allocations, hazards, risks, and V\&V mappings against Documents I--XVIII, the Defect Resolution Register, and the scope controlled by ADR-001.
 \item Review exceptions manually; prohibit automatic resolution of conflicting normative text.
 \item Generate comparison tables and prove byte- or field-level equivalence where feasible.
 \item Operate document and structured representations in parallel through an approved transition period.
@@ -681,14 +682,14 @@ Clinical validation record & \texttt{CVR-SLICE-001} & Intended use, population, 
 
 \subsection{Proposed backlog policy}
 
-F/NF/O is the primary backlog classification because it distinguishes delivered behavior, required quality, and institutional operation. Work items shall retain canonical source IDs and all active component/interface allocations. A backlog item is not complete merely because one category responsibility is coded.
+F/SA/O is the primary backlog classification because it distinguishes delivered behavior, required quality, and institutional operation. Work items shall retain canonical source IDs and all active component/interface allocations. A backlog item is not complete merely because one category responsibility is coded.
 
 \subsection{Crosswalk required before supersession}
 
 For each of the 357 canonical children, the migration shall show:
 
 \begin{itemize}
-\item canonical and F/NF/O alias IDs and exact normative statement;
+\item canonical and F/SA/O alias IDs and exact normative statement;
 \item existing core component allocations and proposed category responsibility;
 \item related HLIR/SIR routes and interface components;
 \item accountable and participating teams;
@@ -765,7 +766,7 @@ Insufficient staffing & Fifteen-accountability model is treated as fifteen funde
 \addlinespace[2pt]
 DICOM schedule & Multiple TPS/\allowbreak{}version/\allowbreak{}machine/\allowbreak{}technique combinations enter the first release & One bounded profile; obtain conformance statements early; vendor/site test access; explicit estimate and contingency & T-INT \\
 \addlinespace[2pt]
-Backlog supersession error & F/NF/O migration loses canonical allocations, interfaces, risks, or tests & Dual trace, automated reconciliation, manual exceptions, configuration-control approval, rollback & T-SYS/T-GOV \\
+Backlog supersession error & F/SA/O migration loses canonical allocations, interfaces, risks, or tests & Dual trace, automated reconciliation, manual exceptions, configuration-control approval, rollback & T-SYS/T-GOV \\
 \addlinespace[2pt]
 Paper V\&V & Thousands of derived protocols are authored without reusable executable evidence & Claim-to-suite model, parameterized tests, manual evidence classes, independent mapping review, no inferred PASS & T-VV \\
 \addlinespace[2pt]
@@ -806,7 +807,7 @@ D-ENG-002 & First clinical disease-site and workflow slice & During Slice 2 & T-
 \addlinespace[2pt]
 D-ENG-003 & Authoritative systems and available interfaces & Gate 0 & T-INT/T-DATA & Inventory and request conformance statements; design DICOM-first contracts \\
 \addlinespace[2pt]
-D-ENG-004 & F/NF/O backlog authority and legacy/core migration policy & Before backlog cutover & T-SYS/T-GOV & Build crosswalk and dual reports; no supersession \\
+D-ENG-004 & F/SA/O backlog authority and legacy/core migration policy & Before backlog cutover & T-SYS/T-GOV & Build crosswalk and dual reports; no supersession \\
 \addlinespace[2pt]
 D-ENG-005 & Trust-zone deployment, signing, key custody, and network policy & Before integrated prototype & T-SEC/T-SYS & Threat model and pure kernel; no clinical credentials \\
 \addlinespace[2pt]
@@ -866,7 +867,7 @@ ENG-PKG-01 may advance beyond the controlled non-clinical architecture baseline 
 \begin{enumerate}
 \item every proposed decision has an accountable owner, status, rationale, affected controlled IDs, and required approval;
 \item the product boundary, four-zone threat model, \texttt{PlanIntent}, \texttt{ProfessionalDecision}, \texttt{KernelDecisionRecord}, \texttt{ExecutionCapability}, object, provenance, audit, and job-state contracts are reviewed by clinical, QMP, security, interface, data, usability, operations, and independent V\&V authorities;
-\item the F/NF/O backlog policy has a complete crosswalk and does not orphan core or interface allocations;
+\item the F/SA/O backlog policy has a complete crosswalk and does not orphan core or interface allocations;
 \item the VVC claim-to-execution model preserves all 2,144 claim IDs and prohibits inferred execution or clinical PASS;
 \item Platform Slice 0 has an approved MQA scope, authoritative sources, QMP ownership, environment, staffing, risk controls, protocols, and release gate;
 \item TPS-PROFILE-001 has one explicitly approved combination before mutable planning work begins;

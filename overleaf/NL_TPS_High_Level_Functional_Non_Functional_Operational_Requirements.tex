@@ -1,15 +1,15 @@
 \documentclass[11pt,letterpaper]{article}
 \usepackage{nl_tps_common}
-\hypersetup{pdftitle={High-Level Functional, Non-Functional, and Operational Requirements},pdfsubject={NL-TPS controlled documentation}}
+\hypersetup{pdftitle={High-Level Functional, Safety-Assurance, and Operational Requirements},pdfsubject={NL-TPS controlled documentation}}
 \begin{document}
-\NLSetPageStyle{NL-TPS F/NF/O HIGH-LEVEL REQUIREMENTS}{NL-TPS High-Level Requirements v0.1 and ConOps v0.1}
-\NLTitleBlock{SYSTEM REQUIREMENTS BASELINE}{High-Level Functional, Non-Functional, and Operational Requirements}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
+\NLSetPageStyle{NL-TPS F/SA/O HIGH-LEVEL REQUIREMENTS}{NL-TPS High-Level Requirements v0.1 and ConOps v0.1}
+\NLTitleBlock{SYSTEM REQUIREMENTS BASELINE}{High-Level Functional, Safety / Assurance, and Operational Requirements}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
 \NLMeta{Source baseline}{NL-TPS High-Level Requirements v0.1 and ConOps v0.1}
-\NLMeta{Requirements version}{0.1 - Proposed baseline}
-\NLMeta{Date}{18 August 2026}
+\NLMeta{Requirements version}{0.2 - Reclassified proposed baseline}
+\NLMeta{Date}{19 August 2026}
 \NLMeta{Status}{Discussion Draft - Not for clinical use}
-\NLMeta{Coverage}{119 requirements: 69 functional; 25 non-functional; 25 operational}
-\end{minipage}}{This document provides a controlled functional, non-functional, and operational view of the existing NL-TPS high-level baseline. It is not a clinical protocol, commissioning report, regulatory determination, released product specification, or authorization for patient use.}
+\NLMeta{Coverage}{119 requirements: 69 functional; 25 safety / assurance; 25 operational}
+\end{minipage}}{This document provides a controlled functional, cross-cutting safety and assurance, and operational view of the existing NL-TPS high-level baseline. Legacy HNFR identifiers remain stable aliases. It is not a clinical protocol, commissioning report, regulatory determination, released product specification, or authorization for patient use.}
 
 \tableofcontents
 \clearpage
@@ -39,7 +39,7 @@ Source document & NL-TPS High-Level Requirements, Version 0.1; NL-TPS ConOps, Ve
 \addlinespace[2pt]
 Baseline status & Proposed requirements and realization planning; not approved, implemented, commissioned, or allocated to a clinical release \\
 \addlinespace[2pt]
-Coverage & 119 requirements: 69 functional; 25 non-functional; 25 operational \\
+Coverage & 119 requirements: 69 functional; 25 safety / assurance; 25 operational \\
 \addlinespace[2pt]
 Identifier policy & New category IDs retain immutable source aliases to the original 119 HLR identifiers. \\
 \addlinespace[2pt]
@@ -52,9 +52,9 @@ Supersession & None; this document preserves and traces to the existing controll
 
 \NLFrontMatterSection{Executive summary}
 
-This specification organizes the complete 119-requirement source baseline into three primary realization classes: 69 functional requirements, 25 non-functional requirements, and 25 operational requirements. The partition clarifies what the clinical system does, the qualities and constraints under which it must do so, and the institutional controls needed to deploy and sustain it.
+This specification organizes the complete 119-requirement source baseline into three primary realization classes: 69 functional requirements, 25 cross-cutting safety and assurance constraints, and 25 operational requirements. The partition distinguishes delivered behavior, safety and assurance constraints, and institutional controls needed to deploy and sustain it.
 
-The original requirement wording, source/hazard trace, and anticipated verification methods are preserved. Category IDs are trace aliases, not replacements. Cross-cutting effects remain valid: an operational control may constrain a function, and a non-functional requirement may require functional enforcement.
+The original requirement wording, source/hazard trace, and anticipated verification methods are preserved. HNFR, NFSR, and NFC identifiers remain stable legacy trace aliases, not classifications or replacements. Cross-cutting effects remain valid: an operational control or safety and assurance constraint may require functional enforcement.
 
 \begin{nlnotice}{HUMAN AUTHORITY AND TPS BOUNDARY}
 The NL-TPS produces governed drafts and candidate plans for authorized professional review. It shall not prescribe, approve, release, or deliver treatment. Commissioned TPS and dose engines retain their validated calculation roles, and DICOM/DICOM-RT is the minimum required external TPS exchange boundary.
@@ -62,7 +62,7 @@ The NL-TPS produces governed drafts and candidate plans for authorized professio
 
 \section{Purpose and scope}
 
-The purpose of this document is to establish a reviewable functional, non-functional, and operational taxonomy beneath the ConOps and alongside the source High-Level Requirements. It supports architecture allocation, hazard analysis, subsystem specifications, verification planning, commissioning, team ownership, and release decisions without silently changing the source baseline.
+The purpose of this document is to establish a reviewable functional, safety and assurance, and operational taxonomy beneath the ConOps and alongside the source High-Level Requirements. It supports architecture allocation, hazard analysis, subsystem specifications, verification planning, commissioning, team ownership, and release decisions without silently changing the source baseline.
 
 The baseline covers natural-language and voice interaction, evidence governance, clinical context and anatomy, treatment-plan generation, professional review, data and interoperability, inference-model lifecycle, safety, usability, cybersecurity, governance, operations, resilience, verification, commissioning, and change control.
 
@@ -85,7 +85,7 @@ The baseline covers natural-language and voice interaction, evidence governance,
 \endlastfoot
 Functional & HFR & FSR & Capabilities that accept, transform, calculate, present, exchange, or govern patient-specific planning information and candidate plans. & 69 & 207 \\
 \addlinespace[2pt]
-Non-functional & HNFR & NFSR & Cross-cutting safety, human-factors, privacy, security, integrity, and assurance constraints on every applicable function. & 25 & 75 \\
+Safety / assurance & HNFR (legacy) & NFSR (legacy) & Cross-cutting safety, human-factors, privacy, security, integrity, and assurance constraints on every applicable function. & 25 & 75 \\
 \addlinespace[2pt]
 Operational & HOR & OSR & Institutional governance, deployment, monitoring, resilience, verification, commissioning, release, and lifecycle obligations needed to operate the system safely. & 25 & 75 \\
 \addlinespace[2pt]
@@ -165,13 +165,13 @@ Functional & AIM & AI and inference-model lifecycle & 8 & 24 & HFR-AIM-001 throu
 \addlinespace[2pt]
 Functional & ACC & Accreditation-profile, clinical-documentation, QA, and proton capabilities & 5 & 15 & HFR-ACC-001 through HFR-ACC-005 \\
 \addlinespace[2pt]
-Non-functional & SAF & Safety boundaries and human authority & 10 & 30 & HNFR-SAF-001 through HNFR-SAF-010 \\
+Safety / assurance & SAF & Safety boundaries and human authority & 10 & 30 & HNFR-SAF-001 through HNFR-SAF-010 \\
 \addlinespace[2pt]
-Non-functional & HFE & Human factors, usability, and competency & 6 & 18 & HNFR-HFE-001 through HNFR-HFE-006 \\
+Safety / assurance & HFE & Human factors, usability, and competency & 6 & 18 & HNFR-HFE-001 through HNFR-HFE-006 \\
 \addlinespace[2pt]
-Non-functional & SEC & Privacy, cybersecurity, and secure development & 8 & 24 & HNFR-SEC-001 through HNFR-SEC-008 \\
+Safety / assurance & SEC & Privacy, cybersecurity, and secure development & 8 & 24 & HNFR-SEC-001 through HNFR-SEC-008 \\
 \addlinespace[2pt]
-Non-functional & ACC & Human accreditation authority and claim limitation & 1 & 3 & HNFR-ACC-001 \\
+Safety / assurance & ACC & Human accreditation authority and claim limitation & 1 & 3 & HNFR-ACC-001 \\
 \addlinespace[2pt]
 Operational & GOV & Governance, intended use, and scope & 7 & 21 & HOR-GOV-001 through HOR-GOV-007 \\
 \addlinespace[2pt]
@@ -486,7 +486,7 @@ Capabilities that accept, transform, calculate, present, exchange, or govern pat
 \end{longtable}
 \end{scriptsize}
 
-\section{Non-functional high-level requirements}
+\section{Cross-cutting safety and assurance high-level requirements}
 
 Cross-cutting safety, human-factors, privacy, security, integrity, and assurance constraints on every applicable function.
 
@@ -752,7 +752,7 @@ Institutional governance, deployment, monitoring, resilience, verification, comm
 
 \section{Cross-category realization and acceptance}
 
-Functional completion alone is insufficient for clinical readiness. Each included function shall be paired with its applicable non-functional constraints and operational controls through the requirements, risk, interface, component, and verification traces. A release gate shall reject orphan functions, unverified controls, unresolved safety-significant anomalies, uncommissioned external TPS pathways, and unsupported clinical scope.
+Functional completion alone is insufficient for clinical readiness. Each included function shall be paired with its applicable safety and assurance constraints and operational controls through the requirements, risk, interface, component, and verification traces. A release gate shall reject orphan functions, unverified controls, unresolved safety-significant anomalies, uncommissioned external TPS pathways, and unsupported clinical scope.
 
 For each release, the Systems Integration Council shall produce a cross-category realization matrix showing: included functions; applicable safety, usability, privacy, security, integrity, and human-authority constraints; operating procedures and support controls; interface versions; component versions; responsible teams; verification and commissioning evidence; residual risks; and governance approval.
 
@@ -775,7 +775,7 @@ For each release, the Systems Integration Council shall produce a cross-category
 \endlastfoot
 Functional & 69 & 69 & 207 & NLI, EVD, CLN, PLN, REV, DAT, AIM, ACC & Pass \\
 \addlinespace[2pt]
-Non-functional & 25 & 25 & 75 & SAF, HFE, SEC, ACC & Pass \\
+Safety / assurance & 25 & 25 & 75 & SAF, HFE, SEC, ACC & Pass \\
 \addlinespace[2pt]
 Operational & 25 & 25 & 75 & GOV, OPS, VAL, ACC & Pass \\
 \addlinespace[2pt]

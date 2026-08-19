@@ -1,0 +1,100 @@
+schema_version: "0.1"
+status: controlled_reclassification_with_gate_1_targets_pending
+decision_basis: defect A4 and A5 correction
+
+classification:
+  authoritative_label: cross_cutting_safety_and_assurance_constraint
+  display_label: Safety / assurance
+  legacy_label: non-functional
+  legacy_identifiers_preserved:
+    - HNFR
+    - NFSR
+    - NFC
+  rationale: >-
+    The 25 legacy non-functional records specify safety, human-factors,
+    cybersecurity, privacy, integrity, accreditation-authority, and assurance
+    behavior. They are cross-cutting constraints, not performance, capacity,
+    availability, or other quantitative quality attributes.
+  canonical_hlr_sets:
+    SAF: [SAF-001, SAF-002, SAF-003, SAF-004, SAF-005, SAF-006, SAF-007, SAF-008, SAF-009, SAF-010]
+    HFE: [HFE-001, HFE-002, HFE-003, HFE-004, HFE-005, HFE-006]
+    SEC: [SEC-001, SEC-002, SEC-003, SEC-004, SEC-005, SEC-006, SEC-007, SEC-008]
+    ACC: [ACC-002]
+  canonical_count: 25
+  quantitative_acceptance_required_by_classification: false
+  verification_rule: >-
+    Each constraint remains directly verifiable by its controlled inspection,
+    test, analysis, demonstration, or human-factors acceptance method.
+
+quantitative_quality_target_register:
+  gate_required: 1
+  status: pending_accountable_owner_approval
+  target_policy: >-
+    Values shall be established from intended use, clinical workflow, site
+    operations, safety analysis, regulatory and quality-system decisions, and
+    commissioned-system evidence. The generator shall not invent a value.
+  targets:
+    - id: QT-PERF-001
+      attribute: interactive response latency by action class
+      value: null
+      unit: null
+      owner: T-SYS/T-UX
+      status: pending
+    - id: QT-PERF-002
+      attribute: planning and inference job completion time by workflow class
+      value: null
+      unit: null
+      owner: T-SYS/T-PLAN/T-AI
+      status: pending
+    - id: QT-CAP-001
+      attribute: concurrent users and durable jobs by site profile
+      value: null
+      unit: null
+      owner: T-OPS/T-SYS
+      status: pending
+    - id: QT-AVL-001
+      attribute: required service availability by clinical mode
+      value: null
+      unit: percent
+      owner: T-OPS
+      status: pending
+    - id: QT-REC-001
+      attribute: recovery time objective by service and clinical mode
+      value: null
+      unit: null
+      owner: T-OPS
+      status: pending
+    - id: QT-REC-002
+      attribute: recovery point objective by record class
+      value: null
+      unit: null
+      owner: T-OPS/T-DATA
+      status: pending
+    - id: QT-RET-001
+      attribute: retention period by record and evidence class
+      value: null
+      unit: null
+      owner: T-GOV/T-DATA
+      status: pending
+    - id: QT-INT-001
+      attribute: DICOM transaction throughput and timeout profile
+      value: null
+      unit: null
+      owner: T-INT/T-OPS
+      status: pending
+    - id: QT-HFE-001
+      attribute: critical-task success and use-error acceptance criteria
+      value: null
+      unit: null
+      owner: T-UX/T-VV
+      status: pending
+    - id: QT-AI-001
+      attribute: model performance, abstention, subgroup, and drift thresholds per approved use
+      value: null
+      unit: null
+      owner: T-AI/T-VV/T-CLIN
+      status: pending
+
+gate_behavior:
+  gate_0: structural work permitted with all target values pending
+  gate_1_and_later: blocked until every applicable target has an approved value, unit, scope, evidence source, owner, and acceptance method

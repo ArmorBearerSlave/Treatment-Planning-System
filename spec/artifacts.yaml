@@ -1,0 +1,56 @@
+schema_version: "0.1"
+status: controlled_nonclinical_build_policy
+policy_id: ART-POL-001
+
+source_control_policy:
+  tracked_generated_pdfs_permitted: false
+  tracked_latex_intermediates_permitted: false
+  local_build_directory: output/pdf
+  temporary_build_directory: tmp/pdfs
+  publication_channel: github_actions_artifact_or_explicit_release
+  rationale: >-
+    Generated files shall not drift silently beside controlled sources. Review
+    and release artifacts are produced from a clean commit, accompanied by a
+    provenance manifest, and distributed through an explicit artifact channel.
+
+naming:
+  standalone_pattern: GCPL_NL_TPS_<DocumentSlug>.pdf
+  suite_filename: GCPL_NL_TPS_Controlled_Documentation_Suite.pdf
+  overleaf_suffix_permitted: false
+
+manifest:
+  filename: manifest.json
+  required_fields:
+    - policy_id
+    - source_commit
+    - dirty_worktree
+    - release_status
+    - release_authorized
+    - generated_at_utc
+    - latex_toolchain
+    - source_files
+    - artifacts
+  artifact_fields:
+    - filename
+    - sha256
+    - byte_count
+    - page_count
+
+release_controls:
+  review_artifact:
+    clean_commit_required: false
+    release_authorized: false
+  governed_release_artifact:
+    clean_commit_required: true
+    release_authorized: false
+    requires:
+      - approved architecture and ADR approval states
+      - applicable release-gate evidence
+      - independent manifest verification
+      - approved release decision
+
+ci:
+  compile_all_standalone_documents: true
+  compile_combined_suite: true
+  upload_artifact_name: gcpl-nltps-controlled-documentation-review
+  retention_days: 30

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gcpl:nltps:schema:traceability:0.1",
+  "title": "GCPL / NL-TPS materialized hazard trace",
+  "type": "object",
+  "required": ["schema_version", "entity_count", "vv_claim_count", "records"],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "entity_count": {"const": 2144},
+    "vv_claim_count": {"const": 2144},
+    "records": {
+      "type": "array",
+      "minItems": 2144,
+      "maxItems": 2144,
+      "items": {
+        "type": "object",
+        "required": ["id", "entity_type", "hazards", "vv_claim_id", "statement_sha256"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "entity_type": {"type": "string", "minLength": 1},
+          "hazards": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^H-[0-9]{2}$"}
+          },
+          "vv_claim_id": {"type": "string", "minLength": 1},
+          "statement_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+# Repository owner and default reviewer.
+* @ArmorBearerSlave
+
+# Controlled specifications, assurance evidence, and architecture decisions.
+/spec/ @ArmorBearerSlave
+/mps/ @ArmorBearerSlave
+/overleaf/ @ArmorBearerSlave
+/.github/ @ArmorBearerSlave

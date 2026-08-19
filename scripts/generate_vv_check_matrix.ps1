@@ -1,5 +1,6 @@
 param(
-    [string]$OutputPath = "overleaf\NL_TPS_Verification_Validation_Check_Matrix.tex"
+    [string]$OutputPath = "overleaf\NL_TPS_Verification_Validation_Check_Matrix.tex",
+    [switch]$Check
 )
 
 Set-StrictMode -Version Latest
@@ -8,7 +9,15 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $riskPath = Join-Path $repoRoot "overleaf\NL_TPS_Risk_and_Mitigation_Register.tex"
 $mqaPath = Join-Path $repoRoot "overleaf\NL_TPS_Monthly_QA_Integration_Profile.tex"
+$tracePath = Join-Path $repoRoot "mps\import\traceability.json"
 $resolvedOutput = Join-Path $repoRoot $OutputPath
+
+if (-not (Test-Path -LiteralPath $tracePath)) { throw "Missing materialized trace graph: $tracePath" }
+$traceDocument = Get-Content -LiteralPath $tracePath -Raw | ConvertFrom-Json
+$hazardsByEntity = @{}
+foreach ($traceRecord in $traceDocument.records) {
+    $hazardsByEntity[$traceRecord.id] = @($traceRecord.hazards)
+}
 
 $domainOrder = @("GOV", "SAF", "NLI", "EVD", "CLN", "PLN", "REV", "DAT", "AIM", "HFE", "SEC", "OPS", "VAL", "ACC")
 $domainTitles = @{
@@ -178,6 +187,7 @@ function New-Record([string]$id, [string]$trace, [string]$evidence, [string]$ban
         Band = $band
         Type = $type
         Domain = Get-Domain $id $type
+        Hazards = @($hazardsByEntity[$id])
     }
 }
 
@@ -195,6 +205,9 @@ foreach ($line in Get-Content -LiteralPath $riskPath) {
 
 if ($records.Count -ne 2088) { throw "Expected 2,088 risk-baseline entities; found $($records.Count)." }
 if (($records.Id | Sort-Object -Unique).Count -ne 2088) { throw 'Duplicate risk-baseline entity IDs found.' }
+foreach ($record in $records) {
+    if ($record.Hazards.Count -eq 0) { throw "No hazard allocation for $($record.Id)." }
+}
 
 $mqaFocus = @{
     '001' = 'source allowlisting, read-only acquisition, integrity, atomic import, and reconciliation'
@@ -268,10 +281,11 @@ Add-Line '\begin{document}'
 Add-Line '\NLSetPageStyle{NL-TPS VERIFICATION AND VALIDATION CHECK MATRIX}{2,144 Planned Checks Across Requirements, Interfaces, Components, and Machine QA}'
 Add-Line '\NLTitleBlock{VERIFICATION AND VALIDATION SPECIFICATION}{Verification and Validation Check Matrix}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}'
 Add-Line '\NLMeta{Source baseline}{Controlled NL-TPS suite v0.1 including MQA-PKG-01}'
-Add-Line '\NLMeta{Document version}{0.1 - Proposed baseline}'
-Add-Line '\NLMeta{Date}{18 August 2026}'
+Add-Line '\NLMeta{Document version}{0.2 - Hazard-linked proposed baseline}'
+Add-Line '\NLMeta{Date}{19 August 2026}'
 Add-Line '\NLMeta{Status}{Discussion Draft - Planned checks, not executed results}'
 Add-Line '\NLMeta{Coverage}{2,144 unique checks: 1,952 requirement or interface checks and 192 component or subassembly checks}'
+Add-Line '\NLMeta{Hazard trace}{Every check carries one or more hazard IDs from \texttt{mps/import/traceability.json}}'
 Add-Line '\end{minipage}}{This document specifies required checks. It does not claim that verification, validation, commissioning, clinical evaluation, acceptance, or release has occurred. A check becomes PASS only after controlled execution, attributable review, anomaly disposition, and approval by the required independent and clinical authorities.}'
 Add-Line ''
 Add-Line '\tableofcontents'
@@ -307,7 +321,7 @@ Add-Line '\end{longtable}'
 Add-Line '\end{small}'
 Add-Line ''
 Add-Line '\NLFrontMatterSection{Executive summary}'
-Add-Line 'This specification assigns one uniquely identified V\&V check to every controlled high-level requirement, detailed sub-requirement, high-level interface requirement, sub-interface requirement, component responsibility, and MQA-PKG-01 realization entity. Each row defines the minimum direct verification action, its validation contribution, objective acceptance evidence, accountable owner, inherited method, risk gate, and initial status.'
+Add-Line 'This specification assigns one uniquely identified V\&V check to every controlled high-level requirement, detailed sub-requirement, high-level interface requirement, sub-interface requirement, component responsibility, and MQA-PKG-01 realization entity. Each row defines the minimum direct verification action, its validation contribution, objective acceptance evidence, accountable owner, inherited method, risk gate, initial status, and hazards materialized from \texttt{spec/allocations.yaml}.'
 Add-Line ''
 Add-Line '\begin{nlnotice}{NO INFERRED PASS OR CLINICAL AUTHORITY}'
 Add-Line 'Trace completeness is not verification, a successful verification is not clinical validation, and validation is not authorization to treat. No model, retrieval system, dashboard, document generator, or automated service may mark a check PASS, accept an anomaly or residual risk, commission a route, approve a plan, declare machine readiness, or authorize clinical release.'
@@ -430,7 +444,8 @@ function Add-RecordRow($record) {
     $verification = Get-VerificationText $record
     $validation = Get-ValidationText $record
     $acceptance = Get-AcceptanceText $record
-    Add-Line "\textbf{$checkClass}\\\texttt{$($record.Id)} & $verification & $validation & $acceptance & $owner; $($methods.Latex); $($record.Band); Planned \\"
+    $hazardText = ($record.Hazards -join ', ')
+    Add-Line "\textbf{$checkClass}\\\texttt{$($record.Id)}\\Hazards: $hazardText & $verification & $validation & $acceptance & $owner; $($methods.Latex); $($record.Band); Planned \\"
     Add-Line '\addlinespace[2pt]'
 }
 
@@ -483,7 +498,9 @@ function Add-MqaRow($record) {
         default { 'All allocated MQA requirement paths, contracts, unit, integration, fault, monitoring, recovery, and QMP workflow checks pass.' }
     }
     $acceptance += ' Source hashes, configuration, expected and actual results, audit, anomalies, QMP review, T-VV review, and release decision are retained; no unresolved readiness or release blocker remains.'
-    Add-Line "\textbf{$checkClass}\\\texttt{$($record.Id)} & $verification & $validation & $acceptance & $($record.Owner); $($record.Methods); Gate; Planned \\"
+    $hazardText = (@($hazardsByEntity[$record.Id]) -join ', ')
+    if (-not $hazardText) { throw "No hazard allocation for $($record.Id)." }
+    Add-Line "\textbf{$checkClass}\\\texttt{$($record.Id)}\\Hazards: $hazardText & $verification & $validation & $acceptance & $($record.Owner); $($record.Methods); Gate; Planned \\"
     Add-Line '\addlinespace[2pt]'
 }
 
@@ -542,13 +559,23 @@ Add-Line 'This V\&V specification is realized only when each of the 2,144 checks
 Add-Line ''
 Add-Line '\end{document}'
 
-$encoding = [System.Text.UTF8Encoding]::new($false)
-[System.IO.File]::WriteAllText($resolvedOutput, $sb.ToString(), $encoding)
-
-$generatedCheckRows = ([regex]::Matches($sb.ToString(), '\\textbf\{VVC-')).Count
+$rendered = $sb.ToString()
+$generatedCheckRows = ([regex]::Matches($rendered, '\\textbf\{VVC-')).Count
 if ($generatedCheckRows -ne 2144) { throw "Expected 2,144 generated check rows; found $generatedCheckRows." }
+$generatedHazardRows = ([regex]::Matches($rendered, '\\\\Hazards: H-')).Count
+if ($generatedHazardRows -ne 2144) { throw "Expected 2,144 hazard-linked check rows; found $generatedHazardRows." }
 
-Write-Output "Generated $resolvedOutput"
+if ($Check) {
+    if (-not (Test-Path -LiteralPath $resolvedOutput)) { throw "Generated document is missing: $resolvedOutput" }
+    $existing = [System.IO.File]::ReadAllText($resolvedOutput)
+    if ($existing -cne $rendered) { throw "V&V generated-document drift detected: $resolvedOutput" }
+    Write-Output "PASS: V&V generated document matches $resolvedOutput"
+}
+else {
+    $encoding = [System.Text.UTF8Encoding]::new($false)
+    [System.IO.File]::WriteAllText($resolvedOutput, $rendered, $encoding)
+    Write-Output "Generated $resolvedOutput"
+}
 Write-Output "Risk-baseline checks: $($records.Count)"
 Write-Output "MQA checks: $($mqaRecords.Count)"
 Write-Output "Total checks: $generatedCheckRows"

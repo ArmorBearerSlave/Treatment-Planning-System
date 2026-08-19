@@ -1,14 +1,21 @@
-schema_version: "0.3"
+schema_version: "0.5"
 
 baseline:
   id: ENG-PKG-01-ARCH
   document_id: ENG-PKG-01
-  version: "0.4"
+  version: "0.6"
   effective_date: "2026-08-19"
   status: frozen_nonclinical_implementation_baseline
+  approval_state: pending_named_approval
   human_readable_source: overleaf/NL_TPS_Engineering_Architecture_and_MVP_Implementation_Plan.tex
-  source_baseline: NL-TPS controlled documentation suite v0.1, Documents I-XV, plus ADR-001 and ADR-002
+  source_baseline: Controlled requirements corpus v0.1 (Documents I-XV), supplemented by ADR-001 and ADR-002; assembled with DRR-001 in documentation suite v0.4
   review_status: pending_named_accountable_reviews_for_release_gates
+  required_approval_domains:
+    - architecture decision owner
+    - clinical governance
+    - quality and configuration management
+    - independent verification and validation
+    - cybersecurity and privacy
   supersedes: null
   authorization:
     permits:
@@ -79,7 +86,7 @@ architecture_decisions:
     name: requirements_and_interface_authority
     status: baselined
     statement: >-
-      F/NF/O is the intended build and backlog view after controlled crosswalk
+      F/SA/O is the intended build and backlog view after controlled crosswalk
       approval; the HLIR-SIR interface branch remains authoritative.
     transition_controls:
       - dual trace remains active until formal supersession
@@ -349,6 +356,38 @@ mps_authority_transition:
     - agent changes require Git review, model validation, tests, and CI
     - pin MPS and plugin versions for governed builds
     - use an approved space-free project path for the experimental MPS agent toolkit
+
+mps_language_constraints:
+  decision_record: ADR-001
+  skeleton_schema_version: "0.2"
+  implementation_state: blueprint_not_live_mps_serialization
+  ordered_languages:
+    - nltps.foundation
+    - nltps.governance
+    - nltps.clinicalintent
+    - nltps.realization
+  allowed_dependencies:
+    nltps.foundation: []
+    nltps.governance:
+      - nltps.foundation
+    nltps.clinicalintent:
+      - nltps.foundation
+      - nltps.governance
+    nltps.realization:
+      - nltps.foundation
+      - nltps.governance
+      - nltps.clinicalintent
+  default_model_persistence: file-per-root
+  unique_ownership_includes:
+    - root_concepts
+    - non_root_concepts
+  concept_collection_invariant: >-
+    root_concepts and non_root_concepts are disjoint, jointly exhaustive for
+    the blueprint, and globally single-owner across all four languages
+  prohibited_project_flags:
+    patient_data_permitted: false
+    clinical_credentials_permitted: false
+    direct_persistence_xml_edit_permitted: false
 
 release_constraints:
   gate_2_configuration:
