@@ -233,19 +233,19 @@ RRR-012 & P2 & Corpus, ADR supplement, and suite assembly versions stated separa
 \endfoot
 \bottomrule
 \endlastfoot
-\nolinkurl{python -m unittest discover -s tests -v} & Tooling regressions pass; this is not clinical V\&V. \\
+{\raggedright\ttfamily python -m unittest discover -s tests -v\par} & Tooling regressions pass; this is not clinical V\&V. \\
 \addlinespace[2pt]
-\nolinkurl{python tools/mps/build_hlr_import_bundle.py --check} & The 119-HLR Stage A mirror is schema-valid and deterministic. \\
+{\raggedright\ttfamily python tools/mps/build\_hlr\_import\_bundle.py --check\par} & The 119-HLR Stage A mirror is schema-valid and deterministic. \\
 \addlinespace[2pt]
-\nolinkurl{python tools/spec/build_trace_graph.py --check} & All 2,144 entities and claim IDs have a materialized hazard allocation. \\
+{\raggedright\ttfamily python tools/spec/build\_trace\_graph.py --check\par} & All 2,144 entities and claim IDs have a materialized hazard allocation. \\
 \addlinespace[2pt]
-\nolinkurl{python tools/spec/build_risk_register.py --check --gate 0} & The 2,088 risk records are hazard-derived and structurally consistent. \\
+{\raggedright\ttfamily python tools/spec/build\_risk\_register.py --check --gate 0\par} & The 2,088 risk records are hazard-derived and structurally consistent. \\
 \addlinespace[2pt]
-\nolinkurl{python tools/spec/check_controlled_specs.py} & Required specs, counts, schemas, and baselines reconcile. \\
+{\raggedright\ttfamily python tools/spec/check\_controlled\_specs.py\par} & Required specs, counts, schemas, and baselines reconcile. \\
 \addlinespace[2pt]
-\nolinkurl{python tools/spec/check_gate_readiness.py --gate 0} & Nonclinical structural work may proceed within the frozen architecture. \\
+{\raggedright\ttfamily python tools/spec/check\_gate\_readiness.py --gate 0\par} & Nonclinical structural work may proceed within the frozen architecture. \\
 \addlinespace[2pt]
-\nolinkurl{python tools/spec/check_gate_readiness.py --gate 1} & Expected to fail until named owners approve all required risk scores and quality targets. \\
+{\raggedright\ttfamily python tools/spec/check\_gate\_readiness.py --gate 1\par} & Expected to fail until named owners approve all required risk scores and quality targets. \\
 \end{longtable}
 \end{small}
 

@@ -115,7 +115,12 @@ def compile_entry(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, default=REPO_ROOT / "output" / "pdf")
-    parser.add_argument("--build-root", type=Path, default=REPO_ROOT / "tmp" / "pdfs" / "controlled")
+    parser.add_argument(
+        "--build-root",
+        type=Path,
+        default=Path(tempfile.gettempdir()) / "gcpl-pdf-build",
+        help="short external scratch path; avoids Windows MAX_PATH failures in long workspaces",
+    )
     parser.add_argument("--index", type=Path, default=REPO_ROOT / "tmp" / "pdfs" / "controlled" / "build-index.json")
     parser.add_argument("--passes", type=int, default=2)
     parser.add_argument("--suite-only", action="store_true")
@@ -155,7 +160,9 @@ def main() -> int:
         )
     index_document = {
         "schema_version": "0.1",
-        "run_directory": run_root.relative_to(REPO_ROOT).as_posix(),
+        # Persist only the opaque run identifier. Absolute scratch paths may
+        # disclose a workstation user profile and are not needed for provenance.
+        "run_directory_id": run_root.name,
         "document_count": len(results),
         "documents": results,
     }
