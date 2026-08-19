@@ -187,13 +187,28 @@ defects:
   - id: C1
     severity: Operational
     title: Active repository is located in OneDrive and a path containing spaces
-    disposition: managed_worktree_prepared_not_executed
-    correction: Added a location gate and a managed Git worktree procedure for a space-free non-synchronized MPS workspace.
+    disposition: BLOCKED_ENVIRONMENT
+    disposition_note: >-
+      Blocked pending relocation. This is a known environmental prerequisite, not a model
+      exception. It is not waived and not accepted, and no exception mechanism applies to
+      it. The gate remains mandatory and shall not be relaxed, skipped, or granted a
+      permitted-failure allowance in any workflow.
+    correction: >-
+      Added a location gate and a managed Git worktree procedure for a space-free,
+      non-synchronized MPS workspace. Acceptance is every gate green from the relocated
+      worktree, not the prior count plus an explanation.
     evidence:
       - tools/repo/check_workspace_location.py
       - scripts/create_mps_worktree.ps1
-    verification: strict location check rejects OneDrive or whitespace paths
-    residual: The current checkout remains in OneDrive until the user runs the migration after committing or stashing changes.
+    verification: >-
+      The strict location check rejects OneDrive and whitespace paths and resolves the
+      workspace root from the executing tree, so it turns green in the managed worktree
+      and stays red in the synchronized checkout.
+    residual: >-
+      Two parts remain. The original checkout stays in OneDrive and continues to fail the
+      gate by design. The managed worktree relocates the working tree only; the controlling
+      Git common directory remains in the synchronized location, so relocating the object
+      store is a separate decision.
   - id: C2
     severity: Operational
     title: Generated output is tracked and ignore rule is ineffective

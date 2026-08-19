@@ -390,6 +390,23 @@ def materialize() -> dict[str, Any]:
     }
 
 
+def hazard_specificity_report(document: dict[str, Any]) -> str:
+    """Render the source-explicit versus derived hazard ratio.
+
+    This is the declared construction-progress metric. Record count is easy to satisfy
+    with templates; a reviewed, source-explicit hazard set is not, because it requires
+    someone to have looked at the specific entity.
+    """
+    counts = Counter(record["hazard_specificity"] for record in document["records"])
+    explicit = counts.get("source_explicit", 0)
+    total = len(document["records"])
+    percent = (explicit / total * 100) if total else 0.0
+    return (
+        f"{explicit:,} of {total:,} entities carry a source-explicit hazard set "
+        f"({percent:.1f}%); {counts.get('derived', 0):,} remain derived"
+    )
+
+
 def serialize(document: dict[str, Any]) -> bytes:
     return (json.dumps(document, indent=2, ensure_ascii=True) + "\n").encode("utf-8")
 
@@ -408,6 +425,9 @@ def main() -> int:
         print(
             f"PASS: {document['entity_count']} entities and {document['vv_claim_count']} V&V claims carry hazards"
         )
+        # Reported on every run. Structural hazard coverage is not hazard-specific
+        # engineering review, and the ratio is what keeps those two distinct.
+        print(f"       construction progress: {hazard_specificity_report(document)}")
         return 0
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_bytes(rendered)

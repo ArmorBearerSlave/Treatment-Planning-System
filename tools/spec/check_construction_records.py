@@ -184,6 +184,16 @@ def main() -> int:
         f"{counts['subrequirement']} sub-requirement); identifiers, statement hashes, "
         f"V&V claims, decision blocks, and crosswalk state reconcile"
     )
+    trace = json.loads(TRACE_PATH.read_text(encoding="utf-8"))
+    reviewed = sum(
+        1 for record in trace["records"] if record["hazard_specificity"] == "source_explicit"
+    )
+    entities = len(trace["records"])
+    print(
+        f"       construction progress: {reviewed:,} of {entities:,} entities "
+        f"({reviewed / entities * 100:.1f}%) carry a reviewed source-explicit hazard set; "
+        f"{total} of {entities:,} carry a construction record"
+    )
     return 0
 
 
