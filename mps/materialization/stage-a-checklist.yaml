@@ -1,15 +1,33 @@
-schema_version: "0.1"
+schema_version: "0.2"
 package_id: MPS-MAT-01
 status: not_started
 authority_stage: A_mirror
 patient_data_permitted: false
 clinical_credentials_permitted: false
 signing_keys_permitted: false
-required_worktree:
-  managed_git_worktree: true
+
+workspace:
+  kind: independent_clone
   synchronized_directory_permitted: false
   whitespace_in_path_permitted: false
-  branch: mps/materialization
+  branch: mps/stage-a-materialization
+  note: >-
+    Supersedes the earlier linked-worktree requirement. A linked worktree relocates the
+    working tree only; its object database, refs, worktree metadata, locks, and index
+    state stay under the controlling common directory. The clone carries its own common
+    directory, which is the configuration chosen for persistent MPS authoring. See
+    spec/relocation_verification.yaml.
+
+pinned_toolchain:
+  product: JetBrains MPS
+  version: "2026.1"
+  build: MPS-261.25134.779
+  bundled_runtime: openjdk 25.0.3
+  install_verified: "2026-08-19"
+  note: >-
+    Recorded as the pinned experiment build required by the ENG-PKG-01 acceptance
+    condition. A different build is a separate qualification decision.
+
 controlled_inputs:
   - mps/bootstrap/language-skeleton.json
   - mps/bootstrap/language-skeleton.schema.json
@@ -18,40 +36,110 @@ controlled_inputs:
   - spec/architecture.yaml
   - spec/decisions.yaml
   - spec/terminology.yaml
+
+execution_policy:
+  - MPS creates its own persistence. No agent or text tool authors or patches MPS
+    persistence, module descriptors, or model XML. ADR-001 and ADR1-R-05 govern this.
+  - Materialization proceeds in four checkpoints with a commit and review boundary at
+    each. A single large construction is prohibited because it removes the boundary
+    between whether the metamodel is correct and whether the migration is correct.
+  - The first live-MPS commit shall not contain the 119 HLR roots.
+  - Negative examples are created and shown to be rejected before the corresponding
+    positive content is imported.
+  - Materializing an entity in MPS shall not increase the source-explicit hazard count.
+    Structural representation and hazard-specific engineering review are different
+    claims. See spec/construction_policy.yaml, progress_metric.numerator_integrity.
+
+checkpoints:
+  - id: MPS-0
+    title: Project and languages
+    scope: >-
+      Create the NLTPSGovernance project and the four language modules. Establish only
+      the dependency graph and persistence policy. No domain concepts.
+    commit_boundary: true
+    contains_hlr_roots: false
+    acceptance_items: [MPS-MAT-001, MPS-MAT-002, MPS-MAT-004]
+
+  - id: MPS-1
+    title: Foundation and governance metamodel
+    scope: >-
+      Materialize stable identifiers, version and lifecycle vocabulary, physical
+      quantities and units, Requirement, Hazard, RiskControl, TraceLink, typed relations,
+      and the minimum editors and constraints. Create invalid nodes deliberately and
+      demonstrate that the constraints reject them.
+    commit_boundary: true
+    contains_hlr_roots: false
+    acceptance_items: [MPS-MAT-003, MPS-MAT-005]
+
+  - id: MPS-2
+    title: Clinical intent and realization metamodel
+    scope: >-
+      Add PlanIntentDefinition, roles and permissions, state transitions, release
+      profiles, commissioned-use envelopes, components, interfaces, allocations, and
+      verification claims. Validate negative examples before any corpus import.
+    commit_boundary: true
+    contains_hlr_roots: false
+    acceptance_items: [MPS-MAT-003, MPS-MAT-005]
+
+  - id: MPS-3
+    title: 119-HLR import
+    scope: >-
+      Only after the language passes model checks, run the Stage A importer to create
+      119 file-per-root Requirement roots. Immediately export the neutral comparison
+      representation and begin Stage B equivalence evidence.
+    commit_boundary: true
+    contains_hlr_roots: true
+    acceptance_items: [MPS-MAT-006, MPS-MAT-007, MPS-MAT-008, MPS-MAT-009]
+
 acceptance_items:
   - id: MPS-MAT-001
-    item: Managed space-free worktree is registered to the controlling Git common directory.
+    checkpoint: MPS-0
+    item: >-
+      Engineering workspace is an independent clone at a space-free path outside
+      synchronized storage, with its Git common directory inside the clone.
     status: pending
     evidence: []
   - id: MPS-MAT-002
+    checkpoint: MPS-0
     item: NLTPSGovernance and all four controlled language modules are created through MPS.
     status: pending
     evidence: []
   - id: MPS-MAT-003
+    checkpoint: MPS-1
     item: Root and non-root concepts are disjoint, exhaustive, and single-owner.
     status: pending
     evidence: []
   - id: MPS-MAT-004
+    checkpoint: MPS-0
     item: Dependency direction and file-per-root persistence match the blueprint.
     status: pending
     evidence: []
   - id: MPS-MAT-005
-    item: Constraints, typesystems, editors, and negative model tests pass.
+    checkpoint: MPS-1
+    item: >-
+      Constraints, typesystems, editors, and negative model tests pass, including
+      demonstrated rejection of deliberately invalid nodes.
     status: pending
     evidence: []
   - id: MPS-MAT-006
+    checkpoint: MPS-3
     item: The HLR importer accepts the schema-valid bundle and creates exactly 119 roots.
     status: pending
     evidence: []
   - id: MPS-MAT-007
+    checkpoint: MPS-3
     item: Neutral reverse export has zero unexplained discrepancy from controlled input.
     status: pending
     evidence: []
   - id: MPS-MAT-008
+    checkpoint: MPS-3
     item: Headless build and model tests pass without the experimental agent toolkit.
     status: pending
     evidence: []
   - id: MPS-MAT-009
-    item: Independent Stage A review confirms no patient data, credentials, signing keys, or authority cutover.
+    checkpoint: MPS-3
+    item: >-
+      Independent Stage A review confirms no patient data, credentials, signing keys,
+      or authority cutover.
     status: pending
     evidence: []

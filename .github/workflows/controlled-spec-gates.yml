@@ -38,6 +38,9 @@ jobs:
       - name: Check MPS language layering
         run: python tools/mps/check_language_skeleton.py
 
+      - name: Check MPS materialization plan
+        run: python tools/mps/check_materialization_plan.py
+
       - name: Check namespaced source relations
         run: python tools/spec/check_seed_namespace.py
 

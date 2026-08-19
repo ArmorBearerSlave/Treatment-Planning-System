@@ -6,14 +6,38 @@ importer, generators, constraints, editors, or model tests exist.
 
 ## Preconditions
 
-1. Commit or stash the current repository work and pass all structural gates.
-2. Create the managed, space-free, non-OneDrive worktree with
-   `scripts/create_mps_worktree.ps1`.
-3. Pin the approved MPS 2026.1 build and plugin set for the experiment.
+1. Commit the current repository work and pass all structural gates.
+2. Work from the independent clone at a space-free path outside any
+   file-synchronization root, with its Git common directory inside the clone.
+   This supersedes the earlier linked-worktree procedure: a linked worktree
+   relocates the working tree only, leaving the object database, refs, worktree
+   metadata, locks, and index state under the controlling common directory.
+   See `spec/relocation_verification.yaml`.
+3. Use the pinned build recorded in `stage-a-checklist.yaml`
+   (`pinned_toolchain`). A different build is a separate qualification decision.
 4. Use synthetic nonclinical content only. No patient data, clinical
    credentials, signing keys, or production endpoints are permitted.
 5. Confirm ENG-PKG-01, ADR-001, and ADR-002 remain at explicit Stage A approval
    state. Stage A work does not require or imply Stage C approval.
+
+## Checkpoints
+
+Materialization runs as four checkpoints, each with a commit and review
+boundary, rather than one construction. The boundary matters: it lets us decide
+whether the metamodel is correct before asking whether the migration is correct.
+
+| Checkpoint | Scope | HLR roots |
+| --- | --- | --- |
+| MPS-0 | Project and four language modules; dependency graph and persistence policy only | no |
+| MPS-1 | Foundation and governance metamodel, with deliberate invalid nodes proven rejected | no |
+| MPS-2 | Clinical intent and realization metamodel, negative examples first | no |
+| MPS-3 | 119-HLR import, then neutral export and Stage B equivalence | yes |
+
+**The first live-MPS commit shall not contain the 119 HLRs.**
+
+Materializing an entity in MPS does not increase the source-explicit hazard
+count. Structural representation and hazard-specific engineering review are
+different claims; only the second moves that metric.
 
 ## Materialization sequence
 
