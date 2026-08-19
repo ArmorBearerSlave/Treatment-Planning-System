@@ -1,0 +1,280 @@
+schema_version: "0.1"
+
+baseline:
+  id: ENG-PKG-01-ARCH
+  document_id: ENG-PKG-01
+  version: "0.2"
+  effective_date: "2026-08-19"
+  status: frozen_nonclinical_implementation_baseline
+  human_readable_source: overleaf/NL_TPS_Engineering_Architecture_and_MVP_Implementation_Plan.tex
+  source_baseline: NL-TPS controlled documentation suite v0.1, Documents I-XV
+  review_status: pending_named_accountable_reviews_for_release_gates
+  supersedes: null
+  authorization:
+    permits:
+      - controlled nonclinical architecture and prototype implementation
+      - contract drafting and negative-test development
+      - specification-as-data and traceability work
+    does_not_permit:
+      - clinical data use without separate approval
+      - commissioning or clinical validation
+      - machine readiness or return-to-service decisions
+      - clinical plan approval, release, transfer, or treatment delivery
+      - representation of any V&V claim as passed
+
+change_control:
+  required_for_change:
+    - versioned architecture decision or change request
+    - impact analysis across requirements, interfaces, components, hazards, tests, and documents
+    - named accountable review
+    - approved effective version
+  source_requirements_remain_authoritative: true
+  implementation_must_not_silently_deviate: true
+
+invariants:
+  - id: ARCH-INVARIANT-001
+    name: no_language_equivalence
+    statement: >-
+      Every state-changing NL-TPS workflow shall be executable from a valid
+      hand-authored typed intent without the availability or participation of
+      a generative-language model, using the same deterministic decision and
+      governed execution path as semantically equivalent language input.
+    verification:
+      method: architecture_fitness_test
+      expected_result: >-
+        With Zone 0 disabled, equivalent typed intent produces the same Zone 1
+        decision and eligible Zone 2 behavior; no professional authority is
+        added or removed.
+
+architecture_decisions:
+  - id: AB-001
+    name: product_boundary
+    status: baselined
+    statement: >-
+      NL-TPS materially participates in treatment planning but is not initially
+      an independent dose-authoritative replacement TPS.
+    consequences:
+      - commissioned systems retain their assigned calculation and record authority
+      - qualified professionals retain their assigned decision authority
+      - regulatory status remains a function-by-function determination
+
+  - id: AB-002
+    name: requirements_and_interface_authority
+    status: baselined
+    statement: >-
+      F/NF/O is the intended build and backlog view after controlled crosswalk
+      approval; the HLIR-SIR interface branch remains authoritative.
+    transition_controls:
+      - dual trace remains active until formal supersession
+      - canonical identifiers and exact normative text are preserved
+      - core and interface allocations may not be orphaned
+      - rollback is required
+
+  - id: AB-003
+    name: four_trust_zones
+    status: baselined
+    zones:
+      - id: Z0-LANG
+        authority: none
+        permits:
+          - receive a controlled minimum-necessary context snapshot
+          - capture text or speech
+          - emit an untrusted Candidate PlanIntent
+        prohibits:
+          - direct side-effecting clinical-system I/O
+          - authoritative clinical credentials or signing keys
+          - uncontrolled external egress
+      - id: Z1-KERNEL
+        authority: deterministic_eligibility_decision
+        permits:
+          - validate schemas, units, state, evidence, authority, and use envelope
+          - derive conflicts and unresolved state independently
+          - emit KernelDecisionRecord and eligible ExecutionCapability
+        prohibits:
+          - model calls
+          - external clinical mutation
+          - reliance on model confidence for authority
+      - id: Z2-EXEC
+        authority: token_scoped_execution_only
+        permits:
+          - verify ExecutionCapability
+          - run durable allowlisted jobs and adapters
+          - reconcile intended and observed effects
+        prohibits:
+          - work without a valid capability
+          - expanding capability scope
+          - silent retry that changes clinical semantics
+      - id: Z3-SOR
+        authority: commissioned_or_system_of_record_authority
+        permits:
+          - retain approved clinical, calculation, verification, and delivery records
+        prohibits:
+          - delegation of authority without a separately approved change
+
+  - id: AB-004
+    name: intent_and_professional_authority_separation
+    status: baselined
+    contracts:
+      PlanIntent:
+        purpose: candidate_work_request
+        ai_creatable: true
+        authority_level: A0-A3_only
+        prohibited_actions:
+          - APPROVE
+          - SIGN
+          - ATTEST
+          - AUTHORIZE_TRANSFER
+          - WAIVE_QA
+          - RETURN_TO_SERVICE
+          - RELEASE
+          - DELIVER
+      ProfessionalDecision:
+        purpose: authenticated_human_authority_action
+        ai_creatable: false
+        required_bindings:
+          - authenticated actor
+          - active role and credential state
+          - authority domain and purpose
+          - exact artifact version and hash
+          - rationale, findings, evidence, and unresolved dissent
+          - separation-of-duties result
+          - timestamp and signature
+          - policy version and invalidation rules
+      KernelDecisionRecord:
+        purpose: deterministic_eligibility_result
+        ai_creatable: false
+        required_behavior:
+          - record every acceptance, rejection, clarification, and hard stop
+          - use stable finding codes
+          - bind kernel, rule, terminology, configuration, and input versions
+      ExecutionCapability:
+        purpose: single_action_authorization_for_zone_2
+        ai_creatable: false
+        required_properties:
+          - signed
+          - expiring
+          - single use
+          - nonce protected
+          - actor and active-role bound
+          - case-context and exact-object-version bound
+          - policy and kernel-version bound
+          - commissioned-use-envelope bound
+          - route, destination, and expected-effect bound
+          - required ProfessionalDecision references bound
+
+  - id: AB-005
+    name: execution_capability
+    status: baselined
+    statement: >-
+      Zone 2 executes only an independently verified ExecutionCapability scoped
+      to one action and reasserts context, object versions, approvals, route,
+      destination, and use envelope immediately before the external effect.
+
+  - id: AB-006
+    name: independently_derived_readiness
+    status: baselined
+    statement: >-
+      Model-supplied conflict and unresolved arrays are explanatory metadata;
+      Zone 1 derives authoritative readiness from trusted inputs.
+
+  - id: AB-007
+    name: vv_claim_to_execution_model
+    status: baselined
+    claim_count: 2144
+    statement: >-
+      Every VVC ID remains an individual acceptance claim. Reusable suites may
+      cover multiple claims only through an explicit many-to-many evidence map.
+    prohibitions:
+      - inferred parent PASS
+      - automated PASS for manual, HFE, clinical, commissioning, or independent-review evidence
+      - treating planned or executed as accepted
+
+  - id: AB-008
+    name: generic_departmental_primitives
+    status: baselined
+    required_core_objects:
+      - Actor
+      - Role
+      - AuthorityPolicy
+      - Artifact
+      - ArtifactVersion
+      - ProfessionalDecision
+      - Evidence
+      - Review
+      - StateTransition
+      - Dependency
+      - Invalidation
+      - AuditEvent
+      - ExecutionCapability
+    statement: >-
+      Domain packages specialize generic collaboration and governance objects;
+      the universal kernel shall not encode Machine-QA-only authority concepts.
+
+  - id: AB-009
+    name: build_sequence
+    status: baselined
+    slices:
+      - id: PLATFORM-SLICE-0
+        name: machine_qa_evidence_and_readiness
+        patient_planning_mutation: false
+      - id: PLANNING-SLICE-1
+        name: read_only_clinical_context_and_plan_comparison
+        patient_planning_mutation: false
+      - id: PLANNING-SLICE-2
+        name: typed_intent_compiler_without_execution
+        patient_planning_mutation: false
+      - id: PLANNING-SLICE-3
+        name: oar_contour_drafting
+        patient_planning_mutation: controlled_clinical_draft_only
+      - id: PLANNING-SLICE-4
+        name: candidate_planning_for_one_bounded_profile
+        patient_planning_mutation: controlled_clinical_draft_only
+
+  - id: AB-010
+    name: accountability_and_independence
+    status: baselined
+    statement: >-
+      The fifteen-team model defines accountability domains, not required
+      headcount. Early staffing may combine roles only where competency,
+      capacity, separation of duties, and independent V&V remain protected.
+    noncollapsible_boundaries:
+      - development versus final independent V&V
+      - model ownership versus model release authority
+      - planning versus all independent checks
+      - artifact generation versus all required approvals
+
+release_constraints:
+  gate_2_configuration:
+    dimensionality_must_be_minimized: true
+    exactly_one_initial_value_required_for:
+      - institution
+      - TPS vendor and version
+      - machine
+      - delivery technique
+      - disease site
+      - image path
+      - DICOM route and object profile
+      - dose engine and algorithm
+      - contour model where applicable
+    evidence_scope:
+      - locked cohorts and golden/challenge cases
+      - site-specific contour validation
+      - registration, planning, dose, and robustness validation
+      - interoperability and DICOM validation
+      - human-factors formative evaluation
+      - cybersecurity testing
+      - end-to-end regression
+
+open_decision_references:
+  - D-ENG-001
+  - D-ENG-002
+  - D-ENG-003
+  - D-ENG-004
+  - D-ENG-005
+  - D-ENG-006
+  - D-ENG-007
+  - D-ENG-008
+  - D-ENG-009
+  - D-ENG-010
+
+recorded_approvals: []

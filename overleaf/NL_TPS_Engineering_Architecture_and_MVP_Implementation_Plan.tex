@@ -1,0 +1,857 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage{nl_tps_common}
+\hypersetup{
+  pdftitle={NL-TPS Engineering Architecture and MVP Implementation Plan},
+  pdfsubject={Controlled engineering response to the NL-TPS ConOps and derived baseline}
+}
+
+\begin{document}
+\NLSetPageStyle{NL-TPS ENGINEERING ARCHITECTURE AND MVP PLAN}{Controlled response to ConOps v0.1 and Documents II--XV}
+\fancyhead[R]{\small\bfseries\color{NLGOLD}ARCHITECTURE BASELINE}
+\NLTitleBlock{ENGINEERING RESPONSE AND IMPLEMENTATION PLAN}{Engineering Architecture and Minimum Viable Clinical Slice}{Natural-Language Treatment Planning System (NL-TPS)}{\begin{minipage}{0.95\textwidth}
+\NLMeta{Source baseline}{Controlled NL-TPS documentation suite v0.1, Documents I--XV}
+\NLMeta{Plan identifier}{ENG-PKG-01}
+\NLMeta{Document version}{0.2 - Engineering architecture baseline}
+\NLMeta{Date}{19 August 2026}
+\NLMeta{Status}{Frozen for controlled non-clinical implementation; no clinical or release authorization}
+\NLMeta{Planning horizon}{Platform Slice 0 (Machine QA) through one bounded candidate-planning slice}
+\end{minipage}}{This document proposes an engineering architecture and sequence. It does not change the intended use, supersede a controlled requirement, select a vendor, approve a regulatory strategy, commission an interface, authorize clinical use, approve machine readiness, or represent any verification or validation check as executed. Existing clinical systems, qualified professionals, institutional procedures, and release authorities remain controlling.}
+
+\tableofcontents
+\clearpage
+\ifdefined\NLTPSCombinedDocument\else\pagenumbering{arabic}\fi
+
+\NLFrontMatterSection{Document control}
+
+\begin{small}
+\begin{longtable}{@{}L{0.18\textwidth}L{0.74\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Value} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field} & \textbf{Value} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Document owner & NL-TPS Program; engineering ownership assigned to T-SYS with T-GOV, T-CLIN, T-VV, T-SEC, T-INT, T-DATA, T-OPS, and affected specialty teams \\
+\addlinespace[2pt]
+Purpose & Convert the controlled documentation corpus into an implementable architecture, backlog policy, verification execution model, and staged delivery plan \\
+\addlinespace[2pt]
+Normative relationship & Documents I--XV remain normative within their approved scope. This plan proposes implementation decisions and records unresolved assumptions; it does not silently alter source requirements or allocations. \\
+\addlinespace[2pt]
+Change authority & Clinical governance, system engineering, qualified medical physics authority, quality management, security/privacy, interface control, independent V\&V, and regulatory/legal review as applicable \\
+\addlinespace[2pt]
+Review triggers & Intended-use decision; architecture or trust-boundary change; first-slice selection; technology or hosting decision; TPS, machine, technique, or DICOM-profile change; regulatory determination; new hazard; failed V\&V; or material staffing change \\
+\addlinespace[2pt]
+Supersession & None \\
+\end{longtable}
+\end{small}
+
+\NLFrontMatterSection{Executive summary}
+
+The NL-TPS is not initially an independent, dose-authoritative replacement treatment planning system. It is to be engineered as a governed treatment-planning orchestration, decision, collaboration, and execution-control layer over commissioned radiotherapy services and authoritative clinical systems. It does not replace the commissioned dose engine, optimizer, segmentation authority, PACS, oncology information system, external TPS, independent verification system, or accountable professional. Its differentiated responsibility is to compile human language into a typed and inspectable intent, apply deterministic policy and safety decisions, orchestrate approved services, and preserve an attributable departmental record across team boundaries. This boundary does not deny that the NL-TPS materially participates in treatment planning or predetermine the regulatory status of any software function.
+
+The baseline architecture contains four trust zones. Untrusted language services may create candidate intent only. A deterministic kernel decides whether a candidate is complete, consistent, authorized, within the commissioned envelope, and eligible for a named action. Governed adapters execute only a narrowly scoped signed capability. External clinical systems retain their commissioned and record authority. Provenance, object identity, audit, monitoring, and reconciliation cross all zones.
+
+Implementation begins with \textbf{Platform Slice 0: MQA-PKG-01 Machine QA Evidence and Readiness Integration}. It exercises identity, roles, electronic approval, immutable evidence, state gating, provenance, jobs, configuration, deviation handling, and monitoring against real institutional data without patient planning mutations. Subsequent planning slices add read-only clinical context and plan comparison, an intent compiler with no execution path, OAR contour drafting, and candidate generation for exactly one approved TPS/version/machine/technique profile.
+
+The F/NF/O requirement view is proposed as the primary planning and backlog classification. Canonical source requirement identifiers, the 45 core component allocations, the 61 interface components, and all risk and V\&V traces remain controlled until an approved migration proves complete equivalence. The 2,144 V\&V identifiers remain individual acceptance claims. They may be executed through a smaller set of reusable automated suites and controlled manual, HFE, commissioning, and clinical-validation records only when a many-to-many evidence map preserves every expected result and approval.
+
+\begin{nlnotice}{ENGINEERING SAFETY POSITION}
+The language model is never the deciding authority. \textbf{ARCH-INVARIANT-001 (No-language equivalence):} removing the language zone shall not remove any governed workflow. An authorized user must be able to submit an equivalent hand-authored typed intent and receive the same deterministic decision and governed execution path. No model output, schema value, test count, dashboard, or trace-completeness result may authorize prescription, approval, QA waiver, release, return to service, or treatment delivery.
+\end{nlnotice}
+
+\section{Purpose, scope, and interpretation rules}
+
+\subsection{Purpose}
+
+This document answers how to begin building the NL-TPS while preserving the boundaries, traceability, risk controls, and human authority established by the controlled suite. It baselines the architecture interpretation, the \texttt{PlanIntent}, \texttt{ProfessionalDecision}, \texttt{KernelDecisionRecord}, and \texttt{ExecutionCapability} contracts, technology evaluation criteria, a build sequence, engineering translations of the release gates, a specification-as-data migration, a V\&V execution model, and the decisions that must be resolved before clinical scope expands.
+
+\subsection{In scope}
+
+\begin{itemize}
+\item Product boundary and allocation of authority among language services, deterministic control, governed execution, and systems of record.
+\item Candidate data contracts for planning intent, professional decisions, kernel eligibility records, execution capabilities, objects, provenance, evidence, and job outcomes.
+\item Technology candidates and acceptance conditions, without procurement authorization.
+\item Machine QA as Platform Slice 0 followed by four incremental patient-planning slices.
+\item Backlog, trace, V\&V-suite, configuration, and change-control policy.
+\item Initial program risks, staffing assumptions, engineering gates, and open decisions.
+\end{itemize}
+
+\subsection{Out of scope}
+
+\begin{itemize}
+\item Final intended-use, device classification, premarket pathway, or legal determination.
+\item Clinical thresholds, prescriptions, dose objectives, robustness policies, approval rules, or machine-readiness decisions.
+\item Selection of a TPS vendor, algorithm, machine, disease site, hosting provider, model, router, database, or workflow product.
+\item Commissioning, clinical validation, cybersecurity authorization, site acceptance, or production release.
+\item Automatic supersession of the existing requirement, interface, component, risk, trade, MQA, or V\&V documents.
+\end{itemize}
+
+\subsection{Interpretation policy}
+
+Statements in this document use three statuses:
+
+\begin{small}
+\begin{longtable}{@{}L{0.16\textwidth}L{0.30\textwidth}L{0.44\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Status} & \textbf{Meaning} & \textbf{Required treatment} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Status} & \textbf{Meaning} & \textbf{Required treatment} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Controlled fact & Directly represented in Documents I--XV or an approved institutional source & Preserve its identifier, authority, scope, and change process \\
+\addlinespace[2pt]
+Proposed decision & Recommended engineering direction requiring accountable approval & Record alternatives, risks, owner, decision date, and affected traces before implementation \\
+\addlinespace[2pt]
+Planning assumption & Estimate or placeholder used to sequence work & Assign an owner and expiration; do not convert it into a clinical or contractual claim \\
+\end{longtable}
+\end{small}
+
+\section{Engineering architecture baseline freeze}
+
+Version 0.2 freezes the following interpretation as the implementation target for controlled non-clinical work. A change to one of these decisions requires a versioned architecture decision or change request, impact analysis across requirements, interfaces, components, hazards, tests, and documents, named review, and an approved effective version. The freeze constrains implementation; it does not approve clinical data use, commission a component or interface, authorize a release gate, or represent stakeholder concurrence that has not been recorded.
+
+\begin{small}
+\begin{longtable}{@{}L{0.14\textwidth}L{0.29\textwidth}L{0.47\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Baseline ID} & \textbf{Frozen interpretation} & \textbf{Implementation consequence} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Baseline ID} & \textbf{Frozen interpretation} & \textbf{Implementation consequence} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+AB-001 & Product boundary & NL-TPS materially participates in planning but is not initially an independent dose-authoritative replacement TPS; commissioned systems and qualified professionals retain their assigned authority. \\
+\addlinespace[2pt]
+AB-002 & Requirements and interface authority & F/NF/O is the build and backlog view after controlled crosswalk approval; the HLIR--SIR interface branch remains authoritative; canonical and legacy allocations remain traceable until formal supersession. \\
+\addlinespace[2pt]
+AB-003 & Four enforceable trust zones & Z0 language is untrusted and has no direct side-effecting clinical-system I/O, authoritative credentials, or uncontrolled egress; Z1 decides deterministically; Z2 executes token-scoped work; Z3 retains system-of-record authority. \\
+\addlinespace[2pt]
+AB-004 & Intent and professional authority separation & \texttt{PlanIntent} represents candidate work only and cannot encode A4 acts. Human approval, rejection, signature, attestation, authorization, and release are represented by a separate \texttt{ProfessionalDecision}. \\
+\addlinespace[2pt]
+AB-005 & Execution capability & Z2 accepts only a signed, expiring, single-use, action-scoped capability bound to actor, active role, case context, exact object versions, policy/kernel versions, commissioned use envelope, route, destination, and expected effect. \\
+\addlinespace[2pt]
+AB-006 & Independently derived readiness & Model-supplied conflict or unresolved arrays are explanatory only. Z1 derives conflict, completeness, authority, lifecycle, evidence, and commissioned-scope state from authoritative inputs. \\
+\addlinespace[2pt]
+AB-007 & V\&V claim-to-execution model & All 2,144 VVC IDs remain individual acceptance claims. Reusable suites may cover many claims through an explicit many-to-many map; parent emergent behavior receives direct validation and no PASS is inferred. \\
+\addlinespace[2pt]
+AB-008 & Generic departmental primitives & The kernel implements Actor, Role, AuthorityPolicy, Artifact, ArtifactVersion, ProfessionalDecision, Evidence, Review, StateTransition, Dependency, Invalidation, AuditEvent, and ExecutionCapability before domain specializations. \\
+\addlinespace[2pt]
+AB-009 & Build sequence & Machine QA is Platform Slice 0 for the universal governance stack. Patient-planning work begins with read-only context and comparison, then typed intent without execution, OAR drafting, and one bounded candidate-planning profile. \\
+\addlinespace[2pt]
+AB-010 & Accountability and independence & Fifteen teams are accountability domains, not a mandated headcount. The minimum organization may combine roles only where competency, capacity, separation of duties, and independent V\&V remain demonstrably protected. \\
+\end{longtable}
+\end{small}
+
+The machine-readable counterpart is \texttt{spec/architecture.yaml}. It is a configuration-controlled implementation constraint, not a replacement for the approved source requirements or this human-reviewable document.
+
+\section{What the controlled corpus specifies}
+
+\subsection{Product boundary}
+
+The external TPS remains authoritative within its commissioned role. Clinical dose is accepted only from approved commissioned calculation services. Commissioned segmentation, registration, optimization, independent verification, OIS, PACS, and institutional evidence sources retain their assigned authorities. The NL-TPS may draft, request, compare, route, reconcile, and record; it may not silently reinterpret unsupported data or bypass professional approvals.
+
+The phrase ``command layer'' narrows the implementation boundary but does not remove planning responsibilities already allocated to the NL-TPS. The product still owns structured intent, deterministic eligibility decisions, orchestration, candidate lineage, comparative review surfaces, evidence applicability, state control, audit, monitoring, and failure recovery.
+
+\subsection{The trace graph is the engineering asset}
+
+The corpus contains the following controlled views:
+
+\begin{small}
+\begin{longtable}{@{}L{0.25\textwidth}L{0.20\textwidth}L{0.45\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{View} & \textbf{Coverage} & \textbf{Engineering interpretation} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{View} & \textbf{Coverage} & \textbf{Engineering interpretation} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Canonical system requirements & 119 HLRs and 357 detailed children & Normative behavior and assurance obligations; each child generally emphasizes definition, runtime enforcement, or evidence \\
+\addlinespace[2pt]
+Interface refinement & 357 HLIRs and 1,071 SIRs & Producer-consumer contracts, runtime transactions, conformance, failure, recovery, and evidence across 19 interface families \\
+\addlinespace[2pt]
+F/NF/O classification & 119 HLR aliases and 357 child aliases & Primary proposed planning view for functionality, quality attributes, and operational controls; aliases do not create new normative obligations \\
+\addlinespace[2pt]
+Component realization & 45 core, 61 interface, and 78 category-scoped responsibilities & Multiple allocation views that must be reconciled before one backlog replaces another \\
+\addlinespace[2pt]
+Assurance & 2,088 risk records, 2,088 trade matrices, and 2,144 planned V\&V checks & Complete claim and coverage views; not evidence that any result has been executed or accepted \\
+\addlinespace[2pt]
+Domain realization & MQA-PKG-01 with 12 requirements, 36 children, and 8 subassemblies & First proposed implementation package using the shared governance and technical stack \\
+\end{longtable}
+\end{small}
+
+The regular three-child decompositions are useful completeness mechanisms. Engineering shall consume them as a versioned graph of identifiers, statements, allocations, interfaces, risks, controls, tests, teams, and evidence rather than as an unstructured prose backlog.
+
+\subsection{Reconciliation decisions}
+
+\begin{enumerate}
+\item Canonical requirement text and source IDs remain normative.
+\item F/NF/O category is the proposed backlog grouping and reporting view.
+\item Core and interface component identifiers remain active allocation targets until a reviewed crosswalk proves that category-scoped responsibilities cover their contracts and consumers.
+\item MQA requirements remain subordinate realization requirements and do not increase the 119-HLR baseline.
+\item Risk, trade, and V\&V identifiers remain immutable even when multiple claims share one executable scenario.
+\end{enumerate}
+
+\section{Architecture principles}
+
+\begin{enumerate}
+\item \textbf{Human authority is explicit.} Professional judgment, prescription, approval, signature, QA waiver, machine readiness, release, and delivery authority are outside model authority and require the controlled human and institutional process.
+\item \textbf{Departmental synthesis does not collapse professional boundaries.} Shared objects, evidence, and workflow connect physicians, physicists, dosimetrists, therapists, and supporting teams while domain-specific authority, dissent, blocking rights, and separation of duties remain explicit.
+\item \textbf{Language proposes; deterministic policy decides.} Model confidence is never a substitute for schema validity, source authority, permission, state, configuration, or commissioned-envelope checks.
+\item \textbf{Clinical calculations remain commissioned.} The NL-TPS does not generate clinical dose arrays or numerical attestations outside an approved calculation service.
+\item \textbf{Every transition is attributable and reconcilable.} Objects are immutable versions; jobs have explicit states; external transfers are verified against intended and observed effects.
+\item \textbf{Failure is visible and safe.} Missing, ambiguous, inconsistent, expired, unauthorized, stale, out-of-distribution, partial, or unsupported conditions fail closed or enter an explicitly approved degraded path.
+\item \textbf{Boundaries are enforceable.} Process identity, network policy, credentials, signing keys, schemas, allowlists, and database permissions implement the trust model.
+\item \textbf{No-language equivalence is mandatory.} Every workflow can begin from an equivalent hand-authored typed intent.
+\item \textbf{Site scope is configuration, not inference.} TPS, version, machine, modality, technique, algorithm, object profile, route, and limitation are approved release data.
+\item \textbf{Evidence is designed into execution.} Tests, logs, hashes, source versions, expected results, deviations, approvals, and release links are produced by the workflow rather than reconstructed later.
+\end{enumerate}
+
+\section{Four-zone trust architecture}
+
+\subsection{Zone model}
+
+\begin{small}
+\begin{longtable}{@{}L{0.12\textwidth}L{0.20\textwidth}L{0.26\textwidth}L{0.23\textwidth}L{0.09\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Zone} & \textbf{Role} & \textbf{Permitted behavior} & \textbf{Prohibited behavior} & \textbf{Primary owner} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Zone} & \textbf{Role} & \textbf{Permitted behavior} & \textbf{Prohibited behavior} & \textbf{Primary owner} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Z0-LANG & Untrusted language workspace & Capture text or speech, confirm transcript, call an approved isolated inference service, and emit a candidate intent document & Clinical-system credentials, DICOM association, signing keys, direct clinical write, authority decision, hidden tool action, or unrecorded context inference & T-UX/T-AI \\
+\addlinespace[2pt]
+Z1-KERNEL & Deterministic decision boundary & Validate schemas and units; recompute completeness and conflicts; evaluate role, state, source, risk, and commissioned scope; produce a \texttt{KernelDecisionRecord} & Model call, external clinical mutation, silent default, unbounded network retrieval, or reliance on model confidence & T-SYS/T-VV \\
+\addlinespace[2pt]
+Z2-EXEC & Governed execution & Verify a signed token, run durable jobs, call allowlisted adapters, record explicit outcomes, reconcile effects, and compensate where approved & Acting without a valid token, changing token scope, semantic-changing retry, unsupported fallback, or unrecorded partial success & T-SYS/T-INT \\
+\addlinespace[2pt]
+Z3-SOR & Authoritative external systems & Retain commissioned calculation, clinical object, legal record, independent check, and delivery-system authority & Delegating professional or system-of-record authority to the NL-TPS without a separately approved change & Site/\allowbreak{}vendor \\
+\end{longtable}
+\end{small}
+
+Zone 0 is isolated from clinical systems, not necessarily from every byte of I/O. User capture, display, and an approved inference boundary are required for language processing. Any model or transcription call must use a dedicated gateway with minimum data, approved hosting, no reusable clinical credentials, default-deny egress, and full request/response provenance. Raw language output remains untrusted.
+
+The Zone 1 \emph{decision core} is a pure function over explicit inputs. Time, identity, permissions, context snapshots, configurations, evidence manifests, professional-decision references, and object hashes are supplied as signed or otherwise trusted inputs. A small boundary service verifies those inputs and asks an approved signing service or hardware-backed key to sign an accepted \texttt{KernelDecisionRecord} and its derived \texttt{ExecutionCapability}. This preserves deterministic testability without pretending cryptographic signing has no I/O.
+
+\subsection{Allowed crossings}
+
+\begin{small}
+\begin{longtable}{@{}L{0.15\textwidth}L{0.25\textwidth}L{0.28\textwidth}L{0.22\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Crossing} & \textbf{Object} & \textbf{Mandatory controls} & \textbf{Failure behavior} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Crossing} & \textbf{Object} & \textbf{Mandatory controls} & \textbf{Failure behavior} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Z0 to Z1 & Candidate PlanIntent & Schema version, size limit, canonical encoding, content hash, untrusted provenance, malware/content controls, correlation ID & Reject with field-specific findings; no execution eligibility \\
+\addlinespace[2pt]
+Z1 to Z2 & Signed \texttt{ExecutionCapability} and \texttt{KernelDecisionRecord} & Verified signer, kernel/config version, intent hash, object versions, action allowlist, actor and role, required \texttt{ProfessionalDecision} references, expiry, nonce, single-use state & Reject, retain event, alert on replay or mismatch \\
+\addlinespace[2pt]
+Z2 to Z3 & Allowlisted request or DICOM transaction & Commissioned route, capability profile, AE/service identity, SOP/API allowlist, object validation, transaction state, reconciliation plan & Quarantine partial or unexpected results; no silent retry \\
+\addlinespace[2pt]
+Z3 to Z2 & Result, object, or authoritative status & Source identity, version, UIDs/references, units, approval state, integrity, completeness, expected correlation & Reject or quarantine inconsistent result; preserve raw evidence \\
+\addlinespace[2pt]
+All zones to evidence plane & Append-only event and object manifest & Trusted time, actor/service identity, object and config hashes, action, outcome, prior-event link, retention and privacy policy & Block safety-critical transition if mandatory evidence cannot be durably committed \\
+\end{longtable}
+\end{small}
+
+\subsection{Architecture fitness tests}
+
+\begin{enumerate}
+\item \textbf{ARCH-INVARIANT-001:} remove or disable Z0-LANG. Submit a hand-authored typed intent through the controlled form. The same Z1 decision and Z2 behavior shall result for equivalent content.
+\item Give Z0 a malicious prompt and a candidate document containing unauthorized actions, hidden fields, stale context, unit conflicts, and unsupported objects. Z1 shall reject them independently.
+\item Replay, alter, expire, or redirect an \texttt{ExecutionCapability}. Every Z2 adapter shall refuse it and retain the attempt.
+\item Change the active case, object version, permissions, evidence, configuration, or commissioned envelope between confirmation and execution. Context re-assertion shall hard-stop the action.
+\item Interrupt every Z2 adapter at each state transition. The job and external system shall reconcile to a known state without an unrecorded or ambiguous clinical effect.
+\end{enumerate}
+
+\section{Typed intent, decision, and execution contracts}
+
+\subsection{PlanIntent v1 candidate schema}
+
+JSON Schema is proposed as the single contract source. Server and client language bindings are generated and checked against the same conformance fixtures. Every clinically consequential value carries its unit, basis, provenance, source or rule reference, and lifecycle status.
+
+\begin{small}
+\begin{longtable}{@{}L{0.19\textwidth}L{0.27\textwidth}L{0.44\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field group} & \textbf{Required content} & \textbf{Safety semantics} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Field group} & \textbf{Required content} & \textbf{Safety semantics} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Identity and version & Intent ID, schema version, object version, parent version, creation correlation & Immutable lineage; optimistic concurrency; no in-place overwrite \\
+\addlinespace[2pt]
+Mode and requested autonomy & Training, commissioning, shadow, clinical draft, clinical approved, or degraded mode; A0--A3 request only & A4 authority is not representable; runtime policy may further restrict any represented value \\
+\addlinespace[2pt]
+Context assertion & Patient reference, course, phase, study UID, frame of reference, actor, role exercised, context version and hash & Context is obtained from controlled binding, not guessed by a model; re-assert at execute \\
+\addlinespace[2pt]
+Authoritative references & Prescription, directives, approved plan, structures, evidence package, configuration, and source versions & References are resolved and verified by Z1/Z2; the candidate cannot assert its own authority \\
+\addlinespace[2pt]
+Goals and constraints & Kind, structure, metric, direction, value, unit, dose basis, fraction basis, priority, provenance, rule reference & Hard constraints, goals, and objectives are distinct types; units and basis are mandatory \\
+\addlinespace[2pt]
+Strategy & Requested machine, technique, algorithm, grid, robustness, candidate count, diversity axis, and limits & Eligibility depends on the approved capability profile; example values are not commissioned defaults \\
+\addlinespace[2pt]
+Assumptions & Field, proposed value, basis, provenance, display status, confirmation requirement & No hidden assumption; prohibited assumptions cause rejection \\
+\addlinespace[2pt]
+Conflicts and unresolved items & Structured code, field, competing sources, severity, required resolver, and status & Arrays are mandatory, but Z1 recomputes them and does not trust an empty model-supplied array \\
+\addlinespace[2pt]
+Confirmations & Scope, object version, actor, role exercised, time assertion, method, and invalidation condition & Confirmation is field-scoped and version-bound; a changed field invalidates affected confirmation \\
+\addlinespace[2pt]
+Requested action & One named reversible or controlled action against one object scope and destination class & Prescription, approval, QA waiver, release, return to service, and treatment delivery are excluded \\
+\end{longtable}
+\end{small}
+
+Removing A4 from the schema is defense in depth, not complete enforcement of SAF-001. Z1 must still evaluate authenticated identity, role exercised, privilege, separation of duties, approval state, object state, institutional policy, and requested action. A valid JSON document is not an authorized clinical action.
+
+\subsection{ProfessionalDecision human-authority contract}
+
+\texttt{ProfessionalDecision} is separate from \texttt{PlanIntent} and from the kernel's eligibility result. It records an authenticated human exercise of professional or institutional authority. Its controlled action vocabulary may include \texttt{APPROVE}, \texttt{REJECT}, \texttt{REQUEST\_REVISION}, \texttt{SIGN}, \texttt{ATTEST}, \texttt{AUTHORIZE\_TRANSFER}, \texttt{BLOCK}, and \texttt{RETURN\_TO\_SERVICE} only where institutional policy grants the actor that authority.
+
+Every professional decision binds:
+
+\begin{itemize}
+\item authenticated actor, active role, credential/privilege state, authority domain, purpose, and separation-of-duties result;
+\item exact patient/case context, artifact ID, immutable artifact version and hash, relevant dependent-object versions, and prior decision state;
+\item action, rationale, findings, supporting evidence, conditions, unresolved dissent, requested resolution, and expiration or review trigger where applicable;
+\item timestamp, signature method, signature, policy/workflow version, and invalidation rules.
+\end{itemize}
+
+A change to the signed artifact or to a dependency identified by policy creates a new version and invalidates or reopens affected decisions. AI may draft a proposed rationale or structured record for human review but cannot create a valid \texttt{ProfessionalDecision}, exercise a professional signature, or satisfy a required human approval.
+
+\subsection{KernelDecisionRecord eligibility contract}
+
+For every evaluation, including rejection, Z1 produces an immutable \texttt{KernelDecisionRecord} containing:
+
+\begin{itemize}
+\item kernel-decision ID; intent and object versions; canonical intent hash; kernel, rules, terminology, and configuration versions;
+\item verified actor, role exercised, permissions, separation-of-duties state, clinical mode, and site scope;
+\item context, source, evidence, commissioned-envelope, unit, dose-basis, completeness, conflict, lifecycle, and risk-control findings;
+\item every failed field and control with a stable code and human-readable explanation;
+\item decision outcome: reject, clarification required, confirmation required, eligible for token, or blocked by unavailable prerequisite;
+\item evidence commitment status, reviewer requirements, token scope if eligible, and change-impact links.
+\end{itemize}
+
+\subsection{ExecutionCapability signed token}
+
+An \texttt{ExecutionCapability} token authorizes exactly one scoped action; it is not a general session credential and cannot substitute for a required \texttt{ProfessionalDecision}. It binds:
+
+\begin{itemize}
+\item decision ID, intent ID/version/hash, patient/case context hash, source and destination object UIDs/versions;
+\item requested action, adapter, commissioned route, TPS and interface profile, machine/technique envelope, and prohibited side effects;
+\item actor, role exercised, required professional-decision IDs and hashes, separation-of-duties result, purpose, mode, issued/expiry times, nonce, and single-use identifier;
+\item kernel, configuration, terminology, evidence, and policy versions;
+\item expected external effect, reconciliation check, allowed outcome states, timeout, cancellation, and approved compensation behavior;
+\item cryptographic algorithm, key identifier, signature, and revocation reference.
+\end{itemize}
+
+Z2 shall revalidate current context, object state, token status, route compatibility, and required approvals immediately before the external effect. A valid signature alone is insufficient if the bound state has changed.
+
+\subsection{Nine-stage interaction implementation}
+
+\begin{small}
+\begin{longtable}{@{}L{0.22\textwidth}L{0.14\textwidth}L{0.54\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{ConOps stage} & \textbf{Zone} & \textbf{Implementation obligation} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{ConOps stage} & \textbf{Zone} & \textbf{Implementation obligation} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+1 Capture & Z0 & Capture typed or push-to-talk input; retain source modality and confidence; require transcript review for speech \\
+\addlinespace[2pt]
+2 Bind context & Z2 to Z1 & Retrieve an authorized context snapshot; Z1 verifies identity, UIDs, versions, freshness, and context hash; the model does not select the patient \\
+\addlinespace[2pt]
+3 Compile & Z0 & Produce candidate PlanIntent; deterministic parsing handles quantities, units, laterality, structure identifiers, and controlled terminology where feasible \\
+\addlinespace[2pt]
+4 Validate & Z1 & Validate schema and semantics; recompute permissions, context, evidence, conflicts, state, and commissioned scope \\
+\addlinespace[2pt]
+5 Resolve ambiguity & Z1 to UI & Return field-specific choices or required authoritative resolution; no generic or hidden refusal \\
+\addlinespace[2pt]
+6 Read back & Z1 to UI & Render from the validated canonical intent and \texttt{KernelDecisionRecord}, not from model prose \\
+\addlinespace[2pt]
+7 Confirm & UI to Z1 & Capture version-bound, field-scoped confirmation and required professional approvals \\
+\addlinespace[2pt]
+8 Execute and verify & Z1 to Z2 & Issue \texttt{ExecutionCapability}; run durable job; compare intended and observed effects; keep result in draft until required review \\
+\addlinespace[2pt]
+9 Record & All & Commit object, provenance, audit, result, anomaly, and reconciliation evidence synchronously with safety-critical state changes \\
+\end{longtable}
+\end{small}
+
+\section{Candidate technology decisions}
+
+Technology names below are candidates, not approved procurements or safety claims. Each requires security, privacy, supportability, licensing, interoperability, performance, failure-mode, validation, and lifecycle review.
+
+\begin{small}
+\begin{longtable}{@{}L{0.15\textwidth}L{0.22\textwidth}L{0.31\textwidth}L{0.22\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Layer} & \textbf{Candidate} & \textbf{Reason for evaluation} & \textbf{Acceptance condition} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Layer} & \textbf{Candidate} & \textbf{Reason for evaluation} & \textbf{Acceptance condition} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Decision core & Python pure-function package; generated types; property, mutation, boundary, and risk-based structural coverage & Readability, rapid clinical review, mature schema/testing ecosystem & Deterministic build and results; prohibited dependencies; independent review; traceable coverage; performance and numeric-safety limits met \\
+\addlinespace[2pt]
+Contracts & JSON Schema with generated Pydantic and TypeScript bindings & One versioned definition and shared fixtures across kernel, API, and UI & Bidirectional conformance, canonical serialization, migration rules, negative corpus, and no silent unknown fields \\
+\addlinespace[2pt]
+Zone services & FastAPI candidates with separate deployables, identities, mTLS, and network policies & Clear, inspectable boundaries and typed APIs & Threat model, least privilege, authenticated service identity, rate/resource limits, and fail-closed dependency behavior \\
+\addlinespace[2pt]
+Records & PostgreSQL immutable object versions and append-only ledger; external WORM or trusted timestamp anchor & Queryability and strong transactional behavior & Application and administrative tamper scenarios tested; backup/restore, retention, legal hold, and independent anchor verification accepted \\
+\addlinespace[2pt]
+Blobs & On-premises S3-compatible content-addressed store & Hash-addressed DICOM, evidence, model, and configuration objects & Encryption, access control, retention, malware handling, replication, restore, and hash reconciliation verified \\
+\addlinespace[2pt]
+Durable jobs & Temporal or a controlled PostgreSQL outbox/state-machine implementation & Explicit long-running, retry, timeout, cancellation, partial, and compensation states & Failure injection demonstrates deterministic semantics; no retry changes clinical meaning; operational footprint accepted \\
+\addlinespace[2pt]
+Identity/\allowbreak{}signature & Enterprise OIDC plus step-up authentication and institutional electronic-signature service & Attributable identity and role exercised for each action & Separation of duties, session risk, reauthentication, signature meaning, revocation, downtime, and audit tested \\
+\addlinespace[2pt]
+DICOM & Established router such as dcm4che or Orthanc; pydicom/pynetdicom for validation tools & Avoid implementing a protocol stack; concentrate on profile validation and reconciliation & Site security review, supported deployment, conformance, throughput, private-tag policy, and round-trip evidence for the scoped route \\
+\addlinespace[2pt]
+TPS adapters & DICOM/DICOM-RT baseline; approved vendor API behind the same contract when beneficial & Portable minimum boundary with optional higher-performance integration & Per TPS/version/site capability statement, commissioned workflow, negative paths, and reconciliation accepted \\
+\addlinespace[2pt]
+Evidence & Controlled relational metadata plus hybrid lexical/vector retrieval over signed corpus manifests & Governed discovery without unrestricted clinical retrieval & Approved corpus only, citation completeness, egress denial, abstention, access control, source/version trace, and retrieval evaluation \\
+\addlinespace[2pt]
+Models & Approved self-hosted inference for clinical mode; signed model/prompt/post-processing release artifacts & Control data residency, availability, change, and reproducibility & Use envelope, validation, monitoring, resource isolation, rollback, and change-impact approval complete \\
+\addlinespace[2pt]
+Workspace & React/TypeScript with an evaluated medical-image viewer such as OHIF/Cornerstone3D & Mature web interaction and medical imaging support & HFE, image/dose/contour correctness, accessibility, browser/security support, server-side authorization, and no PHI in bundles \\
+\addlinespace[2pt]
+Monitoring & OpenTelemetry for technical health plus a separate governed clinical-signal pipeline & Separate infrastructure telemetry from clinical performance and governance thresholds & Trusted metric definitions, denominators, privacy, alert ownership, action thresholds, and audit links approved \\
+\end{longtable}
+\end{small}
+
+No Z1 or safety-critical Z2 function should require a service that the institution cannot operate in the approved clinical environment. This is a proposed deployment constraint subject to institutional hosting, cybersecurity, continuity, and regulatory decisions.
+
+\section{Build sequence}
+
+\subsection{Platform Slice 0: machine-QA evidence and readiness service}
+
+Harden MQA-PKG-01 into a governed service using the reviewed real-data snapshot while retaining source authority and QMP decision ownership.
+
+\textbf{Build:} server-side authorized APIs; controlled ingestion and configuration; identity and role exercised; electronic review/signature; immutable object and audit records; source-hash binding; deviation/CAPA and return-to-service workflow; durable jobs; readiness assertion schema; monitoring; read-only allowlisted language queries.
+
+\textbf{Exit evidence:} source-to-object reconciliation; repeatable ingestion; access and separation-of-duties tests; signature meaning; audit tamper tests; failure/recovery drills; QMP workflow validation; no autonomous readiness decision; approved operational ownership.
+
+\textbf{Standalone value:} governed longitudinal machine-QA evidence and workflow remain useful even if later planning slices are deferred.
+
+\subsection{Planning Slice 1: read-only clinical context and plan comparison}
+
+Bind patient, course, image, frame of reference, structure, plan, and dose context from approved PACS/OIS/TPS sources. Render existing plans, structures, DVHs, and comparison views without creating or modifying a clinical object.
+
+\textbf{Exit evidence:} one bounded import profile; identifier/reference/geometry/unit checks; approval-state semantics; private-attribute policy; round-trip-independent read reconciliation; authorization; usability findings; zero clinical mutation path.
+
+\subsection{Planning Slice 2: typed intent compiler with no execution path}
+
+Implement the nine-stage interaction through read-back and confirmation, but provide no \texttt{ExecutionCapability} for clinical action. Begin with text; defer speech until the language hazards and UI are stable.
+
+\textbf{Exit evidence:} PlanIntent schema frozen for the slice; deterministic quantity/unit/laterality parsing; ambiguity and conflict corpus; source applicability; hard-stop catalogue; no-language equivalence; representative-user formative HFE; audit and versioning.
+
+\subsection{Planning Slice 3: OAR contour drafting}
+
+Add the first controlled patient-object mutation in clinical-draft mode. Limit scope to approved OAR structures and a separately commissioned segmentation profile. Target contours remain manual unless a later approved scope states otherwise.
+
+\textbf{Exit evidence:} input/geometry/use-envelope checks; uncertainty and abstention; model/version trace; edit capture; failure and out-of-distribution challenges; professional review; DICOM structure-set validation; export reconciliation; rollback and incident response.
+
+\subsection{Planning Slice 4: candidate planning for one bounded profile}
+
+Generate multiple draft candidates through one commissioned optimizer and dose service for one approved disease site, TPS version, machine, technique, algorithm, and robustness workflow. Conventional planning remains available and concurrent.
+
+\textbf{Exit evidence:} complete TPS-PROFILE-001; commissioned calculation/runtime manifest; objective and constraint trace; candidate diversity provenance; infeasible/dominated identification; independent dose/plan QA route; human selection; DICOM round trip; rollback; prospective clinical evaluation; site acceptance.
+
+\subsection{Deferred risk-increasing capabilities}
+
+Speech, target auto-contouring, outcome prediction, adaptive planning, additional sites, machines, techniques, models, TPS versions, and sites enter as separate controlled changes with new hazards, evidence, regression, commissioning, HFE, and release decisions. A4 functions are prohibited rather than deferred.
+
+\section{Engineering translation of release gates}
+
+\begin{small}
+\begin{longtable}{@{}L{0.09\textwidth}L{0.25\textwidth}L{0.56\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Gate} & \textbf{Governance decision} & \textbf{Minimum engineering evidence} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Gate} & \textbf{Governance decision} & \textbf{Minimum engineering evidence} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+0 & Authorize controlled prototype work & Spec-as-data pilot and identifier graph; intent-schema candidate; \texttt{ProfessionalDecision} and \texttt{KernelDecisionRecord} skeletons; source control, change record, risk links, CI orphan/allocation checks; approved non-clinical environment \\
+\addlinespace[2pt]
+1 & Authorize retrospective approved data & Hard-stop tests on synthetic cases; signed evidence-corpus manifest; MQA service controls; ledger and object integrity review; privacy/security authorization; data-use and retention approval \\
+\addlinespace[2pt]
+2 & Authorize shadow mode & Locked golden/challenge library; one TPS/version/machine/technique DICOM profile; round-trip and failure evidence; formative HFE; end-to-end regression; penetration-test closure; operational support and downtime procedures \\
+\addlinespace[2pt]
+3 & Authorize clinical draft use & Approved prospective parallel protocol; pre-specified endpoints; adjudication; subgroup and failure reporting; measured override, edit burden, abstention, and anomaly rates; no unresolved release blocker \\
+\addlinespace[2pt]
+4 & Authorize limited clinical use & Summative HFE; site acceptance; rollback and degraded-mode drills under representative load; reconciliation; residual-risk acceptance; regulatory determination; QMP and clinical approvals \\
+\addlinespace[2pt]
+5 & Authorize expansion & Change-impact graph; automatically proposed regression scope; new-profile commissioning; post-market/production monitoring; incident/CAPA readiness; training/competency; configuration and supplier controls \\
+\end{longtable}
+\end{small}
+
+Gate 2 is a principal schedule risk, but it is not a DICOM-only milestone. Its schedule and evidence burden also include locked cohorts and golden/challenge cases; site-specific contour, registration, planning, dose, and robustness validation; human-factors formative evaluation; cybersecurity testing; and end-to-end regression. The estimate that conformance and reconciliation may require months per TPS/version/machine/technique/site combination remains a planning assumption to be validated with the selected vendor, site resources, conformance statements, and exact object/transaction profile. The first configuration therefore minimizes the complete validation dimensionality: one institution, TPS version, machine, technique, disease site, image path, DICOM route/object profile, dose engine/algorithm, and contour model where applicable.
+
+\section{Specification as data}
+
+\subsection{Target repository structure}
+
+The documents shall not be discarded. The proposed change is to establish a reviewed structured source from which trace tables and, eventually, controlled document sections can be rendered reproducibly.
+
+\begin{small}
+\begin{longtable}{@{}L{0.25\textwidth}L{0.65\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Artifact} & \textbf{Controlled content} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Artifact} & \textbf{Controlled content} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\texttt{spec/requirements.yaml} & Canonical HLR and child IDs, aliases, domain, F/NF/O category, normative statement, method, rationale, version, owner, and change record \\
+\addlinespace[2pt]
+\texttt{spec/interfaces.yaml} & Interface families, ICDs, producers, consumers, contracts, objects, transactions, failure behavior, conformance, and owners \\
+\addlinespace[2pt]
+\texttt{spec/components.yaml} & Core, interface, and category-scoped components; trust zone; responsibility; lead and partner teams; build/buy/adopt decision \\
+\addlinespace[2pt]
+\texttt{spec/allocations.yaml} & Requirement-to-interface-to-component-to-team-to-risk-to-test mappings with effective versions \\
+\addlinespace[2pt]
+\texttt{spec/risks.yaml} & Existing risk IDs, failure conditions, harms, controls, evidence, owners, attention bands, status, and residual-risk decisions \\
+\addlinespace[2pt]
+\texttt{spec/vv.yaml} & VVC claim ID, entity, expected result, method, owner, independence, executable-suite or manual-record bindings, result pointers, and disposition \\
+\addlinespace[2pt]
+\texttt{spec/decisions.yaml} & Decision ID, question, alternatives, rationale, owner, status, due gate, assumptions, risks, and blocked work \\
+\addlinespace[2pt]
+\texttt{spec/architecture.yaml} & Frozen architecture-baseline IDs, invariants, trust-zone boundaries, contract separation, build sequence, accountable review, effective version, and change-control rules \\
+\addlinespace[2pt]
+\texttt{schemas/} & JSON Schemas, canonical examples, negative fixtures, compatibility rules, and generated-type manifests \\
+\addlinespace[2pt]
+\texttt{render/} & Deterministic generation of reviewed LaTeX tables and coverage reports \\
+\addlinespace[2pt]
+\texttt{tests/} & Executable suites carrying stable suite IDs and explicit VVC claim markers \\
+\end{longtable}
+\end{small}
+
+\subsection{Migration controls}
+
+\begin{enumerate}
+\item Parse the current documents into a candidate graph without changing any source document.
+\item Reconcile counts, exact text, aliases, allocations, risks, and V\&V mappings against Documents I--XV.
+\item Review exceptions manually; prohibit automatic resolution of conflicting normative text.
+\item Generate comparison tables and prove byte- or field-level equivalence where feasible.
+\item Operate document and structured representations in parallel through an approved transition period.
+\item Declare the structured source authoritative only through configuration control, named approvers, migration evidence, rollback, and updated document-control statements.
+\end{enumerate}
+
+\subsection{Continuous trace gates}
+
+CI shall fail on duplicate or orphan IDs, missing parents, unapproved aliases, missing allocations or owners, V\&V claims without an execution/manual binding, risk controls without evidence paths, component responsibilities without consumers, schema incompatibility, undocumented normative changes, or rendered coverage drift. A passing structural gate proves consistency only; it does not prove clinical correctness or V\&V PASS.
+
+\section{V\&V execution consolidation}
+
+\subsection{Claims are distinct from execution assets}
+
+The 2,144 VVC identifiers are acceptance claims attached to controlled entities. The proposed 150--250 executable-suite estimate is a planning range, not a mandated count. Consolidation is acceptable when one controlled execution produces evidence for multiple claims without weakening claim-specific expected results, applicability, ownership, independence, or disposition.
+
+\begin{small}
+\begin{longtable}{@{}L{0.18\textwidth}L{0.25\textwidth}L{0.47\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Record class} & \textbf{Example identifier} & \textbf{Required content} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Record class} & \textbf{Example identifier} & \textbf{Required content} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Acceptance claim & \texttt{VVC-HLR-SAF-001} & Entity, normative statement, expected result, method, owner, risk gate, independence, applicability, result pointer, and disposition \\
+\addlinespace[2pt]
+Executable suite & \texttt{ETS-KERNEL-AUTH-001} & Versioned protocol/code, fixtures, parameter space, environment, oracle, raw results, coverage basis, anomalies, and linked VVC claims \\
+\addlinespace[2pt]
+Manual evidence record & \texttt{MER-HFE-READBACK-001} & Approved protocol, participants, roles, tasks, environment, observations, endpoints, analysis, deviations, reviewer, and linked claims \\
+\addlinespace[2pt]
+Commissioning record & \texttt{CMR-DICOM-RT-001} & Scoped TPS/profile/configuration, protocol, expected and actual objects/transactions, source hashes, discrepancies, approvals, and linked claims \\
+\addlinespace[2pt]
+Clinical validation record & \texttt{CVR-SLICE-001} & Intended use, population, site, endpoints, statistical plan, subgroup/failure results, adjudication, residual risk, and governance decision \\
+\end{longtable}
+\end{small}
+
+\subsection{Mapping rules}
+
+\begin{enumerate}
+\item Every VVC ID maps to at least one approved execution or manual evidence record before release.
+\item One result may satisfy multiple claims only when each claim's exact expected result is explicitly asserted and reviewed.
+\item Parameterized tests list the covered population, combinations, boundaries, adverse cases, and sampling rationale; entity sampling is not used to erase controlled claims.
+\item HLR PASS requires direct integrated outcome validation in addition to child closure.
+\item Failed and blocked attempts remain immutable; retest creates a new run and does not overwrite evidence.
+\item Manual, HFE, clinical, QMP, security, DICOM commissioning, and independent-review evidence is not converted into an automated PASS by a dashboard.
+\item Suite changes trigger impact analysis across all linked claims, risks, configurations, profiles, and released capabilities.
+\end{enumerate}
+
+\section{Backlog authority and component reconciliation}
+
+\subsection{Proposed backlog policy}
+
+F/NF/O is the primary backlog classification because it distinguishes delivered behavior, required quality, and institutional operation. Work items shall retain canonical source IDs and all active component/interface allocations. A backlog item is not complete merely because one category responsibility is coded.
+
+\subsection{Crosswalk required before supersession}
+
+For each of the 357 canonical children, the migration shall show:
+
+\begin{itemize}
+\item canonical and F/NF/O alias IDs and exact normative statement;
+\item existing core component allocations and proposed category responsibility;
+\item related HLIR/SIR routes and interface components;
+\item accountable and participating teams;
+\item risk, mitigation, trade, VVC, executable-suite, and evidence links;
+\item build/adopt/adapter/configuration/procedure/data classification;
+\item unresolved gap, duplication, or ownership conflict.
+\end{itemize}
+
+The existing 45-core-component view becomes trace-only only after every consumer has migrated, no allocation or evidence link depends solely on it, document control approves supersession, and rollback remains possible. The 61 interface components remain a distinct interface realization branch unless an equally explicit approved migration replaces them.
+
+\section{DICOM-first integration profile}
+
+\subsection{TPS-PROFILE-001 minimum definition}
+
+The first mutable planning slice shall name exactly one approved value for each field below; no value is inferred from prototype examples.
+
+\begin{small}
+\begin{longtable}{@{}L{0.25\textwidth}L{0.28\textwidth}L{0.37\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Profile field} & \textbf{Initial status} & \textbf{Required evidence} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Profile field} & \textbf{Initial status} & \textbf{Required evidence} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Site and environment & TBD by D-ENG-002/003 & Network, identity, privacy, operations, backup, support, and downtime approval \\
+\addlinespace[2pt]
+TPS/vendor/version & TBD & Vendor conformance statement, supported workflow, license/API status, site configuration, limitations \\
+\addlinespace[2pt]
+Machine/\allowbreak{}modality/\allowbreak{}technique & TBD & Commissioning status, machine model and delivery mode, approved clinical workflow \\
+\addlinespace[2pt]
+Optimizer/dose/robustness & TBD & Commissioned services and versions, runtime manifest, grid/basis/algorithm semantics, independent verification \\
+\addlinespace[2pt]
+DICOM objects and roles & TBD & SOP classes, SCU/SCP roles, transfer syntaxes, UIDs/references, frame/geometry, units, approval status, private tags \\
+\addlinespace[2pt]
+Transactions and route & TBD & AE titles/endpoints, authentication where applicable, query/retrieve/store behavior, retries, timeout, cancellation, partial transfer \\
+\addlinespace[2pt]
+Reconciliation and rollback & TBD & Intended/observed comparison, quarantine, duplicate/idempotency rules, compensation, operator recovery \\
+\addlinespace[2pt]
+Acceptance library & TBD & Golden and challenge cases, negative objects, performance/load, security, HFE, and site acceptance protocol \\
+\end{longtable}
+\end{small}
+
+DICOM is the portable baseline, not an assumption that every clinical workflow can be completed efficiently or completely through DICOM alone. An approved vendor API may be used behind the same adapter contract when it improves supported capability, but it receives its own versioned profile, hazards, tests, permissions, monitoring, and fallback policy.
+
+\section{Program risks and mitigations}
+
+The fifteen named teams are accountability domains rather than a requirement for fifteen separately staffed organizational units. Early personnel may hold more than one role only when competence, capacity, conflict-of-interest controls, and separation of duties are documented. Development versus final independent V\&V, model ownership versus model release, plan generation versus all independent checks, and artifact generation versus all required approvals are non-collapsible boundaries unless a separately approved policy establishes an equivalent independent control.
+
+\begin{small}
+\begin{longtable}{@{}L{0.18\textwidth}L{0.27\textwidth}L{0.35\textwidth}L{0.10\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Risk} & \textbf{Failure condition} & \textbf{Minimum mitigation} & \textbf{Owner} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Risk} & \textbf{Failure condition} & \textbf{Minimum mitigation} & \textbf{Owner} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Regulatory misclassification & Architecture and records are built for an unsupported regulatory assumption & Function-by-function intended-use assessment; qualified regulatory counsel; plan to stricter controlled lifecycle pending determination & T-GOV \\
+\addlinespace[2pt]
+Insufficient staffing & Fifteen-accountability model is treated as fifteen funded teams or collapsed without independence & Named people/capacity matrix; minimum viable organization; protected QMP, clinical, security, quality, and independent V\&V authority; stop-work thresholds & Sponsor \\
+\addlinespace[2pt]
+DICOM schedule & Multiple TPS/\allowbreak{}version/\allowbreak{}machine/\allowbreak{}technique combinations enter the first release & One bounded profile; obtain conformance statements early; vendor/site test access; explicit estimate and contingency & T-INT \\
+\addlinespace[2pt]
+Backlog supersession error & F/NF/O migration loses canonical allocations, interfaces, risks, or tests & Dual trace, automated reconciliation, manual exceptions, configuration-control approval, rollback & T-SYS/T-GOV \\
+\addlinespace[2pt]
+Paper V\&V & Thousands of derived protocols are authored without reusable executable evidence & Claim-to-suite model, parameterized tests, manual evidence classes, independent mapping review, no inferred PASS & T-VV \\
+\addlinespace[2pt]
+Prompt or model compromise & Z0 produces malicious, hidden, or persuasive unsafe content & No clinical credentials; strict candidate schema; independent recomputation; content limits; gateway isolation; adversarial tests & T-AI/T-SEC \\
+\addlinespace[2pt]
+Authorization bypass & Schema restriction is mistaken for access control & OIDC, role exercised, ABAC/RBAC, separation of duties, step-up signature, runtime state checks, token scope and replay protection & T-SEC/T-SYS \\
+\addlinespace[2pt]
+False immutability & Application controls do not protect against privileged database or storage changes & Append-only permissions, external anchors/WORM copy, privileged-access monitoring, reconciliation, restore and tamper drills & T-DATA/T-SEC \\
+\addlinespace[2pt]
+Clinical usability failure & Safe controls are bypassed or misunderstood under workload & Formative and summative HFE, representative interruptions, read-back comprehension, edit burden, recovery, training and competency & T-HFE \\
+\addlinespace[2pt]
+Prototype authority creep & MQA analytics or readiness assertion is treated as QMP approval & Explicit assertion semantics, QMP signature, source links, expiry, deviation state, no model adjudication, consuming-kernel validation & QMP/T-SYS \\
+\addlinespace[2pt]
+Vendor or hosting dependency & Critical safety behavior requires unavailable SaaS, model, API, or license & Approved on-premises operation for safety-critical functions; exit plan; degraded workflow; vendor lifecycle and supplier controls & T-OPS/T-GOV \\
+\end{longtable}
+\end{small}
+
+\section{Open engineering decisions}
+
+\begin{small}
+\begin{longtable}{@{}L{0.13\textwidth}L{0.27\textwidth}L{0.14\textwidth}L{0.18\textwidth}L{0.18\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Decision} & \textbf{Needed by} & \textbf{Owner} & \textbf{Work permitted meanwhile} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{ID} & \textbf{Decision} & \textbf{Needed by} & \textbf{Owner} & \textbf{Work permitted meanwhile} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+D-ENG-001 & Intended use and function-by-function regulatory determination & Gate 0/1 & Sponsor/T-GOV & Build controlled records and architecture to the stricter plausible lifecycle; make no market or exemption claim \\
+\addlinespace[2pt]
+D-ENG-002 & First clinical disease-site and workflow slice & During Slice 2 & T-CLIN/T-PLAN & MQA, generic context viewer, schema, and non-clinical kernel work \\
+\addlinespace[2pt]
+D-ENG-003 & Authoritative systems and available interfaces & Gate 0 & T-INT/T-DATA & Inventory and request conformance statements; design DICOM-first contracts \\
+\addlinespace[2pt]
+D-ENG-004 & F/NF/O backlog authority and legacy/core migration policy & Before backlog cutover & T-SYS/T-GOV & Build crosswalk and dual reports; no supersession \\
+\addlinespace[2pt]
+D-ENG-005 & Trust-zone deployment, signing, key custody, and network policy & Before integrated prototype & T-SEC/T-SYS & Threat model and pure kernel; no clinical credentials \\
+\addlinespace[2pt]
+D-ENG-006 & Technology selections and support model & Per slice & Architecture board & Time-boxed non-clinical evaluations against acceptance conditions \\
+\addlinespace[2pt]
+D-ENG-007 & Hosting, data residency, retention, backup, and continuity & Gate 1 & T-OPS/T-SEC & Local synthetic environment and infrastructure design \\
+\addlinespace[2pt]
+D-ENG-008 & Funded staffing, quality system, independent V\&V, and decision capacity & Gate 0 & Sponsor & MQA-scoped plan with explicit capacity and stop-work thresholds \\
+\addlinespace[2pt]
+D-ENG-009 & Approved evidence corpus and publication workflow & Gate 1 & T-EVD/T-GOV & Inventory metadata and non-authoritative retrieval evaluation \\
+\addlinespace[2pt]
+D-ENG-010 & TPS-PROFILE-001 values, vendor participation, and test access & Before Gate 2 & T-INT/T-PLAN & Profile template, synthetic fixtures, and read-only import design \\
+\end{longtable}
+\end{small}
+
+\subsection{Regulatory note}
+
+The plan shall not declare the complete NL-TPS or any individual function to be device or non-device software without qualified review of intended use and current law and guidance. FDA describes clinical decision-support status on a function-by-function basis and recommends use of its current Digital Health Policy Navigator and Clinical Decision Support Software guidance. If the organization is a finished-device manufacturer subject to 21 CFR Part 820, the FDA Quality Management System Regulation became effective on 2 February 2026 and incorporates ISO 13485:2016 by reference. These references establish review inputs, not a determination for this project.
+
+\begin{itemize}
+\item \href{https://www.fda.gov/medical-devices/software-medical-device-samd/clinical-decision-support-software-frequently-asked-questions-faqs}{FDA, \emph{Clinical Decision Support Software Frequently Asked Questions}}.
+\item \href{https://www.fda.gov/medical-devices/regulatory-accelerator/medical-device-software-guidance-navigator}{FDA, \emph{Medical Device Software Guidance Navigator}}.
+\item \href{https://www.fda.gov/medical-devices/postmarket-requirements-devices/quality-management-system-regulation-qmsr}{FDA, \emph{Quality Management System Regulation}}.
+\end{itemize}
+
+\section{Initial 90-day engineering plan}
+
+The dates below are relative to an approved start and funded team. They do not authorize clinical data use.
+
+\begin{small}
+\begin{longtable}{@{}L{0.14\textwidth}L{0.31\textwidth}L{0.35\textwidth}L{0.10\textwidth}@{}}
+\toprule
+\rowcolor{NLTableHeader}\textbf{Period} & \textbf{Primary work} & \textbf{Exit artifact} & \textbf{Lead} \\
+\midrule
+\endfirsthead
+\toprule
+\rowcolor{NLTableHeader}\textbf{Period} & \textbf{Primary work} & \textbf{Exit artifact} & \textbf{Lead} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\scriptsize Continued on next page} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Days 0--30 & Approve charter and authorities; resolve D-ENG-008 minimum organization; inventory MQA, identity, hosting, systems of record, interfaces, and vendor statements; model the trace graph; draft PlanIntent and decision schemas & Gate-0 evidence index; staffing/capacity record; architecture threat model; candidate schemas; parsed trace graph with discrepancy report & T-GOV/T-SYS \\
+\addlinespace[2pt]
+Days 31--60 & Implement pure decision-core skeleton and negative fixtures; establish generic professional-decision, object/provenance/audit prototype; server-side MQA read APIs; source-hash reconciliation; select identity/signature evaluation path; define VVC-to-suite schema & Reproducible non-clinical build; professional and kernel decision records; immutable-object demonstration; MQA API contract; V\&V mapping pilot & T-SYS/T-DATA \\
+\addlinespace[2pt]
+Days 61--90 & Add MQA roles/state/review workflow in a non-clinical environment; failure and tamper tests; no-language intent path; CI trace gates; preliminary TPS-PROFILE-001 inventory; independent review and next-gate plan & Platform-Slice-0 alpha evidence package; unresolved anomaly list; independent architecture/V\&V review; approved backlog and Gate-1 readiness recommendation or hold & QMP/T-VV \\
+\end{longtable}
+\end{small}
+
+\section{Definition of done for this plan}
+
+ENG-PKG-01 may advance beyond the controlled non-clinical architecture baseline only when:
+
+\begin{enumerate}
+\item every proposed decision has an accountable owner, status, rationale, affected controlled IDs, and required approval;
+\item the product boundary, four-zone threat model, \texttt{PlanIntent}, \texttt{ProfessionalDecision}, \texttt{KernelDecisionRecord}, \texttt{ExecutionCapability}, object, provenance, audit, and job-state contracts are reviewed by clinical, QMP, security, interface, data, usability, operations, and independent V\&V authorities;
+\item the F/NF/O backlog policy has a complete crosswalk and does not orphan core or interface allocations;
+\item the VVC claim-to-execution model preserves all 2,144 claim IDs and prohibits inferred execution or clinical PASS;
+\item Platform Slice 0 has an approved MQA scope, authoritative sources, QMP ownership, environment, staffing, risk controls, protocols, and release gate;
+\item TPS-PROFILE-001 has one explicitly approved combination before mutable planning work begins;
+\item the regulatory, quality-system, privacy, cybersecurity, records, supplier, and clinical-evaluation determinations needed for the next gate are documented;
+\item no unresolved high-consequence hazard or release blocker is hidden by a schedule, aggregate metric, model confidence, or structural trace result.
+\end{enumerate}
+
+Until those conditions are met, the frozen architecture may guide controlled non-clinical implementation but may not cross the applicable release gate. This document authorizes no clinical action, commissions nothing, and represents no V\&V check as executed.
+
+\end{document}

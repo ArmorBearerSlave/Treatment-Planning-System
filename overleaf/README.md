@@ -1,6 +1,6 @@
 # NL-TPS Overleaf sources
 
-This directory contains fifteen independent LaTeX documents derived from the
+This directory contains sixteen independent LaTeX documents derived from the
 controlled requirements artifacts in the repository:
 
 - `NL_TPS_ConOps.tex` - Concept of Operations
@@ -18,12 +18,18 @@ controlled requirements artifacts in the repository:
 - `NL_TPS_Trade_Off_Analysis_Matrices.tex` - requirement- and component-level Trade-Off Analysis Matrices
 - `NL_TPS_Monthly_QA_Integration_Profile.tex` - Machine QA Evidence and Readiness Integration Profile
 - `NL_TPS_Verification_Validation_Check_Matrix.tex` - exhaustive requirement-, interface-, component-, and machine-QA V&V check specification
+- `NL_TPS_Engineering_Architecture_and_MVP_Implementation_Plan.tex` - frozen nonclinical four-zone architecture baseline, separate typed-intent and professional-decision contracts, signed execution capability, specification-as-data migration, V&V execution model, Platform Slice 0, and staged patient-planning implementation
 
-All fifteen documents use `nl_tps_common.sty`. The ConOps also uses the images in
+The corresponding machine-readable architecture constraints are maintained in
+`../spec/architecture.yaml`. The YAML file constrains implementation and change
+impact analysis; it does not supersede the controlled source requirements or
+the human-reviewable engineering-plan document.
+
+All sixteen documents use `nl_tps_common.sty`. The ConOps also uses the images in
 `figures/`. For reliable compilation from the repository root, use these
 top-level Overleaf entry points:
 
-- `main.tex` - default combined review copy containing all fifteen documents
+- `main.tex` - default combined review copy containing all sixteen documents
 - `NL_TPS_Document_Suite_Overleaf.tex` - explicit entry point for the combined review copy
 - `NL_TPS_ConOps_Overleaf.tex`
 - `NL_TPS_ACR_APEx_Applicability_Traceability_Matrix_Overleaf.tex`
@@ -40,12 +46,13 @@ top-level Overleaf entry points:
 - `NL_TPS_Trade_Off_Analysis_Matrices_Overleaf.tex`
 - `NL_TPS_Monthly_QA_Integration_Profile_Overleaf.tex`
 - `NL_TPS_Verification_Validation_Check_Matrix_Overleaf.tex`
+- `NL_TPS_Engineering_Architecture_and_MVP_Implementation_Plan_Overleaf.tex`
 
 ## Import from GitHub
 
 1. In the connected Overleaf project, open **Integrations -> GitHub** and pull
    the latest GitHub changes.
-2. The default `main.tex` compiles all fifteen documents in trace order: ConOps,
+2. The default `main.tex` compiles all sixteen documents in trace order: ConOps,
    the controlled ACR ROPA and ASTRO APEx applicability and traceability profile,
    High-Level Requirements, categorized High-Level Functional, Non-Functional,
    and Operational Requirements, High-Level Interface Requirements, Sub-Interface
@@ -53,8 +60,9 @@ top-level Overleaf entry points:
    Non-Functional, and Operational Sub-Requirements and Component Realization,
    Detailed Functional Sub-Requirements, Functional Component Realization,
    the Risk and Mitigation Register, the Trade-Off Analysis Matrices, the Machine
-   QA Evidence and Readiness Integration Profile, and the Verification and
-   Validation Check Matrix.
+   QA Evidence and Readiness Integration Profile, the Verification and
+   Validation Check Matrix, and the Engineering Architecture and Minimum Viable
+   Clinical Slice Implementation Plan.
    To compile one controlled document by itself, open
    **Settings -> Compiler -> Main document** and select
    `NL_TPS_ConOps_Overleaf.tex`,
@@ -70,13 +78,14 @@ top-level Overleaf entry points:
    `NL_TPS_Component_Realization_Overleaf.tex`,
    `NL_TPS_Risk_and_Mitigation_Register_Overleaf.tex`,
    `NL_TPS_Trade_Off_Analysis_Matrices_Overleaf.tex`,
-   `NL_TPS_Monthly_QA_Integration_Profile_Overleaf.tex`, or
-   `NL_TPS_Verification_Validation_Check_Matrix_Overleaf.tex`.
+   `NL_TPS_Monthly_QA_Integration_Profile_Overleaf.tex`,
+   `NL_TPS_Verification_Validation_Check_Matrix_Overleaf.tex`, or
+   `NL_TPS_Engineering_Architecture_and_MVP_Implementation_Plan_Overleaf.tex`.
 3. Use pdfLaTeX as the compiler.
 4. Recompile twice after changing headings, page counts, or the table of
    contents.
 
-The fifteen files remain separate controlled documents. The combined suite is a
+The sixteen files remain separate controlled documents. The combined suite is a
 review convenience and does not merge their document-control identities. The
 `.docx` files remain the source artifacts used for the initial conversion;
 future substantive changes should be reconciled through document control so
