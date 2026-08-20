@@ -174,7 +174,7 @@
     {
       "name": "nltps.realization",
       "materialized_at": "MPS-0",
-      "concepts_materialized_at": "MPS-2",
+      "concepts_materialized_at": "MPS-4",
       "dependencies": [
         {
           "module": "nltps.foundation",

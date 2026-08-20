@@ -117,6 +117,62 @@ class LiveBlueprintDerivationTests(unittest.TestCase):
             graph.checkpoint_ordinal(entry["concepts_materialized_at"])
 
 
+class StagedInventoryTests(unittest.TestCase):
+    """Each checkpoint must own a distinct, correctly allocated inventory.
+
+    Realization was briefly tagged MPS-2, which both charged clinical-intent work with
+    realization's concepts and collapsed MPS-3 and MPS-4 onto one ceiling. The defect was
+    latent: later checkpoints fail earlier on module presence, so the count was never
+    printed. These assertions pin the allocation so it cannot silently collapse again.
+    """
+
+    def ceilings(self) -> dict[str, int]:
+        blueprint = json.loads(graph.BLUEPRINT_PATH.read_text(encoding="utf-8"))
+        return {
+            label: graph.expected_concept_count(blueprint, label)
+            for label in ("MPS-1", "MPS-2", "MPS-3", "MPS-4")
+        }
+
+    def test_staged_inventory_is_forty_sixtyeight_eighty_ninetyseven(self) -> None:
+        self.assertEqual(
+            self.ceilings(),
+            {"MPS-1": 40, "MPS-2": 68, "MPS-3": 80, "MPS-4": 97},
+        )
+
+    def test_every_checkpoint_ceiling_is_strictly_larger_than_the_last(self) -> None:
+        # A checkpoint that adds languages but not concepts has no distinct inventory,
+        # which is exactly the collapse this test exists to catch.
+        values = list(self.ceilings().values())
+        for earlier, later in zip(values, values[1:]):
+            self.assertLess(earlier, later)
+
+    def test_realization_concepts_are_allocated_to_the_final_checkpoint(self) -> None:
+        blueprint = json.loads(graph.BLUEPRINT_PATH.read_text(encoding="utf-8"))
+        entry = next(e for e in blueprint["languages"] if e["name"] == "nltps.realization")
+        self.assertEqual(entry["concepts_materialized_at"], "MPS-4")
+        # The module itself has existed since MPS-0; only its inventory moved.
+        self.assertEqual(entry["materialized_at"], "MPS-0")
+
+    def test_realization_does_not_contribute_before_its_checkpoint(self) -> None:
+        blueprint = json.loads(graph.BLUEPRINT_PATH.read_text(encoding="utf-8"))
+        realization = next(
+            e for e in blueprint["languages"] if e["name"] == "nltps.realization"
+        )
+        size = len(realization["root_concepts"]) + len(realization["non_root_concepts"])
+        self.assertEqual(
+            graph.expected_concept_count(blueprint, "MPS-4")
+            - graph.expected_concept_count(blueprint, "MPS-3"),
+            size,
+        )
+
+    def test_explain_reports_every_declared_checkpoint(self) -> None:
+        blueprint = json.loads(graph.BLUEPRINT_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(
+            graph.declared_checkpoints(blueprint),
+            ["MPS-0", "MPS-1", "MPS-2", "MPS-3", "MPS-4"],
+        )
+
+
 class TransitiveExtendsTests(unittest.TestCase):
     """Superconcept and containment legality both resolve through the EXTENDS chain."""
 

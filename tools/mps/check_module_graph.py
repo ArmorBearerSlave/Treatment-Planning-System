@@ -209,6 +209,37 @@ def expected_concept_count(blueprint: dict, checkpoint: str | None) -> int:
     )
 
 
+def declared_checkpoints(blueprint: dict) -> list[str]:
+    """Every checkpoint the blueprint mentions, in order."""
+    labels = set()
+    for entry in blueprint["languages"]:
+        labels.add(entry["materialized_at"])
+        labels.add(entry["concepts_materialized_at"])
+    return sorted(labels, key=checkpoint_ordinal)
+
+
+def explain(checkpoint: str | None) -> int:
+    """Print the checkpoint -> inventory -> ceiling derivation without asserting presence.
+
+    The module-presence check fails first for any checkpoint whose languages are not on
+    disk yet, so the ceiling was unobservable until the checkpoint arrived. That is how a
+    misallocated inventory survived review: nothing printed the number it would enforce.
+    """
+    blueprint = json.loads(BLUEPRINT_PATH.read_text(encoding="utf-8"))
+    targets = [checkpoint] if checkpoint else declared_checkpoints(blueprint)
+    print("checkpoint  expected  contributing language inventories")
+    for label in targets:
+        limit = checkpoint_ordinal(label)
+        contributing = [
+            entry["name"]
+            for entry in blueprint["languages"]
+            if checkpoint_ordinal(entry["concepts_materialized_at"]) <= limit
+        ]
+        total = expected_concept_count(blueprint, label)
+        print(f"{label:<11} {total:>8}  {', '.join(contributing) or '(none)'}")
+    return 0
+
+
 def check(
     max_concepts: int | None, checkpoint: str | None = None
 ) -> tuple[list[str], dict[str, object]]:
@@ -342,7 +373,24 @@ def main() -> int:
             "than this; --checkpoint derives the same number from the blueprint"
         ),
     )
+    parser.add_argument(
+        "--explain",
+        action="store_true",
+        help=(
+            "print the checkpoint to inventory to ceiling derivation and exit, without "
+            "asserting that the languages are present on disk; with --checkpoint it "
+            "explains one checkpoint, otherwise every checkpoint the blueprint declares"
+        ),
+    )
     args = parser.parse_args()
+    if args.explain:
+        if args.max_concepts is not None:
+            print(
+                "ERROR: --explain derives the ceiling; --max-concepts would replace it",
+                file=sys.stderr,
+            )
+            return 2
+        return explain(args.checkpoint)
     if args.checkpoint is not None and args.max_concepts is not None:
         # Preferring one silently would hide which number the run actually enforced.
         print(
