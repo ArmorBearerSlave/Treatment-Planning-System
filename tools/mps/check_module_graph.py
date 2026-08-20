@@ -145,16 +145,70 @@ def find_cycle(graph: dict[str, set[str]]) -> list[str]:
     return []
 
 
-def check(max_concepts: int | None) -> tuple[list[str], dict[str, object]]:
+def checkpoint_ordinal(label: str) -> int:
+    """MPS-3 sorts after MPS-1; a malformed label is a blueprint defect, not a zero."""
+    match = re.fullmatch(r"MPS-(\d+)", label.strip())
+    if match is None:
+        raise ValueError(f"checkpoint label must look like MPS-N, got {label!r}")
+    return int(match.group(1))
+
+
+def languages_at(blueprint: dict, checkpoint: str | None) -> list[dict]:
+    """Blueprint languages that should exist on disk at the given checkpoint.
+
+    A language declared for a later checkpoint is an expected absence, which is what
+    lets the blueprint describe the architecture ahead of materializing it. With no
+    checkpoint the whole declared inventory is in scope.
+    """
+    if checkpoint is None:
+        return list(blueprint["languages"])
+    limit = checkpoint_ordinal(checkpoint)
+    return [
+        entry
+        for entry in blueprint["languages"]
+        if checkpoint_ordinal(entry["materialized_at"]) <= limit
+    ]
+
+
+def expected_concept_count(blueprint: dict, checkpoint: str | None) -> int:
+    """The ceiling is the declared inventory, never a literal repeated in CI.
+
+    Scoped by concepts_materialized_at rather than materialized_at: every original
+    module exists from MPS-0, but an empty module contributes no concepts. Counting by
+    module presence would charge MPS-1 for inventories that do not arrive until later.
+    """
+    entries = blueprint["languages"]
+    if checkpoint is not None:
+        limit = checkpoint_ordinal(checkpoint)
+        entries = [
+            entry
+            for entry in entries
+            if checkpoint_ordinal(entry["concepts_materialized_at"]) <= limit
+        ]
+    return sum(
+        len(entry["root_concepts"]) + len(entry["non_root_concepts"]) for entry in entries
+    )
+
+
+def check(
+    max_concepts: int | None, checkpoint: str | None = None
+) -> tuple[list[str], dict[str, object]]:
     errors: list[str] = []
     blueprint = json.loads(BLUEPRINT_PATH.read_text(encoding="utf-8"))
+    in_scope = languages_at(blueprint, checkpoint)
+    deferred = sorted(
+        entry["name"] for entry in blueprint["languages"] if entry not in in_scope
+    )
     expected: dict[str, dict[str, set[str]]] = {}
-    for entry in blueprint["languages"]:
+    for entry in in_scope:
         by_kind: dict[str, set[str]] = {"extends": set(), "depends": set()}
         for dependency in entry["dependencies"]:
             key = "extends" if dependency["kind"] == "EXTENDS" else "depends"
             by_kind[key].add(dependency["module"])
         expected[entry["name"]] = by_kind
+
+    if checkpoint is not None and max_concepts is None:
+        max_concepts = expected_concept_count(blueprint, checkpoint)
 
     if not PROJECT_ROOT.exists():
         return ([f"MPS project not found at {PROJECT_ROOT.relative_to(REPO_ROOT)}"], {})
@@ -164,9 +218,22 @@ def check(max_concepts: int | None) -> tuple[list[str], dict[str, object]]:
         errors.append(f"project directory is {PROJECT_ROOT.name}, expected {project_name}")
 
     modules = read_modules()
-    if set(modules) != set(expected):
+    # A language whose checkpoint has not arrived is legitimately absent. Anything on
+    # disk that the blueprint does not declare, or declared-and-due but missing, is not.
+    undeclared = sorted(set(modules) - set(expected) - set(deferred))
+    if undeclared:
         errors.append(
-            f"module set differs: found {sorted(modules)}, expected {sorted(expected)}"
+            f"languages present on disk but not declared in the blueprint: {undeclared}"
+        )
+    premature = sorted(set(modules) & set(deferred))
+    if premature:
+        errors.append(
+            f"languages materialized before their declared checkpoint: {premature}"
+        )
+    missing = sorted(set(expected) - set(modules))
+    if missing:
+        errors.append(
+            f"languages declared for this checkpoint but absent from disk: {missing}"
         )
 
     combined: dict[str, set[str]] = {}
@@ -193,7 +260,7 @@ def check(max_concepts: int | None) -> tuple[list[str], dict[str, object]]:
         errors.append(f"module dependency cycle: {' -> '.join(cycle)}")
 
     counts, node_counts = concept_counts()
-    missing_aspects = sorted(set(expected) - set(counts))
+    missing_aspects = sorted(set(expected) & set(modules) - set(counts))
     if missing_aspects:
         errors.append(f"languages without a structure aspect: {missing_aspects}")
 
@@ -211,6 +278,9 @@ def check(max_concepts: int | None) -> tuple[list[str], dict[str, object]]:
         "total_concepts": total_concepts,
         "total_nodes": total_nodes,
         "acyclic": not cycle,
+        "checkpoint": checkpoint,
+        "expected_concepts": max_concepts,
+        "deferred_languages": deferred,
     }
     return errors, summary
 
@@ -218,18 +288,47 @@ def check(max_concepts: int | None) -> tuple[list[str], dict[str, object]]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
+        "--checkpoint",
+        default=None,
+        help=(
+            "derive the expected language set and concept ceiling from the blueprint "
+            "for this checkpoint, e.g. MPS-1; preferred over --max-concepts"
+        ),
+    )
+    parser.add_argument(
         "--max-concepts",
         type=int,
         default=None,
-        help="fail if structure aspects hold more concept nodes than this (MPS-0 uses 0)",
+        help=(
+            "diagnostic/test override: fail if structure aspects declare more concepts "
+            "than this; --checkpoint derives the same number from the blueprint"
+        ),
     )
     args = parser.parse_args()
-    errors, summary = check(args.max_concepts)
+    if args.checkpoint is not None and args.max_concepts is not None:
+        # Preferring one silently would hide which number the run actually enforced.
+        print(
+            "ERROR: --checkpoint and --max-concepts are mutually exclusive; the "
+            "checkpoint derives the ceiling from the blueprint, the override replaces it",
+            file=sys.stderr,
+        )
+        return 2
+    errors, summary = check(args.max_concepts, args.checkpoint)
     if errors:
         print("ERROR: MPS module graph gate failed", file=sys.stderr)
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         return 1
+    if summary.get("checkpoint"):
+        print(f"checkpoint: {summary['checkpoint']}")
+        print(f"expected concepts: {summary['expected_concepts']}")
+        print(f"observed concepts: {summary['total_concepts']}")
+        print(f"structure nodes: {summary['total_nodes']}")
+        if summary["deferred_languages"]:
+            print(
+                f"declared for a later checkpoint, expected absent: "
+                f"{', '.join(summary['deferred_languages'])}"
+            )
     print(
         f"PASS: {len(summary['modules'])} language modules match the blueprint dependency "
         f"graph; acyclic; {summary['total_concepts']} concepts declared across "

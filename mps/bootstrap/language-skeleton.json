@@ -24,6 +24,8 @@
   "languages": [
     {
       "name": "nltps.foundation",
+      "materialized_at": "MPS-0",
+      "concepts_materialized_at": "MPS-1",
       "dependencies": [],
       "owns": [
         "stable identifiers and aliases",
@@ -58,6 +60,8 @@
     },
     {
       "name": "nltps.governance",
+      "materialized_at": "MPS-0",
+      "concepts_materialized_at": "MPS-1",
       "dependencies": [
         {
           "module": "nltps.foundation",
@@ -112,6 +116,8 @@
     },
     {
       "name": "nltps.clinicalintent",
+      "materialized_at": "MPS-0",
+      "concepts_materialized_at": "MPS-2",
       "dependencies": [
         {
           "module": "nltps.foundation",
@@ -159,6 +165,8 @@
     },
     {
       "name": "nltps.realization",
+      "materialized_at": "MPS-0",
+      "concepts_materialized_at": "MPS-2",
       "dependencies": [
         {
           "module": "nltps.foundation",
