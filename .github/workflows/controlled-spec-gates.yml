@@ -47,6 +47,9 @@ jobs:
       - name: Check MPS module graph against the blueprint
         run: python tools/mps/check_module_graph.py --checkpoint MPS-1
 
+      - name: Check frozen MPS-2 role ontology
+        run: python tools/mps/check_role_ontology.py
+
       - name: Check namespaced source relations
         run: python tools/spec/check_seed_namespace.py
 

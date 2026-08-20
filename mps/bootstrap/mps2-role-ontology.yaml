@@ -1,0 +1,198 @@
+schema_version: "0.1"
+register_id: MPS2-RO-001
+title: MPS-2 role and authorization ontology, frozen before feature specification
+status: frozen_pending_feature_specification
+decision: ADR-001
+architecture_baseline: ENG-PKG-01-v0.6
+implementation_state: design_frozen_not_specified_not_materialized
+
+purpose: >-
+  The role model was the last open design question before mps2-concept-features.yaml can
+  be drafted. Three choices were settled: RoleCapability is atomic, AuthorizedActor is an
+  authorization context rather than a personnel record, and the profession-to-function
+  mapping is derived rather than stored. This file freezes those choices so the feature
+  specification transcribes a reviewed design instead of deciding at the keyboard, and so
+  the normalization rule is enforceable rather than advisory.
+
+authority: >-
+  Frozen, not approved. Freezing fixes the shape the specification must transcribe; it
+  makes no claim of clinical correctness, risk acceptability, or approval. Approval is
+  recorded by governance.
+
+normalization_rule: >-
+  ProfessionalRole does not directly own or reference a collection of OperationalRole
+  values. Profession-to-function mappings are derived exclusively from RoleCapability
+  instances owned by AuthorityPolicy. Each RoleCapability is an atomic authorization
+  tuple referencing exactly one ProfessionalRole and exactly one OperationalRole.
+
+rationale:
+  - >-
+    A professional credential by itself must not imply permission. Storing the mapping on
+    ProfessionalRole would make the credential carry authorization, collapsing the
+    distinction between category, function, and authorized binding.
+  - >-
+    It avoids the MPS multiplicity problem outright. A profession participates in many
+    operational roles because many atomic capability nodes reference it, so no
+    multi-valued reference and no holder concept is required in the core model.
+  - >-
+    Institutional policy becomes data rather than ontology. One institution may authorize
+    a Medical Physicist as QAReviewer and another additionally as TechnicalApprover by
+    editing AuthorityPolicy, without touching the language structure.
+  - >-
+    The A4 guard evaluates one atomic proposition against one matching capability, rather
+    than traversing a stored mapping.
+
+separation_of_concerns:
+  ProfessionalRole: credential or professional category
+  OperationalRole: workflow function
+  RoleCapability: authorized binding between them
+  AuthorityPolicy: institutional configuration of those bindings
+
+frozen_shape:
+  AuthorityPolicy:
+    kind: existing clinicalintent root
+    children:
+      - {name: capabilities, target: RoleCapability, cardinality: "0..n"}
+  RoleCapability:
+    kind: atomic authorization tuple
+    references:
+      - {name: professionalRole, target: ProfessionalRole, cardinality: "1"}
+      - {name: operationalRole, target: OperationalRole, cardinality: "1"}
+      - {name: allowedAction, target: ActionDefinition, cardinality: "1"}
+      - {name: targetScope, target: ClinicalObjectType, cardinality: "1"}
+      - {name: workflowState, target: WorkflowState, cardinality: "0..1"}
+    properties:
+      - {name: requiresApproval, type: boolean, cardinality: "1"}
+    note: >-
+      targetScope resolves to exactly one concept, ClinicalObjectType. The worked
+      examples PrescriptionIntent and CandidatePlan are ClinicalObjectType instances. A
+      union of target concepts is not an alternative: MPS cannot express one on a single
+      reference.
+  ActionDefinition:
+    kind: existing clinicalintent concept, gains one property
+    properties:
+      - {name: autonomyLevel, type: AutonomyLevelEnum, cardinality: "1"}
+    note: >-
+      Adding a property to an already declared concept changes no inventory. This is what
+      makes action.autonomyLevel readable by the GOV-C-007 predicate.
+  AuthorizedActor:
+    kind: authenticated principal in one authorization context
+    properties:
+      - {name: principalId, type: string, cardinality: "1"}
+      - {name: actorKind, type: ActorKindEnum, cardinality: "1"}
+    references:
+      - {name: professionalRole, target: ProfessionalRole, cardinality: "1"}
+      - {name: operationalRole, target: OperationalRole, cardinality: "1"}
+    note: >-
+      AuthorizedActor is an authorization context, not a credential or personnel record.
+      It is the role being exercised at the moment of one action. That reading is not
+      obvious from the name, and it is what makes the scalar role references correct: a
+      person acting in two functions produces two context instances, never one node with
+      a multi-valued role reference. It matches the ConOps, which records the role
+      exercised at each action, and it is the shape the separation-of-duties rules need.
+
+axis_separation: >-
+  AuthorityClass and autonomy level are different axes and must not be conflated.
+  AuthorityClassEnum, written at MPS-1 from the ConOps evidence tiers, answers whose word
+  governs when sources conflict: patient_specific_authority through derived_analytics. It
+  carries no autonomy semantics and contains no A0 to A4 value. Autonomy answers how far
+  the system may act without a human. Overloading the evidence hierarchy with an
+  execution-authority ladder is exactly the kind of merge this program keeps unpicking,
+  so autonomy gets its own enumeration.
+
+datatypes:
+  - name: AutonomyLevelEnum
+    kind: enumeration
+    values: [A0_inform, A1_draft, A2_sandbox_execute, A3_clinical_candidate,
+             A4_authorize_or_deliver]
+    source: ConOps autonomy levels
+    carried_by: ActionDefinition.autonomyLevel
+    rationale: >-
+      GOV-C-007 turns on whether an action is at the top of the autonomy ladder.
+      AuthorityClassEnum cannot express that, so without this enumeration the predicate
+      has no discriminator to read. Since the GOV-C-007 deferral reactivates when
+      AuthorizedActor arrives at MPS-2, the lapse rule will demand the proof at MPS-2; an
+      inexpressible discriminator would expire the deferral into a constraint nobody can
+      satisfy, stalling MPS-2 exactly where MPS-1 stalled. It belongs in the freeze, not
+      in the drafting pass.
+    also_closes: >-
+      The Engineering plan's PlanIntent sketch carries autonomy A2_sandbox_execute with a
+      note that A4 is not representable. That value has had no home in the metamodel until
+      now.
+    note: >-
+      The eleventh datatype program-wide and the first owned by clinicalintent. An
+      EnumerationDeclaration, so it costs no concept and does not move the 66 ceiling.
+  - name: ActorKindEnum
+    kind: enumeration
+    values: [HUMAN, SERVICE_ACCOUNT, AUTOMATED_AGENT, GENERATOR, MODEL_NODE]
+    rationale: >-
+      GOV-C-007 names several distinct disallowed authority satisfiers. A boolean
+      isAutomated would collapse information already known to matter, and would not let a
+      diagnostic say which kind of non-human authority was attempted.
+    note: >-
+      An EnumerationDeclaration, not a ConceptDeclaration. It carries no cost against the
+      concept ceiling.
+
+derived_mapping_example:
+  statement: >-
+    The profession-to-function mapping below is derived from capability nodes. It is not
+    stored anywhere as a collection.
+  mapping:
+    - RadiationOncologist -> Prescriber
+    - RadiationOncologist -> ClinicalApprover
+    - MedicalPhysicist -> TechnicalReviewer
+    - MedicalPhysicist -> QAReviewer
+  capabilities:
+    - {professionalRole: RadiationOncologist, operationalRole: Prescriber,
+       allowedAction: DefinePrescription, targetScope: PrescriptionIntent}
+    - {professionalRole: RadiationOncologist, operationalRole: ClinicalApprover,
+       allowedAction: ApprovePlan, targetScope: CandidatePlan}
+    - {professionalRole: MedicalPhysicist, operationalRole: TechnicalReviewer,
+       allowedAction: ReviewTechnicalPlan, targetScope: CandidatePlan}
+
+gov_c_007_evaluation:
+  predicate: >-
+    IF action.autonomyLevel == A4_authorize_or_deliver THEN actor.actorKind == HUMAN AND
+    a matching RoleCapability exists AND actor.professionalRole ==
+    capability.professionalRole AND actor.operationalRole == capability.operationalRole
+    AND action == capability.allowedAction AND the workflow state is permitted.
+  discriminator: >-
+    action.autonomyLevel, not action.authorityClass. AuthorityClass is the evidence
+    precedence tier and has no A4 value; see axis_separation.
+  required_negative_cases:
+    - {actorKind: SERVICE_ACCOUNT, autonomyLevel: A4_authorize_or_deliver, expected: REJECT}
+    - {actorKind: AUTOMATED_AGENT, autonomyLevel: A4_authorize_or_deliver, expected: REJECT}
+    - {actorKind: GENERATOR, autonomyLevel: A4_authorize_or_deliver, expected: REJECT}
+    - {actorKind: MODEL_NODE, autonomyLevel: A4_authorize_or_deliver, expected: REJECT}
+  required_positive_case:
+    {actorKind: HUMAN, autonomyLevel: A4_authorize_or_deliver,
+     with: required operational role and a permitted capability, expected: ACCEPT}
+  note: >-
+    This is a model-level authorization check with demonstrated rejection, which is
+    considerably stronger than hiding A4 actions from automated actors in an editor.
+  unblocks: >-
+    The GOV-C-007 deferral recorded against MPS-MAT-005A, whose reactivation checkpoint
+    is the one introducing AuthorizedActor.
+
+roles_common_holder_purpose: >-
+  OperationalRoleRef and its sibling holders in nltps.roles.common exist for projection
+  DSL multiplicity at MPS-3, where RoleCommand needs sets. They are deliberately not part
+  of the core clinicalintent authorization model, which needs no holder because
+  RoleCapability is atomic. The two collection strategies are separate on purpose.
+
+inventory_impact:
+  clinicalintent_concepts: 20
+  roles_common_concepts: 6
+  mps2_cumulative_ceiling: 66
+  datatypes_added: 1
+  note: >-
+    The freeze resolves the open design questions without changing either inventory. No
+    concept is added or removed. AutonomyLevelEnum is an EnumerationDeclaration and
+    ActionDefinition.autonomyLevel is a property on an already declared concept, so
+    neither moves the ceiling.
+  open_decisions_remaining: none
+
+enforcement: >-
+  tools/mps/check_role_ontology.py checks this record against the blueprint now, and
+  against mps2-concept-features.yaml once that file exists. Until then the specification
+  checks report as not yet drafted rather than silently passing.

@@ -623,5 +623,152 @@ class GeneratedDocumentLineEndingTests(unittest.TestCase):
         self.assertGreater(self.DOCUMENT.read_bytes().count(b"\n"), 1000)
 
 
+class RoleOntologyFreezeTests(unittest.TestCase):
+    """The frozen MPS-2 role shape, and the drifts the gate must refuse."""
+
+    def freeze(self) -> dict:
+        import check_role_ontology as ro
+
+        return ro.load(ro.FREEZE_PATH)
+
+    def spec_errors(self, concepts: list[dict], datatypes: list[dict] | None = None) -> list[str]:
+        import check_role_ontology as ro
+
+        spec = {
+            "datatypes": datatypes if datatypes is not None
+            else [{"name": "AutonomyLevelEnum"}, {"name": "ActorKindEnum"}],
+            "languages": {"nltps.clinicalintent": {"concepts": concepts}},
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "mps2-concept-features.yaml"
+            path.write_text(json.dumps(spec), encoding="utf-8")
+            original = ro.FEATURES_PATH
+            ro.FEATURES_PATH = path
+            try:
+                errors, present = ro.check_specification(self.freeze())
+            finally:
+                ro.FEATURES_PATH = original
+        self.assertTrue(present)
+        return errors
+
+    def concept(self, name: str, **kw) -> dict:
+        base = {"name": name, "properties": [], "children": [], "references": []}
+        base.update(kw)
+        return base
+
+    def conforming(self) -> list[dict]:
+        frozen = self.freeze()["frozen_shape"]
+        return [
+            self.concept("ProfessionalRole"),
+            self.concept("OperationalRole"),
+            self.concept("RoleCapability", references=list(frozen["RoleCapability"]["references"])),
+            self.concept(
+                "ActionDefinition",
+                properties=[{"name": "autonomyLevel", "type": "AutonomyLevelEnum",
+                             "cardinality": "1"}],
+            ),
+            self.concept(
+                "AuthorizedActor",
+                references=list(frozen["AuthorizedActor"]["references"]),
+            ),
+        ]
+
+    # --- the freeze record itself -----------------------------------------------------
+
+    def test_blueprint_satisfies_the_freeze_now(self) -> None:
+        import check_role_ontology as ro
+
+        blueprint = json.loads(ro.BLUEPRINT_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(ro.check_blueprint(self.freeze(), blueprint), [])
+
+    def test_authority_class_is_not_the_autonomy_axis(self) -> None:
+        # The MPS-1 enum is the ConOps evidence precedence tier and carries no A0-A4.
+        import yaml
+
+        mps1 = yaml.safe_load(
+            (REPO_ROOT / "mps" / "bootstrap" / "mps1-concept-features.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        values = next(
+            t["values"] for t in mps1["datatypes"] if t["name"] == "AuthorityClassEnum"
+        )
+        self.assertFalse([v for v in values if v.lower().startswith(("a0", "a4"))])
+
+    def test_autonomy_enum_is_frozen_with_five_levels(self) -> None:
+        autonomy = next(
+            d for d in self.freeze()["datatypes"] if d["name"] == "AutonomyLevelEnum"
+        )
+        self.assertEqual(
+            autonomy["values"],
+            ["A0_inform", "A1_draft", "A2_sandbox_execute", "A3_clinical_candidate",
+             "A4_authorize_or_deliver"],
+        )
+
+    def test_freeze_does_not_move_the_ceiling(self) -> None:
+        impact = self.freeze()["inventory_impact"]
+        self.assertEqual(impact["clinicalintent_concepts"], 20)
+        self.assertEqual(impact["mps2_cumulative_ceiling"], 66)
+
+    # --- drifts the gate must refuse --------------------------------------------------
+
+    def test_conforming_specification_is_accepted(self) -> None:
+        self.assertEqual(self.spec_errors(self.conforming()), [])
+
+    def test_professional_role_linking_to_operational_role_is_rejected(self) -> None:
+        concepts = self.conforming()
+        concepts[0]["children"] = [
+            {"name": "functions", "target": "OperationalRole", "cardinality": "0..n"}
+        ]
+        errors = self.spec_errors(concepts)
+        self.assertTrue(
+            any("never stored on" in e for e in errors),
+            f"the credential must not carry the mapping, got {errors}",
+        )
+
+    def test_capability_with_a_multi_valued_reference_is_rejected(self) -> None:
+        concepts = self.conforming()
+        for link in concepts[2]["references"]:
+            if link["name"] == "operationalRole":
+                link["cardinality"] = "0..n"
+        errors = self.spec_errors(concepts)
+        self.assertTrue(any("the tuple is atomic" in e for e in errors), errors)
+
+    def test_capability_with_children_is_rejected(self) -> None:
+        concepts = self.conforming()
+        concepts[2]["children"] = [
+            {"name": "targets", "target": "ClinicalObjectType", "cardinality": "0..n"}
+        ]
+        errors = self.spec_errors(concepts)
+        self.assertTrue(any("scalar references only" in e for e in errors), errors)
+
+    def test_missing_autonomy_enum_is_rejected(self) -> None:
+        errors = self.spec_errors(self.conforming(), datatypes=[{"name": "ActorKindEnum"}])
+        self.assertTrue(any("no AutonomyLevelEnum" in e for e in errors), errors)
+
+    def test_action_without_autonomy_level_is_rejected(self) -> None:
+        concepts = self.conforming()
+        concepts[3]["properties"] = []
+        errors = self.spec_errors(concepts)
+        self.assertTrue(any("discriminator would be unreadable" in e for e in errors), errors)
+
+    def test_autonomy_typed_as_authority_class_is_rejected(self) -> None:
+        # The exact conflation the axis_separation note exists to prevent.
+        concepts = self.conforming()
+        concepts[3]["properties"] = [
+            {"name": "autonomyLevel", "type": "AuthorityClassEnum", "cardinality": "1"}
+        ]
+        errors = self.spec_errors(concepts)
+        self.assertTrue(any("different axes" in e for e in errors), errors)
+
+    def test_multi_valued_actor_role_is_rejected(self) -> None:
+        concepts = self.conforming()
+        for link in concepts[4]["references"]:
+            if link["name"] == "operationalRole":
+                link["cardinality"] = "0..n"
+        errors = self.spec_errors(concepts)
+        self.assertTrue(any("second context instance" in e for e in errors), errors)
+
+
 if __name__ == "__main__":
     unittest.main()
