@@ -27,6 +27,7 @@
       "materialized_at": "MPS-0",
       "concepts_materialized_at": "MPS-1",
       "dependencies": [],
+      "external_explicit": [],
       "owns": [
         "stable identifiers and aliases",
         "versions and lifecycle vocabulary",
@@ -68,6 +69,7 @@
           "kind": "EXTENDS"
         }
       ],
+      "external_explicit": [],
       "owns": [
         "requirements and requirement patterns",
         "hazards and risk controls",
@@ -128,6 +130,7 @@
           "kind": "DEFAULT"
         }
       ],
+      "external_explicit": [],
       "owns": [
         "PlanIntent definition",
         "roles, permissions, and modes",
@@ -181,6 +184,7 @@
           "kind": "DEFAULT"
         }
       ],
+      "external_explicit": [],
       "owns": [
         "components and interface families",
         "teams and allocations",

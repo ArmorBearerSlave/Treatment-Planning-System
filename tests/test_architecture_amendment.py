@@ -297,5 +297,136 @@ class ContainmentGateTests(unittest.TestCase):
         )
 
 
+MPL_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
+<language namespace="{name}" uuid="0000-{idx}">
+  <models />
+  <accessoryModels />
+{dependencies}  <extendedLanguages>{extends}</extendedLanguages>
+</language>
+"""
+
+
+class ExternalDependencyTests(unittest.TestCase):
+    """POST-MPS1-01: MPS adds dependencies on its own; the gate must notice."""
+
+    def write_module(self, root: Path, name: str, deps: list[str], extends: list[str]) -> None:
+        directory = root / name
+        directory.mkdir(parents=True, exist_ok=True)
+        dep_block = ""
+        if deps:
+            lines = "".join(
+                f'    <dependency reexport="false">uuid({d})</dependency>\n' for d in deps
+            )
+            dep_block = f"  <dependencies>\n{lines}  </dependencies>\n"
+        ext = "".join(f"<extendedLanguage>uuid({e})</extendedLanguage>" for e in extends)
+        (directory / f"{name}.mpl").write_text(
+            MPL_TEMPLATE.format(name=name, idx=0, dependencies=dep_block, extends=ext),
+            encoding="utf-8",
+        )
+
+    def test_explicit_external_dependency_is_read_from_the_descriptor(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_module(root, "nltps.alpha", ["jetbrains.mps.lang.core", "JDK"], [])
+            text = (root / "nltps.alpha" / "nltps.alpha.mpl").read_text(encoding="utf-8")
+            found = graph.external_refs(text, "nltps.alpha")
+            self.assertEqual(found, {"jetbrains.mps.lang.core", "JDK"})
+
+    def test_nltps_dependencies_are_not_counted_as_external(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_module(root, "nltps.alpha", ["nltps.beta"], [])
+            text = (root / "nltps.alpha" / "nltps.alpha.mpl").read_text(encoding="utf-8")
+            self.assertEqual(graph.external_refs(text, "nltps.alpha"), set())
+
+    def test_module_with_no_dependency_block_has_no_external_set(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_module(root, "nltps.alpha", [], [])
+            text = (root / "nltps.alpha" / "nltps.alpha.mpl").read_text(encoding="utf-8")
+            self.assertEqual(graph.external_refs(text, "nltps.alpha"), set())
+
+    def run_gate_over(self, root: Path, blueprint: dict) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            bp = Path(tmp) / "skeleton.json"
+            bp.write_text(json.dumps(blueprint), encoding="utf-8")
+            original = (graph.BLUEPRINT_PATH, graph.LANGUAGES_ROOT, graph.PROJECT_ROOT)
+            graph.BLUEPRINT_PATH = bp
+            graph.LANGUAGES_ROOT = root
+            graph.PROJECT_ROOT = root.parent
+            try:
+                errors, _ = graph.check(None, None)
+            finally:
+                graph.BLUEPRINT_PATH, graph.LANGUAGES_ROOT, graph.PROJECT_ROOT = original
+        return errors
+
+    def blueprint_for(self, external: list[str]) -> dict:
+        return {
+            "project": {"name": "proj"},
+            "languages": [
+                {
+                    "name": "nltps.alpha",
+                    "materialized_at": "MPS-0",
+                    "concepts_materialized_at": "MPS-1",
+                    "dependencies": [],
+                    "external_explicit": external,
+                    "owns": [],
+                    "root_concepts": [],
+                    "non_root_concepts": [],
+                    "required_constraints": [],
+                }
+            ],
+        }
+
+    def test_undeclared_external_dependency_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp) / "proj"
+            languages = project / "languages"
+            languages.mkdir(parents=True)
+            self.write_module(languages, "nltps.alpha", ["jetbrains.mps.lang.core"], [])
+            errors = self.run_gate_over(languages, self.blueprint_for([]))
+        undeclared = [e for e in errors if "UNDECLARED EXTERNAL DEPENDENCY" in e]
+        self.assertEqual(len(undeclared), 1, f"expected one rejection, got {errors}")
+        message = undeclared[0]
+        self.assertIn("module: nltps.alpha", message)
+        self.assertIn("dependency: jetbrains.mps.lang.core", message)
+        self.assertIn("expected explicit external dependencies: []", message)
+        self.assertIn("model-aware tooling", message)
+
+    def test_declared_external_dependency_is_accepted(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp) / "proj"
+            languages = project / "languages"
+            languages.mkdir(parents=True)
+            self.write_module(languages, "nltps.alpha", ["jetbrains.mps.lang.core"], [])
+            errors = self.run_gate_over(
+                languages, self.blueprint_for(["jetbrains.mps.lang.core"])
+            )
+        self.assertEqual([e for e in errors if "EXTERNAL" in e], [])
+
+    def test_declared_but_absent_external_dependency_is_reported(self) -> None:
+        # The blueprint must not claim a dependency the descriptor does not carry.
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp) / "proj"
+            languages = project / "languages"
+            languages.mkdir(parents=True)
+            self.write_module(languages, "nltps.alpha", [], [])
+            errors = self.run_gate_over(languages, self.blueprint_for(["JDK"]))
+        self.assertTrue(
+            any("does not carry it" in e for e in errors),
+            f"expected a missing-declared-dependency report, got {errors}",
+        )
+
+    def test_live_repository_declares_no_external_dependencies(self) -> None:
+        blueprint = json.loads(graph.BLUEPRINT_PATH.read_text(encoding="utf-8"))
+        for entry in blueprint["languages"]:
+            self.assertEqual(
+                entry["external_explicit"],
+                [],
+                f"{entry['name']} declares an external dependency; MPS-1 evidence showed "
+                f"none was required",
+            )
+
+
 if __name__ == "__main__":
     unittest.main()

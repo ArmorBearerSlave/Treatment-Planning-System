@@ -57,6 +57,24 @@ def module_refs(text: str, tag: str, own_name: str) -> set[str]:
     return found
 
 
+def external_refs(text: str, own_name: str) -> set[str]:
+    """Explicit non-NL-TPS entries in the .mpl <dependencies> block.
+
+    MPS re-added lang.core and JDK three times during MPS-1, each time unnecessary and
+    each time invisible because the NL-TPS filter dropped them. This deliberately does
+    not filter. Devkits are declared in the model files under <languages><devkit> and
+    never appear in the module descriptor, so nothing new has to be parsed and a devkit
+    is not mistaken for an undeclared dependency.
+    """
+    found = {
+        ref
+        for ref in MODULE_REF_RE.findall(block(text, "dependencies"))
+        if not ref.startswith("nltps.")
+    }
+    found.discard(own_name)
+    return found
+
+
 def read_modules() -> dict[str, dict[str, set[str]]]:
     modules: dict[str, dict[str, set[str]]] = {}
     for descriptor in sorted(LANGUAGES_ROOT.glob("*/*.mpl")):
@@ -68,6 +86,7 @@ def read_modules() -> dict[str, dict[str, set[str]]]:
         modules[name] = {
             "extends": module_refs(text, "extendedLanguages", name),
             "depends": module_refs(text, "dependencies", name),
+            "external": external_refs(text, name),
         }
     return modules
 
@@ -205,6 +224,7 @@ def check(
         for dependency in entry["dependencies"]:
             key = "extends" if dependency["kind"] == "EXTENDS" else "depends"
             by_kind[key].add(dependency["module"])
+        by_kind["external"] = set(entry.get("external_explicit", []))
         expected[entry["name"]] = by_kind
 
     if checkpoint is not None and max_concepts is None:
@@ -254,6 +274,24 @@ def check(
             if demoted:
                 detail.append(f"missing {label} on {demoted}")
             errors.append(f"{name}: " + "; ".join(detail))
+
+    for name in sorted(set(modules) & set(expected)):
+        declared = expected[name]["external"]
+        for dependency in sorted(modules[name]["external"] - declared):
+            errors.append(
+                "UNDECLARED EXTERNAL DEPENDENCY\n"
+                f"  module: {name}\n"
+                f"  dependency: {dependency}\n"
+                f"  expected explicit external dependencies: {sorted(declared)}\n"
+                "  action: verify necessity; if unnecessary, remove through MPS "
+                "model-aware tooling; if genuinely required, amend the controlled "
+                "blueprint before acceptance"
+            )
+        for dependency in sorted(declared - modules[name]["external"]):
+            errors.append(
+                f"{name}: blueprint declares external dependency {dependency} but the "
+                f"module descriptor does not carry it"
+            )
 
     cycle = find_cycle(combined)
     if cycle:

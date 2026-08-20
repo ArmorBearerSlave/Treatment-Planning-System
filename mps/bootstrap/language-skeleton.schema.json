@@ -71,6 +71,7 @@
           "materialized_at",
           "concepts_materialized_at",
           "dependencies",
+          "external_explicit",
           "owns",
           "root_concepts",
           "non_root_concepts",
@@ -145,6 +146,13 @@
             "type": "string",
             "pattern": "^MPS-[0-9]+$",
             "description": "Checkpoint at which this language's declared concept inventory is materialized. Distinct from materialized_at, which is when the empty module is created: all four original modules exist from MPS-0 while their concepts arrive later. The module graph gate derives the expected concept count from this field."
+          },
+          "external_explicit": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Explicit non-NL-TPS module dependencies this language is permitted to declare in its .mpl <dependencies> block. Empty unless deliberately amended. MPS adds such dependencies automatically; leaving them undeclared would convert tool behaviour into architecture."
           }
         }
       }
