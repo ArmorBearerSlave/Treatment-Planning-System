@@ -31,17 +31,34 @@ process — verify by handshake, not by a listening socket).
 
 ## Checkpoint discipline
 
-Materialization runs as `MPS-0 → MPS-1 → MPS-2 → MPS-3`, each a commit and review
-boundary. **Stop at the boundary; never roll one checkpoint into the next.** The
+Materialization runs as `MPS-0 → MPS-1 → MPS-2 → MPS-3 → MPS-4`, each a commit and
+review boundary. **Stop at the boundary; never roll one checkpoint into the next.** The
 boundary exists so it can be determined whether the metamodel is correct before asking
 whether the migration is correct.
 
-- Scope, acceptance items, and native check results: `mps/materialization/stage-a-checklist.yaml`
-- Concept design that MPS-1 and MPS-2 transcribe: `mps/bootstrap/mps1-concept-features.yaml`
-- Module graph and relation kinds: `mps/bootstrap/language-skeleton.json`
+    MPS-0  project and the four language modules          closed
+    MPS-1  foundation + governance                        closed
+    MPS-2  clinical intent + roles.common
+    MPS-3  the four professional role projections
+    MPS-4  realization + the 119-HLR import
 
-`--max-concepts` on `tools/mps/check_module_graph.py` bounds each checkpoint. The first
-live-MPS commit shall not contain the 119 HLR roots; only MPS-3 may.
+- Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
+- Concept design that MPS-1 transcribed: `mps/bootstrap/mps1-concept-features.yaml`
+- Role and authorization ontology frozen for MPS-2: `mps/bootstrap/mps2-role-ontology.yaml`
+- Module graph, dependency kinds, per-checkpoint inventories: `mps/bootstrap/language-skeleton.json`
+
+`--checkpoint MPS-N` on `tools/mps/check_module_graph.py` derives the expected language
+set and concept ceiling from the blueprint. Do not reintroduce a hard-coded ceiling;
+`--max-concepts` survives only as a diagnostic override and the two are mutually
+exclusive. `--explain` prints the derivation without asserting module presence, which is
+the only way to review a ceiling before its checkpoint arrives. The first live-MPS commit
+shall not contain the 119 HLR roots; only MPS-4 may.
+
+Each language declares `materialized_at` (when the module exists) separately from
+`concepts_materialized_at` (when its inventory lands), and `external_explicit`, the
+non-NL-TPS dependencies it may carry. MPS adds such dependencies on its own; every one
+observed so far was unnecessary and was removed through model-aware tooling, never by
+editing `.mpl`.
 
 A concept may take a superconcept only from its own language or from a language declared
 `EXTENDS`. Changing a dependency kind is a controlled blueprint change, not an IDE
@@ -72,6 +89,22 @@ A passing `check_root_node_problems` is not sufficient acceptance evidence by it
 Acceptance requires read-back, plus the applicable node-scope and model-scope checks,
 plus a native build or check result. No single checker is sufficient.
 
+## Deferrals are conditional, not permanent
+
+A constraint whose concept cannot be instantiated cannot be behaviourally proven. Such a
+proof is deferred against a named `affected_concept` in `stage-a-checklist.yaml`, never
+waived and never relabelled PASS. `check_concept_features.compute_reachability` computes,
+across **every** `mps*-concept-features.yaml` present, which non-rootable concrete
+concepts no containment path reaches; `check_materialization_plan` imports it and fails
+while a deferral is still active for a concept that has since become reachable.
+
+The consequence for whoever adds a container: **giving a deferred concept a host makes
+its deferred negative example mandatory at that checkpoint.** Reachability is cumulative
+by design, so a container added later is seen. Two distinct deferral classes exist and
+only the first lapses this way -- `non_instantiability` (no legal host yet) and
+`semantic_model_absence` (the discriminator does not exist yet, as with GOV-C-007 before
+`AuthorizedActor`).
+
 ## Metric integrity
 
 `76 / 2,144` entities carry a source-explicit hazard set. **Materializing an entity in
@@ -90,7 +123,10 @@ authority cutover. Approval is recorded by governance; an artifact never asserts
 
 ```
 python -m unittest discover -s tests
-python tools/mps/check_module_graph.py --max-concepts <checkpoint bound>
+python tools/mps/check_module_graph.py --checkpoint MPS-N
+python tools/mps/check_concept_features.py
+python tools/mps/check_role_ontology.py
+python tools/mps/check_materialization_plan.py
 python tools/spec/build_trace_graph.py --check
 ```
 
