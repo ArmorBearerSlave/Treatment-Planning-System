@@ -13,7 +13,8 @@ Enforced here:
   * every superconcept resolves to BaseConcept, a concept in the same language, or a
     concept in a language reachable by an EXTENDS dependency -- a DEFAULT dependency
     does not make a concept available as a superconcept;
-  * every property, child, and reference target resolves and carries a cardinality;
+  * properties and references are single-valued and children may be multi-valued,
+    matching what the MPS metamodel can actually express;
   * every declared datatype is used and every used datatype is declared;
   * every blueprint required_constraint is realized by at least one specified constraint,
     and every specified constraint carries a negative example.
@@ -36,7 +37,13 @@ FEATURES_PATH = REPO_ROOT / "mps" / "bootstrap" / "mps1-concept-features.yaml"
 
 BUILTIN_SUPERCONCEPTS = {"BaseConcept"}
 PRIMITIVE_TYPES = {"string", "integer", "real", "boolean", "date"}
+# MPS admits multi-cardinality only on children. A PropertyDeclaration has no
+# cardinality feature at all -- properties are single-valued -- and a reference
+# LinkDeclaration is 1 or 0..1, because multi-valued links are aggregations.
+# Modelling a list therefore requires a child of an entry concept, not a property
+# or reference with an n cardinality.
 CARDINALITIES = {"1", "0..1", "1..n", "0..n"}
+SINGLE_VALUED = {"1", "0..1"}
 
 
 def check() -> tuple[list[str], dict[str, int]]:
@@ -122,10 +129,17 @@ def check() -> tuple[list[str], dict[str, int]]:
                     used_types.add(kind)
                 else:
                     errors.append(f"{label}.{prop.get('name')} has unknown type {kind!r}")
-                if prop.get("cardinality") not in CARDINALITIES:
+                cardinality = prop.get("cardinality")
+                if cardinality not in CARDINALITIES:
                     errors.append(
                         f"{label}.{prop.get('name')} has unsupported cardinality "
-                        f"{prop.get('cardinality')!r}"
+                        f"{cardinality!r}"
+                    )
+                elif cardinality not in SINGLE_VALUED:
+                    errors.append(
+                        f"{label}.{prop.get('name')} declares cardinality {cardinality!r}, "
+                        f"but an MPS property is single-valued; model the list as a child "
+                        f"of an entry concept"
                     )
                 pattern = prop.get("pattern")
                 if pattern is not None:
@@ -141,10 +155,17 @@ def check() -> tuple[list[str], dict[str, int]]:
                         errors.append(
                             f"{label}.{link.get('name')} targets unknown concept {target!r}"
                         )
-                    if link.get("cardinality") not in CARDINALITIES:
+                    cardinality = link.get("cardinality")
+                    if cardinality not in CARDINALITIES:
                         errors.append(
                             f"{label}.{link.get('name')} has unsupported cardinality "
-                            f"{link.get('cardinality')!r}"
+                            f"{cardinality!r}"
+                        )
+                    elif kind_name == "references" and cardinality not in SINGLE_VALUED:
+                        errors.append(
+                            f"{label}.{link.get('name')} declares cardinality "
+                            f"{cardinality!r}, but an MPS reference link is single-valued; "
+                            f"model the collection as a child of a reference-holder concept"
                         )
 
             if not concept.get("editor"):

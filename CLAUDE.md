@@ -53,6 +53,25 @@ Negative examples are created and shown to be rejected before the corresponding 
 content is added. An acceptance item is `complete` only with attributable evidence, and
 completing it is a claim about what was demonstrated, not about what was created.
 
+## Tool success is not evidence
+
+An MCP call returning `ok: true` is not evidence that MPS persisted the requested
+semantics. A model-aware write can be accepted, report success, and still drop the part
+that mattered: a mistyped feature key is silently ignored and the property falls back to
+a default, and an omitted cardinality is silently replaced by the metamodel default.
+Checkers disagree with each other, too -- a model-scope check can report clean while a
+node-scope check on the same tree reports errors, and a missing mandatory child can pass
+both and surface only when the language is built.
+
+**Every model-aware mutation that affects controlled semantics is read back from the MPS
+model or runtime representation before it is accepted.** Read-back means comparing the
+persisted or runtime state against the controlled source, feature by feature -- not
+re-reading the tool's own response.
+
+A passing `check_root_node_problems` is not sufficient acceptance evidence by itself.
+Acceptance requires read-back, plus the applicable node-scope and model-scope checks,
+plus a native build or check result. No single checker is sufficient.
+
 ## Metric integrity
 
 `76 / 2,144` entities carry a source-explicit hazard set. **Materializing an entity in

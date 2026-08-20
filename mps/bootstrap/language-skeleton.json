@@ -88,8 +88,18 @@
         "Decision",
         "ApprovalGate",
         "ReleaseGate",
+        "TraceRelation",
         "TraceLink",
-        "TraceRelation"
+        "VerificationMethodEntry",
+        "EmphasisEntry",
+        "AlternativeEntry",
+        "RequiredRoleEntry",
+        "EvidenceEntry",
+        "AllowedConceptEntry",
+        "HazardRef",
+        "StakeholderNeedRef",
+        "GovernedElementRef",
+        "DecisionRef"
       ],
       "required_constraints": [
         "normative requirements contain shall",

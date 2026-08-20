@@ -158,8 +158,8 @@ languages:
         intent: Explicit version and effectivity for a governed element.
         properties:
           - {name: value, type: string, cardinality: "1", pattern: "^[0-9]+\\.[0-9]+$"}
-          - {name: effectiveDate, type: date, cardinality: "0..1"}
-          - {name: supersededDate, type: date, cardinality: "0..1"}
+          - {name: effectiveDate, type: string, cardinality: "0..1", pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"}
+          - {name: supersededDate, type: string, cardinality: "0..1", pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"}
         children: []
         references: []
         editor: "v<value>"
@@ -202,7 +202,7 @@ languages:
           A magnitude that always carries its unit and, for dose, its basis. Dimensionless
           numbers are not modelled with this concept.
         properties:
-          - {name: magnitude, type: real, cardinality: "1"}
+          - {name: magnitude, type: string, cardinality: "1", pattern: "^-?[0-9]+(\\.[0-9]+)?$"}
           - {name: doseBasis, type: DoseBasisEnum, cardinality: "1", default: not_applicable}
         children: []
         references:
@@ -251,7 +251,7 @@ languages:
           - {name: title, type: string, cardinality: "1"}
           - {name: locator, type: string, cardinality: "1"}
           - {name: edition, type: string, cardinality: "0..1"}
-          - {name: retrievedDate, type: date, cardinality: "0..1"}
+          - {name: retrievedDate, type: string, cardinality: "0..1", pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"}
           - {name: integrityValue, type: string, cardinality: "0..1"}
         children: []
         references: []
@@ -344,11 +344,11 @@ languages:
           - {name: statement, type: string, cardinality: "1"}
           - {name: domain, type: DomainEnum, cardinality: "1"}
           - {name: category, type: RequirementCategoryEnum, cardinality: "1"}
-          - {name: verificationMethods, type: VerificationMethodEnum, cardinality: "1..n"}
-        children: []
-        references:
-          - {name: hazards, target: Hazard, cardinality: "0..n"}
-          - {name: derivesFrom, target: StakeholderNeed, cardinality: "0..n"}
+        children:
+          - {name: verificationMethods, target: VerificationMethodEntry, cardinality: "1..n"}
+          - {name: hazards, target: HazardRef, cardinality: "0..n"}
+          - {name: derivesFrom, target: StakeholderNeedRef, cardinality: "0..n"}
+        references: []
         editor: "<identifier> [<domain>/<category>] <statement> -- verify <verificationMethods>"
         constraints: [GOV-C-001]
 
@@ -363,8 +363,8 @@ languages:
           - {name: patternId, type: string, cardinality: "1", pattern: "^PAT-[A-Z]+-[0-9]{2}$"}
           - {name: childSuffixTemplate, type: string, cardinality: "1"}
           - {name: childCount, type: integer, cardinality: "1"}
-          - {name: emphasis, type: string, cardinality: "1..n"}
-        children: []
+        children:
+          - {name: emphasis, target: EmphasisEntry, cardinality: "1..n"}
         references: []
         editor: "pattern <patternId> x<childCount> -> <childSuffixTemplate>"
         constraints: [GOV-C-005]
@@ -441,9 +441,9 @@ languages:
         properties:
           - {name: controlType, type: RiskControlTypeEnum, cardinality: "1"}
           - {name: statement, type: string, cardinality: "1"}
-        children: []
-        references:
-          - {name: mitigates, target: Hazard, cardinality: "1..n"}
+        children:
+          - {name: mitigates, target: HazardRef, cardinality: "1..n"}
+        references: []
         editor: "control <identifier> [<controlType>] <statement> mitigates <mitigates>"
         constraints: [GOV-C-003]
 
@@ -456,11 +456,11 @@ languages:
           - {name: question, type: string, cardinality: "1"}
           - {name: outcome, type: string, cardinality: "0..1"}
           - {name: approvalState, type: ApprovalStateEnum, cardinality: "1"}
-          - {name: alternativesConsidered, type: string, cardinality: "0..n"}
-        children: []
+        children:
+          - {name: alternativesConsidered, target: AlternativeEntry, cardinality: "0..n"}
+          - {name: blocks, target: GovernedElementRef, cardinality: "0..n"}
         references:
           - {name: owner, target: GovernedElement, cardinality: "0..1"}
-          - {name: blocks, target: GovernedElement, cardinality: "0..n"}
         editor: "decision <identifier>: <question> => <outcome> [<approvalState>]"
         constraints: []
 
@@ -473,9 +473,9 @@ languages:
           approval; it never represents an approval being given.
         properties:
           - {name: gateName, type: string, cardinality: "1"}
-          - {name: requiredRoles, type: string, cardinality: "1..n"}
           - {name: separationOfDutiesRequired, type: boolean, cardinality: "1", default: true}
-        children: []
+        children:
+          - {name: requiredRoles, target: RequiredRoleEntry, cardinality: "1..n"}
         references: []
         editor: "approval gate <gateName> requires <requiredRoles>"
         constraints: [GOV-C-007]
@@ -488,10 +488,10 @@ languages:
         properties:
           - {name: gateNumber, type: integer, cardinality: "1", range: "0..5"}
           - {name: gateName, type: string, cardinality: "1"}
-          - {name: minimumEvidence, type: string, cardinality: "1..n"}
-        children: []
-        references:
-          - {name: blockedBy, target: Decision, cardinality: "0..n"}
+        children:
+          - {name: minimumEvidence, target: EvidenceEntry, cardinality: "1..n"}
+          - {name: blockedBy, target: DecisionRef, cardinality: "0..n"}
+        references: []
         editor: "gate <gateNumber> <gateName> requires <minimumEvidence>"
         constraints: []
 
@@ -505,11 +505,11 @@ languages:
           instead of accepting free text.
         properties:
           - {name: relation, type: TraceRelationEnum, cardinality: "1"}
-          - {name: allowedSourceConcepts, type: string, cardinality: "1..n"}
-          - {name: allowedTargetConcepts, type: string, cardinality: "1..n"}
           - {name: sourceCardinality, type: string, cardinality: "1"}
           - {name: targetCardinality, type: string, cardinality: "1"}
-        children: []
+        children:
+          - {name: allowedSourceConcepts, target: AllowedConceptEntry, cardinality: "1..n"}
+          - {name: allowedTargetConcepts, target: AllowedConceptEntry, cardinality: "1..n"}
         references: []
         editor: "<relation>: <allowedSourceConcepts> -> <allowedTargetConcepts>"
         constraints: [GOV-C-002]
@@ -528,6 +528,141 @@ languages:
           - {name: target, target: GovernedElement, cardinality: "1"}
         editor: "<source> --<relation>--> <target>"
         constraints: [GOV-C-002, GOV-C-003, GOV-C-004]
+
+      - name: VerificationMethodEntry
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          One verification method in a requirement's method set. The corpus assigns two
+          methods to most requirements, so the set is genuinely multi-valued and is
+          modelled as children rather than collapsed to a single method.
+        properties:
+          - {name: method, type: VerificationMethodEnum, cardinality: "1"}
+        children: []
+        references: []
+        editor: "<method>"
+        constraints: []
+
+      - name: EmphasisEntry
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          One emphasis term in a requirement pattern's emphasis set, such as definition, runtime, or evidence.
+        properties:
+          - {name: emphasis, type: string, cardinality: "1"}
+        children: []
+        references: []
+        editor: "<emphasis>"
+        constraints: []
+
+      - name: AlternativeEntry
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          One alternative considered when a decision was taken, preserved so a decision records what was weighed rather than only what was chosen.
+        properties:
+          - {name: alternative, type: string, cardinality: "1"}
+        children: []
+        references: []
+        editor: "<alternative>"
+        constraints: []
+
+      - name: RequiredRoleEntry
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          One role required at an approval gate. Named rather than generic because a role is what separation of duties is evaluated against.
+        properties:
+          - {name: role, type: string, cardinality: "1"}
+        children: []
+        references: []
+        editor: "<role>"
+        constraints: []
+
+      - name: EvidenceEntry
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          One item of minimum evidence a release gate requires.
+        properties:
+          - {name: evidence, type: string, cardinality: "1"}
+        children: []
+        references: []
+        editor: "<evidence>"
+        constraints: []
+
+      - name: AllowedConceptEntry
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          One concept name permitted as the source or target of a trace relation. GOV-C-002 validates a link against these entries, so they are a distinct kind of text.
+        properties:
+          - {name: conceptName, type: string, cardinality: "1"}
+        children: []
+        references: []
+        editor: "<conceptName>"
+        constraints: []
+
+      - name: HazardRef
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          A single typed reference to a hazard. MPS reference links are single-valued, so
+          a hazard set is modelled as children of this holder. Typed rather than generic
+          so a control cannot be pointed at a non-hazard.
+        properties: []
+        children: []
+        references:
+          - {name: hazard, target: Hazard, cardinality: "1"}
+        editor: "-> <hazard>"
+        constraints: []
+
+      - name: StakeholderNeedRef
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: A single typed reference to a stakeholder need, held as a child.
+        properties: []
+        children: []
+        references:
+          - {name: need, target: StakeholderNeed, cardinality: "1"}
+        editor: "-> <need>"
+        constraints: []
+
+      - name: GovernedElementRef
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          A single reference to any governed element, held as a child. Used where the
+          target is deliberately unconstrained, such as what a decision blocks.
+        properties: []
+        children: []
+        references:
+          - {name: element, target: GovernedElement, cardinality: "1"}
+        editor: "-> <element>"
+        constraints: []
+
+      - name: DecisionRef
+        rootable: false
+        abstract: false
+        superconcept: BaseConcept
+        intent: >-
+          A single typed reference to a decision, held as a child. Typed so a release
+          gate records that it is blocked by a decision rather than by anything at all.
+        properties: []
+        children: []
+        references:
+          - {name: decision, target: Decision, cardinality: "1"}
+        editor: "-> <decision>"
+        constraints: []
 
       - name: RequirementBaseline
         rootable: true
@@ -607,7 +742,12 @@ languages:
       - id: GOV-C-004
         statement: Hazard MITIGATES VerificationCase is rejected.
         source_constraint: Hazard MITIGATES VerificationCase is rejected
-        negative_example: A TraceLink from Hazard to a verification entity using MITIGATES.
+        negative_example: >-
+          A TraceLink whose source is a Hazard on the MITIGATES relation. The printed
+          example named a verification entity, but VerificationClaim is a realization
+          concept arriving at MPS-2. The constraint being proven is that MITIGATES
+          rejects a Hazard source, which is demonstrable with governance concepts alone,
+          so the example is restated in MPS-1 terms rather than deferred.
       - id: GOV-C-005
         statement: >-
           A DerivedRequirement identifier is a deterministic function of its parent
@@ -626,6 +766,21 @@ languages:
         negative_example: >-
           An ApprovalGate whose required role resolves to a generated or automated actor.
 
+property_facet_policy:
+  applies_to: default, pattern, minLength, range, real_and_date_representation
+  counts: "4 defaults, 9 patterns, 1 minLength, 1 range"
+  mechanism: constraints aspect
+  rationale: >-
+    An MPS PropertyDeclaration carries a datatype but no default, pattern, length, or
+    range facet, and MPS offers only three primitive datatypes: string, integer, and
+    boolean. Facets are implemented as property constraints in the constraints aspect.
+    A ConstrainedStringDatatypeDeclaration would also work but would add datatypes
+    beyond the declared set, so the constraints aspect is preferred as the mechanism
+    that adds no new declarations. The same rule resolves real and date, which MPS
+    cannot express: both are carried as string and constrained by pattern. This is a
+    representation choice, not an arithmetic type; a dose magnitude held as text is not
+    numerically typed and any comparison must go through an explicit, reviewed method.
+
 review_questions:
   - Is GovernedElement the right base, or should identity and version be an interface
     that root containers implement differently?
@@ -635,10 +790,12 @@ review_questions:
   - Should DerivedRequirement extend Requirement, or reference it, given that MPS
     inheritance will also inherit the shall constraint?
   - Are ApprovalGate and ReleaseGate distinct concepts, or one concept with a kind?
+  - Is string-with-pattern an acceptable carrier for magnitude and the three dates,
+    given that MPS has no real or date primitive?
 
 counts:
   foundation_concepts: 13
-  governance_concepts: 17
-  total: 30
+  governance_concepts: 27
+  total: 40
   foundation_constraints: 4
   governance_constraints: 7
