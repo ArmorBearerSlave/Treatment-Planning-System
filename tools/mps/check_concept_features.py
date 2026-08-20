@@ -205,6 +205,69 @@ def check() -> tuple[list[str], dict[str, int]]:
     return errors, counts
 
 
+def load_features() -> dict:
+    return yaml.safe_load(FEATURES_PATH.read_text(encoding="utf-8"))
+
+
+def compute_reachability(features: dict | None = None) -> dict[str, object]:
+    """Which specified concepts can actually hold an instance under some root.
+
+    A constraint that cannot be instantiated cannot be behaviourally proven, so the
+    checkpoint needs to know which concrete concepts no legal containment path reaches.
+    Traversal starts at the rootable concepts and follows child containment, counting
+    children inherited from superconcepts and allowing any subconcept to stand where its
+    superconcept is declared as the target. Abstract concepts are never instantiated
+    directly and are therefore exempt from the orphan report.
+    """
+    if features is None:
+        features = load_features()
+
+    meta: dict[str, dict[str, object]] = {}
+    for language, body in features.get("languages", {}).items():
+        for concept in body.get("concepts", []):
+            meta[concept["name"]] = {
+                "language": language,
+                "abstract": bool(concept.get("abstract")),
+                "rootable": bool(concept.get("rootable")),
+                "superconcept": concept.get("superconcept"),
+                "children": [c["target"] for c in concept.get("children", [])],
+            }
+
+    # name -> the concept plus everything that descends from it, so a child role
+    # declared against a superconcept also admits every subconcept.
+    substitutes: dict[str, set[str]] = {name: {name} for name in meta}
+    for name in meta:
+        parent = meta[name]["superconcept"]
+        while parent in meta:
+            substitutes[parent].add(name)
+            parent = meta[parent]["superconcept"]
+
+    def effective_children(name: str) -> list[str]:
+        targets: list[str] = []
+        current = name
+        while current in meta:
+            targets.extend(meta[current]["children"])
+            current = meta[current]["superconcept"]
+        return targets
+
+    reachable = {name for name, info in meta.items() if info["rootable"]}
+    frontier = list(reachable)
+    while frontier:
+        current = frontier.pop()
+        for target in effective_children(current):
+            for candidate in substitutes.get(target, {target}):
+                if candidate in meta and candidate not in reachable:
+                    reachable.add(candidate)
+                    frontier.append(candidate)
+
+    unreachable = sorted(
+        name
+        for name, info in meta.items()
+        if not info["rootable"] and not info["abstract"] and name not in reachable
+    )
+    return {"reachable": reachable, "unreachable": unreachable, "concepts": meta}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.parse_args()
@@ -219,6 +282,18 @@ def main() -> int:
         f"a feature specification; superconcepts respect EXTENDS discipline; "
         f"{counts['constraints']} constraints realize every blueprint requirement"
     )
+    unreachable = compute_reachability()["unreachable"]
+    if unreachable:
+        # Reported, not failed: a concept with no containment path is a known and
+        # recorded state at this checkpoint. check_materialization_plan.py is what
+        # turns that state into an obligation, by expiring any proof deferral whose
+        # affected concept has since become reachable.
+        print(
+            f"       no containment path from any root reaches: {', '.join(unreachable)} "
+            f"-- constraints over these concepts cannot be behaviourally proven yet"
+        )
+    else:
+        print("       every non-rootable concrete concept is reachable from some root")
     return 0
 
 

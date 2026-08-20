@@ -24,6 +24,10 @@ from pathlib import Path
 
 import yaml
 
+# Reachability is owned by the feature-spec gate; importing it keeps a single
+# definition of "can this concept hold an instance" rather than two that can drift.
+from check_concept_features import compute_reachability
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PLAN_PATH = REPO_ROOT / "mps" / "materialization" / "stage-a-checklist.yaml"
@@ -129,6 +133,29 @@ def check() -> list[str]:
             errors.append(f"{item_id} has unsupported status {item.get('status')!r}")
         if item.get("status") == "complete" and not item.get("evidence"):
             errors.append(f"{item_id} is complete without attributable evidence")
+
+    # A proof deferral justified by non-instantiability is only honest while the
+    # affected concept really is unreachable. Once some checkpoint gives it a
+    # container, the deferral has to expire and the deferred negative example has to
+    # be run, so the gate fails until the record is cleared.
+    unreachable = set(compute_reachability()["unreachable"])
+    for item in items:
+        for deferral in item.get("scoped_exclusions", []) or []:
+            if deferral.get("deferral_class") != "non_instantiability":
+                continue
+            label = deferral.get("constraint") or deferral.get("representation_proof")
+            concept = deferral.get("affected_concept")
+            if not concept:
+                errors.append(
+                    f"{item['id']}: non-instantiability deferral {label!r} does not name "
+                    f"an affected_concept; the lapse rule cannot be evaluated"
+                )
+            elif concept not in unreachable:
+                errors.append(
+                    f"{item['id']}: deferral {label!r} is still active but its affected "
+                    f"concept {concept} is now reachable from a root; run the deferred "
+                    f"negative example and clear the deferral"
+                )
 
     for path in plan.get("controlled_inputs", []):
         if not (REPO_ROOT / path).exists():
