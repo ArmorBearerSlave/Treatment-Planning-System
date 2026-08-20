@@ -100,10 +100,22 @@ while a deferral is still active for a concept that has since become reachable.
 
 The consequence for whoever adds a container: **giving a deferred concept a host makes
 its deferred negative example mandatory at that checkpoint.** Reachability is cumulative
-by design, so a container added later is seen. Two distinct deferral classes exist and
-only the first lapses this way -- `non_instantiability` (no legal host yet) and
-`semantic_model_absence` (the discriminator does not exist yet, as with GOV-C-007 before
-`AuthorizedActor`).
+by design, so a container added later is seen.
+
+Three deferral classes exist and **only the first lapses automatically**:
+
+- `non_instantiability` -- the rule is written and correct, but no legal host exists yet.
+  Giving the affected concept a container expires the deferral, and the gate enforces it.
+- `semantic_model_absence` -- the discriminator itself does not exist, as with GOV-C-007
+  before `AuthorizedActor`. Introducing that semantics makes the constraint *implementable*,
+  not *active*. Nothing will notice; the checkpoint that adds it must reclassify it
+  deliberately.
+- `literal_example_substitution` -- the mechanism is proven, but the frozen negative example
+  named a concept allocated to a later checkpoint, so an equivalent was substituted. The
+  literal example must be re-run against the unchanged mechanism when that concept lands.
+
+The second and third fail by not firing, which is indistinguishable from compliance. A
+deferral that has outlived its justification leaves every gate green.
 
 ## Metric integrity
 

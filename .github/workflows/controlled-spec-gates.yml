@@ -32,6 +32,9 @@ jobs:
       - name: Check workspace constraints
         run: python tools/repo/check_workspace_location.py --enforce
 
+      - name: Check session controls describe the controls that exist
+        run: python tools/spec/check_session_controls.py
+
       - name: Check controlled HLR mirror
         run: python tools/mps/build_hlr_import_bundle.py --check
 
@@ -70,6 +73,9 @@ jobs:
 
       - name: Check constructed component, requirement, and sub-requirement records
         run: python tools/spec/check_construction_records.py
+
+      - name: Check session controls are current
+        run: python tools/spec/check_session_controls.py
 
       - name: Check controlled specification reconciliation
         run: python tools/spec/check_controlled_specs.py

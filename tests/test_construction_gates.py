@@ -355,3 +355,74 @@ class ConceptCountingTests(unittest.TestCase):
     def test_unresolvable_registry_fails_closed(self) -> None:
         with self.assertRaisesRegex(ValueError, "cannot be verified"):
             trace_graph.count_declared_concepts(self.UNRESOLVABLE)
+
+
+class SessionControlsGateTests(unittest.TestCase):
+    """CLAUDE.md is read first by every session and overrides default behaviour, so a
+    stale copy makes a session reconstruct removed controls while every other gate
+    stays green. Each assertion is driven with the drift it exists to catch."""
+
+    def setUp(self) -> None:
+        sys.path.insert(0, str(REPO_ROOT / "tools" / "spec"))
+        import check_session_controls
+
+        self.gate = check_session_controls
+        self.original = self.gate.CONTROLS_PATH.read_text(encoding="utf-8")
+
+    def tearDown(self) -> None:
+        self.gate.CONTROLS_PATH.write_text(self.original, encoding="utf-8", newline="\n")
+
+    def _mutate(self, old: str, new: str) -> list[str]:
+        self.assertIn(old, self.original, "fixture anchor missing from CLAUDE.md")
+        self.gate.CONTROLS_PATH.write_text(
+            self.original.replace(old, new, 1), encoding="utf-8", newline="\n"
+        )
+        return self.gate.check()[0]
+
+    def test_current_file_passes(self) -> None:
+        self.assertEqual([], self.gate.check()[0])
+
+    def test_dropping_a_checkpoint_is_rejected(self) -> None:
+        errors = self._mutate("    MPS-4  realization", "    XXX-4  realization")
+        self.assertTrue(any("describes checkpoints" in e for e in errors))
+
+    def test_claiming_an_open_checkpoint_is_closed_is_rejected(self) -> None:
+        errors = self._mutate(
+            "    MPS-2  clinical intent + roles.common",
+            "    MPS-2  clinical intent + roles.common               closed",
+        )
+        self.assertTrue(any("marks MPS-2 closed" in e for e in errors))
+
+    def test_prescribing_a_missing_script_is_rejected(self) -> None:
+        errors = self._mutate(
+            "python tools/mps/check_role_ontology.py",
+            "python tools/mps/check_nonexistent_thing.py",
+        )
+        self.assertTrue(any("script is missing" in e for e in errors))
+
+    def test_citing_a_missing_path_is_rejected(self) -> None:
+        errors = self._mutate(
+            "`mps/bootstrap/mps2-role-ontology.yaml`",
+            "`mps/bootstrap/does-not-exist.yaml`",
+        )
+        self.assertTrue(any("path that does not exist" in e for e in errors))
+
+    def test_unexplained_deferral_class_is_rejected(self) -> None:
+        errors = self._mutate("`literal_example_substitution`", "`some_other_class`")
+        self.assertTrue(any("literal_example_substitution" in e for e in errors))
+
+    def test_retired_invocation_is_rejected(self) -> None:
+        errors = self._mutate(
+            "python tools/mps/check_module_graph.py --checkpoint MPS-N",
+            "python tools/mps/check_module_graph.py --max-concepts <checkpoint bound>",
+        )
+        self.assertTrue(any("still prescribes" in e for e in errors))
+
+    def test_checklist_and_plan_gate_agree_on_checkpoints(self) -> None:
+        self.assertEqual(self.gate.plan_checkpoints(), self.gate.gate_checkpoints())
+
+    def test_closure_is_derived_from_acceptance_state(self) -> None:
+        closed = self.gate.closed_checkpoints()
+        self.assertIn("MPS-0", closed)
+        self.assertIn("MPS-1", closed)
+        self.assertNotIn("MPS-2", closed)
