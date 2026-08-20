@@ -24,6 +24,7 @@ import argparse
 import json
 import re
 import sys
+import xml.etree.ElementTree as ElementTree
 from pathlib import Path
 
 
@@ -34,7 +35,15 @@ LANGUAGES_ROOT = PROJECT_ROOT / "languages"
 
 NAMESPACE_RE = re.compile(r'namespace="([^"]+)"')
 MODULE_REF_RE = re.compile(r"\(([^)]+)\)")
-NODE_RE = re.compile(r"<node ")
+# A structure aspect represents every element as <node>: a ConceptDeclaration is one,
+# and so is each of its properties, children, and references. Counting raw <node>
+# elements therefore counts features, not concepts, and overshoots by roughly an order
+# of magnitude. The registry maps a per-file index alias to each concept type, so the
+# declarations are resolved through it instead.
+CONCEPT_DECLARATION_TYPES = {
+    "jetbrains.mps.lang.structure.structure.ConceptDeclaration",
+    "jetbrains.mps.lang.structure.structure.InterfaceConceptDeclaration",
+}
 
 
 def block(text: str, tag: str) -> str:
@@ -63,12 +72,49 @@ def read_modules() -> dict[str, dict[str, set[str]]]:
     return modules
 
 
-def concept_counts() -> dict[str, int]:
-    counts: dict[str, int] = {}
+def concept_declaration_indices(root: ElementTree.Element) -> set[str]:
+    """Resolve the index aliases this file uses for concept declarations."""
+    indices: set[str] = set()
+    for registry in root.iter("registry"):
+        for language in registry.iter("language"):
+            for concept in language.findall("concept"):
+                if concept.get("name") in CONCEPT_DECLARATION_TYPES:
+                    index = concept.get("index")
+                    if index:
+                        indices.add(index)
+    return indices
+
+
+def count_declared_concepts(text: str) -> tuple[int, int]:
+    """Return (concept declarations, total nodes) for one structure aspect."""
+    root = ElementTree.fromstring(text)
+    nodes = list(root.iter("node"))
+    if not nodes:
+        return 0, 0
+    indices = concept_declaration_indices(root)
+    if not indices:
+        # Nodes exist but no concept declaration type is registered. The count cannot
+        # be verified, so fail closed rather than reporting a reassuring zero.
+        raise ValueError(
+            "structure aspect contains nodes but registers no ConceptDeclaration "
+            "index; concept count cannot be verified"
+        )
+    declared = sum(1 for node in nodes if node.get("concept") in indices)
+    return declared, len(nodes)
+
+
+def concept_counts() -> tuple[dict[str, int], dict[str, int]]:
+    concepts: dict[str, int] = {}
+    nodes: dict[str, int] = {}
     for structure in sorted(LANGUAGES_ROOT.glob("*/models/*.structure.mps")):
         name = structure.name.removesuffix(".structure.mps")
-        counts[name] = len(NODE_RE.findall(structure.read_text(encoding="utf-8")))
-    return counts
+        try:
+            declared, total = count_declared_concepts(structure.read_text(encoding="utf-8"))
+        except ElementTree.ParseError as exc:
+            raise ValueError(f"{structure} is not parseable: {exc}") from exc
+        concepts[name] = declared
+        nodes[name] = total
+    return concepts, nodes
 
 
 def find_cycle(graph: dict[str, set[str]]) -> list[str]:
@@ -146,15 +192,16 @@ def check(max_concepts: int | None) -> tuple[list[str], dict[str, object]]:
     if cycle:
         errors.append(f"module dependency cycle: {' -> '.join(cycle)}")
 
-    counts = concept_counts()
+    counts, node_counts = concept_counts()
     missing_aspects = sorted(set(expected) - set(counts))
     if missing_aspects:
         errors.append(f"languages without a structure aspect: {missing_aspects}")
 
     total_concepts = sum(counts.values())
+    total_nodes = sum(node_counts.values())
     if max_concepts is not None and total_concepts > max_concepts:
         errors.append(
-            f"structure aspects hold {total_concepts} concept nodes, but this checkpoint "
+            f"structure aspects declare {total_concepts} concepts, but this checkpoint "
             f"permits at most {max_concepts}"
         )
 
@@ -162,6 +209,7 @@ def check(max_concepts: int | None) -> tuple[list[str], dict[str, object]]:
         "modules": modules,
         "concepts": counts,
         "total_concepts": total_concepts,
+        "total_nodes": total_nodes,
         "acyclic": not cycle,
     }
     return errors, summary
@@ -184,7 +232,8 @@ def main() -> int:
         return 1
     print(
         f"PASS: {len(summary['modules'])} language modules match the blueprint dependency "
-        f"graph; acyclic; {summary['total_concepts']} concept nodes in structure aspects"
+        f"graph; acyclic; {summary['total_concepts']} concepts declared across "
+        f"{summary['total_nodes']} structure nodes"
     )
     for name in sorted(summary["modules"]):
         relations = summary["modules"][name]

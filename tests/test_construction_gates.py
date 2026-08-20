@@ -18,6 +18,8 @@ sys.path.insert(0, str(REPO_ROOT / "tools"))
 sys.path.insert(0, str(REPO_ROOT / "tools" / "spec"))
 
 import build_trace_graph as trace  # noqa: E402
+sys.path.insert(0, str(REPO_ROOT / "tools" / "mps"))
+import check_module_graph as trace_graph  # noqa: E402
 from mps.schema_subset import validate_json_schema  # noqa: E402
 
 SCHEMA_DIR = REPO_ROOT / "spec" / "schemas"
@@ -284,3 +286,72 @@ class ConstructionSchemaTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ConceptCountingTests(unittest.TestCase):
+    """A structure aspect represents features as nodes too, so counting raw <node>
+    elements counts features rather than concepts. These fixtures mirror the MPS
+    persistence-9 layout: a registry mapping index aliases to concept types, then
+    nodes referencing those aliases."""
+
+    EMPTY = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<model ref="r:x(nltps.foundation.structure)">'
+        '<persistence version="9" /><languages /><imports /><registry />'
+        "</model>"
+    )
+
+    # Two concepts carrying seven feature nodes between them.
+    POPULATED = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<model ref="r:x(nltps.foundation.structure)">'
+        '<persistence version="9" />'
+        "<registry>"
+        '<language id="c72da2b9" name="jetbrains.mps.lang.structure">'
+        '<concept id="1071489090640"'
+        ' name="jetbrains.mps.lang.structure.structure.ConceptDeclaration"'
+        ' flags="ig" index="1TIwiD" />'
+        '<concept id="1071489288299"'
+        ' name="jetbrains.mps.lang.structure.structure.PropertyDeclaration"'
+        ' flags="ig" index="1TJgyj" />'
+        '<concept id="1071489288298"'
+        ' name="jetbrains.mps.lang.structure.structure.LinkDeclaration"'
+        ' flags="ig" index="1TJgyi" />'
+        "</language></registry>"
+        '<node concept="1TIwiD" id="1"><property role="n" value="GovernedElement" />'
+        '<node concept="1TJgyj" id="2" /><node concept="1TJgyj" id="3" />'
+        '<node concept="1TJgyi" id="4" /><node concept="1TJgyi" id="5" /></node>'
+        '<node concept="1TIwiD" id="6"><node concept="1TJgyj" id="7" />'
+        '<node concept="1TJgyi" id="8" /><node concept="1TJgyi" id="9" /></node>'
+        "</model>"
+    )
+
+    # Nodes present but no ConceptDeclaration registered: unverifiable, must fail closed.
+    UNRESOLVABLE = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<model ref="r:x(nltps.foundation.structure)">'
+        "<registry />"
+        '<node concept="unknown" id="1" />'
+        "</model>"
+    )
+
+    def test_empty_aspect_counts_zero(self) -> None:
+        self.assertEqual((0, 0), trace_graph.count_declared_concepts(self.EMPTY))
+
+    def test_features_are_not_counted_as_concepts(self) -> None:
+        declared, nodes = trace_graph.count_declared_concepts(self.POPULATED)
+        self.assertEqual(2, declared)
+        self.assertEqual(9, nodes)
+        # The defect this replaces: the raw node count would have reported 9 concepts
+        # and tripped a ceiling of 30 after roughly seven real concepts.
+        self.assertGreater(nodes, declared)
+
+    def test_ceiling_compares_against_declarations_not_nodes(self) -> None:
+        declared, nodes = trace_graph.count_declared_concepts(self.POPULATED)
+        ceiling = 3
+        self.assertLessEqual(declared, ceiling)
+        self.assertGreater(nodes, ceiling)
+
+    def test_unresolvable_registry_fails_closed(self) -> None:
+        with self.assertRaisesRegex(ValueError, "cannot be verified"):
+            trace_graph.count_declared_concepts(self.UNRESOLVABLE)
