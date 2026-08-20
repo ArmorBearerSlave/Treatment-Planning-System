@@ -35,8 +35,13 @@ def validate_concept_collections(languages: list[dict[str, object]]) -> tuple[li
             errors.append(f"{name} has duplicate root concepts")
         if len(non_roots) != len(set(non_roots)):
             errors.append(f"{name} has duplicate non-root concepts")
-        if not roots:
-            errors.append(f"{name} has no root concepts")
+        if not roots and not non_roots:
+            # An infrastructure language may declare no root: it supplies abstract bases
+            # and holders, and the languages that EXTEND it declare the concrete rootable
+            # concepts. Requiring a root here would force an abstract base to be marked
+            # rootable, advertising a root nobody can instantiate. A language with no
+            # concepts at all is still a defect.
+            errors.append(f"{name} declares no concepts at all")
         if not non_roots:
             errors.append(f"{name} has no non-root concepts")
         for concept in roots + non_roots:

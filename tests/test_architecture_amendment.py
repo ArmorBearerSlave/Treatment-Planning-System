@@ -133,10 +133,10 @@ class StagedInventoryTests(unittest.TestCase):
             for label in ("MPS-1", "MPS-2", "MPS-3", "MPS-4")
         }
 
-    def test_staged_inventory_is_forty_sixtyeight_eighty_ninetyseven(self) -> None:
+    def test_staged_inventory_matches_the_frozen_allocation(self) -> None:
         self.assertEqual(
             self.ceilings(),
-            {"MPS-1": 40, "MPS-2": 68, "MPS-3": 80, "MPS-4": 97},
+            {"MPS-1": 40, "MPS-2": 66, "MPS-3": 78, "MPS-4": 95},
         )
 
     def test_every_checkpoint_ceiling_is_strictly_larger_than_the_last(self) -> None:
@@ -171,6 +171,104 @@ class StagedInventoryTests(unittest.TestCase):
             graph.declared_checkpoints(blueprint),
             ["MPS-0", "MPS-1", "MPS-2", "MPS-3", "MPS-4"],
         )
+
+
+class FrozenRoleOntologyTests(unittest.TestCase):
+    """The MPS-2 role shape, frozen before the feature specification is drafted."""
+
+    def blueprint(self) -> dict:
+        return json.loads(graph.BLUEPRINT_PATH.read_text(encoding="utf-8"))
+
+    def language(self, name: str) -> dict:
+        return next(e for e in self.blueprint()["languages"] if e["name"] == name)
+
+    def test_superseded_role_and_permission_are_gone(self) -> None:
+        names = self.language("nltps.clinicalintent")["non_root_concepts"]
+        # ProfessionalRole and OperationalRole replace Role; RoleCapability replaces
+        # Permission. Keeping the old names would leave concepts with no semantics.
+        self.assertNotIn("Role", names)
+        self.assertNotIn("Permission", names)
+
+    def test_clinicalintent_carries_the_authorization_model(self) -> None:
+        entry = self.language("nltps.clinicalintent")
+        names = set(entry["root_concepts"]) | set(entry["non_root_concepts"])
+        for required in (
+            "ProfessionalRole",
+            "OperationalRole",
+            "RoleCapability",
+            "AuthorizedActor",
+            "AuthorityPolicy",
+            "ActionDefinition",
+            "WorkflowState",
+        ):
+            self.assertIn(required, names, required)
+        self.assertEqual(len(names), 20)
+
+    def test_roles_common_is_exactly_the_frozen_six(self) -> None:
+        entry = self.language("nltps.roles.common")
+        self.assertEqual(
+            entry["non_root_concepts"],
+            [
+                "RoleProjection",
+                "RoleCommand",
+                "SemanticTargetRef",
+                "ActionRef",
+                "WorkflowStateRef",
+                "OperationalRoleRef",
+            ],
+        )
+        self.assertNotIn("CapabilityRef", entry["non_root_concepts"])
+
+    def test_roles_common_declares_no_root(self) -> None:
+        # An infrastructure language supplies abstract bases and holders only. Marking an
+        # abstract base rootable would advertise a root nobody can instantiate: no MPS
+        # platform concept is both abstract and rootable.
+        self.assertEqual(self.language("nltps.roles.common")["root_concepts"], [])
+
+    def test_authorization_model_needs_no_roles_common_dependency(self) -> None:
+        # RoleCapability is atomic, so clinicalintent never contains a roles.common
+        # holder. The reverse edge would close a cycle against roles.common's DEFAULT
+        # dependency on clinicalintent.
+        deps = {
+            d["module"] for d in self.language("nltps.clinicalintent")["dependencies"]
+        }
+        self.assertNotIn("nltps.roles.common", deps)
+
+    def test_clinicalintent_may_not_contain_a_roles_common_concept(self) -> None:
+        closure = features.extends_closure(self.blueprint())
+        permitted = {"nltps.clinicalintent"} | closure["nltps.clinicalintent"]
+        self.assertNotIn("nltps.roles.common", permitted)
+
+    def test_language_with_no_concepts_at_all_is_still_rejected(self) -> None:
+        # Relaxing the root requirement must not let an empty language through.
+        sys.path.insert(0, str(REPO_ROOT / "tools" / "mps"))
+        import check_language_skeleton as skeleton
+
+        errors, _ = skeleton.validate_concept_collections(
+            [{"name": "nltps.empty", "root_concepts": [], "non_root_concepts": []}]
+        )
+        self.assertTrue(
+            any("declares no concepts at all" in e for e in errors),
+            f"an empty language must still fail, got {errors}",
+        )
+
+    def test_infrastructure_language_without_a_root_is_accepted(self) -> None:
+        sys.path.insert(0, str(REPO_ROOT / "tools" / "mps"))
+        import check_language_skeleton as skeleton
+
+        errors, _ = skeleton.validate_concept_collections(
+            [{
+                "name": "nltps.holders",
+                "root_concepts": [],
+                "non_root_concepts": ["BaseThing", "ThingRef"],
+            }]
+        )
+        self.assertEqual(errors, [])
+
+    def test_professional_language_may_contain_a_roles_common_holder(self) -> None:
+        closure = features.extends_closure(self.blueprint())
+        permitted = {"nltps.roles.radonc"} | closure["nltps.roles.radonc"]
+        self.assertIn("nltps.roles.common", permitted)
 
 
 class TransitiveExtendsTests(unittest.TestCase):

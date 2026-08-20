@@ -133,7 +133,7 @@
       "external_explicit": [],
       "owns": [
         "PlanIntent definition",
-        "roles, permissions, and modes",
+        "professional and operational roles, atomic role capabilities, authorized actors",
         "state transitions and computable rules",
         "release profiles and commissioned-use envelopes"
       ],
@@ -148,8 +148,6 @@
         "ClinicalObjectType",
         "ConstraintDefinition",
         "RobustnessScenarioDefinition",
-        "Role",
-        "Permission",
         "OperatingMode",
         "WorkflowState",
         "StateTransition",
@@ -244,22 +242,22 @@
       ],
       "external_explicit": [],
       "owns": [
-        "shared reference-holder concepts for the professional projections",
-        "shared projection command vocabulary"
+        "abstract projection and command bases for the professional languages",
+        "single-reference holder concepts that give the projection DSL its set semantics"
       ],
-      "root_concepts": [
-        "RoleProjectionCatalog"
-      ],
+      "root_concepts": [],
       "non_root_concepts": [
-        "RoleRef",
-        "CapabilityRef",
+        "RoleProjection",
+        "RoleCommand",
+        "SemanticTargetRef",
         "ActionRef",
         "WorkflowStateRef",
-        "ProjectionCommand"
+        "OperationalRoleRef"
       ],
       "required_constraints": [
         "a projection may contain only concepts owned by itself or an EXTENDS ancestor",
-        "semantic-core concepts are referenced, never contained"
+        "semantic-core concepts are referenced through a holder, never contained",
+        "each holder carries exactly one scalar reference"
       ]
     },
     {
