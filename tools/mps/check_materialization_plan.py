@@ -138,24 +138,79 @@ def check() -> list[str]:
     # affected concept really is unreachable. Once some checkpoint gives it a
     # container, the deferral has to expire and the deferred negative example has to
     # be run, so the gate fails until the record is cleared.
-    unreachable = set(compute_reachability()["unreachable"])
+    reach = compute_reachability()
+    unreachable = set(reach["unreachable"])
+    known_items = {entry["id"] for entry in items}
+    # Every concept any specification declares, used to detect that a semantic dependency
+    # has arrived even though nothing lapses automatically on it.
+    declared_concepts = set(reach["concepts"])
+
     for item in items:
         for deferral in item.get("scoped_exclusions", []) or []:
-            if deferral.get("deferral_class") != "non_instantiability":
-                continue
             label = deferral.get("constraint") or deferral.get("representation_proof")
-            concept = deferral.get("affected_concept")
-            if not concept:
-                errors.append(
-                    f"{item['id']}: non-instantiability deferral {label!r} does not name "
-                    f"an affected_concept; the lapse rule cannot be evaluated"
-                )
-            elif concept not in unreachable:
-                errors.append(
-                    f"{item['id']}: deferral {label!r} is still active but its affected "
-                    f"concept {concept} is now reachable from a root; run the deferred "
-                    f"negative example and clear the deferral"
-                )
+            klass = deferral.get("deferral_class")
+
+            if klass == "non_instantiability":
+                concept = deferral.get("affected_concept")
+                lapsed = deferral.get("lapsed_at")
+                carried = deferral.get("carried_to")
+                if not concept:
+                    errors.append(
+                        f"{item['id']}: non-instantiability deferral {label!r} does not name "
+                        f"an affected_concept; the lapse rule cannot be evaluated"
+                    )
+                elif lapsed:
+                    # A lapse is an auditable transition, never a deletion: the obligation
+                    # has to land somewhere, and it must not be declared before it is true.
+                    if concept in unreachable:
+                        errors.append(
+                            f"{item['id']}: deferral {label!r} is recorded as lapsed at "
+                            f"{lapsed}, but {concept} is still unreachable; a deferral may "
+                            f"not lapse before its affected concept has a containment path"
+                        )
+                    if not carried:
+                        errors.append(
+                            f"{item['id']}: deferral {label!r} lapsed at {lapsed} without a "
+                            f"carried_to acceptance item; a lapsed obligation must land on a "
+                            f"named checkpoint, not simply disappear"
+                        )
+                    elif carried not in known_items:
+                        errors.append(
+                            f"{item['id']}: deferral {label!r} is carried to {carried}, "
+                            f"which is not an acceptance item"
+                        )
+                elif concept not in unreachable:
+                    errors.append(
+                        f"{item['id']}: deferral {label!r} is still active but its affected "
+                        f"concept {concept} is now reachable from a root; run the deferred "
+                        f"negative example and clear the deferral"
+                    )
+
+            elif klass == "semantic_model_absence":
+                # This class never lapses on reachability, which is exactly why it can rot
+                # unnoticed. The gate cannot make the transition, but it can refuse to stay
+                # quiet once the missing semantics have arrived.
+                needed = deferral.get("reactivation_concept")
+                reactivated = deferral.get("status", "").startswith("reactivated")
+                if needed and needed in declared_concepts and not reactivated:
+                    errors.append(
+                        f"{item['id']}: deferral {label!r} was justified by the absence of "
+                        f"{needed}, which is now declared. This class does not lapse "
+                        f"automatically: reclassify it deliberately as an active obligation "
+                        f"and name what realizes it"
+                    )
+                if reactivated:
+                    if not deferral.get("realized_by"):
+                        errors.append(
+                            f"{item['id']}: deferral {label!r} is reactivated without naming "
+                            f"realized_by; an active obligation must say what discharges it"
+                        )
+                    carried = deferral.get("carried_to")
+                    if carried and carried not in known_items:
+                        errors.append(
+                            f"{item['id']}: deferral {label!r} is carried to {carried}, "
+                            f"which is not an acceptance item"
+                        )
 
     for path in plan.get("controlled_inputs", []):
         if not (REPO_ROOT / path).exists():

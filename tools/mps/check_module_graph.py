@@ -375,7 +375,10 @@ def main() -> int:
     )
     parser.add_argument(
         "--explain",
-        action="store_true",
+        nargs="?",
+        const=True,
+        default=False,
+        metavar="MPS-N",
         help=(
             "print the checkpoint to inventory to ceiling derivation and exit, without "
             "asserting that the languages are present on disk; with --checkpoint it "
@@ -390,7 +393,16 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 2
-        return explain(args.checkpoint)
+        # Accepts the checkpoint either as its own value or from --checkpoint, so
+        # `--explain MPS-2` and `--checkpoint MPS-2 --explain` mean the same thing.
+        wanted = args.explain if isinstance(args.explain, str) else args.checkpoint
+        if wanted is not None and args.checkpoint is not None and wanted != args.checkpoint:
+            print(
+                f"ERROR: --explain {wanted} contradicts --checkpoint {args.checkpoint}",
+                file=sys.stderr,
+            )
+            return 2
+        return explain(wanted)
     if args.checkpoint is not None and args.max_concepts is not None:
         # Preferring one silently would hide which number the run actually enforced.
         print(

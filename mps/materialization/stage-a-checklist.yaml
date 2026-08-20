@@ -260,8 +260,18 @@ acceptance_items:
         FND-C-001, FND-C-002, FND-C-003, FND-C-004, GOV-C-001, GOV-C-002, GOV-C-003,
         GOV-C-004, GOV-C-005, GOV-C-006, GOV-C-007
       proven: 8
-      semantic_deferral: 1
-      proof_deferral_non_instantiability: 2
+      semantic_deferral: 0
+      proof_deferral_non_instantiability: 0
+      reactivated_at_mps2: 1
+      lapsed_at_mps2: 2
+      transition_note: >-
+        As frozen at MPS-1 this read 8 proven, 1 semantic deferral, 2 non-instantiability
+        proof deferrals. The MPS-2 feature specification gave PhysicalQuantity and
+        ExternalReference containment paths and declared AuthorizedActor, so FND-C-003 and
+        FND-C-004 lapsed and GOV-C-007 was reactivated. All three are now active obligations
+        carried to MPS-MAT-005B. MPS-1's acceptance is unchanged: it was granted with those
+        deferrals in force, and that remains a true statement about what was demonstrated
+        then.
       note: >-
         Representation-proof obligations under property_facet_policy are tracked
         separately and are not counted as controlled constraint identifiers. The
@@ -283,7 +293,29 @@ acceptance_items:
     scoped_exclusions:
       - constraint: GOV-C-007
         deferral_class: semantic_model_absence
-        status: deferred, not implemented
+        status: reactivated at MPS-2, active proof obligation
+        reactivation_concept: AuthorizedActor
+        reactivated_at: MPS-2
+        realized_by: CLI-C-005
+        carried_to: MPS-MAT-005B
+        transition_rationale: >-
+          The deferral was justified by the absence of actor semantics. AuthorizedActor and
+          ActionDefinition.autonomyLevel are declared in mps2-concept-features.yaml, so that
+          justification no longer holds. semantic_model_absence does not lapse on
+          reachability, so this reclassification is deliberate and human-made; the gate now
+          refuses to stay quiet once the named concept is declared, but it cannot make the
+          transition itself.
+        realized_in_clinicalintent_because: >-
+          The predicate reads AuthorizedActor and ActionDefinition.autonomyLevel, both
+          clinicalintent concepts. governance declares no dependency on clinicalintent, so a
+          governance rule cannot read them; placing it there would invert the acyclic
+          direction. GOV-C-007 keeps its identifier and traceability while CLI-C-005
+          discharges it.
+        active_means: >-
+          Required, not demonstrated. The behavioural proof belongs to MPS-2 materialization
+          and includes four separate non-human rejections and one authorized-human
+          acceptance.
+        prior_status: deferred, not implemented
         reason: >-
           The actor semantics required to distinguish human authority from a model node,
           a generator, or an automated actor do not yet exist in the current metamodel.
@@ -319,6 +351,13 @@ acceptance_items:
 
       - constraint: FND-C-003
         deferral_class: non_instantiability
+        lapsed_at: MPS-2
+        carried_to: MPS-MAT-005B
+        lapse_trigger: >-
+          ConstraintDefinition.limit gives PhysicalQuantity a containment path: PlanIntentDefinition -> constraints -> ConstraintDefinition -> limit.
+        lapse_note: >-
+          Recorded rather than deleted. The MPS-1 acceptance was granted with this deferral
+          in force and that history stands; the obligation has moved, not vanished.
         affected_concept: PhysicalQuantity
         status: >-
           implemented, type-checks, generates, not behaviorally proven in MPS-1 because
@@ -343,6 +382,13 @@ acceptance_items:
 
       - constraint: FND-C-004
         deferral_class: non_instantiability
+        lapsed_at: MPS-2
+        carried_to: MPS-MAT-005B
+        lapse_trigger: >-
+          ConstraintDefinition.limit gives PhysicalQuantity a containment path: PlanIntentDefinition -> constraints -> ConstraintDefinition -> limit.
+        lapse_note: >-
+          Recorded rather than deleted. The MPS-1 acceptance was granted with this deferral
+          in force and that history stands; the obligation has moved, not vanished.
         affected_concept: PhysicalQuantity
         status: >-
           implemented, type-checks, generates, not behaviorally proven in MPS-1 because
@@ -367,6 +413,13 @@ acceptance_items:
 
       - representation_proof: PhysicalQuantity.magnitude
         deferral_class: non_instantiability
+        lapsed_at: MPS-2
+        carried_to: MPS-MAT-005B
+        lapse_trigger: >-
+          ConstraintDefinition.limit gives PhysicalQuantity a containment path.
+        lapse_note: >-
+          Recorded rather than deleted. The MPS-1 acceptance was granted with this deferral
+          in force and that history stands; the obligation has moved, not vanished.
         affected_concept: PhysicalQuantity
         property: magnitude
         governing_policy: property_facet_policy
@@ -388,6 +441,13 @@ acceptance_items:
 
       - representation_proof: ExternalReference.retrievedDate
         deferral_class: non_instantiability
+        lapsed_at: MPS-2
+        carried_to: MPS-MAT-005B
+        lapse_trigger: >-
+          EvidenceProfile.citations gives ExternalReference a containment path: ReleaseProfile -> evidenceProfiles -> EvidenceProfile -> citations.
+        lapse_note: >-
+          Recorded rather than deleted. The MPS-1 acceptance was granted with this deferral
+          in force and that history stands; the obligation has moved, not vanished.
         affected_concept: ExternalReference
         property: retrievedDate
         governing_policy: property_facet_policy
@@ -435,16 +495,44 @@ acceptance_items:
       model tests pass, including demonstrated rejection of deliberately invalid nodes.
     status: pending
     evidence: []
-    carries_forward:
-      - >-
-        GOV-C-007 becomes reactivatable here because AuthorizedActor is introduced at
-        this checkpoint. Its deferral may not be closed without the demonstrated
-        rejection its acceptance wording requires.
-      - >-
-        If PhysicalQuantity or ExternalReference becomes reachable at this checkpoint,
-        the corresponding non_instantiability deferrals recorded against MPS-MAT-005A
-        expire automatically and their deferred negative examples must be exercised
-        before this item may close.
+    inherited_obligations_note: >-
+      These arrived from MPS-MAT-005A when the MPS-2 feature specification was frozen.
+      None may be closed without the demonstrated rejection its wording requires; each is
+      required, not demonstrated.
+    inherited_obligations:
+      - constraint: GOV-C-007
+        arrived_by: deliberate reclassification, semantic_model_absence does not lapse
+        realized_by: CLI-C-005
+        proof: >-
+          Four separate rejections, one per non-human ActorKindEnum value, against an
+          ActionDefinition at A4_authorize_or_deliver, plus one positive control in which
+          an authorized HUMAN in a matching RoleCapability context is not falsely rejected.
+      - constraint: FND-C-003
+        arrived_by: deferral lapsed, PhysicalQuantity became reachable
+        proof: >-
+          A dose-bearing PhysicalQuantity referencing a unit of the wrong dimension is
+          rejected. The rule already exists and generates; only the instance was missing.
+      - constraint: FND-C-004
+        arrived_by: deferral lapsed, PhysicalQuantity became reachable
+        proof: >-
+          A PhysicalQuantity whose dose basis differs from its unit's dose basis is
+          rejected.
+      - representation_proof: PhysicalQuantity.magnitude
+        arrived_by: deferral lapsed
+        proof: A non-numeric magnitude is rejected; a numeric one is accepted.
+      - representation_proof: ExternalReference.retrievedDate
+        arrived_by: deferral lapsed, ExternalReference became reachable
+        proof: >-
+          Lexical and calendar validity are demonstrated separately, as they were for
+          Version at MPS-1, reusing the Version.isValidCalendarDate behavior method.
+    new_deferrals_expected:
+      - constraints: [ROL-C-002, ROL-C-003]
+        deferral_class: non_instantiability
+        affected_concepts: [RoleCommand, SemanticTargetRef]
+        reason: >-
+          roles.common declares no root, so no command or holder instance can exist until
+          the MPS-3 professional projections supply concrete rootable projections. The
+          shape prohibitions are enforced at gate level in the meantime.
   - id: MPS-MAT-005C
     checkpoint: MPS-3
     item: >-

@@ -36,7 +36,16 @@ BLUEPRINT_PATH = REPO_ROOT / "mps" / "bootstrap" / "language-skeleton.json"
 FEATURES_PATH = REPO_ROOT / "mps" / "bootstrap" / "mps1-concept-features.yaml"
 
 BUILTIN_SUPERCONCEPTS = {"BaseConcept"}
-PRIMITIVE_TYPES = {"string", "integer", "real", "boolean", "date"}
+# MPS offers exactly three primitive datatypes. real and date are deliberately absent:
+# MPS-1 declared them, discovered during materialization that no such primitive exists,
+# and resolved them to string carrying a pattern. Accepting them here would let the same
+# discovery recur at MPS-2 authoring time instead of at freeze time. A logical type that
+# differs from its storage type is recorded on the property as logical_type.
+PRIMITIVE_TYPES = {"string", "integer", "boolean"}
+UNREPRESENTABLE_PRIMITIVES = {
+    "real": "string carrying a numeric pattern",
+    "date": "string carrying a YYYY-MM-DD pattern plus a calendar-validity rule",
+}
 # MPS admits multi-cardinality only on children. A PropertyDeclaration has no
 # cardinality feature at all -- properties are single-valued -- and a reference
 # LinkDeclaration is 1 or 0..1, because multi-valued links are aggregations.
@@ -81,10 +90,30 @@ def extends_closure(blueprint: dict) -> dict[str, set[str]]:
     return closure
 
 
-def check() -> tuple[list[str], dict[str, int]]:
+def check(features_path: Path | None = None) -> tuple[list[str], dict[str, int]]:
+    """Validate one checkpoint's feature specification against the blueprint.
+
+    Only the named specification's languages are compared to the blueprint inventory, but
+    concept ownership and datatypes are resolved across every specification present. A
+    later checkpoint inherits from an earlier one -- an MPS-2 concept takes GovernedElement
+    as superconcept -- so resolving names against one file alone would report a legal
+    inheritance as an unknown concept.
+    """
     errors: list[str] = []
     blueprint = json.loads(BLUEPRINT_PATH.read_text(encoding="utf-8"))
-    features = yaml.safe_load(FEATURES_PATH.read_text(encoding="utf-8"))
+    target = features_path or FEATURES_PATH
+    features = yaml.safe_load(target.read_text(encoding="utf-8"))
+    # The specification under test is always visible, even when it is not on the standard
+    # glob path, so a caller may point this at any file and still get name resolution.
+    visible = load_features()
+    for language, body in features.get("languages", {}).items():
+        known = {c["name"] for c in visible["languages"].get(language, {}).get("concepts", [])}
+        slot = visible["languages"].setdefault(language, {"concepts": [], "constraints": []})
+        slot["concepts"].extend(c for c in body.get("concepts", []) if c["name"] not in known)
+    visible["datatypes"].extend(
+        d for d in features.get("datatypes", [])
+        if d["name"] not in {x["name"] for x in visible["datatypes"]}
+    )
 
     # One closure, two call sites: superconcept legality and containment legality.
     extends_targets = extends_closure(blueprint)
@@ -99,16 +128,21 @@ def check() -> tuple[list[str], dict[str, int]]:
     }
 
     spec_languages = features.get("languages", {})
-    declared_types = {item["name"] for item in features.get("datatypes", [])}
+    declared_types = {item["name"] for item in visible.get("datatypes", [])}
     used_types: set[str] = set()
 
+    # Ownership spans specifications; duplicate ownership within one is still a defect.
     concept_owner: dict[str, str] = {}
+    for language, body in visible.get("languages", {}).items():
+        for concept in body.get("concepts", []):
+            concept_owner[concept["name"]] = language
+    seen_here: dict[str, str] = {}
     for language, body in spec_languages.items():
         for concept in body.get("concepts", []):
             name = concept["name"]
-            if name in concept_owner:
-                errors.append(f"{name} is specified in {concept_owner[name]} and {language}")
-            concept_owner[name] = language
+            if name in seen_here:
+                errors.append(f"{name} is specified in {seen_here[name]} and {language}")
+            seen_here[name] = language
 
     counts = {"concepts": 0, "constraints": 0, "languages": len(spec_languages)}
 
@@ -160,6 +194,12 @@ def check() -> tuple[list[str], dict[str, int]]:
                     pass
                 elif kind in declared_types:
                     used_types.add(kind)
+                elif kind in UNREPRESENTABLE_PRIMITIVES:
+                    errors.append(
+                        f"{label}.{prop.get('name')} declares type {kind!r}, which MPS has "
+                        f"no primitive for; store it as "
+                        f"{UNREPRESENTABLE_PRIMITIVES[kind]} and record logical_type: {kind}"
+                    )
                 else:
                     errors.append(f"{label}.{prop.get('name')} has unknown type {kind!r}")
                 cardinality = prop.get("cardinality")
@@ -239,7 +279,8 @@ def check() -> tuple[list[str], dict[str, int]]:
                         f"{language}.{concept['name']} references unknown constraint {referenced}"
                     )
 
-    unused = sorted(declared_types - used_types)
+    own_types = {item["name"] for item in features.get("datatypes", [])}
+    unused = sorted(own_types - used_types)
     if unused:
         errors.append(f"declared datatypes never used: {unused}")
 
@@ -341,17 +382,30 @@ def compute_reachability(features: dict | None = None) -> dict[str, object]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.parse_args()
-    errors, counts = check()
-    if errors:
-        print("ERROR: concept feature specification gate failed", file=sys.stderr)
-        for error in errors:
-            print(f"- {error}", file=sys.stderr)
+    total = {"concepts": 0, "constraints": 0, "languages": 0}
+    failed = False
+    for spec in feature_specs():
+        errors, counts = check(spec)
+        if errors:
+            failed = True
+            print(
+                f"ERROR: concept feature specification gate failed for {spec.name}",
+                file=sys.stderr,
+            )
+            for error in errors:
+                print(f"- {error}", file=sys.stderr)
+            continue
+        for key in total:
+            total[key] += counts[key]
+        print(
+            f"PASS: {spec.name}: {counts['concepts']} concepts across "
+            f"{counts['languages']} languages carry a feature specification; "
+            f"superconcepts respect EXTENDS discipline; {counts['constraints']} "
+            f"constraints realize every blueprint requirement"
+        )
+    if failed:
         return 1
-    print(
-        f"PASS: {counts['concepts']} concepts across {counts['languages']} languages carry "
-        f"a feature specification; superconcepts respect EXTENDS discipline; "
-        f"{counts['constraints']} constraints realize every blueprint requirement"
-    )
+    counts = total
     unreachable = compute_reachability()["unreachable"]
     if unreachable:
         # Reported, not failed: a concept with no containment path is a known and

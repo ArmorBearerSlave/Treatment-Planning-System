@@ -660,10 +660,20 @@ class CrossCheckpointReachabilityTests(unittest.TestCase):
             extra.write_text(json.dumps(spec), encoding="utf-8")
             return features.load_features([features.FEATURES_PATH, extra])
 
-    def test_both_concepts_are_unreachable_today(self) -> None:
+    def test_mps2_gave_both_deferred_concepts_a_host(self) -> None:
+        # Until the MPS-2 specification existed these were the two unreachable concepts and
+        # their deferrals were valid. ConstraintDefinition.limit and EvidenceProfile.citations
+        # changed that, which is what lapsed the deferrals.
+        unreachable = features.compute_reachability()["unreachable"]
+        self.assertNotIn("PhysicalQuantity", unreachable)
+        self.assertNotIn("ExternalReference", unreachable)
+
+    def test_only_the_rootless_projection_holders_remain_unreachable(self) -> None:
+        # roles.common declares no root by design; its concrete holders are correctly
+        # reported until MPS-3 supplies a rootable projection.
         self.assertEqual(
             features.compute_reachability()["unreachable"],
-            ["ExternalReference", "PhysicalQuantity"],
+            ["ActionRef", "OperationalRoleRef", "SemanticTargetRef", "WorkflowStateRef"],
         )
 
     def test_a_later_checkpoint_container_makes_the_concept_reachable(self) -> None:
@@ -679,11 +689,138 @@ class CrossCheckpointReachabilityTests(unittest.TestCase):
         self.assertIn("PhysicalQuantity", unreachable)
 
     def test_default_load_spans_every_present_specification(self) -> None:
-        # Today only MPS-1 exists; the union must still be exactly it.
         self.assertEqual(
             [p.name for p in features.feature_specs()],
-            ["mps1-concept-features.yaml"],
+            ["mps1-concept-features.yaml", "mps2-concept-features.yaml"],
         )
+
+    def test_a_later_specification_resolves_inherited_superconcepts(self) -> None:
+        # An MPS-2 concept takes GovernedElement, declared by MPS-1. Resolving names
+        # against one file alone would report a legal inheritance as unknown.
+        merged = features.load_features()
+        clinical = merged["languages"]["nltps.clinicalintent"]["concepts"]
+        supers = {c["superconcept"] for c in clinical}
+        self.assertEqual(supers, {"GovernedElement"})
+        owners = {
+            c["name"]
+            for body in merged["languages"].values()
+            for c in body["concepts"]
+        }
+        self.assertIn("GovernedElement", owners)
+
+
+class DeferralTransitionTests(unittest.TestCase):
+    """A lapse is an auditable transition; a semantic deferral must not rot unnoticed."""
+
+    def gate(self):
+        import check_materialization_plan as plan
+
+        return plan
+
+    def run_with(self, deferrals: list[dict], unreachable: list[str],
+                 concepts: list[str]) -> list[str]:
+        plan = self.gate()
+        import yaml as _yaml
+
+        document = _yaml.safe_load(plan.PLAN_PATH.read_text(encoding="utf-8"))
+        for entry in document["acceptance_items"]:
+            entry.pop("scoped_exclusions", None)
+        document["acceptance_items"][0]["scoped_exclusions"] = deferrals
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "plan.yaml"
+            path.write_text(_yaml.safe_dump(document), encoding="utf-8")
+            original_path = plan.PLAN_PATH
+            original_reach = plan.compute_reachability
+            plan.PLAN_PATH = path
+            plan.compute_reachability = lambda *a, **k: {
+                "unreachable": unreachable,
+                "concepts": {name: {} for name in concepts},
+            }
+            try:
+                errors = plan.check()
+            finally:
+                plan.PLAN_PATH = original_path
+                plan.compute_reachability = original_reach
+        return [e for e in errors if "deferral" in e]
+
+    def test_active_deferral_over_a_reachable_concept_fails(self) -> None:
+        errors = self.run_with(
+            [{"constraint": "X-1", "deferral_class": "non_instantiability",
+              "affected_concept": "Thing"}],
+            unreachable=[], concepts=["Thing"])
+        self.assertTrue(any("now reachable" in e for e in errors), errors)
+
+    def test_lapse_declared_before_the_concept_is_reachable_fails(self) -> None:
+        # Premature lapse is as wrong as a stale one, and easier to do by accident.
+        errors = self.run_with(
+            [{"constraint": "X-1", "deferral_class": "non_instantiability",
+              "affected_concept": "Thing", "lapsed_at": "MPS-2",
+              "carried_to": "MPS-MAT-005B"}],
+            unreachable=["Thing"], concepts=["Thing"])
+        self.assertTrue(any("may not lapse before" in e for e in errors), errors)
+
+    def test_lapse_without_a_destination_fails(self) -> None:
+        errors = self.run_with(
+            [{"constraint": "X-1", "deferral_class": "non_instantiability",
+              "affected_concept": "Thing", "lapsed_at": "MPS-2"}],
+            unreachable=[], concepts=["Thing"])
+        self.assertTrue(any("must land on a named checkpoint" in e for e in errors), errors)
+
+    def test_lapse_carried_to_an_unknown_item_fails(self) -> None:
+        errors = self.run_with(
+            [{"constraint": "X-1", "deferral_class": "non_instantiability",
+              "affected_concept": "Thing", "lapsed_at": "MPS-2",
+              "carried_to": "MPS-MAT-999"}],
+            unreachable=[], concepts=["Thing"])
+        self.assertTrue(any("not an acceptance item" in e for e in errors), errors)
+
+    def test_properly_lapsed_deferral_is_accepted(self) -> None:
+        errors = self.run_with(
+            [{"constraint": "X-1", "deferral_class": "non_instantiability",
+              "affected_concept": "Thing", "lapsed_at": "MPS-2",
+              "carried_to": "MPS-MAT-005B"}],
+            unreachable=[], concepts=["Thing"])
+        self.assertEqual(errors, [])
+
+    def test_semantic_deferral_rots_loudly_once_its_concept_arrives(self) -> None:
+        # The failure mode CLAUDE.md warns about: this class never lapses on reachability,
+        # so without a detector it stays green forever.
+        errors = self.run_with(
+            [{"constraint": "X-7", "deferral_class": "semantic_model_absence",
+              "reactivation_concept": "AuthorizedActor", "status": "deferred"}],
+            unreachable=[], concepts=["AuthorizedActor"])
+        self.assertTrue(any("does not lapse" in e for e in errors), errors)
+
+    def test_semantic_deferral_stays_quiet_while_its_concept_is_absent(self) -> None:
+        errors = self.run_with(
+            [{"constraint": "X-7", "deferral_class": "semantic_model_absence",
+              "reactivation_concept": "NotYetDeclared", "status": "deferred"}],
+            unreachable=[], concepts=["Something"])
+        self.assertEqual(errors, [])
+
+    def test_reactivated_deferral_must_name_what_discharges_it(self) -> None:
+        errors = self.run_with(
+            [{"constraint": "X-7", "deferral_class": "semantic_model_absence",
+              "reactivation_concept": "AuthorizedActor", "status": "reactivated at MPS-2"}],
+            unreachable=[], concepts=["AuthorizedActor"])
+        self.assertTrue(any("realized_by" in e for e in errors), errors)
+
+    def test_live_checklist_records_the_transitions(self) -> None:
+        import yaml as _yaml
+
+        plan = self.gate()
+        document = _yaml.safe_load(plan.PLAN_PATH.read_text(encoding="utf-8"))
+        item = next(i for i in document["acceptance_items"] if i["id"] == "MPS-MAT-005A")
+        by_label = {
+            (d.get("constraint") or d.get("representation_proof")): d
+            for d in item["scoped_exclusions"]
+        }
+        self.assertTrue(by_label["GOV-C-007"]["status"].startswith("reactivated"))
+        self.assertEqual(by_label["GOV-C-007"]["realized_by"], "CLI-C-005")
+        for label in ("FND-C-003", "FND-C-004", "PhysicalQuantity.magnitude",
+                      "ExternalReference.retrievedDate"):
+            self.assertEqual(by_label[label]["lapsed_at"], "MPS-2", label)
+            self.assertEqual(by_label[label]["carried_to"], "MPS-MAT-005B", label)
 
 
 class RoleOntologyFreezeTests(unittest.TestCase):

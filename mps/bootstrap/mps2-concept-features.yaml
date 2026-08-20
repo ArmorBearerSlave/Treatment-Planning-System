@@ -1,0 +1,958 @@
+schema_version: "0.1"
+register_id: MPS2-CF-001
+title: MPS-2 concept feature specification
+status: proposed_pending_accountable_review
+decision: ADR-001
+architecture_baseline: ENG-PKG-01-v0.6
+implementation_state: specification_not_live_mps_serialization
+
+purpose: >-
+  The blueprint names 26 concepts for clinical intent and the shared role holders but
+  stops at the name. This file fixes superconcept, rootability, properties, datatypes,
+  children, references, cardinalities, editors and constraints before the first concept
+  is created, so MPS-2 is transcription against a reviewed design rather than design at
+  the keyboard. It transcribes the ontology frozen in mps2-role-ontology.yaml and does
+  not reopen it.
+
+authority: >-
+  Proposed. Nothing here is approved, and creating a concept in MPS does not approve it.
+  Freezing fixes the shape the materialization session must transcribe; it makes no claim
+  of clinical correctness, risk acceptability, or approval.
+
+extends_discipline: >-
+  A concept may declare a superconcept only from its own language or from a language its
+  module declares with kind EXTENDS, resolved transitively. Every clinicalintent concept
+  roots in GovernedElement: clinical intent is a governed semantic layer, and identity,
+  version and lifecycle are not optional for it. The roles.common concepts root in
+  BaseConcept instead, because a projection presents governed state rather than being
+  governed state, and a holder is representation machinery with no identity of its own.
+
+representation_policy: >-
+  MPS offers three primitive datatypes: string, integer and boolean. There is no real and
+  no date. Where a logical type differs from its MPS storage type the property records
+  logical_type alongside the stored type, and the difference is enforced by a pattern in
+  the constraints aspect. This was discovered during MPS-1 materialization; the
+  specification gate now rejects real and date outright so the discovery cannot recur at
+  authoring time. CommissionedUseEnvelope.commissionedOn is the only MPS-2 property
+  affected.
+
+multiplicity_policy: >-
+  MPS properties are single-valued and MPS reference links are 1 or 0..1; only children
+  may be multi-valued. Two normalization strategies are used deliberately and must not be
+  merged. In the core authorization model multiplicity is real domain multiplicity: a
+  profession reaching many functions is many atomic RoleCapability nodes owned by
+  AuthorityPolicy. In the projection layer multiplicity is representation machinery: a
+  RoleCommand holds holder children, each carrying one scalar reference. No property or
+  reference in this specification is declared multi-valued.
+
+datatypes:
+- name: AutonomyLevelEnum
+  kind: enumeration
+  owner: nltps.clinicalintent
+  source: ConOps autonomy levels; mps2-role-ontology.yaml
+  values:
+  - A0_inform
+  - A1_draft
+  - A2_sandbox_execute
+  - A3_clinical_candidate
+  - A4_authorize_or_deliver
+  note: Distinct from AuthorityClassEnum, which is the evidence precedence tier and carries no autonomy
+    semantics. Conflating them is rejected by CLI-C-008.
+- name: ActorKindEnum
+  kind: enumeration
+  owner: nltps.clinicalintent
+  source: mps2-role-ontology.yaml; GOV-C-007 disallowed authority satisfiers
+  values:
+  - HUMAN
+  - SERVICE_ACCOUNT
+  - AUTOMATED_AGENT
+  - GENERATOR
+  - MODEL_NODE
+  note: 'Not collapsed to a boolean: GOV-C-007 names several distinct disallowed satisfiers, and a
+    diagnostic should be able to say which was attempted.'
+- name: ComparisonOperatorEnum
+  kind: enumeration
+  owner: nltps.clinicalintent
+  source: ConOps dose-constraint safety rule
+  values:
+  - lt
+  - le
+  - gt
+  - ge
+  - eq
+  note: A dose constraint without a comparison operator is semantically incomplete.
+languages:
+  nltps.clinicalintent:
+    concepts:
+    - name: PlanIntentDefinition
+      rootable: true
+      abstract: false
+      superconcept: GovernedElement
+      intent: 'File-per-root container declaring the clinical intent vocabulary: the object types
+        the model governs, the actions performable on them, the constraints and robustness scenarios
+        that qualify a plan, and the operating modes and computable rules that bound automation.'
+      source: ADR-001 clinical-intent allocation; ConOps PlanIntent
+      properties:
+      - name: name
+        type: string
+        cardinality: '1'
+      - name: aiCreatable
+        type: boolean
+        cardinality: '1'
+        default: false
+        note: Whether an automated agent may author instances of this definition. Gates the A4 prohibition.
+      children:
+      - name: objectTypes
+        target: ClinicalObjectType
+        cardinality: 0..n
+      - name: actions
+        target: ActionDefinition
+        cardinality: 0..n
+      - name: constraints
+        target: ConstraintDefinition
+        cardinality: 0..n
+      - name: robustnessScenarios
+        target: RobustnessScenarioDefinition
+        cardinality: 0..n
+      - name: operatingModes
+        target: OperatingMode
+        cardinality: 0..n
+      - name: computableRules
+        target: ComputableRule
+        cardinality: 0..n
+      references: []
+      editor: plan intent <name> [ai-creatable <aiCreatable>] { <objectTypes> <actions> <constraints>
+        }
+      constraints:
+      - CLI-C-001
+      - CLI-C-002
+    - name: AuthorityPolicy
+      rootable: true
+      abstract: false
+      superconcept: GovernedElement
+      intent: File-per-root container for one institution's authorization configuration. It owns the
+        professional and operational role vocabularies, the atomic capability tuples that bind them,
+        and the authorized actor contexts. Changing who may do what is an edit here, never a change
+        to the language.
+      source: mps2-role-ontology.yaml separation_of_concerns; ConOps authority model
+      properties:
+      - name: name
+        type: string
+        cardinality: '1'
+      - name: institution
+        type: string
+        cardinality: 0..1
+      children:
+      - name: professionalRoles
+        target: ProfessionalRole
+        cardinality: 0..n
+      - name: operationalRoles
+        target: OperationalRole
+        cardinality: 0..n
+      - name: capabilities
+        target: RoleCapability
+        cardinality: 0..n
+      - name: actors
+        target: AuthorizedActor
+        cardinality: 0..n
+      references: []
+      editor: authority policy <name> [<institution>] { <professionalRoles> <operationalRoles> <capabilities>
+        }
+      constraints:
+      - CLI-C-003
+      - CLI-C-004
+      - CLI-C-005
+    - name: WorkflowDefinition
+      rootable: true
+      abstract: false
+      superconcept: GovernedElement
+      intent: 'File-per-root container for the workflow state machine: the states a clinical object
+        may occupy and the transitions between them.'
+      source: ConOps workflow model; spec/architecture.yaml lifecycle
+      properties:
+      - name: name
+        type: string
+        cardinality: '1'
+      children:
+      - name: states
+        target: WorkflowState
+        cardinality: 0..n
+      - name: transitions
+        target: StateTransition
+        cardinality: 0..n
+      references: []
+      editor: workflow <name> { <states> <transitions> }
+      constraints:
+      - CLI-C-006
+    - name: ReleaseProfile
+      rootable: true
+      abstract: false
+      superconcept: GovernedElement
+      intent: File-per-root container binding an intended use to the scope actually commissioned,
+        together with the evidence required and the model and machine profiles the release is qualified
+        against.
+      source: ConOps release gating; NL_TPS_Monthly_QA_Integration_Profile
+      properties:
+      - name: name
+        type: string
+        cardinality: '1'
+      - name: intendedUse
+        type: string
+        cardinality: '1'
+      - name: releaseState
+        type: string
+        cardinality: 0..1
+      children:
+      - name: evidenceProfiles
+        target: EvidenceProfile
+        cardinality: 0..n
+      - name: commissionedUse
+        target: CommissionedUseEnvelope
+        cardinality: 0..n
+      - name: modelProfiles
+        target: ModelProfile
+        cardinality: 0..n
+      - name: machineProfiles
+        target: MachineProfile
+        cardinality: 0..n
+      references: []
+      editor: release profile <name> intended <intendedUse> { <commissionedUse> <evidenceProfiles>
+        }
+      constraints:
+      - CLI-C-007
+    - name: ClinicalObjectType
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: A kind of clinical object the intent model governs, such as a prescription intent or
+        a candidate plan. Instances are the vocabulary; the concept is the type declaration. RoleCapability.targetScope
+        names one of these.
+      source: ConOps clinical object taxonomy; mps2-role-ontology.yaml targetScope
+      properties:
+      - name: typeName
+        type: string
+        cardinality: '1'
+        pattern: ^[A-Z][A-Za-z0-9]+$
+      - name: description
+        type: string
+        cardinality: 0..1
+      children: []
+      references: []
+      editor: object type <typeName>
+      constraints: []
+      note: PrescriptionIntent and CandidatePlan are instances of this concept, not concept declarations.
+        Hosting it under PlanIntentDefinition is what makes them exist.
+    - name: ActionDefinition
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: An operation performable on a clinical object, carrying the autonomy level at which
+        the system may perform it without a human. The autonomy level is the discriminator the A4
+        authorization rule reads.
+      source: ConOps autonomy levels; mps2-role-ontology.yaml gov_c_007_evaluation
+      properties:
+      - name: actionName
+        type: string
+        cardinality: '1'
+      - name: autonomyLevel
+        type: AutonomyLevelEnum
+        cardinality: '1'
+      - name: description
+        type: string
+        cardinality: 0..1
+      children: []
+      references:
+      - name: appliesTo
+        target: ClinicalObjectType
+        cardinality: 0..1
+      editor: action <actionName> @<autonomyLevel> [on <appliesTo>]
+      constraints:
+      - CLI-C-001
+      - CLI-C-008
+    - name: ConstraintDefinition
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: A dose or geometric constraint qualifying a plan, carrying its limit as a physical quantity
+        so that unit and dose basis travel with the number.
+      source: ConOps dose-constraint safety rule; spec/requirements.yaml PLN domain
+      properties:
+      - name: constraintName
+        type: string
+        cardinality: '1'
+      - name: comparison
+        type: ComparisonOperatorEnum
+        cardinality: '1'
+      - name: structure
+        type: string
+        cardinality: 0..1
+      children:
+      - name: limit
+        target: PhysicalQuantity
+        cardinality: '1'
+      references: []
+      editor: constraint <constraintName> [<structure>] <comparison> <limit>
+      constraints: []
+      note: The limit child is what makes PhysicalQuantity reachable, which lapses the MPS-1 non-instantiability
+        deferrals for FND-C-003, FND-C-004 and the magnitude representation proof. That is the correct
+        semantics, not an accident.
+    - name: RobustnessScenarioDefinition
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: A perturbation scenario a plan must remain acceptable under, such as a setup or range
+        uncertainty.
+      source: ConOps robustness evaluation; spec/requirements.yaml PLN domain
+      properties:
+      - name: scenarioName
+        type: string
+        cardinality: '1'
+      - name: perturbation
+        type: string
+        cardinality: '1'
+      - name: magnitudeDescription
+        type: string
+        cardinality: 0..1
+      children: []
+      references: []
+      editor: 'scenario <scenarioName>: <perturbation>'
+      constraints: []
+    - name: OperatingMode
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: A named mode bounding what the system may do, used to scope automation and release behaviour.
+      source: ConOps operating modes
+      properties:
+      - name: modeName
+        type: string
+        cardinality: '1'
+      - name: description
+        type: string
+        cardinality: 0..1
+      children: []
+      references: []
+      editor: mode <modeName>
+      constraints: []
+    - name: ComputableRule
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: A rule stated in a form a machine can evaluate, kept distinct from prose so that what
+        is checkable is visibly separated from what is guidance.
+      source: ADR-001 computable rule allocation; ConOps rule model
+      properties:
+      - name: ruleName
+        type: string
+        cardinality: '1'
+      - name: expression
+        type: string
+        cardinality: '1'
+      - name: evaluable
+        type: boolean
+        cardinality: '1'
+        default: true
+      children: []
+      references: []
+      editor: 'rule <ruleName>: <expression>'
+      constraints: []
+    - name: WorkflowState
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: One state a clinical object may occupy in the workflow.
+      source: ConOps workflow model
+      properties:
+      - name: stateName
+        type: string
+        cardinality: '1'
+      - name: terminal
+        type: boolean
+        cardinality: '1'
+        default: false
+      children: []
+      references: []
+      editor: state <stateName>
+      constraints: []
+    - name: StateTransition
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: A transition between workflow states, carrying its actor role, guard and invalidation
+        effects explicitly rather than leaving them implied.
+      source: 'blueprint required constraint: state transitions have explicit source, target, actor,
+        guard, and invalidation effects'
+      properties:
+      - name: guard
+        type: string
+        cardinality: '1'
+      - name: invalidationEffect
+        type: string
+        cardinality: '1'
+      children: []
+      references:
+      - name: source
+        target: WorkflowState
+        cardinality: '1'
+      - name: target
+        target: WorkflowState
+        cardinality: '1'
+      - name: actorRole
+        target: OperationalRole
+        cardinality: '1'
+      editor: '<source> --[<actorRole>: <guard>]--> <target> invalidates <invalidationEffect>'
+      constraints:
+      - CLI-C-006
+    - name: EvidenceProfile
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: The evidence a release requires, at a stated authority tier, with citations to the controlled
+        sources outside the model that support it.
+      source: ConOps evidence tiers; NL_TPS_Monthly_QA_Integration_Profile
+      properties:
+      - name: profileName
+        type: string
+        cardinality: '1'
+      - name: requiredTier
+        type: AuthorityClassEnum
+        cardinality: '1'
+      children:
+      - name: citations
+        target: ExternalReference
+        cardinality: 0..n
+      references: []
+      editor: evidence <profileName> at <requiredTier> { <citations> }
+      constraints: []
+      note: The citations child is what makes ExternalReference reachable, which lapses its MPS-1
+        retrievedDate representation deferral.
+    - name: CommissionedUseEnvelope
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: The scope actually commissioned, which bounds the intended use a release may claim.
+        Intended use outside this envelope is not a release decision to make.
+      source: ConOps commissioning; blueprint required constraint on release profiles
+      properties:
+      - name: envelopeName
+        type: string
+        cardinality: '1'
+      - name: scopeDescription
+        type: string
+        cardinality: '1'
+      - name: commissionedOn
+        type: string
+        cardinality: 0..1
+        logical_type: date
+        pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}$
+      children: []
+      references: []
+      editor: 'commissioned <envelopeName>: <scopeDescription>'
+      constraints:
+      - CLI-C-007
+    - name: ModelProfile
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: A computational or AI model the release is qualified against, identified and versioned
+        so a claim names what was actually used.
+      source: ConOps model governance; spec/requirements.yaml AIM domain
+      properties:
+      - name: modelName
+        type: string
+        cardinality: '1'
+      - name: modelVersion
+        type: string
+        cardinality: '1'
+      - name: validated
+        type: boolean
+        cardinality: '1'
+        default: false
+      children: []
+      references: []
+      editor: model <modelName> v<modelVersion>
+      constraints: []
+    - name: MachineProfile
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: A treatment machine configuration the release is qualified against.
+      source: ConOps machine commissioning
+      properties:
+      - name: machineName
+        type: string
+        cardinality: '1'
+      - name: configuration
+        type: string
+        cardinality: 0..1
+      children: []
+      references: []
+      editor: machine <machineName>
+      constraints: []
+    - name: ProfessionalRole
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: 'A professional credential or category, such as Radiation Oncologist or Medical Physicist.
+        It is a category only: holding a credential confers no permission.'
+      source: mps2-role-ontology.yaml separation_of_concerns; ConOps professional roles
+      properties:
+      - name: title
+        type: string
+        cardinality: '1'
+      - name: credentialBasis
+        type: string
+        cardinality: 0..1
+      children: []
+      references: []
+      editor: profession <title>
+      constraints:
+      - CLI-C-003
+      note: Deliberately carries no link to OperationalRole. The mapping is derived from RoleCapability
+        nodes owned by AuthorityPolicy. CLI-C-003 enforces this.
+    - name: OperationalRole
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: A workflow function such as Prescriber, Planner or QAReviewer. It is the capacity in
+        which someone acts, distinct from the credential they hold.
+      source: mps2-role-ontology.yaml separation_of_concerns; ConOps operational roles
+      properties:
+      - name: functionName
+        type: string
+        cardinality: '1'
+      - name: description
+        type: string
+        cardinality: 0..1
+      children: []
+      references: []
+      editor: function <functionName>
+      constraints: []
+    - name: RoleCapability
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: 'One atomic authorization proposition: this profession, acting in this function, may
+        perform this action on this object type, optionally only in this workflow state. A profession
+        reaching many functions is many capability nodes, never one node with a multi-valued reference.'
+      source: mps2-role-ontology.yaml frozen_shape.RoleCapability
+      properties:
+      - name: requiresApproval
+        type: boolean
+        cardinality: '1'
+        default: false
+      children: []
+      references:
+      - name: professionalRole
+        target: ProfessionalRole
+        cardinality: '1'
+      - name: operationalRole
+        target: OperationalRole
+        cardinality: '1'
+      - name: allowedAction
+        target: ActionDefinition
+        cardinality: '1'
+      - name: targetScope
+        target: ClinicalObjectType
+        cardinality: '1'
+      - name: workflowState
+        target: WorkflowState
+        cardinality: 0..1
+      editor: <professionalRole> as <operationalRole> may <allowedAction> on <targetScope> [in <workflowState>]
+      constraints:
+      - CLI-C-004
+    - name: AuthorizedActor
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      intent: 'An authenticated principal in one authorization context: the role being exercised at
+        the moment of one action, not a personnel record. A person acting in a second function is
+        a second context instance.'
+      source: mps2-role-ontology.yaml frozen_shape.AuthorizedActor
+      properties:
+      - name: principalId
+        type: string
+        cardinality: '1'
+      - name: actorKind
+        type: ActorKindEnum
+        cardinality: '1'
+      children: []
+      references:
+      - name: professionalRole
+        target: ProfessionalRole
+        cardinality: '1'
+      - name: operationalRole
+        target: OperationalRole
+        cardinality: '1'
+      editor: <principalId> [<actorKind>] as <professionalRole>/<operationalRole>
+      constraints:
+      - CLI-C-005
+    constraints:
+    - id: CLI-C-001
+      statement: An AI-creatable PlanIntentDefinition may not contain an ActionDefinition whose autonomyLevel
+        is A4_authorize_or_deliver.
+      source_constraint: AI-creatable PlanIntent cannot represent A4 authority
+      applies_to:
+      - PlanIntentDefinition
+      - ActionDefinition
+      enforcement: MPS checking rule
+      proof_status: active at MPS-2
+      negative_example: A PlanIntentDefinition with aiCreatable true containing an ActionDefinition
+        at autonomyLevel A4_authorize_or_deliver.
+      positive_example: The same definition with aiCreatable false, which must not be rejected.
+    - id: CLI-C-002
+      statement: A PlanIntentDefinition in a governance model carries no patient-identifying content;
+        Stage A models are non-clinical mirrors.
+      source_constraint: patient PlanIntent instances are prohibited from governance models
+      applies_to:
+      - PlanIntentDefinition
+      enforcement: repository gate, tools/repo/check_repository_hygiene.py, plus MPS checking rule
+      proof_status: active at MPS-2
+      negative_example: A PlanIntentDefinition whose name carries a patient identifier.
+    - id: CLI-C-003
+      statement: ProfessionalRole declares no child or reference targeting OperationalRole; the profession-to-function
+        mapping is derived from RoleCapability nodes owned by AuthorityPolicy.
+      source_constraint: AuthorizedActor distinguishes human authority from a generated or automated
+        actor
+      applies_to:
+      - ProfessionalRole
+      enforcement: gate-level structural rule, tools/mps/check_role_ontology.py
+      proof_status: active at MPS-2, proven at gate level rather than by an MPS rule
+      negative_example: 'ProfessionalRole gaining a child functions: OperationalRole [0..n]. Rejected
+        by check_role_ontology before any MPS authoring occurs.'
+      note: A credential must not carry authorization. Enforced at the specification level because
+        it is a shape prohibition, not a per-instance condition.
+    - id: CLI-C-004
+      statement: 'RoleCapability is atomic: exactly one professionalRole, operationalRole, allowedAction
+        and targetScope, at most one workflowState, and no children.'
+      source_constraint: AuthorizedActor distinguishes human authority from a generated or automated
+        actor
+      applies_to:
+      - RoleCapability
+      enforcement: gate-level structural rule, tools/mps/check_role_ontology.py; cardinality additionally
+        enforced by the MPS metamodel
+      proof_status: active at MPS-2
+      negative_example: RoleCapability.operationalRole declared 0..n, or RoleCapability gaining a
+        children block. Both rejected by check_role_ontology.
+    - id: CLI-C-005
+      statement: 'An action at autonomyLevel A4_authorize_or_deliver may be satisfied only by an AuthorizedActor
+        whose actorKind is HUMAN and for which a matching RoleCapability exists: same professionalRole,
+        same operationalRole, same allowedAction, and a permitted workflow state.'
+      source_constraint: AuthorizedActor distinguishes human authority from a generated or automated
+        actor
+      applies_to:
+      - AuthorizedActor
+      - ActionDefinition
+      - RoleCapability
+      enforcement: MPS checking rule
+      proof_status: active at MPS-2
+      realizes: GOV-C-007
+      predicate: IF action.autonomyLevel == A4_authorize_or_deliver THEN actor.actorKind == HUMAN
+        AND a matching RoleCapability exists AND actor.professionalRole == capability.professionalRole
+        AND actor.operationalRole == capability.operationalRole AND action == capability.allowedAction
+        AND the applicable workflow state is permitted.
+      negative_example: An AuthorizedActor with actorKind SERVICE_ACCOUNT, AUTOMATED_AGENT, GENERATOR
+        or MODEL_NODE presented against an ActionDefinition at A4_authorize_or_deliver. Each of the
+        four must be rejected separately, because the enumeration exists to distinguish them.
+      positive_example: An AuthorizedActor with actorKind HUMAN, holding the professional and operational
+        roles named by a RoleCapability that permits the action in the current workflow state, must
+        not be rejected. A rule that rejects both the automated and the authorized human case is a
+        failure.
+      note: This discharges the GOV-C-007 obligation. The rule lives in clinicalintent, not governance,
+        because it reads AuthorizedActor and ActionDefinition.autonomyLevel, both clinicalintent concepts,
+        and governance does not depend on clinicalintent. Placing it in governance would invert the
+        acyclic dependency direction.
+    - id: CLI-C-006
+      statement: A StateTransition declares source, target, actor role, guard and invalidation effect
+        explicitly; none may be left implied.
+      source_constraint: state transitions have explicit source, target, actor, guard, and invalidation
+        effects
+      applies_to:
+      - StateTransition
+      - WorkflowDefinition
+      enforcement: MPS metamodel cardinality for the three references, MPS checking rule for the two
+        string facets
+      proof_status: active at MPS-2
+      negative_example: A StateTransition with an empty guard, and separately one with no actorRole
+        reference, which the metamodel rejects as a missing mandatory reference.
+    - id: CLI-C-007
+      statement: A ReleaseProfile states an intended use and binds at least one CommissionedUseEnvelope;
+        intended use outside the commissioned scope is not a release decision the model may express.
+      source_constraint: release profiles bind intended use and commissioned scope
+      applies_to:
+      - ReleaseProfile
+      - CommissionedUseEnvelope
+      enforcement: MPS checking rule
+      proof_status: active at MPS-2
+      negative_example: A ReleaseProfile with a stated intendedUse and no commissionedUse child.
+    - id: CLI-C-008
+      statement: ActionDefinition.autonomyLevel is typed AutonomyLevelEnum and never AuthorityClassEnum;
+        the evidence precedence tier and the autonomy ladder are different axes.
+      source_constraint: AI-creatable PlanIntent cannot represent A4 authority
+      applies_to:
+      - ActionDefinition
+      enforcement: gate-level structural rule, tools/mps/check_role_ontology.py
+      proof_status: active at MPS-2, proven at gate level
+      negative_example: ActionDefinition.autonomyLevel typed AuthorityClassEnum, rejected by check_role_ontology
+        with the axis-separation reason.
+  nltps.roles.common:
+    concepts:
+    - name: RoleProjection
+      rootable: false
+      abstract: true
+      superconcept: BaseConcept
+      intent: Abstract base for a professional projection. A projection presents shared clinical semantics
+        through one profession's lens; it owns no semantic state of its own. Concrete rootable projections
+        are declared by the professional languages at MPS-3, which is why this base is not itself
+        rootable.
+      source: mps2-role-ontology.yaml roles_common_holder_purpose; role-language ownership invariant
+      properties:
+      - name: projectionName
+        type: string
+        cardinality: '1'
+      children: []
+      references: []
+      editor: projection <projectionName>
+      constraints:
+      - ROL-C-001
+      note: Implementation scaffolding for the projection DSL, not domain semantics.
+    - name: RoleCommand
+      rootable: false
+      abstract: true
+      superconcept: BaseConcept
+      intent: 'Abstract base for a projection command. Its sets are expressed as holder children because
+        MPS references are single-valued: a command acting on three targets holds three SemanticTargetRef
+        children, not one multi-valued reference.'
+      source: mps2-role-ontology.yaml roles_common_holder_purpose; MPS-1 multiplicity finding
+      properties:
+      - name: commandName
+        type: string
+        cardinality: '1'
+      children:
+      - name: targets
+        target: SemanticTargetRef
+        cardinality: 0..n
+      - name: actions
+        target: ActionRef
+        cardinality: 0..n
+      - name: states
+        target: WorkflowStateRef
+        cardinality: 0..n
+      - name: roles
+        target: OperationalRoleRef
+        cardinality: 0..n
+      references: []
+      editor: command <commandName> { <targets> <actions> <states> <roles> }
+      constraints:
+      - ROL-C-001
+      - ROL-C-002
+      note: Implementation scaffolding for the projection DSL, not domain semantics.
+    - name: SemanticTargetRef
+      rootable: false
+      abstract: false
+      superconcept: BaseConcept
+      intent: Holds exactly one reference to a semantic-core element a command acts on.
+      source: 'MPS-1 multiplicity finding: MPS reference links are single-valued'
+      properties: []
+      children: []
+      references:
+      - name: target
+        target: GovernedElement
+        cardinality: '1'
+      editor: -> <target>
+      constraints:
+      - ROL-C-002
+      - ROL-C-003
+      note: MPS representation mechanics. Carries no domain semantics of its own.
+    - name: ActionRef
+      rootable: false
+      abstract: false
+      superconcept: BaseConcept
+      intent: Holds exactly one reference to an ActionDefinition a command may invoke.
+      source: 'MPS-1 multiplicity finding: MPS reference links are single-valued'
+      properties: []
+      children: []
+      references:
+      - name: action
+        target: ActionDefinition
+        cardinality: '1'
+      editor: -> <action>
+      constraints:
+      - ROL-C-002
+      - ROL-C-003
+      note: MPS representation mechanics. References clinicalintent through a DEFAULT dependency,
+        which permits reference and never containment.
+    - name: WorkflowStateRef
+      rootable: false
+      abstract: false
+      superconcept: BaseConcept
+      intent: Holds exactly one reference to a WorkflowState a command is scoped to.
+      source: 'MPS-1 multiplicity finding: MPS reference links are single-valued'
+      properties: []
+      children: []
+      references:
+      - name: state
+        target: WorkflowState
+        cardinality: '1'
+      editor: -> <state>
+      constraints:
+      - ROL-C-002
+      - ROL-C-003
+      note: MPS representation mechanics.
+    - name: OperationalRoleRef
+      rootable: false
+      abstract: false
+      superconcept: BaseConcept
+      intent: Holds exactly one reference to an OperationalRole a command is exercised in.
+      source: 'MPS-1 multiplicity finding: MPS reference links are single-valued'
+      properties: []
+      children: []
+      references:
+      - name: role
+        target: OperationalRole
+        cardinality: '1'
+      editor: -> <role>
+      constraints:
+      - ROL-C-002
+      - ROL-C-003
+      note: MPS representation mechanics. This is the projection-layer collection strategy, deliberately
+        separate from the atomic RoleCapability used in the core model.
+    constraints:
+    - id: ROL-C-001
+      statement: A projection or command may contain only concepts owned by its own language or by
+        a transitive EXTENDS ancestor. A DEFAULT dependency permits references and never containment.
+      source_constraint: a projection may contain only concepts owned by itself or an EXTENDS ancestor
+      applies_to:
+      - RoleProjection
+      - RoleCommand
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py containment check
+      proof_status: active at MPS-2, proven at gate level against synthetic blueprints
+      negative_example: A roles.common concept declaring a child targeting a clinicalintent concept,
+        which is reachable only through a DEFAULT dependency. Already covered by the containment fixtures
+        added with the transitive EXTENDS closure.
+    - id: ROL-C-002
+      statement: A command reaches semantic-core elements through a holder child carrying a reference;
+        it never contains a semantic-core concept directly.
+      source_constraint: semantic-core concepts are referenced through a holder, never contained
+      applies_to:
+      - RoleCommand
+      - SemanticTargetRef
+      - ActionRef
+      - WorkflowStateRef
+      - OperationalRoleRef
+      enforcement: gate-level structural rule, containment check
+      proof_status: deferred at MPS-2
+      deferral_class: non_instantiability
+      affected_concept: RoleCommand
+      negative_example: A RoleCommand containing an ActionDefinition directly rather than an ActionRef
+        holder.
+      note: The shape prohibition is enforced now at gate level. A behavioural demonstration on an
+        instance is deferred because roles.common declares no root, so no command instance can exist
+        until the MPS-3 professional projections supply concrete rootable projections.
+    - id: ROL-C-003
+      statement: Each holder concept carries exactly one scalar reference and no children.
+      source_constraint: each holder carries exactly one scalar reference
+      applies_to:
+      - SemanticTargetRef
+      - ActionRef
+      - WorkflowStateRef
+      - OperationalRoleRef
+      enforcement: MPS metamodel cardinality, plus the specification gate's single-valued reference
+        rule
+      proof_status: deferred at MPS-2
+      deferral_class: non_instantiability
+      affected_concept: SemanticTargetRef
+      negative_example: A holder declaring a second reference or a multi-valued one; the specification
+        gate rejects a multi-valued reference outright.
+      note: 'Behavioural demonstration deferred for the same reason as ROL-C-002: no holder instance
+        can exist until MPS-3 supplies a rootable projection.'
+
+reachability_at_freeze:
+  method: >-
+    Cumulative across every mps*-concept-features.yaml present, computed by
+    check_concept_features.compute_reachability. Traversal starts at rootable concepts,
+    follows child containment, counts children inherited from superconcepts, and allows
+    subconcept substitution. Abstract concepts are exempt from the orphan report.
+  ClinicalObjectType:
+    status: reachable
+    path: PlanIntentDefinition (root) -> objectTypes -> ClinicalObjectType
+    consequence: >-
+      PrescriptionIntent and CandidatePlan can exist as instances, so
+      RoleCapability.targetScope references a concept whose instances are hostable. This
+      was the obligation check_role_ontology has been enforcing since the MPS-2 audit.
+  PhysicalQuantity:
+    status: reachable
+    path: PlanIntentDefinition (root) -> constraints -> ConstraintDefinition -> limit -> PhysicalQuantity
+    consequence: >-
+      The MPS-1 non_instantiability deferrals for FND-C-003, FND-C-004 and the
+      PhysicalQuantity.magnitude representation proof lapse. A dose constraint carries a
+      limit whose unit and dose basis travel with the number; that is the correct
+      semantics and the deferrals were never worth preserving against it.
+  ExternalReference:
+    status: reachable
+    path: ReleaseProfile (root) -> evidenceProfiles -> EvidenceProfile -> citations -> ExternalReference
+    consequence: >-
+      The MPS-1 retrievedDate representation proof lapses. An evidence profile cites the
+      controlled sources outside the model that support it.
+  roles_common:
+    status: unreachable, intentionally
+    concepts: [RoleProjection, RoleCommand, SemanticTargetRef, ActionRef, WorkflowStateRef, OperationalRoleRef]
+    reason: >-
+      roles.common declares no rootable concept. It is an infrastructure language: the
+      concrete rootable projections arrive at MPS-3 in the professional languages, which
+      EXTEND it. RoleProjection and RoleCommand are abstract and exempt from the orphan
+      report; the four holders are concrete and correctly reported unreachable.
+    not_a_defect: >-
+      Marking an abstract base rootable to clear the report would advertise a root nobody
+      can instantiate. No MPS platform concept is both abstract and rootable.
+    lapse_condition: >-
+      Reachability when the MPS-3 professional projections declare concrete rootable
+      concepts extending RoleProjection.
+
+deferral_transitions:
+  - constraint: GOV-C-007
+    from: deferred, semantic_model_absence
+    to: ACTIVE MPS-2 proof obligation
+    realized_by: CLI-C-005
+    trigger: >-
+      AuthorizedActor and ActionDefinition.autonomyLevel arrive at MPS-2, so the
+      discriminator the predicate needs now exists.
+    why_manual: >-
+      semantic_model_absence does not lapse on reachability, so no gate would have
+      noticed. This is the deliberate controlled transition the class requires. Traceability
+      to the original MPS-1 deferral is retained in stage-a-checklist.yaml.
+    not_yet_proven: >-
+      Active means required, not demonstrated. The behavioural proof belongs to MPS-2
+      materialization.
+  - constraints: [FND-C-003, FND-C-004]
+    from: deferred, non_instantiability, affected_concept PhysicalQuantity
+    to: ACTIVE, deferral lapsed
+    trigger: ConstraintDefinition.limit gives PhysicalQuantity a containment path.
+  - representation_proof: PhysicalQuantity.magnitude
+    from: deferred, non_instantiability
+    to: ACTIVE, deferral lapsed
+    trigger: same containment path.
+  - representation_proof: ExternalReference.retrievedDate
+    from: deferred, non_instantiability
+    to: ACTIVE, deferral lapsed
+    trigger: EvidenceProfile.citations gives ExternalReference a containment path.
+  - constraints: [ROL-C-002, ROL-C-003]
+    from: new at MPS-2
+    to: deferred, non_instantiability
+    affected_concepts: [RoleCommand, SemanticTargetRef]
+    reason: >-
+      The shape prohibitions are enforced now at gate level. A behavioural demonstration
+      needs an instance, and roles.common has no root until MPS-3.
+  - constraint: GOV-C-004
+    unchanged: >-
+      literal_example_substitution. The verification concept its frozen negative example
+      names is allocated to MPS-4 realization, so the substitution stands.
+
+counts:
+  clinicalintent_concepts: 20
+  roles_common_concepts: 6
+  mps2_new_concepts: 26
+  mps2_cumulative_ceiling: 66
+  datatypes_declared: 3
+  clinicalintent_constraints: 8
+  roles_common_constraints: 3
