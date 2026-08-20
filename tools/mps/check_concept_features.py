@@ -46,18 +46,48 @@ CARDINALITIES = {"1", "0..1", "1..n", "0..n"}
 SINGLE_VALUED = {"1", "0..1"}
 
 
+def extends_closure(blueprint: dict) -> dict[str, set[str]]:
+    """Every language reachable from each language by following EXTENDS transitively.
+
+    Role languages inherit through a chain: roles.radonc EXTENDS roles.common EXTENDS
+    foundation, so a foundation superconcept sits two hops away and is legal even though
+    no direct edge exists. Resolving only direct targets would reject it.
+
+    The result excludes the language itself, so callers keep "own language" and
+    "inherited from an ancestor" as separate, readable cases. A cycle in the declared
+    EXTENDS graph terminates instead of recursing forever; the module graph gate is what
+    reports the cycle itself.
+    """
+    direct: dict[str, set[str]] = {}
+    for entry in blueprint["languages"]:
+        direct[entry["name"]] = {
+            dependency["module"]
+            for dependency in entry["dependencies"]
+            if dependency["kind"] == "EXTENDS"
+        }
+
+    closure: dict[str, set[str]] = {}
+    for name in direct:
+        seen: set[str] = set()
+        frontier = list(direct.get(name, ()))
+        while frontier:
+            ancestor = frontier.pop()
+            if ancestor in seen:
+                continue
+            seen.add(ancestor)
+            frontier.extend(direct.get(ancestor, ()))
+        seen.discard(name)
+        closure[name] = seen
+    return closure
+
+
 def check() -> tuple[list[str], dict[str, int]]:
     errors: list[str] = []
     blueprint = json.loads(BLUEPRINT_PATH.read_text(encoding="utf-8"))
     features = yaml.safe_load(FEATURES_PATH.read_text(encoding="utf-8"))
 
-    extends_targets: dict[str, set[str]] = {}
-    for entry in blueprint["languages"]:
-        extends_targets[entry["name"]] = {
-            dependency["module"]
-            for dependency in entry["dependencies"]
-            if dependency["kind"] == "EXTENDS"
-        }
+    # One closure, two call sites: superconcept legality and containment legality.
+    extends_targets = extends_closure(blueprint)
 
     blueprint_concepts = {
         entry["name"]: {
@@ -117,8 +147,11 @@ def check() -> tuple[list[str], dict[str, int]]:
                     errors.append(f"{label} extends unknown concept {superconcept}")
                 elif owner != language and owner not in extends_targets.get(language, set()):
                     errors.append(
-                        f"{label} extends {superconcept} from {owner}, but {language} "
-                        f"declares {owner} with kind DEFAULT; a superconcept requires EXTENDS"
+                        f"{label} extends {superconcept} from {owner}, but {owner} is not "
+                        f"{language} nor any of its transitive EXTENDS ancestors "
+                        f"{sorted(extends_targets.get(language, set())) or '[]'}; a "
+                        f"superconcept requires EXTENDS, a DEFAULT dependency permits "
+                        f"references only"
                     )
 
             for prop in concept.get("properties", []):
@@ -155,6 +188,20 @@ def check() -> tuple[list[str], dict[str, int]]:
                         errors.append(
                             f"{label}.{link.get('name')} targets unknown concept {target!r}"
                         )
+                    elif kind_name == "children":
+                        # Containment is stronger than reference. A concept may hold only
+                        # what its own language or an EXTENDS ancestor owns; a DEFAULT
+                        # dependency makes a concept referable, never containable.
+                        target_owner = concept_owner[target]
+                        permitted = {language} | extends_targets.get(language, set())
+                        if target_owner not in permitted:
+                            errors.append(
+                                f"{label}.{link.get('name')} contains {target} owned by "
+                                f"{target_owner}, which is neither {language} nor one of "
+                                f"its transitive EXTENDS ancestors "
+                                f"{sorted(extends_targets.get(language, set())) or '[]'}; "
+                                f"a DEFAULT dependency permits references, not containment"
+                            )
                     cardinality = link.get("cardinality")
                     if cardinality not in CARDINALITIES:
                         errors.append(

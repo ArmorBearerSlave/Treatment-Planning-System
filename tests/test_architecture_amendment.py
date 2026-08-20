@@ -117,5 +117,185 @@ class LiveBlueprintDerivationTests(unittest.TestCase):
             graph.checkpoint_ordinal(entry["concepts_materialized_at"])
 
 
+class TransitiveExtendsTests(unittest.TestCase):
+    """Superconcept and containment legality both resolve through the EXTENDS chain."""
+
+    def blueprint(self) -> dict:
+        # core <- common <- prof, plus a DEFAULT-only sibling that must not confer rights.
+        return {
+            "languages": [
+                language("core"),
+                language("side"),
+                language(
+                    "common",
+                    dependencies=[
+                        {"module": "core", "kind": "EXTENDS"},
+                        {"module": "side", "kind": "DEFAULT"},
+                    ],
+                ),
+                language(
+                    "prof",
+                    dependencies=[{"module": "common", "kind": "EXTENDS"}],
+                ),
+            ]
+        }
+
+    def test_closure_reaches_through_the_chain(self) -> None:
+        closure = features.extends_closure(self.blueprint())
+        self.assertEqual(closure["prof"], {"common", "core"})
+        self.assertEqual(closure["common"], {"core"})
+        self.assertEqual(closure["core"], set())
+
+    def test_default_dependency_never_enters_the_closure(self) -> None:
+        closure = features.extends_closure(self.blueprint())
+        self.assertNotIn("side", closure["common"])
+        self.assertNotIn("side", closure["prof"])
+
+    def test_two_hop_superconcept_is_accepted(self) -> None:
+        # prof EXTENDS common EXTENDS core, so a core superconcept is two hops away.
+        closure = features.extends_closure(self.blueprint())
+        permitted = {"prof"} | closure["prof"]
+        self.assertIn("core", permitted, "two-hop superconcept must be legal")
+
+    def test_superconcept_from_a_default_only_target_is_rejected(self) -> None:
+        closure = features.extends_closure(self.blueprint())
+        permitted = {"common"} | closure["common"]
+        self.assertNotIn("side", permitted, "DEFAULT must not confer superconcept rights")
+
+    def test_containment_of_an_extends_ancestor_concept_is_accepted(self) -> None:
+        closure = features.extends_closure(self.blueprint())
+        permitted = {"prof"} | closure["prof"]
+        self.assertIn("common", permitted)
+        self.assertIn("core", permitted)
+
+    def test_containment_of_a_default_only_concept_is_rejected(self) -> None:
+        closure = features.extends_closure(self.blueprint())
+        permitted = {"common"} | closure["common"]
+        self.assertNotIn("side", permitted, "DEFAULT permits references, not containment")
+
+    def test_cycle_terminates_instead_of_recursing(self) -> None:
+        cyclic = {
+            "languages": [
+                language("a", dependencies=[{"module": "b", "kind": "EXTENDS"}]),
+                language("b", dependencies=[{"module": "a", "kind": "EXTENDS"}]),
+            ]
+        }
+        closure = features.extends_closure(cyclic)
+        # Terminates, and a language is never its own ancestor.
+        self.assertEqual(closure["a"], {"b"})
+        self.assertEqual(closure["b"], {"a"})
+
+
+class ContainmentGateTests(unittest.TestCase):
+    """Drive the real gate, not just the helper, over a synthetic specification."""
+
+    def run_gate(self, blueprint: dict, spec: dict) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            bp = Path(tmp) / "skeleton.json"
+            fp = Path(tmp) / "features.yaml"
+            bp.write_text(json.dumps(blueprint), encoding="utf-8")
+            fp.write_text(json.dumps(spec), encoding="utf-8")  # YAML is a JSON superset
+            original = (features.BLUEPRINT_PATH, features.FEATURES_PATH)
+            features.BLUEPRINT_PATH, features.FEATURES_PATH = bp, fp
+            try:
+                errors, _ = features.check()
+            finally:
+                features.BLUEPRINT_PATH, features.FEATURES_PATH = original
+        return errors
+
+    def concept(self, name: str, *, superconcept: str, children: list[dict] | None = None) -> dict:
+        return {
+            "name": name,
+            "rootable": False,
+            "abstract": False,
+            "superconcept": superconcept,
+            "intent": "fixture",
+            "editor": "<name>",
+            "properties": [],
+            "children": children or [],
+            "references": [],
+            "constraints": [],
+        }
+
+    def scaffold(self, prof_children: list[dict], prof_super: str) -> tuple[dict, dict]:
+        blueprint = {
+            "languages": [
+                language("core", roots=[], nonroots=["CoreThing"]),
+                language("side", roots=[], nonroots=["SideThing"]),
+                language(
+                    "common",
+                    dependencies=[
+                        {"module": "core", "kind": "EXTENDS"},
+                        {"module": "side", "kind": "DEFAULT"},
+                    ],
+                    nonroots=["CommonThing"],
+                ),
+                language(
+                    "prof",
+                    dependencies=[{"module": "common", "kind": "EXTENDS"}],
+                    roots=["ProfRoot"],
+                    nonroots=[],
+                ),
+            ]
+        }
+        spec = {
+            "datatypes": [],
+            "languages": {
+                "core": {"concepts": [self.concept("CoreThing", superconcept="BaseConcept")],
+                         "constraints": []},
+                "side": {"concepts": [self.concept("SideThing", superconcept="BaseConcept")],
+                         "constraints": []},
+                "common": {"concepts": [self.concept("CommonThing", superconcept="BaseConcept")],
+                           "constraints": []},
+                "prof": {
+                    "concepts": [
+                        {
+                            "name": "ProfRoot",
+                            "rootable": True,
+                            "abstract": False,
+                            "superconcept": prof_super,
+                            "intent": "fixture",
+                            "editor": "<name>",
+                            "properties": [],
+                            "children": prof_children,
+                            "references": [],
+                            "constraints": [],
+                        }
+                    ],
+                    "constraints": [],
+                },
+            },
+        }
+        return blueprint, spec
+
+    def test_two_hop_superconcept_accepted_by_the_gate(self) -> None:
+        blueprint, spec = self.scaffold([], "CoreThing")
+        errors = self.run_gate(blueprint, spec)
+        self.assertEqual([e for e in errors if "superconcept" in e or "EXTENDS" in e], [])
+
+    def test_superconcept_from_default_only_rejected_by_the_gate(self) -> None:
+        blueprint, spec = self.scaffold([], "SideThing")
+        errors = self.run_gate(blueprint, spec)
+        self.assertTrue(
+            any("SideThing" in e and "EXTENDS" in e for e in errors),
+            f"expected a DEFAULT-superconcept rejection, got {errors}",
+        )
+
+    def test_containment_of_extends_ancestor_accepted_by_the_gate(self) -> None:
+        child = {"name": "held", "target": "CoreThing", "cardinality": "0..n"}
+        blueprint, spec = self.scaffold([child], "BaseConcept")
+        errors = self.run_gate(blueprint, spec)
+        self.assertEqual([e for e in errors if "contains" in e], [])
+
+    def test_containment_of_default_only_rejected_by_the_gate(self) -> None:
+        child = {"name": "held", "target": "SideThing", "cardinality": "0..n"}
+        blueprint, spec = self.scaffold([child], "BaseConcept")
+        errors = self.run_gate(blueprint, spec)
+        self.assertTrue(
+            any("contains SideThing" in e for e in errors),
+            f"expected a containment rejection, got {errors}",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
