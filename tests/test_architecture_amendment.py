@@ -623,6 +623,69 @@ class GeneratedDocumentLineEndingTests(unittest.TestCase):
         self.assertGreater(self.DOCUMENT.read_bytes().count(b"\n"), 1000)
 
 
+class CrossCheckpointReachabilityTests(unittest.TestCase):
+    """Reachability must span checkpoints, or the lapse rule fails silently.
+
+    The non-instantiability deferrals expire when their affected concept gains a
+    container. That container arrives in a later checkpoint's feature specification, so
+    reading only the MPS-1 file would leave the lapse blind at exactly the checkpoint it
+    exists for -- and blind by not firing, which looks identical to compliance.
+    """
+
+    def mps2_host_for(self, target: str) -> dict:
+        return {
+            "datatypes": [],
+            "languages": {
+                "nltps.clinicalintent": {
+                    "concepts": [{
+                        "name": "PlanIntentDefinition",
+                        "rootable": True,
+                        "abstract": False,
+                        "superconcept": "BaseConcept",
+                        "properties": [],
+                        "children": [
+                            {"name": "held", "target": target, "cardinality": "0..n"}
+                        ],
+                        "references": [],
+                        "constraints": [],
+                    }],
+                    "constraints": [],
+                }
+            },
+        }
+
+    def merged_with(self, spec: dict) -> dict:
+        with tempfile.TemporaryDirectory() as tmp:
+            extra = Path(tmp) / "mps2-concept-features.yaml"
+            extra.write_text(json.dumps(spec), encoding="utf-8")
+            return features.load_features([features.FEATURES_PATH, extra])
+
+    def test_both_concepts_are_unreachable_today(self) -> None:
+        self.assertEqual(
+            features.compute_reachability()["unreachable"],
+            ["ExternalReference", "PhysicalQuantity"],
+        )
+
+    def test_a_later_checkpoint_container_makes_the_concept_reachable(self) -> None:
+        merged = self.merged_with(self.mps2_host_for("PhysicalQuantity"))
+        unreachable = features.compute_reachability(merged)["unreachable"]
+        self.assertNotIn("PhysicalQuantity", unreachable)
+        self.assertIn("ExternalReference", unreachable)
+
+    def test_external_reference_host_is_seen_independently(self) -> None:
+        merged = self.merged_with(self.mps2_host_for("ExternalReference"))
+        unreachable = features.compute_reachability(merged)["unreachable"]
+        self.assertNotIn("ExternalReference", unreachable)
+        self.assertIn("PhysicalQuantity", unreachable)
+
+    def test_default_load_spans_every_present_specification(self) -> None:
+        # Today only MPS-1 exists; the union must still be exactly it.
+        self.assertEqual(
+            [p.name for p in features.feature_specs()],
+            ["mps1-concept-features.yaml"],
+        )
+
+
 class RoleOntologyFreezeTests(unittest.TestCase):
     """The frozen MPS-2 role shape, and the drifts the gate must refuse."""
 

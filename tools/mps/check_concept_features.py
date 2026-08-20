@@ -252,8 +252,29 @@ def check() -> tuple[list[str], dict[str, int]]:
     return errors, counts
 
 
-def load_features() -> dict:
-    return yaml.safe_load(FEATURES_PATH.read_text(encoding="utf-8"))
+def feature_specs() -> list[Path]:
+    """Every checkpoint feature specification present, in checkpoint order."""
+    return sorted(FEATURES_PATH.parent.glob("mps*-concept-features.yaml"))
+
+
+def load_features(paths: list[Path] | None = None) -> dict:
+    """Merge the feature specifications into one view of the declared model.
+
+    Reachability has to span checkpoints. A container introduced at MPS-2 makes an
+    MPS-1 concept instantiable, which is exactly the event the non-instantiability
+    deferrals are keyed to; reading only the MPS-1 specification would leave the lapse
+    rule blind at the checkpoint it exists for, and it would fail silently, by not
+    firing. Callers that mean one specific specification pass it explicitly.
+    """
+    merged: dict = {"datatypes": [], "languages": {}}
+    for path in paths if paths is not None else feature_specs():
+        document = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        merged["datatypes"].extend(document.get("datatypes", []))
+        for language, body in document.get("languages", {}).items():
+            target = merged["languages"].setdefault(language, {"concepts": [], "constraints": []})
+            target["concepts"].extend(body.get("concepts", []))
+            target["constraints"].extend(body.get("constraints", []))
+    return merged
 
 
 def compute_reachability(features: dict | None = None) -> dict[str, object]:
@@ -261,6 +282,8 @@ def compute_reachability(features: dict | None = None) -> dict[str, object]:
 
     A constraint that cannot be instantiated cannot be behaviourally proven, so the
     checkpoint needs to know which concrete concepts no legal containment path reaches.
+    With no argument this spans every feature specification present, so a container added
+    at a later checkpoint is seen.
     Traversal starts at the rootable concepts and follows child containment, counting
     children inherited from superconcepts and allowing any subconcept to stand where its
     superconcept is declared as the target. Abstract concepts are never instantiated

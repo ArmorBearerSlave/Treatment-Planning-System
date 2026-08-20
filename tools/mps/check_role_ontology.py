@@ -184,6 +184,26 @@ def check_specification(freeze: dict) -> tuple[list[str], bool]:
                     f"evidence precedence tier and the autonomy ladder are different axes"
                 )
 
+    # targetScope names a concept whose instances the capability points at. If nothing
+    # can host a ClinicalObjectType, PrescriptionIntent and CandidatePlan cannot exist and
+    # the reference is to a concept that can never have an instance.
+    import check_concept_features as cf
+
+    scope_target = next(
+        (link["target"]
+         for link in freeze["frozen_shape"]["RoleCapability"]["references"]
+         if link["name"] == "targetScope"),
+        None,
+    )
+    if scope_target is not None:
+        unreachable = set(cf.compute_reachability()["unreachable"])
+        if scope_target in unreachable:
+            errors.append(
+                f"RoleCapability.targetScope references {scope_target}, which no legal "
+                f"containment path reaches; its instances could never exist, so the "
+                f"reference would point at an uninstantiable concept"
+            )
+
     actor = concepts.get("AuthorizedActor")
     if actor is not None:
         for link in actor.get("references", []):
