@@ -511,9 +511,18 @@ post_mps1_actions:
       portability defect and not generated-document drift.
     action: >-
       Normalize generated line endings explicitly and add a Windows regression test.
+    status: resolved
+    resolution: >-
+      The assembled text is normalized to canonical LF at the single assembly site
+      before it is compared or written, so output no longer follows Environment.NewLine.
+      The byte-exact comparison is unchanged and the generated content is unchanged:
+      regeneration produces a byte-identical document. Four regression assertions cover
+      it, including one that fails if the normalization is removed and one that fails if
+      the byte-exact comparison is weakened, so this cannot regress on a host where it
+      currently happens to pass.
     scope: >-
-      post-MPS-1 maintenance, in its own controlled commit; deliberately not mixed into
-      constraint materialization.
+      post-MPS-1 maintenance, delivered in its own controlled commit; deliberately not
+      mixed into constraint materialization.
   - id: POST-MPS1-03
     title: Logical-real storage must not narrow generated runtime schemas
     finding: >-

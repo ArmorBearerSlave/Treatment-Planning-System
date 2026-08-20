@@ -559,7 +559,12 @@ Add-Line 'This V\&V specification is realized only when each of the 2,144 checks
 Add-Line ''
 Add-Line '\end{document}'
 
-$rendered = $sb.ToString()
+# StringBuilder.AppendLine emits Environment.NewLine, which is CRLF on Windows and
+# LF on Linux. The repository pins LF through .gitattributes and the -Check
+# comparison below is byte-exact, so an unnormalized build made the check pass on CI
+# and fail on every Windows workstation. Normalizing here makes the generated text
+# canonical LF independent of the host; the comparison stays byte-exact.
+$rendered = $sb.ToString().Replace("`r`n", "`n")
 $generatedCheckRows = ([regex]::Matches($rendered, '\\textbf\{VVC-')).Count
 if ($generatedCheckRows -ne 2144) { throw "Expected 2,144 generated check rows; found $generatedCheckRows." }
 $generatedHazardRows = ([regex]::Matches($rendered, '\\\\Hazards: H-')).Count

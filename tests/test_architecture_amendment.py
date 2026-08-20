@@ -484,5 +484,46 @@ class ExternalDependencyTests(unittest.TestCase):
             )
 
 
+class GeneratedDocumentLineEndingTests(unittest.TestCase):
+    """POST-MPS1-02: the generator must emit canonical LF on every host.
+
+    StringBuilder.AppendLine follows Environment.NewLine, so an unnormalized build
+    produced CRLF on Windows and LF on Linux. With .gitattributes pinning LF and the
+    -Check comparison byte-exact, that made the same commit pass on CI and fail on every
+    Windows workstation. These assertions fail on a machine where it currently happens to
+    pass, which is the only way the fix cannot quietly regress.
+    """
+
+    SCRIPT = REPO_ROOT / "scripts" / "generate_vv_check_matrix.ps1"
+    DOCUMENT = REPO_ROOT / "overleaf" / "NL_TPS_Verification_Validation_Check_Matrix.tex"
+
+    def test_generator_normalizes_before_comparing_or_writing(self) -> None:
+        source = self.SCRIPT.read_text(encoding="utf-8")
+        assembly = [line for line in source.splitlines() if "$sb.ToString()" in line]
+        self.assertEqual(len(assembly), 1, "expected exactly one assembly site")
+        self.assertIn(
+            ".Replace(", assembly[0],
+            "the assembled text must be normalized; without it the byte-exact check is "
+            "host-dependent",
+        )
+
+    def test_generator_still_compares_byte_exactly(self) -> None:
+        # The fix must not have been achieved by weakening the comparison.
+        source = self.SCRIPT.read_text(encoding="utf-8")
+        self.assertIn("-cne", source, "the drift check must stay case- and byte-exact")
+
+    def test_generated_document_contains_no_carriage_returns(self) -> None:
+        data = self.DOCUMENT.read_bytes()
+        self.assertEqual(
+            data.count(b"\r"), 0,
+            "the controlled document carries a carriage return; the generator or the "
+            "checkout has reintroduced CRLF",
+        )
+
+    def test_generated_document_is_not_empty(self) -> None:
+        # Guards against a normalization that silently truncates.
+        self.assertGreater(self.DOCUMENT.read_bytes().count(b"\n"), 1000)
+
+
 if __name__ == "__main__":
     unittest.main()
