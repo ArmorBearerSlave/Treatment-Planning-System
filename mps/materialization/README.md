@@ -20,6 +20,43 @@ importer, generators, constraints, editors, or model tests exist.
 5. Confirm ENG-PKG-01, ADR-001, and ADR-002 remain at explicit Stage A approval
    state. Stage A work does not require or imply Stage C approval.
 
+## Model-aware tooling
+
+MPS persistence is created by MPS. From MPS 2026.1 the bundled Projectional Agent
+Toolkit exposes an MCP server inside the running IDE, so an agent can create and
+modify the live model through model-aware operations instead of editing XML. That
+is the only sanctioned agent route; direct edits to `.mps`, `.mpl`, `.mpr`, or
+`.msd` remain prohibited by ADR-001 and ADR1-R-05 whether or not the toolkit is
+connected.
+
+Preconditions, all of which must hold at the same time:
+
+1. MPS is running with `mps/NLTPSGovernance` open. The server lives inside the
+   MPS process and operates on the live repository, so a closed IDE means no
+   endpoint.
+2. **Settings -> Tools -> MCP Server** is enabled. Note the port it reports.
+3. No modal MPS dialog is open. A modal dialog blocks the IDE thread and write
+   operations cannot obtain the model lock.
+4. The endpoint is registered with the agent client and the client session has
+   been restarted; MCP servers are loaded at session start.
+
+`.mcp.json` at the repository root registers the endpoint in project scope, so it
+is version controlled and travels with the clone rather than living in per-user
+state. Verify the endpoint before relying on it:
+
+```
+curl -s -X POST http://127.0.0.1:<PORT>/stream   -H "Content-Type: application/json"   -H "Accept: application/json, text/event-stream"   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"probe","version":"0"}}}'
+```
+
+A live server answers with `serverInfo.name` of `JetBrains MPS MCP Server`. A
+listening socket alone is not evidence; check the handshake. Note that `GET` on
+`/sse` deliberately hangs, because it is a streaming endpoint.
+
+**The port is assigned per machine.** The committed value is the one observed on
+the workstation that created MPS-0; on another machine, read the port from the
+MPS settings dialog and update `.mcp.json` locally. A wrong port fails as a
+connection error, not as a missing tool.
+
 ## Checkpoints
 
 Materialization runs as four checkpoints, each with a commit and review
