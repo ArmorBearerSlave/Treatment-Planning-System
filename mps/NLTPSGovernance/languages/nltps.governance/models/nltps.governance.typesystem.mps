@@ -13,6 +13,7 @@
     <import index="ol33" ref="r:e3f43cc2-9854-4561-9b2a-13d5891c34c9(nltps.governance.structure)" />
     <import index="tpck" ref="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" />
     <import index="wyt6" ref="6354ebe7-c22a-4a0f-ac54-50b52ab9b065/java:java.lang(JDK/)" />
+    <import index="5q6" ref="r:07b10a47-b937-4aa9-ad53-c2e3280bb0f3(nltps.foundation.structure)" />
   </imports>
   <registry>
     <language id="f3061a53-9226-4cc5-a443-f952ceaf5816" name="jetbrains.mps.baseLanguage">
@@ -41,12 +42,20 @@
       <concept id="1068580123136" name="jetbrains.mps.baseLanguage.structure.StatementList" flags="sn" stub="5293379017992965193" index="3clFbS">
         <child id="1068581517665" name="statement" index="3cqZAp" />
       </concept>
+      <concept id="1068580320020" name="jetbrains.mps.baseLanguage.structure.IntegerConstant" flags="nn" index="3cmrfG">
+        <property id="1068580320021" name="value" index="3cmrfH" />
+      </concept>
+      <concept id="1081506773034" name="jetbrains.mps.baseLanguage.structure.LessThanExpression" flags="nn" index="3eOVzh" />
       <concept id="1081516740877" name="jetbrains.mps.baseLanguage.structure.NotExpression" flags="nn" index="3fqX7Q">
         <child id="1081516765348" name="expression" index="3fr31v" />
       </concept>
       <concept id="1204053956946" name="jetbrains.mps.baseLanguage.structure.IMethodCall" flags="ngI" index="1ndlxa">
         <reference id="1068499141037" name="baseMethodDeclaration" index="37wK5l" />
         <child id="1068499141038" name="actualArgument" index="37wK5m" />
+      </concept>
+      <concept id="1081773326031" name="jetbrains.mps.baseLanguage.structure.BinaryOperation" flags="nn" index="3uHJSO">
+        <child id="1081773367579" name="rightExpression" index="3uHU7w" />
+        <child id="1081773367580" name="leftExpression" index="3uHU7B" />
       </concept>
     </language>
     <language id="fd392034-7849-419d-9071-12563d152375" name="jetbrains.mps.baseLanguage.closures">
@@ -298,6 +307,104 @@
             </node>
             <node concept="1YBJjd" id="1bNmcZ2wLtB" role="1urrMF">
               <ref role="1YBMHb" node="1bNmcZ2wLth" resolve="req" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+  </node>
+  <node concept="18kY7G" id="1bNmcZ2CHXs">
+    <property role="TrG5h" value="GOV_C_006_override_rationale" />
+    <node concept="1YaCAy" id="1bNmcZ2CHXv" role="1YuTPh">
+      <property role="TrG5h" value="ovr" />
+      <ref role="1YaFvo" to="ol33:1bNmcZ2iQmJ" resolve="RequirementOverride" />
+    </node>
+    <node concept="3clFbS" id="1bNmcZ2CHXw" role="18ibNy">
+      <node concept="3clFbJ" id="1bNmcZ2CHXx" role="3cqZAp">
+        <node concept="3eOVzh" id="1bNmcZ2CHX$" role="3clFbw">
+          <node concept="2OqwBi" id="1bNmcZ2CHXB" role="3uHU7B">
+            <node concept="2OqwBi" id="1bNmcZ2CHXE" role="2Oq$k0">
+              <node concept="1YBJjd" id="1bNmcZ2CHXH" role="2Oq$k0">
+                <ref role="1YBMHb" node="1bNmcZ2CHXv" resolve="ovr" />
+              </node>
+              <node concept="3TrcHB" id="1bNmcZ2CHXI" role="2OqNvi">
+                <ref role="3TsBF5" to="ol33:1bNmcZ2iQnf" resolve="rationale" />
+              </node>
+            </node>
+            <node concept="liA8E" id="1bNmcZ2CHXJ" role="2OqNvi">
+              <ref role="37wK5l" to="wyt6:~String.length()" resolve="length" />
+            </node>
+          </node>
+          <node concept="3cmrfG" id="1bNmcZ2CHXK" role="3uHU7w">
+            <property role="3cmrfH" value="20" />
+          </node>
+        </node>
+        <node concept="3clFbS" id="1bNmcZ2CHXL" role="3clFbx">
+          <node concept="2MkqsV" id="1bNmcZ2CHXM" role="3cqZAp">
+            <node concept="Xl_RD" id="1bNmcZ2CHXP" role="2MkJ7o">
+              <property role="Xl_RC" value="GOV-C-006: a RequirementOverride rationale must be at least 20 characters" />
+            </node>
+            <node concept="1YBJjd" id="1bNmcZ2CHXQ" role="1urrMF">
+              <ref role="1YBMHb" node="1bNmcZ2CHXv" resolve="ovr" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+  </node>
+  <node concept="18kY7G" id="1bNmcZ2CHYG">
+    <property role="TrG5h" value="GOV_C_005_derived_identifier" />
+    <node concept="1YaCAy" id="1bNmcZ2CHYJ" role="1YuTPh">
+      <property role="TrG5h" value="dr" />
+      <ref role="1YaFvo" to="ol33:1bNmcZ2iQmI" resolve="DerivedRequirement" />
+    </node>
+    <node concept="3clFbS" id="1bNmcZ2CHYK" role="18ibNy">
+      <node concept="3clFbJ" id="1bNmcZ2CHYL" role="3cqZAp">
+        <node concept="3fqX7Q" id="1bNmcZ2CHYO" role="3clFbw">
+          <node concept="2OqwBi" id="1bNmcZ2CHYQ" role="3fr31v">
+            <node concept="2OqwBi" id="1bNmcZ2CHYT" role="2Oq$k0">
+              <node concept="2OqwBi" id="1bNmcZ2CHYW" role="2Oq$k0">
+                <node concept="1YBJjd" id="1bNmcZ2CHYZ" role="2Oq$k0">
+                  <ref role="1YBMHb" node="1bNmcZ2CHYJ" resolve="dr" />
+                </node>
+                <node concept="3TrEf2" id="1bNmcZ2CHZ0" role="2OqNvi">
+                  <ref role="3Tt5mk" to="5q6:1bNmcZ2iEsG" />
+                </node>
+              </node>
+              <node concept="3TrcHB" id="1bNmcZ2CHZ3" role="2OqNvi">
+                <ref role="3TsBF5" to="5q6:1bNmcZ2iEsM" resolve="value" />
+              </node>
+            </node>
+            <node concept="liA8E" id="1bNmcZ2CHZ4" role="2OqNvi">
+              <ref role="37wK5l" to="wyt6:~String.startsWith(java.lang.String)" resolve="startsWith" />
+              <node concept="2OqwBi" id="1bNmcZ2CHZ5" role="37wK5m">
+                <node concept="2OqwBi" id="1bNmcZ2CHZ8" role="2Oq$k0">
+                  <node concept="2OqwBi" id="1bNmcZ2CHZb" role="2Oq$k0">
+                    <node concept="1YBJjd" id="1bNmcZ2CHZe" role="2Oq$k0">
+                      <ref role="1YBMHb" node="1bNmcZ2CHYJ" resolve="dr" />
+                    </node>
+                    <node concept="3TrEf2" id="1bNmcZ2CHZf" role="2OqNvi">
+                      <ref role="3Tt5mk" to="ol33:1bNmcZ2iQnd" />
+                    </node>
+                  </node>
+                  <node concept="3TrEf2" id="1bNmcZ2CHZg" role="2OqNvi">
+                    <ref role="3Tt5mk" to="5q6:1bNmcZ2iEsG" />
+                  </node>
+                </node>
+                <node concept="3TrcHB" id="1bNmcZ2CHZh" role="2OqNvi">
+                  <ref role="3TsBF5" to="5q6:1bNmcZ2iEsM" resolve="value" />
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="3clFbS" id="1bNmcZ2CHZi" role="3clFbx">
+          <node concept="2MkqsV" id="1bNmcZ2CHZj" role="3cqZAp">
+            <node concept="Xl_RD" id="1bNmcZ2CHZm" role="2MkJ7o">
+              <property role="Xl_RC" value="GOV-C-005: a DerivedRequirement identifier must be derived from its parent identifier" />
+            </node>
+            <node concept="1YBJjd" id="1bNmcZ2CHZn" role="1urrMF">
+              <ref role="1YBMHb" node="1bNmcZ2CHYJ" resolve="dr" />
             </node>
           </node>
         </node>

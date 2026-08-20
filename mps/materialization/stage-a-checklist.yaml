@@ -81,6 +81,28 @@ native_check_results:
     reassessment_rule: >-
       If a warning persists after its expected closure checkpoint, treat it as a finding
       rather than carrying it forward as expected.
+  - checkpoint: MPS-1
+    tool: MPS rebuild plus node-scope and model-scope checking
+    errors: 0
+    warnings: 0
+    scope: nltps.foundation and nltps.governance
+    module_scope_check_project: UNAVAILABLE_THROUGH_CURRENT_MCP_SURFACE
+    module_scope_attempt: >-
+      The MPS Console is reachable through the MCP surface and accepts an inserted
+      command, but MPS platform classes are not resolvable from the console model:
+      a jetbrains.mps.smodel.MPSModuleRepository call parsed into the console input
+      produced only UnknownInstanceMethodCall / unresolved-method errors. Making the
+      platform API resolvable would require adding dependencies to the console temp
+      module, which is outside the sanctioned agent surface. get_file_problems on
+      nltps.governance.mpl returned no entries, which is an IntelliJ inspection result
+      and not the MPS module-scope checker.
+    superfluous_extended_module_warning: >-
+      NOT RE-MEASURED. The condition that produced it no longer holds -- 17 governance
+      concepts now take GovernedElement, a nltps.foundation concept, as superconcept --
+      but that is an inference from the structure aspect, not the native module-scope
+      diagnostic. It is recorded as unavailable evidence rather than as cleared.
+    disposition: EVIDENCE_UNAVAILABLE_NOT_CLEARED
+
 
 checkpoints:
   - id: MPS-0
@@ -150,8 +172,15 @@ acceptance_items:
     item: >-
       Foundation and governance concepts are disjoint, exhaustive, and single-owner
       against the blueprint inventory.
-    status: pending
-    evidence: []
+    status: complete
+    evidence:
+      - "40 concepts materialized through MPS MCP model-aware operations: nltps.foundation 13, nltps.governance 27"
+      - "30 domain concepts + 10 representation concepts; the 10 exist only because MPS cannot express multi-valued properties or references"
+      - "240 structure-aspect nodes = 40 ConceptDeclaration + 70 PropertyDeclaration + 47 LinkDeclaration + 10 EnumerationDeclaration + 73 EnumerationMemberDeclaration"
+      - "tools/mps/check_concept_features.py - 40 concepts, superconcepts respect EXTENDS discipline"
+      - "tools/mps/check_language_skeleton.py - disjoint root/non-root collections, single owner per concept"
+      - "tools/mps/check_module_graph.py --max-concepts 40 - 40 concepts declared across 240 structure nodes"
+      - "conformance read back twice against mps1-concept-features.yaml: MPS runtime descriptors and persisted own-declarations, zero deviations"
   - id: MPS-MAT-003B
     checkpoint: MPS-2
     item: >-
@@ -187,7 +216,80 @@ acceptance_items:
       Foundation and governance constraints, typesystems, editors, and negative model
       tests pass, including demonstrated rejection of deliberately invalid nodes.
     status: pending
-    evidence: []
+    blocked_reason: >-
+      Eight of eleven controlled constraint identifiers carry demonstrated rejection.
+      Three do not, for two different reasons recorded under scoped_exclusions below.
+      This item stays pending because the acceptance wording requires demonstrated
+      rejection and an unrecorded omission would misstate what was shown.
+    evidence:
+      - "40 minimum editors created through mps_mcp_scaffold_editor; both languages rebuild with no generation or compilation error"
+      - "proof harness: nltps.proof solution with an .msd descriptor outside languages/, contributing zero structure-aspect nodes"
+      - "FND-C-001 proven: duplicate StableId value flagged on both holders; unique value accepted"
+      - "FND-C-002 proven structurally: Requirement without the mandatory version child rejected with 'No child in the obligatory role version'"
+      - "GOV-C-001 proven: 'The system should log.' rejected; the sibling 'shall' requirement not flagged"
+      - "GOV-C-002 proven: TraceLink source and target validated against the referenced TraceRelation allowed lists"
+      - "GOV-C-003 proven positive: RiskControl MITIGATES Hazard accepted with no false rejection"
+      - "GOV-C-004 proven: Hazard MITIGATES a non-permitted target rejected on both source and target"
+      - "directional near-miss proven: the exact reversal of the permitted case rejected, excluding accept-all, reject-all, and direction-insensitive implementations"
+      - "GOV-C-005 proven: DerivedRequirement identifier XXX-999 rejected; GOV-001-1 derived from parent GOV-001 accepted"
+      - "GOV-C-006 proven: rationale shorter than 20 characters rejected; compliant rationale accepted"
+      - "date representation proven: 2026-8-1 rejected as lexical, 2026-02-31 rejected as calendar, 2024-02-29 accepted; lexical and calendar diagnostics are distinct"
+      - "calendar validity implemented once as the Version.isValidCalendarDate behavior method using strict java.time.LocalDate parsing, not hand-rolled month arithmetic"
+    scoped_exclusions:
+      - constraint: GOV-C-007
+        status: deferred, not passed
+        reason: >-
+          MPS-1 lacks the AuthorizedActor / actor-type semantics required to distinguish
+          human authority from a model node, a generator, or an automated actor.
+        dependency: post-MPS-1 clinical-intent / role architecture
+        reactivation_checkpoint: >-
+          the checkpoint that introduces AuthorizedActor and role capability semantics
+        traceability_retained: true
+      - constraint: GOV-C-004
+        status: mechanism proven, literal negative example substituted
+        specified_negative_example: >-
+          A TraceLink from Hazard to a verification entity using MITIGATES.
+        not_literally_instantiable_because: >-
+          the verification concept named by the frozen example is allocated to a later
+          checkpoint and does not exist in the MPS-1 metamodel.
+        substituted_negative_example: Hazard MITIGATES Requirement
+        result: source and target validation both reject the invalid relationship
+        must_be_reexercised_when: >-
+          the verification concept becomes available; the literal frozen example is then
+          run against the same unchanged mechanism.
+        traceability_retained: true
+      - constraints: [FND-C-003, FND-C-004, FND-REPR-REAL]
+        status: implemented and active, not behaviourally proven
+        reason: >-
+          PhysicalQuantity is rootable false and no concept in the MPS-1 blueprint
+          aggregates it, so no instantiable context exists in which to construct the
+          invalid node. Verified empirically: root insertion is refused with 'Concept
+          PhysicalQuantity is not a rootable concept'.
+        implemented_evidence: >-
+          FND_C_003_unit_dimension, FND_C_004_dose_basis and FND_REPR_magnitude_numeric
+          are present in nltps.foundation.typesystem, type-check clean, and generate and
+          compile as part of a successful language rebuild.
+        reactivation_checkpoint: >-
+          the checkpoint that introduces a concept aggregating PhysicalQuantity, expected
+          at MPS-2 with the clinical-intent dose constraints.
+        traceability_retained: true
+      - constraint: FND-REPR-DATE (ExternalReference.retrievedDate)
+        status: not implemented at MPS-1
+        reason: >-
+          ExternalReference is rootable false and no concept aggregates it, so the rule
+          could be neither exercised nor proven. The reusable calendar-validation
+          behavior method exists and is ready to be applied when a container appears.
+        reactivation_checkpoint: >-
+          the checkpoint that introduces a concept aggregating ExternalReference.
+        traceability_retained: true
+    magnitude_comparison_safety:
+      comparison_present: false
+      detail: >-
+        No MPS-1 rule compares magnitude values. FND-C-003 and FND-C-004 compare only
+        dose-basis and dimension enumeration member names; FND-REPR-REAL checks lexical
+        numeric form only. No lexicographic ordering is applied to a numeric value
+        anywhere in the MPS-1 constraint set. Any future rule that compares magnitudes
+        must parse the string-backed value numerically first.
   - id: MPS-MAT-005B
     checkpoint: MPS-2
     item: >-
@@ -217,3 +319,46 @@ acceptance_items:
       or authority cutover.
     status: pending
     evidence: []
+
+post_mps1_actions:
+  - id: POST-MPS1-01
+    title: Module-graph gate does not constrain non-NL-TPS dependencies
+    finding: >-
+      tools/mps/check_module_graph.py filters module references to nltps.* and therefore
+      does not constrain unexpected external dependencies. During MPS-1 MPS silently
+      added DEFAULT dependencies on jetbrains.mps.lang.core and JDK; all three were
+      removed and both languages still rebuild, so none was required, but the gate would
+      not have objected had they remained.
+    action: >-
+      The controlled blueprint should declare the expected external, non-nltps dependency
+      set per module, and the gate should compare the complete controlled dependency set
+      rather than only NL-TPS references.
+    scope: post-MPS-1 controlled amendment, not MPS-1
+  - id: POST-MPS1-02
+    title: V and V matrix generator is not line-ending portable
+    finding: >-
+      scripts/generate_vv_check_matrix.ps1 builds output with StringBuilder.AppendLine,
+      so line endings follow Environment.NewLine. The repository pins LF through
+      .gitattributes and the -Check comparison is byte-exact, so local Windows execution
+      always fails while Linux CI passes. Regeneration produced zero content difference
+      after normalization and spec/allocations.yaml is unchanged, so this is a
+      portability defect and not generated-document drift.
+    action: >-
+      Normalize generated line endings explicitly and add a Windows regression test.
+    scope: >-
+      post-MPS-1 maintenance, in its own controlled commit; deliberately not mixed into
+      constraint materialization.
+  - id: POST-MPS1-03
+    title: Logical-real storage must not narrow generated runtime schemas
+    finding: >-
+      PhysicalQuantity.magnitude remains logically numeric despite string-backed MPS
+      storage, because MPS offers only string, integer and boolean primitives.
+    obligation: >-
+      Any generated runtime schema must preserve or re-widen the logical numeric contract
+      and must not blindly emit a string-only contract from the MPS storage
+      representation. Where the current runtime or schema contract already permits
+      numeric values, that fact is preserved here so later generator work does not
+      silently narrow it.
+    scope: >-
+      downstream obligation record only; no Stage B or Stage D generator work is
+      authorized by this entry.

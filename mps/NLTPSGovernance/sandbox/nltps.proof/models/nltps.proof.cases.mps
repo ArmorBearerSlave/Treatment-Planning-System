@@ -32,6 +32,7 @@
         <property id="1365532761364539194" name="state" index="3gIvZP" />
       </concept>
       <concept id="1365532761364539170" name="nltps.foundation.structure.Version" flags="ng" index="3gIvZH">
+        <property id="1365532761364539192" name="effectiveDate" index="3gIvZR" />
         <property id="1365532761364539191" name="value" index="3gIvZS" />
       </concept>
       <concept id="1365532761364539168" name="nltps.foundation.structure.StableId" flags="ng" index="3gIvZJ">
@@ -39,8 +40,28 @@
       </concept>
     </language>
     <language id="4709dc1d-8658-45c6-b6ee-185bd2ba1b14" name="nltps.governance">
+      <concept id="1365532761364587934" name="nltps.governance.structure.EmphasisEntry" flags="ng" index="3gI3Ph">
+        <property id="1365532761364587940" name="emphasis" index="3gI3PF" />
+      </concept>
       <concept id="1365532761364587933" name="nltps.governance.structure.VerificationMethodEntry" flags="ng" index="3gI3Pi">
         <property id="1365532761364587939" name="method" index="3gI3PG" />
+      </concept>
+      <concept id="1365532761364587951" name="nltps.governance.structure.RequirementOverride" flags="ng" index="3gI3Pw">
+        <property id="1365532761364587983" name="rationale" index="3gI3O0" />
+        <property id="1365532761364587985" name="overrideText" index="3gI3Ou" />
+        <property id="1365532761364587984" name="approvalState" index="3gI3Ov" />
+        <reference id="1365532761364587986" name="target" index="3gI3Ot" />
+      </concept>
+      <concept id="1365532761364587950" name="nltps.governance.structure.DerivedRequirement" flags="ng" index="3gI3Px">
+        <property id="1365532761364587980" name="derivedIndex" index="3gI3O3" />
+        <reference id="1365532761364587982" name="pattern" index="3gI3O1" />
+        <reference id="1365532761364587981" name="parent" index="3gI3O2" />
+      </concept>
+      <concept id="1365532761364587949" name="nltps.governance.structure.RequirementPattern" flags="ng" index="3gI3Py">
+        <property id="1365532761364587978" name="childCount" index="3gI3O5" />
+        <property id="1365532761364587977" name="childSuffixTemplate" index="3gI3O6" />
+        <property id="1365532761364587976" name="patternId" index="3gI3O7" />
+        <child id="1365532761364587979" name="emphasis" index="3gI3O4" />
       </concept>
       <concept id="1365532761364587948" name="nltps.governance.structure.Requirement" flags="ng" index="3gI3Pz">
         <property id="1365532761364587972" name="category" index="3gI3Ob" />
@@ -63,6 +84,8 @@
       </concept>
       <concept id="1365532761364587964" name="nltps.governance.structure.RequirementBaseline" flags="ng" index="3gI3PN">
         <property id="1365532761364588023" name="name" index="3gI3OS" />
+        <child id="1365532761364588027" name="overrides" index="3gI3OO" />
+        <child id="1365532761364588026" name="patterns" index="3gI3OP" />
         <child id="1365532761364588025" name="requirements" index="3gI3OQ" />
       </concept>
       <concept id="1365532761364587960" name="nltps.governance.structure.HazardRef" flags="ng" index="3gI3PR">
@@ -132,6 +155,7 @@
     </node>
     <node concept="3gIvZH" id="1bNmcZ2uzoJ" role="3gIvZy">
       <property role="3gIvZS" value="1.0" />
+      <property role="3gIvZR" value="2024-02-29" />
     </node>
     <node concept="3gI3Pz" id="1bNmcZ2uzoK" role="3gI3OQ">
       <property role="3gI3Od" value="The system shall record an approval decision." />
@@ -146,6 +170,52 @@
       </node>
       <node concept="3gI3Pi" id="1bNmcZ2uzoQ" role="3gI3Oa">
         <property role="3gI3PG" value="1yA6SzRMnoc/I" />
+      </node>
+    </node>
+    <node concept="3gI3Py" id="1bNmcZ2Kg1M" role="3gI3OP">
+      <property role="3gI3O7" value="PAT-GOV-01" />
+      <property role="3gI3O6" value="-{index}" />
+      <property role="3gI3O5" value="3" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ2Kg1Q" role="3gIvZz">
+        <property role="3gIvZX" value="PAT-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ2Kg1R" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+      <node concept="3gI3Ph" id="1bNmcZ2Kg1S" role="3gI3O4">
+        <property role="3gI3PF" value="completeness" />
+      </node>
+    </node>
+    <node concept="3gI3Px" id="1bNmcZ2Kg1T" role="3gI3OQ">
+      <property role="3gI3Od" value="The system shall record the derived obligation." />
+      <property role="3gI3Oc" value="7Ri7H_AEJ6z/GOV" />
+      <property role="3gI3Ob" value="1Pg7pL_yGnB/functional" />
+      <property role="3gI3O3" value="1" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <ref role="3gI3O2" node="1bNmcZ2uzoK" />
+      <ref role="3gI3O1" node="1bNmcZ2Kg1M" />
+      <node concept="3gIvZJ" id="1bNmcZ2Kg1X" role="3gIvZz">
+        <property role="3gIvZX" value="GOV-001-1" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ2Kg1Y" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+      <node concept="3gI3Pi" id="1bNmcZ2Kg1Z" role="3gI3Oa">
+        <property role="3gI3PG" value="1yA6SzRMnoc/I" />
+      </node>
+    </node>
+    <node concept="3gI3Pw" id="1bNmcZ2Kg20" role="3gI3OO">
+      <property role="3gI3O0" value="The derived wording omits the monthly QA interval required by the operating programme." />
+      <property role="3gI3Ov" value="5PrMha4qV75/pending_named_approval" />
+      <property role="3gI3Ou" value="The system shall record the bespoke obligation." />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <ref role="3gI3Ot" node="1bNmcZ2Kg1T" />
+      <node concept="3gIvZJ" id="1bNmcZ2Kg23" role="3gIvZz">
+        <property role="3gIvZX" value="OVR-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ2Kg24" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
       </node>
     </node>
   </node>
@@ -204,6 +274,7 @@
       </node>
       <node concept="3gIvZH" id="1bNmcZ2wLsW" role="3gIvZy">
         <property role="3gIvZS" value="1.0" />
+        <property role="3gIvZR" value="2026-08-20" />
       </node>
       <node concept="3gI3PH" id="1bNmcZ2wLsX" role="3gI3Oy">
         <property role="3gI3PB" value="RiskControl" />
