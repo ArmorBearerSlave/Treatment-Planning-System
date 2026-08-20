@@ -126,24 +126,40 @@ checkpoints:
     acceptance_items: [MPS-MAT-003A, MPS-MAT-005A]
 
   - id: MPS-2
-    title: Clinical intent and realization metamodel
+    title: Clinical intent and shared role holders
     scope: >-
       Add PlanIntentDefinition, roles and permissions, state transitions, release
-      profiles, commissioned-use envelopes, components, interfaces, allocations, and
-      verification claims. Validate negative examples before any corpus import.
+      profiles and commissioned-use envelopes, together with the role model
+      (ProfessionalRole, OperationalRole, RoleCapability, AuthorizedActor) and the
+      shared holder language nltps.roles.common. Validate negative examples first.
+      AuthorizedActor is what makes the GOV-C-007 deferral reactivatable.
     commit_boundary: true
     contains_hlr_roots: false
     acceptance_items: [MPS-MAT-003B, MPS-MAT-005B]
 
   - id: MPS-3
-    title: 119-HLR import
+    title: Professional role projections
     scope: >-
-      Only after the language passes model checks, run the Stage A importer to create
-      119 file-per-root Requirement roots. Immediately export the neutral comparison
+      Add the four projection languages nltps.roles.radonc, nltps.roles.physics,
+      nltps.roles.dosimetry and nltps.roles.therapy, each EXTENDS nltps.roles.common.
+      A projection introduces no clinical semantics of its own: it may contain only
+      what it or an EXTENDS ancestor owns, and references semantic-core concepts.
+    commit_boundary: true
+    contains_hlr_roots: false
+    acceptance_items: [MPS-MAT-003C, MPS-MAT-005C]
+
+  - id: MPS-4
+    title: Realization and the 119-HLR import
+    scope: >-
+      Add components, interfaces, allocations and verification claims. Only after the
+      language passes model checks, run the Stage A importer to create 119
+      file-per-root Requirement roots, then export the neutral comparison
       representation and begin Stage B equivalence evidence.
     commit_boundary: true
     contains_hlr_roots: true
-    acceptance_items: [MPS-MAT-004B, MPS-MAT-006, MPS-MAT-007, MPS-MAT-008, MPS-MAT-009]
+    acceptance_items:
+      [MPS-MAT-003D, MPS-MAT-005D, MPS-MAT-004B, MPS-MAT-006, MPS-MAT-007,
+       MPS-MAT-008, MPS-MAT-009]
 
 acceptance_items:
   - id: MPS-MAT-001
@@ -184,8 +200,23 @@ acceptance_items:
   - id: MPS-MAT-003B
     checkpoint: MPS-2
     item: >-
-      Clinical-intent and realization concepts are disjoint, exhaustive, and single-owner
-      against the blueprint inventory.
+      Clinical-intent and roles.common concepts are disjoint, exhaustive, and
+      single-owner against the blueprint inventory.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-003C
+    checkpoint: MPS-3
+    item: >-
+      Professional role projection concepts are disjoint, exhaustive, and single-owner
+      against the blueprint inventory, and every projection contains only concepts owned
+      by itself or a transitive EXTENDS ancestor.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-003D
+    checkpoint: MPS-4
+    item: >-
+      Realization concepts are disjoint, exhaustive, and single-owner against the
+      blueprint inventory.
     status: pending
     evidence: []
   - id: MPS-MAT-004A
@@ -201,7 +232,7 @@ acceptance_items:
       - "extends: governance/clinicalintent/realization -> foundation"
       - "depends: clinicalintent -> governance; realization -> governance, clinicalintent"
   - id: MPS-MAT-004B
-    checkpoint: MPS-3
+    checkpoint: MPS-4
     item: >-
       File-per-root persistence is demonstrated on normative instance models.
     status: pending
@@ -256,7 +287,15 @@ acceptance_items:
         reason: >-
           The actor semantics required to distinguish human authority from a model node,
           a generator, or an automated actor do not yet exist in the current metamodel.
-        dependency: post-MPS-1 clinical-intent / role architecture
+        dependency: >-
+          AuthorizedActor, declared in nltps.clinicalintent alongside ProfessionalRole,
+          OperationalRole and RoleCapability. RoleCapability binds ActionDefinition and
+          WorkflowState, which are clinicalintent concepts, so placing the role model in
+          governance would invert the acyclic dependency direction.
+        reactivation_checkpoint: >-
+          MPS-2, the checkpoint that introduces AuthorizedActor and role capability
+          semantics. The deferral becomes reactivatable there and may not be closed
+          without the demonstrated rejection its acceptance wording requires.
         reactivation_condition: >-
           Reactivates when AuthorizedActor and role capability semantics are introduced.
           This is a semantic-model dependency, not a containment-reachability one, so the
@@ -392,27 +431,52 @@ acceptance_items:
   - id: MPS-MAT-005B
     checkpoint: MPS-2
     item: >-
-      Clinical-intent and realization constraints, typesystems, editors, and negative
+      Clinical-intent and roles.common constraints, typesystems, editors, and negative
       model tests pass, including demonstrated rejection of deliberately invalid nodes.
     status: pending
     evidence: []
-  - id: MPS-MAT-006
+    carries_forward:
+      - >-
+        GOV-C-007 becomes reactivatable here because AuthorizedActor is introduced at
+        this checkpoint. Its deferral may not be closed without the demonstrated
+        rejection its acceptance wording requires.
+      - >-
+        If PhysicalQuantity or ExternalReference becomes reachable at this checkpoint,
+        the corresponding non_instantiability deferrals recorded against MPS-MAT-005A
+        expire automatically and their deferred negative examples must be exercised
+        before this item may close.
+  - id: MPS-MAT-005C
     checkpoint: MPS-3
+    item: >-
+      Professional role projection constraints, typesystems, editors, and negative model
+      tests pass, including demonstrated rejection of containment that reaches outside
+      the permitted EXTENDS ancestry.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-005D
+    checkpoint: MPS-4
+    item: >-
+      Realization constraints, typesystems, editors, and negative model tests pass,
+      including demonstrated rejection of deliberately invalid nodes.
+    status: pending
+    evidence: []
+  - id: MPS-MAT-006
+    checkpoint: MPS-4
     item: The HLR importer accepts the schema-valid bundle and creates exactly 119 roots.
     status: pending
     evidence: []
   - id: MPS-MAT-007
-    checkpoint: MPS-3
+    checkpoint: MPS-4
     item: Neutral reverse export has zero unexplained discrepancy from controlled input.
     status: pending
     evidence: []
   - id: MPS-MAT-008
-    checkpoint: MPS-3
+    checkpoint: MPS-4
     item: Headless build and model tests pass without the experimental agent toolkit.
     status: pending
     evidence: []
   - id: MPS-MAT-009
-    checkpoint: MPS-3
+    checkpoint: MPS-4
     item: >-
       Independent Stage A review confirms no patient data, credentials, signing keys,
       or authority cutover.

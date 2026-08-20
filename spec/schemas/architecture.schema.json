@@ -71,7 +71,7 @@
         "decision_record": {"const": "ADR-001"},
         "skeleton_schema_version": {"const": "0.2"},
         "implementation_state": {"const": "blueprint_not_live_mps_serialization"},
-        "ordered_languages": {"type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true},
+        "ordered_languages": {"type": "array", "minItems": 4, "uniqueItems": true},
         "allowed_dependencies": {"type": "object"},
         "default_model_persistence": {"const": "file-per-root"},
         "concept_collection_invariant": {"type": "string", "minLength": 1}

@@ -157,13 +157,18 @@
         "EvidenceProfile",
         "CommissionedUseEnvelope",
         "ModelProfile",
-        "MachineProfile"
+        "MachineProfile",
+        "ProfessionalRole",
+        "OperationalRole",
+        "RoleCapability",
+        "AuthorizedActor"
       ],
       "required_constraints": [
         "AI-creatable PlanIntent cannot represent A4 authority",
         "state transitions have explicit source, target, actor, guard, and invalidation effects",
         "release profiles bind intended use and commissioned scope",
-        "patient PlanIntent instances are prohibited from governance models"
+        "patient PlanIntent instances are prohibited from governance models",
+        "AuthorizedActor distinguishes human authority from a generated or automated actor"
       ]
     },
     {
@@ -217,6 +222,148 @@
         "every VerificationClaim binds an executable suite or explicit manual evidence record",
         "parent PASS is never inferred from child records",
         "adapter capabilities declare read/write direction, trust zone, destination, and commissioned profile"
+      ]
+    },
+    {
+      "name": "nltps.roles.common",
+      "materialized_at": "MPS-2",
+      "concepts_materialized_at": "MPS-2",
+      "dependencies": [
+        {
+          "module": "nltps.foundation",
+          "kind": "EXTENDS"
+        },
+        {
+          "module": "nltps.governance",
+          "kind": "DEFAULT"
+        },
+        {
+          "module": "nltps.clinicalintent",
+          "kind": "DEFAULT"
+        }
+      ],
+      "external_explicit": [],
+      "owns": [
+        "shared reference-holder concepts for the professional projections",
+        "shared projection command vocabulary"
+      ],
+      "root_concepts": [
+        "RoleProjectionCatalog"
+      ],
+      "non_root_concepts": [
+        "RoleRef",
+        "CapabilityRef",
+        "ActionRef",
+        "WorkflowStateRef",
+        "ProjectionCommand"
+      ],
+      "required_constraints": [
+        "a projection may contain only concepts owned by itself or an EXTENDS ancestor",
+        "semantic-core concepts are referenced, never contained"
+      ]
+    },
+    {
+      "name": "nltps.roles.radonc",
+      "materialized_at": "MPS-3",
+      "concepts_materialized_at": "MPS-3",
+      "dependencies": [
+        {
+          "module": "nltps.roles.common",
+          "kind": "EXTENDS"
+        }
+      ],
+      "external_explicit": [],
+      "owns": [
+        "radonc projection of the shared clinical semantics"
+      ],
+      "root_concepts": [
+        "RadoncProjection"
+      ],
+      "non_root_concepts": [
+        "RadoncView",
+        "RadoncTask"
+      ],
+      "required_constraints": [
+        "the projection introduces no clinical semantics of its own",
+        "containment stays within the EXTENDS ancestry"
+      ]
+    },
+    {
+      "name": "nltps.roles.physics",
+      "materialized_at": "MPS-3",
+      "concepts_materialized_at": "MPS-3",
+      "dependencies": [
+        {
+          "module": "nltps.roles.common",
+          "kind": "EXTENDS"
+        }
+      ],
+      "external_explicit": [],
+      "owns": [
+        "physics projection of the shared clinical semantics"
+      ],
+      "root_concepts": [
+        "PhysicsProjection"
+      ],
+      "non_root_concepts": [
+        "PhysicsView",
+        "PhysicsTask"
+      ],
+      "required_constraints": [
+        "the projection introduces no clinical semantics of its own",
+        "containment stays within the EXTENDS ancestry"
+      ]
+    },
+    {
+      "name": "nltps.roles.dosimetry",
+      "materialized_at": "MPS-3",
+      "concepts_materialized_at": "MPS-3",
+      "dependencies": [
+        {
+          "module": "nltps.roles.common",
+          "kind": "EXTENDS"
+        }
+      ],
+      "external_explicit": [],
+      "owns": [
+        "dosimetry projection of the shared clinical semantics"
+      ],
+      "root_concepts": [
+        "DosimetryProjection"
+      ],
+      "non_root_concepts": [
+        "DosimetryView",
+        "DosimetryTask"
+      ],
+      "required_constraints": [
+        "the projection introduces no clinical semantics of its own",
+        "containment stays within the EXTENDS ancestry"
+      ]
+    },
+    {
+      "name": "nltps.roles.therapy",
+      "materialized_at": "MPS-3",
+      "concepts_materialized_at": "MPS-3",
+      "dependencies": [
+        {
+          "module": "nltps.roles.common",
+          "kind": "EXTENDS"
+        }
+      ],
+      "external_explicit": [],
+      "owns": [
+        "therapy projection of the shared clinical semantics"
+      ],
+      "root_concepts": [
+        "TherapyProjection"
+      ],
+      "non_root_concepts": [
+        "TherapyView",
+        "TherapyTask"
+      ],
+      "required_constraints": [
+        "the projection introduces no clinical semantics of its own",
+        "containment stays within the EXTENDS ancestry"
       ]
     }
   ],

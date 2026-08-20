@@ -366,6 +366,11 @@ mps_language_constraints:
     - nltps.governance
     - nltps.clinicalintent
     - nltps.realization
+    - nltps.roles.common
+    - nltps.roles.radonc
+    - nltps.roles.physics
+    - nltps.roles.dosimetry
+    - nltps.roles.therapy
   allowed_dependencies:
     nltps.foundation: []
     nltps.governance:
@@ -377,6 +382,18 @@ mps_language_constraints:
       - nltps.foundation
       - nltps.governance
       - nltps.clinicalintent
+    nltps.roles.common:
+      - nltps.foundation
+      - nltps.governance
+      - nltps.clinicalintent
+    nltps.roles.radonc:
+      - nltps.roles.common
+    nltps.roles.physics:
+      - nltps.roles.common
+    nltps.roles.dosimetry:
+      - nltps.roles.common
+    nltps.roles.therapy:
+      - nltps.roles.common
   default_model_persistence: file-per-root
   unique_ownership_includes:
     - root_concepts

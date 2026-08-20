@@ -33,7 +33,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 PLAN_PATH = REPO_ROOT / "mps" / "materialization" / "stage-a-checklist.yaml"
 SKELETON_PATH = REPO_ROOT / "mps" / "bootstrap" / "language-skeleton.json"
 
-EXPECTED_CHECKPOINTS = ["MPS-0", "MPS-1", "MPS-2", "MPS-3"]
+EXPECTED_CHECKPOINTS = ["MPS-0", "MPS-1", "MPS-2", "MPS-3", "MPS-4"]
 PROHIBITED_FLAGS = (
     "patient_data_permitted",
     "clinical_credentials_permitted",

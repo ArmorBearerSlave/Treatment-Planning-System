@@ -63,7 +63,6 @@
     "languages": {
       "type": "array",
       "minItems": 4,
-      "maxItems": 4,
       "items": {
         "type": "object",
         "required": [
@@ -80,7 +79,7 @@
         "properties": {
           "name": {
             "type": "string",
-            "pattern": "^nltps\\.[a-z]+$"
+            "pattern": "^nltps\\.[a-z]+(\\.[a-z]+)*$"
           },
           "owns": {
             "type": "array",
@@ -155,7 +154,8 @@
             "description": "Explicit non-NL-TPS module dependencies this language is permitted to declare in its .mpl <dependencies> block. Empty unless deliberately amended. MPS adds such dependencies automatically; leaving them undeclared would convert tool behaviour into architecture."
           }
         }
-      }
+      },
+      "description": "Declared language modules. The count is open because the blueprint describes the architecture ahead of materializing it; check_module_graph.py compares only those whose materialized_at checkpoint has arrived."
     },
     "dependency_kind_policy": {
       "type": "object"
