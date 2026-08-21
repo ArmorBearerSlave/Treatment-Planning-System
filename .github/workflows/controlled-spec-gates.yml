@@ -50,6 +50,9 @@ jobs:
       - name: Check MPS module graph against the blueprint
         run: python tools/mps/check_module_graph.py --checkpoint MPS-3
 
+      - name: Check persisted enumeration values resolve to their own enumeration
+        run: python tools/mps/check_enum_persistence.py
+
       - name: Check frozen MPS-2 role ontology
         run: python tools/mps/check_role_ontology.py
 

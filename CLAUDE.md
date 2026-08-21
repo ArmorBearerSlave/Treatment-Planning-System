@@ -135,6 +135,13 @@ Three failures observed so far, each silent in every checker that ran before it:
   `null` where the member id belongs, and no checker or build reports it. A resolved
   member reads back as `<memberId>/<name>`; a corrupt one reads back as
   `<fragment>/null`. Read enum properties back and check for the id.
+  `tools/mps/check_enum_persistence.py` now gates this mechanically: it follows every
+  persisted value out to the `EnumerationDeclaration` its property is declared against --
+  across models, since a property and its enumeration may live in different languages --
+  and rejects a value naming anything the declared enumeration does not declare. It does
+  not decode MPS's compact id encoding, so it enforces identity by declared membership
+  plus repository-wide id/name pairing stability. **Run it after any session that writes
+  enum values.**
 
 MPS-2 recorded a fourth, that MPS does not enforce cardinality `1` on a reference. **That
 was wrong and is withdrawn.** An MPS-3 experiment on one concept -- one probe missing a
@@ -191,6 +198,7 @@ authority cutover. Approval is recorded by governance; an artifact never asserts
 ```
 python -m unittest discover -s tests
 python tools/mps/check_module_graph.py --checkpoint MPS-N
+python tools/mps/check_enum_persistence.py
 python tools/mps/check_concept_features.py
 python tools/mps/check_role_ontology.py
 python tools/mps/check_materialization_plan.py
