@@ -134,12 +134,18 @@ def check() -> list[str]:
         if item.get("status") == "complete" and not item.get("evidence"):
             errors.append(f"{item_id} is complete without attributable evidence")
 
-    # A proof deferral justified by non-instantiability is only honest while the
-    # affected concept really is unreachable. Once some checkpoint gives it a
-    # container, the deferral has to expire and the deferred negative example has to
-    # be run, so the gate fails until the record is cleared.
+    # A proof deferral justified by non-instantiability is only honest while no instance
+    # of the affected concept can exist. Once some checkpoint makes one possible, the
+    # deferral has to expire and the deferred negative example has to be run, so the gate
+    # fails until the record is cleared.
+    #
+    # This keys on instantiability, not on the orphan report. An abstract concept never
+    # appears in the orphan report because it is never instantiated directly, so reading
+    # the report here would call every deferral over an abstract concept stale on the day
+    # it was written. An abstract concept becomes instantiable when a concrete subconcept
+    # of it becomes reachable -- which for the roles.common bases is exactly MPS-3.
     reach = compute_reachability()
-    unreachable = set(reach["unreachable"])
+    not_instantiable = set(reach["concepts"]) - set(reach["instantiable"])
     known_items = {entry["id"] for entry in items}
     # Every concept any specification declares, used to detect that a semantic dependency
     # has arrived even though nothing lapses automatically on it.
@@ -162,11 +168,12 @@ def check() -> list[str]:
                 elif lapsed:
                     # A lapse is an auditable transition, never a deletion: the obligation
                     # has to land somewhere, and it must not be declared before it is true.
-                    if concept in unreachable:
+                    if concept in not_instantiable:
                         errors.append(
                             f"{item['id']}: deferral {label!r} is recorded as lapsed at "
-                            f"{lapsed}, but {concept} is still unreachable; a deferral may "
-                            f"not lapse before its affected concept has a containment path"
+                            f"{lapsed}, but no instance of {concept} can exist yet; a "
+                            f"deferral may not lapse before its affected concept is "
+                            f"instantiable"
                         )
                     if not carried:
                         errors.append(
@@ -179,10 +186,10 @@ def check() -> list[str]:
                             f"{item['id']}: deferral {label!r} is carried to {carried}, "
                             f"which is not an acceptance item"
                         )
-                elif concept not in unreachable:
+                elif concept not in not_instantiable:
                     errors.append(
                         f"{item['id']}: deferral {label!r} is still active but its affected "
-                        f"concept {concept} is now reachable from a root; run the deferred "
+                        f"concept {concept} can now be instantiated; run the deferred "
                         f"negative example and clear the deferral"
                     )
 

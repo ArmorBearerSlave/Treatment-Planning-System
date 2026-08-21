@@ -48,7 +48,7 @@ jobs:
         run: python tools/mps/check_concept_features.py
 
       - name: Check MPS module graph against the blueprint
-        run: python tools/mps/check_module_graph.py --checkpoint MPS-1
+        run: python tools/mps/check_module_graph.py --checkpoint MPS-2
 
       - name: Check frozen MPS-2 role ontology
         run: python tools/mps/check_role_ontology.py

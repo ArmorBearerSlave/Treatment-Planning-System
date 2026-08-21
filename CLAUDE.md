@@ -38,12 +38,13 @@ whether the migration is correct.
 
     MPS-0  project and the four language modules          closed
     MPS-1  foundation + governance                        closed
-    MPS-2  clinical intent + roles.common
+    MPS-2  clinical intent + roles.common                closed
     MPS-3  the four professional role projections
     MPS-4  realization + the 119-HLR import
 
 - Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
 - Concept design that MPS-1 transcribed: `mps/bootstrap/mps1-concept-features.yaml`
+- Concept design that MPS-2 transcribed: `mps/bootstrap/mps2-concept-features.yaml`
 - Role and authorization ontology frozen for MPS-2: `mps/bootstrap/mps2-role-ontology.yaml`
 - Module graph, dependency kinds, per-checkpoint inventories: `mps/bootstrap/language-skeleton.json`
 
@@ -88,6 +89,23 @@ re-reading the tool's own response.
 A passing `check_root_node_problems` is not sufficient acceptance evidence by itself.
 Acceptance requires read-back, plus the applicable node-scope and model-scope checks,
 plus a native build or check result. No single checker is sufficient.
+
+Two failures observed at MPS-2, each silent in every checker that ran before it:
+
+- **A `cardinality` key on a link in `CREATE_CONCEPTS` is ignored.** 34 of 37 links were
+  created with the metamodel default `0..1` instead of the specified `1` or `0..n`, with
+  `ok: true` throughout and a clean model check. Set `sourceCardinality` explicitly and
+  read it back; `0..1` is serialized as absent, so absent means default, not unset.
+- **MPS does not enforce cardinality `1` on a reference link.** A node with three
+  mandatory references all unset passed the node check, passed file inspection, and
+  built. A constraint that depends on a reference being present must say so in a checking
+  rule; the metamodel will not say it. This sits beside the missing-mandatory-child
+  hazard above.
+
+`mps_mcp_scaffold_editor` leaves the inline display property of every reference cell
+unresolved. The model check reports nothing; the Java compiler reports `variable property
+might not have been initialized`. Point each one at a real property of the concept it
+displays.
 
 ## Deferrals are conditional, not permanent
 

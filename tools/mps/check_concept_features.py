@@ -376,7 +376,28 @@ def compute_reachability(features: dict | None = None) -> dict[str, object]:
         for name, info in meta.items()
         if not info["rootable"] and not info["abstract"] and name not in reachable
     )
-    return {"reachable": reachable, "unreachable": unreachable, "concepts": meta}
+
+    # Whether an instance can exist at all, which is a different question from the orphan
+    # report. An abstract concept is never instantiated directly, so it is instantiable
+    # only through a concrete subconcept that is itself reachable. A deferral justified by
+    # non-instantiability must key on this, not on the orphan report: an abstract concept
+    # never appears there and would otherwise look as though its deferral had gone stale.
+    instantiable = set()
+    for name, info in meta.items():
+        candidates = (
+            {c for c in substitutes[name] if not meta[c]["abstract"]}
+            if info["abstract"]
+            else {name}
+        )
+        if any(c in reachable for c in candidates):
+            instantiable.add(name)
+
+    return {
+        "reachable": reachable,
+        "unreachable": unreachable,
+        "instantiable": instantiable,
+        "concepts": meta,
+    }
 
 
 def main() -> int:

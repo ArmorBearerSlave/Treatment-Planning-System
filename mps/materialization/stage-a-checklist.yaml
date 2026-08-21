@@ -202,8 +202,43 @@ acceptance_items:
     item: >-
       Clinical-intent and roles.common concepts are disjoint, exhaustive, and
       single-owner against the blueprint inventory.
-    status: pending
-    evidence: []
+    status: complete
+    evidence:
+    - '26 concepts materialized through MPS MCP model-aware operations, transcribing
+      mps2-concept-features.yaml exactly: nltps.clinicalintent 20, nltps.roles.common 6'
+    - 128 structure-aspect nodes = 26 ConceptDeclaration + 47 PropertyDeclaration
+      + 37 LinkDeclaration + 3 EnumerationDeclaration + 15 EnumerationMemberDeclaration
+    - cumulative total 66 concepts across 368 structure nodes; check_module_graph.py
+      --checkpoint MPS-2 derives the ceiling from the blueprint and observes 66 of 66
+    - nltps.roles.common created as a language module with the blueprint dependency
+      shape, EXTENDS nltps.foundation and DEFAULT on nltps.governance and
+      nltps.clinicalintent; no external explicit dependency
+    - read-back verification compared every persisted concept against the frozen
+      specification feature by feature -- superconcept, rootability, abstractness,
+      every property datatype, every link target, metaClass and cardinality -- and
+      reports zero divergence
+    read_back_finding: >-
+      The creation calls returned ok:true for all 26 concepts and the model check
+      reported no problems, yet 34 of the 37 declared links had silently taken the MPS
+      default cardinality 0..1 instead of the specified 1 or 0..n. The tool ignores a
+      cardinality key it does not recognise. All 34 were set explicitly and re-verified.
+      This is the hazard CLAUDE.md records, observed at scale: a model-aware write can be
+      accepted, report success, and still drop the part that mattered.
+    external_dependency_events:
+    - MPS auto-added a DEFAULT dependency on nltps.foundation to nltps.roles.common and,
+      separately, to nltps.clinicalintent when their editor and typesystem models imported
+      foundation.structure. Both were removed through model-aware tooling and the EXTENDS
+      edges re-declared. Deleting a dependency removes the EXTENDS edge as well, so each
+      removal was followed by an explicit Extends-scope re-add.
+    - MPS auto-added a JDK dependency to nltps.clinicalintent when the checking rules
+      called String methods. nltps.foundation performs the same calls with no JDK entry in
+      its dependencies block, so the addition was unnecessary and was removed rather than
+      escalated to a blueprint amendment.
+    hazard_metric_unchanged: >-
+      Materializing 26 concepts did not move the source-explicit hazard numerator. It
+      remains 76 of 2,144, as construction_policy.progress_metric.numerator_integrity
+      requires. Structural representation and hazard-specific engineering review are
+      different claims.
   - id: MPS-MAT-003C
     checkpoint: MPS-3
     item: >-
@@ -493,8 +528,133 @@ acceptance_items:
     item: >-
       Clinical-intent and roles.common constraints, typesystems, editors, and negative
       model tests pass, including demonstrated rejection of deliberately invalid nodes.
-    status: pending
-    evidence: []
+    status: complete
+    completion_qualifier: COMPLETE WITH CONTROLLED, ATTRIBUTABLE PROOF DEFERRALS
+    completion_basis: >-
+      Every negative case instantiable in the MPS-2 metamodel is demonstrated and
+      attributable, and every inherited obligation carried from MPS-MAT-005A is
+      discharged behaviourally. What remains undemonstrated is ROL-C-002 and ROL-C-003,
+      whose affected concepts cannot be instantiated because roles.common declares no
+      root; both are recorded as non_instantiability deferrals with a reactivation
+      condition. Deferred obligations are not relabelled as PASS.
+    controlled_constraint_inventory:
+      declared: 11
+      identifiers: CLI-C-001, CLI-C-002, CLI-C-003, CLI-C-004, CLI-C-005, CLI-C-006,
+        CLI-C-007, CLI-C-008, ROL-C-001, ROL-C-002, ROL-C-003
+      proven_behaviourally: 5
+      proven_at_gate_level: 4
+      proof_deferral_non_instantiability: 2
+      note: >-
+        Five are MPS checking rules demonstrated on instances. Four are shape
+        prohibitions the specification gate rejects before any MPS authoring occurs, which
+        is where a shape prohibition belongs; they are proven, but at gate level and not
+        by an instance. Two are deferred. The distinction between a rule root existing and
+        a rule being behaviourally proven is preserved throughout.
+    evidence:
+    - 26 minimum editors created through mps_mcp_scaffold_editor; both languages rebuild
+      with no generation or compilation error
+    - 5 MPS checking rules implemented in nltps.clinicalintent.typesystem, each
+      type-checked and each demonstrated on sandbox instances
+    - 'CLI-C-001 proven: an aiCreatable PlanIntentDefinition containing an ActionDefinition
+      at A4_authorize_or_deliver is rejected on the action node; the same definition with
+      aiCreatable false is accepted'
+    - 'CLI-C-002 proven: a name carrying patient-identifying content is rejected, and
+      separately a name carrying a record-number-shaped digit run is rejected; a neutral
+      name is accepted'
+    - 'CLI-C-005 proven by the five-case matrix, discharging GOV-C-007: see
+      gov_c_007_discharge below'
+    - 'CLI-C-006 proven: a StateTransition with no guard, no invalidation effect, and no
+      source, target or actorRole is rejected with five separate diagnostics; stating all
+      five is accepted'
+    - 'CLI-C-007 proven: a ReleaseProfile stating an intended use with no
+      CommissionedUseEnvelope child is rejected; binding one is accepted'
+    - 'CLI-C-003, CLI-C-004, CLI-C-008 and ROL-C-001 proven at gate level by
+      check_role_ontology.py and check_concept_features.py, which reject the frozen
+      negative examples before any MPS authoring occurs'
+    - 'ClinicalObjectType instance proof: PrescriptionIntent and CandidatePlan exist as
+      instances under PlanIntentDefinition -> objectTypes, and RoleCapability.targetScope
+      references PrescriptionIntent, so the concept the role-ontology gate required a host
+      for now has one'
+    - native check - whole-project MAKE with rebuild reports success and a ready runtime;
+      all 11 proof-sandbox roots report no problems
+    gov_c_007_discharge:
+      realized_by: CLI-C-005
+      arrived_by: deliberate reclassification at MPS-2; semantic_model_absence does not
+        lapse on reachability
+      configuration: >-
+        One AuthorizedActor and one RoleCapability naming the same professionalRole and
+        operationalRole, whose allowedAction is an ActionDefinition at
+        A4_authorize_or_deliver and whose targetScope is PrescriptionIntent. Only
+        actorKind varies across the five cases.
+      cases:
+      - {actor_kind: SERVICE_ACCOUNT, expected: rejected, observed: rejected}
+      - {actor_kind: AUTOMATED_AGENT, expected: rejected, observed: rejected}
+      - {actor_kind: GENERATOR, expected: rejected, observed: rejected}
+      - {actor_kind: MODEL_NODE, expected: rejected, observed: rejected}
+      - {actor_kind: HUMAN, expected: accepted, observed: accepted}
+      diagnostic_names_the_attempted_kind: true
+      why_four_separate_rejections: >-
+        ActorKindEnum is not collapsed to a boolean because GOV-C-007 names several
+        distinct disallowed satisfiers and a diagnostic should say which was attempted.
+        Each was therefore rejected separately rather than as one class.
+      positive_control_significance: >-
+        A rule that rejected both the automated and the authorized human case would be a
+        failure, not a proof. Case 5 is what distinguishes enforcement from refusal.
+    inherited_obligations_discharged:
+    - {constraint: GOV-C-007, discharged_by: CLI-C-005 five-case matrix}
+    - {constraint: FND-C-003, negative_example: a dose-bearing PhysicalQuantity referencing
+        a unit of dimension length, observed: rejected, positive: unit Gy accepted}
+    - {constraint: FND-C-004, negative_example: a physical_absorbed quantity referencing an
+        rbe_weighted unit, observed: rejected, positive: matching dose bases accepted}
+    - {representation_proof: PhysicalQuantity.magnitude, negative_example: magnitude
+        "about 60", observed: rejected, positive: "60.0 accepted"}
+    - {representation_proof: ExternalReference.retrievedDate, negative_example: 2026-02-31
+        and 2026-2-3, observed: both rejected, positive: 2024-02-29 accepted}
+    reusable_behaviour_mechanism:
+      question: Can Version.isValidCalendarDate() be invoked from an
+        ExternalReference.retrievedDate checking rule?
+      answer: >-
+        No. Concept behaviour dispatch is per-concept and ExternalReference is not a
+        Version, so the method is not in scope for its rule.
+      mechanism: >-
+        A single ClassConcept utility, CalendarDates.isValidCalendarDate(string), called
+        from both rules by StaticMethodCall. This is ordinary Java static dispatch, not the
+        concept-behaviour registry that silently returned false for every input at MPS-1.
+        The superseded Version_Behavior root was deleted after a usage search returned
+        empty, so calendar validity has exactly one implementation.
+      verified_behaviourally: >-
+        Malformed and impossible dates are rejected and 2024-02-29 is accepted, on both
+        Version and ExternalReference. Both directions matter: a utility stuck at false
+        would reject the leap date and one stuck at true would accept 2026-02-31.
+      logical_date_semantics_unchanged: true
+    metamodel_finding:
+      finding: MPS 2026.1 does not enforce cardinality 1 on a reference link.
+      observed: >-
+        A StateTransition whose source, target and actorRole references were all unset
+        passed check_root_node_problems, passed IntelliJ file inspection, and built
+        successfully.
+      consequence: >-
+        The frozen specification recorded those three as enforced by MPS metamodel
+        cardinality. That is not true in this toolchain, so CLI-C-006 checks them
+        explicitly. This sits alongside the missing-mandatory-child hazard CLAUDE.md
+        already records: no single checker is sufficient.
+    scoped_exclusions:
+    - constraint: ROL-C-002
+      deferral_class: non_instantiability
+      affected_concept: RoleCommand
+      status: deferred, shape prohibition enforced at gate level
+      reactivation_condition: >-
+        Reachability. The MPS-3 professional projections declare concrete rootable
+        concepts extending RoleProjection, at which point a RoleCommand instance can
+        exist and the behavioural demonstration becomes possible.
+      carried_to: MPS-MAT-005C
+    - constraint: ROL-C-003
+      deferral_class: non_instantiability
+      affected_concept: SemanticTargetRef
+      status: deferred, shape prohibition enforced at gate level
+      reactivation_condition: >-
+        Reachability, as for ROL-C-002.
+      carried_to: MPS-MAT-005C
     inherited_obligations_note: >-
       These arrived from MPS-MAT-005A when the MPS-2 feature specification was frozen.
       None may be closed without the demonstrated rejection its wording requires; each is

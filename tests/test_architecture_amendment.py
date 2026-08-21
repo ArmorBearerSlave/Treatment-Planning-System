@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import sys
+import copy
 import tempfile
 import unittest
 from pathlib import Path
@@ -623,6 +624,54 @@ class GeneratedDocumentLineEndingTests(unittest.TestCase):
         self.assertGreater(self.DOCUMENT.read_bytes().count(b"\n"), 1000)
 
 
+class InstantiabilityTests(unittest.TestCase):
+    """Instantiability is not the orphan report, and conflating them breaks the lapse rule.
+
+    An abstract concept is never instantiated directly, so it never appears in the orphan
+    report. Reading the report to decide whether a non-instantiability deferral is still
+    honest therefore calls every such deferral over an abstract concept stale on the day it
+    was written. The question the lapse rule has to ask is whether an instance can exist.
+    """
+
+    def test_abstract_base_with_no_concrete_subconcept_is_not_instantiable(self) -> None:
+        reach = features.compute_reachability()
+        # roles.common declares no root, so neither abstract base can hold an instance.
+        self.assertNotIn("RoleCommand", reach["instantiable"])
+        self.assertNotIn("RoleProjection", reach["instantiable"])
+
+    def test_an_abstract_base_never_appears_in_the_orphan_report(self) -> None:
+        # Which is exactly why the report is the wrong signal for the lapse rule.
+        reach = features.compute_reachability()
+        self.assertNotIn("RoleCommand", reach["unreachable"])
+        self.assertNotIn("RoleProjection", reach["unreachable"])
+
+    def test_a_concrete_orphan_is_neither_instantiable_nor_omitted(self) -> None:
+        reach = features.compute_reachability()
+        for holder in ("ActionRef", "OperationalRoleRef", "SemanticTargetRef",
+                       "WorkflowStateRef"):
+            self.assertIn(holder, reach["unreachable"], holder)
+            self.assertNotIn(holder, reach["instantiable"], holder)
+
+    def test_a_reachable_concept_is_instantiable(self) -> None:
+        reach = features.compute_reachability()
+        for name in ("PhysicalQuantity", "ExternalReference", "ClinicalObjectType"):
+            self.assertIn(name, reach["instantiable"], name)
+
+    def test_an_abstract_base_becomes_instantiable_through_a_concrete_subconcept(self) -> None:
+        # What MPS-3 will do: a rootable projection extending the abstract base makes the
+        # base instantiable, which is what should lapse ROL-C-002 and ROL-C-003.
+        merged = copy.deepcopy(features.load_features())
+        merged["languages"]["nltps.roles.radonc"] = {
+            "concepts": [
+                {"name": "RadoncProjection", "superconcept": "RoleProjection",
+                 "rootable": True, "abstract": False, "children": [], "references": []},
+            ]
+        }
+        reach = features.compute_reachability(merged)
+        self.assertIn("RoleProjection", reach["instantiable"])
+        self.assertNotIn("RoleCommand", reach["instantiable"])
+
+
 class CrossCheckpointReachabilityTests(unittest.TestCase):
     """Reachability must span checkpoints, or the lapse rule fails silently.
 
@@ -734,6 +783,10 @@ class DeferralTransitionTests(unittest.TestCase):
             plan.PLAN_PATH = path
             plan.compute_reachability = lambda *a, **k: {
                 "unreachable": unreachable,
+                # The lapse rule keys on instantiability, not on the orphan report:
+                # an abstract concept never appears in the report yet still cannot
+                # hold an instance. In these fixtures the two coincide.
+                "instantiable": [c for c in concepts if c not in unreachable],
                 "concepts": {name: {} for name in concepts},
             }
             try:
@@ -743,14 +796,14 @@ class DeferralTransitionTests(unittest.TestCase):
                 plan.compute_reachability = original_reach
         return [e for e in errors if "deferral" in e]
 
-    def test_active_deferral_over_a_reachable_concept_fails(self) -> None:
+    def test_active_deferral_over_an_instantiable_concept_fails(self) -> None:
         errors = self.run_with(
             [{"constraint": "X-1", "deferral_class": "non_instantiability",
               "affected_concept": "Thing"}],
             unreachable=[], concepts=["Thing"])
-        self.assertTrue(any("now reachable" in e for e in errors), errors)
+        self.assertTrue(any("can now be instantiated" in e for e in errors), errors)
 
-    def test_lapse_declared_before_the_concept_is_reachable_fails(self) -> None:
+    def test_lapse_declared_before_the_concept_is_instantiable_fails(self) -> None:
         # Premature lapse is as wrong as a stale one, and easier to do by accident.
         errors = self.run_with(
             [{"constraint": "X-1", "deferral_class": "non_instantiability",
