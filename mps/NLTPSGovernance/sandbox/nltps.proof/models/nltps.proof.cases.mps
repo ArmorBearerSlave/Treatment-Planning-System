@@ -32,6 +32,7 @@
         <property id="1365532761364539194" name="state" index="3gIvZP" />
       </concept>
       <concept id="1365532761364539170" name="nltps.foundation.structure.Version" flags="ng" index="3gIvZH">
+        <property id="1365532761364539193" name="supersededDate" index="3gIvZQ" />
         <property id="1365532761364539192" name="effectiveDate" index="3gIvZR" />
         <property id="1365532761364539191" name="value" index="3gIvZS" />
       </concept>
@@ -295,6 +296,18 @@
       <node concept="3gIvZH" id="1bNmcZ2wLt3" role="3gIvZy">
         <property role="3gIvZS" value="1.0" />
       </node>
+    </node>
+  </node>
+  <node concept="3gI3PN" id="1bNmcZ2VTQo">
+    <property role="3gI3OS" value="DateFacetProof" />
+    <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+    <node concept="3gIvZJ" id="1bNmcZ2VTQr" role="3gIvZz">
+      <property role="3gIvZX" value="BASE-DATE-001" />
+    </node>
+    <node concept="3gIvZH" id="1bNmcZ2VTQs" role="3gIvZy">
+      <property role="3gIvZS" value="1.0" />
+      <property role="3gIvZR" value="2024-02-29" />
+      <property role="3gIvZQ" value="2025-12-31" />
     </node>
   </node>
 </model>
