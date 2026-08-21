@@ -54,7 +54,7 @@
     </language>
   </registry>
   <node concept="24kQdi" id="1bNmcZ2XWt4">
-    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBk" />
+    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBk" resolve="RoleProjection" />
     <node concept="3EZMnI" id="1bNmcZ2XWt6" role="2wV5jI">
       <node concept="l2Vlx" id="1bNmcZ2XWt7" role="2iSdaV" />
       <node concept="3F0ifn" id="1bNmcZ2XWt8" role="3EZMnx">
@@ -64,12 +64,12 @@
         </node>
       </node>
       <node concept="3F0A7n" id="1bNmcZ2XWta" role="3EZMnx">
-        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBp" />
+        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBp" resolve="projectionName" />
       </node>
     </node>
   </node>
   <node concept="24kQdi" id="1bNmcZ2XWtm">
-    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBw" />
+    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBw" resolve="RoleCommand" />
     <node concept="3EZMnI" id="1bNmcZ2XWto" role="2wV5jI">
       <node concept="l2Vlx" id="1bNmcZ2XWtp" role="2iSdaV" />
       <node concept="3F0ifn" id="1bNmcZ2XWtq" role="3EZMnx">
@@ -79,7 +79,7 @@
         </node>
       </node>
       <node concept="3F0A7n" id="1bNmcZ2XWts" role="3EZMnx">
-        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBx" />
+        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBx" resolve="commandName" />
       </node>
       <node concept="3F0ifn" id="1bNmcZ2XWtt" role="3EZMnx">
         <property role="3F0ifm" value="targets:" />
@@ -88,7 +88,7 @@
         </node>
       </node>
       <node concept="3F2HdR" id="1bNmcZ2XWtv" role="3EZMnx">
-        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBy" />
+        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBy" resolve="targets" />
         <node concept="pVoyu" id="1bNmcZ2XWtx" role="3F10Kt">
           <property role="VOm3f" value="true" />
         </node>
@@ -107,7 +107,7 @@
         </node>
       </node>
       <node concept="3F2HdR" id="1bNmcZ2XWtC" role="3EZMnx">
-        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBz" />
+        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBz" resolve="actions" />
         <node concept="pVoyu" id="1bNmcZ2XWtE" role="3F10Kt">
           <property role="VOm3f" value="true" />
         </node>
@@ -126,7 +126,7 @@
         </node>
       </node>
       <node concept="3F2HdR" id="1bNmcZ2XWtL" role="3EZMnx">
-        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUB$" />
+        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUB$" resolve="states" />
         <node concept="pVoyu" id="1bNmcZ2XWtN" role="3F10Kt">
           <property role="VOm3f" value="true" />
         </node>
@@ -145,7 +145,7 @@
         </node>
       </node>
       <node concept="3F2HdR" id="1bNmcZ2XWtU" role="3EZMnx">
-        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUB_" />
+        <ref role="1NtTu8" to="vyi7:1bNmcZ2XUB_" resolve="roles" />
         <node concept="pVoyu" id="1bNmcZ2XWtW" role="3F10Kt">
           <property role="VOm3f" value="true" />
         </node>
@@ -160,48 +160,48 @@
     </node>
   </node>
   <node concept="24kQdi" id="1bNmcZ2XWuc">
-    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBl" />
+    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBl" resolve="SemanticTargetRef" />
     <node concept="1iCGBv" id="1bNmcZ2XWue" role="2wV5jI">
-      <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBq" />
+      <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBq" resolve="target" />
       <node concept="1sVBvm" id="1bNmcZ2XWuh" role="1sWHZn">
         <node concept="3F1sOY" id="1bNmcZ2ZMtp" role="2wV5jI">
-          <ref role="1NtTu8" to="5q6:1bNmcZ2iEsG" />
+          <ref role="1NtTu8" to="5q6:1bNmcZ2iEsG" resolve="identifier" />
         </node>
       </node>
     </node>
   </node>
   <node concept="24kQdi" id="1bNmcZ2XWu$">
-    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBm" />
+    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBm" resolve="ActionRef" />
     <node concept="1iCGBv" id="1bNmcZ2XWuA" role="2wV5jI">
-      <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBr" />
+      <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBr" resolve="action" />
       <node concept="1sVBvm" id="1bNmcZ2XWuD" role="1sWHZn">
         <node concept="3F0A7n" id="1bNmcZ2XWuJ" role="2wV5jI">
           <property role="1Intyy" value="true" />
-          <ref role="1NtTu8" to="jb6s:1bNmcZ2XU_I" />
+          <ref role="1NtTu8" to="jb6s:1bNmcZ2XU_I" resolve="actionName" />
         </node>
       </node>
     </node>
   </node>
   <node concept="24kQdi" id="1bNmcZ2XWuW">
-    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBn" />
+    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBn" resolve="WorkflowStateRef" />
     <node concept="1iCGBv" id="1bNmcZ2XWuY" role="2wV5jI">
-      <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBs" />
+      <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBs" resolve="state" />
       <node concept="1sVBvm" id="1bNmcZ2XWv1" role="1sWHZn">
         <node concept="3F0A7n" id="1bNmcZ2XWv7" role="2wV5jI">
           <property role="1Intyy" value="true" />
-          <ref role="1NtTu8" to="jb6s:1bNmcZ2XUA8" />
+          <ref role="1NtTu8" to="jb6s:1bNmcZ2XUA8" resolve="stateName" />
         </node>
       </node>
     </node>
   </node>
   <node concept="24kQdi" id="1bNmcZ2XWvk">
-    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBo" />
+    <ref role="1XX52x" to="vyi7:1bNmcZ2XUBo" resolve="OperationalRoleRef" />
     <node concept="1iCGBv" id="1bNmcZ2XWvm" role="2wV5jI">
-      <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBt" />
+      <ref role="1NtTu8" to="vyi7:1bNmcZ2XUBt" resolve="role" />
       <node concept="1sVBvm" id="1bNmcZ2XWvp" role="1sWHZn">
         <node concept="3F0A7n" id="1bNmcZ2XWvv" role="2wV5jI">
           <property role="1Intyy" value="true" />
-          <ref role="1NtTu8" to="jb6s:1bNmcZ2XUAu" />
+          <ref role="1NtTu8" to="jb6s:1bNmcZ2XUAu" resolve="functionName" />
         </node>
       </node>
     </node>

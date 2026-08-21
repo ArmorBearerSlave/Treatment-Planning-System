@@ -336,17 +336,17 @@
     <node concept="1TJgyi" id="1bNmcZ2iEsU" role="1TKVEl">
       <property role="IQ2nx" value="1365532761364539194" />
       <property role="TrG5h" value="state" />
-      <ref role="AX2Wp" node="1bNmcZ2iEqI" />
+      <ref role="AX2Wp" node="1bNmcZ2iEqI" resolve="LifecycleStateEnum" />
     </node>
     <node concept="1TJgyi" id="1bNmcZ2iEsV" role="1TKVEl">
       <property role="IQ2nx" value="1365532761364539195" />
       <property role="TrG5h" value="ordinal" />
-      <ref role="AX2Wp" to="tpck:fKAQMTA" />
+      <ref role="AX2Wp" to="tpck:fKAQMTA" resolve="integer" />
     </node>
     <node concept="1TJgyi" id="1bNmcZ2iEsW" role="1TKVEl">
       <property role="IQ2nx" value="1365532761364539196" />
       <property role="TrG5h" value="terminal" />
-      <ref role="AX2Wp" to="tpck:fKAQMTB" />
+      <ref role="AX2Wp" to="tpck:fKAQMTB" resolve="boolean" />
     </node>
   </node>
   <node concept="1TIwiD" id="1bNmcZ2iEs$">
@@ -356,12 +356,12 @@
     <node concept="1TJgyi" id="1bNmcZ2iEsX" role="1TKVEl">
       <property role="IQ2nx" value="1365532761364539197" />
       <property role="TrG5h" value="authority" />
-      <ref role="AX2Wp" node="1bNmcZ2iEqU" />
+      <ref role="AX2Wp" node="1bNmcZ2iEqU" resolve="AuthorityClassEnum" />
     </node>
     <node concept="1TJgyi" id="1bNmcZ2iEsY" role="1TKVEl">
       <property role="IQ2nx" value="1365532761364539198" />
       <property role="TrG5h" value="rank" />
-      <ref role="AX2Wp" to="tpck:fKAQMTA" />
+      <ref role="AX2Wp" to="tpck:fKAQMTA" resolve="integer" />
     </node>
     <node concept="1TJgyi" id="1bNmcZ2iEsZ" role="1TKVEl">
       <property role="IQ2nx" value="1365532761364539199" />
@@ -381,7 +381,7 @@
     <node concept="1TJgyi" id="1bNmcZ2iEt1" role="1TKVEl">
       <property role="IQ2nx" value="1365532761364539201" />
       <property role="TrG5h" value="doseBasis" />
-      <ref role="AX2Wp" node="1bNmcZ2iEr9" />
+      <ref role="AX2Wp" node="1bNmcZ2iEr9" resolve="DoseBasisEnum" />
     </node>
     <node concept="1TJgyj" id="1bNmcZ2iEt2" role="1TKVEi">
       <property role="IQ2ns" value="1365532761364539202" />
@@ -402,12 +402,12 @@
     <node concept="1TJgyi" id="1bNmcZ2iEt4" role="1TKVEl">
       <property role="IQ2nx" value="1365532761364539204" />
       <property role="TrG5h" value="dimension" />
-      <ref role="AX2Wp" node="1bNmcZ2iEri" />
+      <ref role="AX2Wp" node="1bNmcZ2iEri" resolve="DimensionEnum" />
     </node>
     <node concept="1TJgyi" id="1bNmcZ2iEt5" role="1TKVEl">
       <property role="IQ2nx" value="1365532761364539205" />
       <property role="TrG5h" value="doseBasis" />
-      <ref role="AX2Wp" node="1bNmcZ2iEr9" />
+      <ref role="AX2Wp" node="1bNmcZ2iEr9" resolve="DoseBasisEnum" />
     </node>
   </node>
   <node concept="1TIwiD" id="1bNmcZ2iEsB">
@@ -422,7 +422,7 @@
     <node concept="1TJgyi" id="1bNmcZ2iEt7" role="1TKVEl">
       <property role="IQ2nx" value="1365532761364539207" />
       <property role="TrG5h" value="sourceLine" />
-      <ref role="AX2Wp" to="tpck:fKAQMTA" />
+      <ref role="AX2Wp" to="tpck:fKAQMTA" resolve="integer" />
     </node>
     <node concept="1TJgyi" id="1bNmcZ2iEt8" role="1TKVEl">
       <property role="IQ2nx" value="1365532761364539208" />

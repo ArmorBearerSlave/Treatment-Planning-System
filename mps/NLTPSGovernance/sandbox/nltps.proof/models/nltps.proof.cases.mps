@@ -4,6 +4,7 @@
   <languages>
     <use id="4709dc1d-8658-45c6-b6ee-185bd2ba1b14" name="nltps.governance" version="0" />
     <use id="87311da3-67f4-4168-a5e2-0a32e6781088" name="nltps.foundation" version="0" />
+    <use id="dbcbafd2-9884-4f01-8836-da8cbf2c072f" name="nltps.clinicalintent" version="0" />
   </languages>
   <imports />
   <registry>
@@ -21,10 +22,20 @@
         <property id="1365532761364539216" name="name" index="3gIvYv" />
         <child id="1365532761364539217" name="units" index="3gIvYu" />
       </concept>
+      <concept id="1365532761364539176" name="nltps.foundation.structure.ExternalReference" flags="ng" index="3gIvZB">
+        <property id="1365532761364539212" name="retrievedDate" index="3gIvY3" />
+        <property id="1365532761364539210" name="locator" index="3gIvY5" />
+        <property id="1365532761364539209" name="title" index="3gIvY6" />
+      </concept>
       <concept id="1365532761364539174" name="nltps.foundation.structure.Unit" flags="ng" index="3gIvZD">
         <property id="1365532761364539205" name="doseBasis" index="3gIvYa" />
         <property id="1365532761364539204" name="dimension" index="3gIvYb" />
         <property id="1365532761364539203" name="symbol" index="3gIvYc" />
+      </concept>
+      <concept id="1365532761364539173" name="nltps.foundation.structure.PhysicalQuantity" flags="ng" index="3gIvZE">
+        <property id="1365532761364539201" name="doseBasis" index="3gIvYe" />
+        <property id="1365532761364539200" name="magnitude" index="3gIvYf" />
+        <reference id="1365532761364539202" name="unit" index="3gIvYd" />
       </concept>
       <concept id="1365532761364539171" name="nltps.foundation.structure.LifecycleState" flags="ng" index="3gIvZG">
         <property id="1365532761364539196" name="terminal" index="3gIvZN" />
@@ -114,6 +125,89 @@
         <property id="1365532761364587990" name="harm" index="3gI3Op" />
         <property id="1365532761364587989" name="description" index="3gI3Oq" />
         <property id="1365532761364587988" name="hazardId" index="3gI3Or" />
+      </concept>
+    </language>
+    <language id="dbcbafd2-9884-4f01-8836-da8cbf2c072f" name="nltps.clinicalintent">
+      <concept id="1365532761375877577" name="nltps.clinicalintent.structure.WorkflowDefinition" flags="ng" index="3g1f46">
+        <property id="1365532761375877583" name="name" index="3g1f40" />
+        <child id="1365532761375877585" name="transitions" index="3g1f4u" />
+        <child id="1365532761375877584" name="states" index="3g1f4v" />
+      </concept>
+      <concept id="1365532761375877576" name="nltps.clinicalintent.structure.StateTransition" flags="ng" index="3g1f47">
+        <property id="1365532761375877579" name="invalidationEffect" index="3g1f44" />
+        <property id="1365532761375877578" name="guard" index="3g1f45" />
+        <reference id="1365532761375877582" name="actorRole" index="3g1f41" />
+        <reference id="1365532761375877581" name="target" index="3g1f42" />
+        <reference id="1365532761375877580" name="source" index="3g1f43" />
+      </concept>
+      <concept id="1365532761375877519" name="nltps.clinicalintent.structure.CommissionedUseEnvelope" flags="ng" index="3g1f50">
+        <property id="1365532761375877526" name="commissionedOn" index="3g1f5p" />
+        <property id="1365532761375877525" name="scopeDescription" index="3g1f5q" />
+        <property id="1365532761375877524" name="envelopeName" index="3g1f5r" />
+      </concept>
+      <concept id="1365532761375877523" name="nltps.clinicalintent.structure.OperationalRole" flags="ng" index="3g1f5s">
+        <property id="1365532761375877535" name="description" index="3g1f5g" />
+        <property id="1365532761375877534" name="functionName" index="3g1f5h" />
+      </concept>
+      <concept id="1365532761375877522" name="nltps.clinicalintent.structure.ProfessionalRole" flags="ng" index="3g1f5t">
+        <property id="1365532761375877533" name="credentialBasis" index="3g1f5i" />
+        <property id="1365532761375877532" name="title" index="3g1f5j" />
+      </concept>
+      <concept id="1365532761375877542" name="nltps.clinicalintent.structure.ReleaseProfile" flags="ng" index="3g1f5D">
+        <property id="1365532761375877569" name="releaseState" index="3g1f4e" />
+        <property id="1365532761375877568" name="intendedUse" index="3g1f4f" />
+        <property id="1365532761375877567" name="name" index="3g1f5K" />
+        <child id="1365532761375877571" name="commissionedUse" index="3g1f4c" />
+        <child id="1365532761375877570" name="evidenceProfiles" index="3g1f4d" />
+      </concept>
+      <concept id="1365532761375877541" name="nltps.clinicalintent.structure.AuthorityPolicy" flags="ng" index="3g1f5E">
+        <property id="1365532761375877562" name="institution" index="3g1f5P" />
+        <property id="1365532761375877561" name="name" index="3g1f5Q" />
+        <child id="1365532761375877566" name="actors" index="3g1f5L" />
+        <child id="1365532761375877565" name="capabilities" index="3g1f5M" />
+        <child id="1365532761375877564" name="operationalRoles" index="3g1f5N" />
+        <child id="1365532761375877563" name="professionalRoles" index="3g1f5O" />
+      </concept>
+      <concept id="1365532761375877540" name="nltps.clinicalintent.structure.PlanIntentDefinition" flags="ng" index="3g1f5F">
+        <property id="1365532761375877554" name="aiCreatable" index="3g1f5X" />
+        <property id="1365532761375877553" name="name" index="3g1f5Y" />
+        <child id="1365532761375877557" name="constraints" index="3g1f5U" />
+        <child id="1365532761375877556" name="actions" index="3g1f5V" />
+        <child id="1365532761375877555" name="objectTypes" index="3g1f5W" />
+      </concept>
+      <concept id="1365532761375877539" name="nltps.clinicalintent.structure.AuthorizedActor" flags="ng" index="3g1f5G">
+        <property id="1365532761375877550" name="actorKind" index="3g1f5x" />
+        <property id="1365532761375877549" name="principalId" index="3g1f5y" />
+        <reference id="1365532761375877551" name="professionalRole" index="3g1f5w" />
+        <reference id="1365532761375877552" name="operationalRole" index="3g1f5Z" />
+      </concept>
+      <concept id="1365532761375877538" name="nltps.clinicalintent.structure.RoleCapability" flags="ng" index="3g1f5H">
+        <property id="1365532761375877543" name="requiresApproval" index="3g1f5C" />
+        <reference id="1365532761375877547" name="targetScope" index="3g1f5$" />
+        <reference id="1365532761375877546" name="allowedAction" index="3g1f5_" />
+        <reference id="1365532761375877545" name="operationalRole" index="3g1f5A" />
+        <reference id="1365532761375877544" name="professionalRole" index="3g1f5B" />
+      </concept>
+      <concept id="1365532761375877485" name="nltps.clinicalintent.structure.ConstraintDefinition" flags="ng" index="3g1f6y">
+        <property id="1365532761375877491" name="comparison" index="3g1f6W" />
+        <property id="1365532761375877490" name="constraintName" index="3g1f6X" />
+        <child id="1365532761375877493" name="limit" index="3g1f6U" />
+      </concept>
+      <concept id="1365532761375877484" name="nltps.clinicalintent.structure.ActionDefinition" flags="ng" index="3g1f6z">
+        <property id="1365532761375877487" name="autonomyLevel" index="3g1f6w" />
+        <property id="1365532761375877486" name="actionName" index="3g1f6x" />
+      </concept>
+      <concept id="1365532761375877479" name="nltps.clinicalintent.structure.ClinicalObjectType" flags="ng" index="3g1f6C">
+        <property id="1365532761375877480" name="typeName" index="3g1f6B" />
+      </concept>
+      <concept id="1365532761375877503" name="nltps.clinicalintent.structure.EvidenceProfile" flags="ng" index="3g1f6K">
+        <property id="1365532761375877515" name="requiredTier" index="3g1f54" />
+        <property id="1365532761375877514" name="profileName" index="3g1f55" />
+        <child id="1365532761375877516" name="citations" index="3g1f53" />
+      </concept>
+      <concept id="1365532761375877502" name="nltps.clinicalintent.structure.WorkflowState" flags="ng" index="3g1f6L">
+        <property id="1365532761375877513" name="terminal" index="3g1f56" />
+        <property id="1365532761375877512" name="stateName" index="3g1f57" />
       </concept>
     </language>
   </registry>
@@ -308,6 +402,243 @@
       <property role="3gIvZS" value="1.0" />
       <property role="3gIvZR" value="2024-02-29" />
       <property role="3gIvZQ" value="2025-12-31" />
+    </node>
+  </node>
+  <node concept="3g1f5F" id="1bNmcZ3ewyT">
+    <property role="3g1f5Y" value="PlanIntentProof" />
+    <property role="3g1f5X" value="false" />
+    <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+    <node concept="3gIvZJ" id="1bNmcZ3ewyW" role="3gIvZz">
+      <property role="3gIvZX" value="PID-001" />
+    </node>
+    <node concept="3gIvZH" id="1bNmcZ3ewyX" role="3gIvZy">
+      <property role="3gIvZS" value="1.0" />
+    </node>
+    <node concept="3g1f6C" id="1bNmcZ3ewyY" role="3g1f5W">
+      <property role="3g1f6B" value="PrescriptionIntent" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3ewz1" role="3gIvZz">
+        <property role="3gIvZX" value="COT-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3ewz2" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+    <node concept="3g1f6C" id="1bNmcZ3ewz3" role="3g1f5W">
+      <property role="3g1f6B" value="CandidatePlan" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3ewz6" role="3gIvZz">
+        <property role="3gIvZX" value="COT-002" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3ewz7" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+    <node concept="3g1f6z" id="1bNmcZ3ewz8" role="3g1f5V">
+      <property role="3g1f6x" value="authorizeRelease" />
+      <property role="3g1f6w" value="OQMDNNNEg4/A4_authorize_or_deliver" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3ewzb" role="3gIvZz">
+        <property role="3gIvZX" value="ACT-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3ewzc" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+    <node concept="3g1f6z" id="1bNmcZ3ewzd" role="3g1f5V">
+      <property role="3g1f6x" value="draftPlan" />
+      <property role="3g1f6w" value="7iWT5AvLSad/A1_draft" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3ewzg" role="3gIvZz">
+        <property role="3gIvZX" value="ACT-002" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3ewzh" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+    <node concept="3g1f6y" id="1bNmcZ3ewzi" role="3g1f5U">
+      <property role="3g1f6X" value="maxCordDose" />
+      <property role="3g1f6W" value="3iyRqiiTyS4/le" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3ewzm" role="3gIvZz">
+        <property role="3gIvZX" value="CON-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3ewzn" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+      <node concept="3gIvZE" id="1bNmcZ3ewzo" role="3g1f6U">
+        <property role="3gIvYf" value="60.0" />
+        <property role="3gIvYe" value="5zNd3rcPUCV/physical_absorbed" />
+        <ref role="3gIvYd" node="1bNmcZ2uzoC" />
+      </node>
+    </node>
+  </node>
+  <node concept="3g1f5F" id="1bNmcZ3ewzX">
+    <property role="3g1f5Y" value="NonAiCreatableIntentProof" />
+    <property role="3g1f5X" value="false" />
+    <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+    <node concept="3gIvZJ" id="1bNmcZ3ew$0" role="3gIvZz">
+      <property role="3gIvZX" value="PID-002" />
+    </node>
+    <node concept="3gIvZH" id="1bNmcZ3ew$1" role="3gIvZy">
+      <property role="3gIvZS" value="1.0" />
+    </node>
+    <node concept="3g1f6z" id="1bNmcZ3ew$2" role="3g1f5V">
+      <property role="3g1f6x" value="authorizeDelivery" />
+      <property role="3g1f6w" value="OQMDNNNEg4/A4_authorize_or_deliver" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3ew$5" role="3gIvZz">
+        <property role="3gIvZX" value="ACT-003" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3ew$6" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+  </node>
+  <node concept="3g1f46" id="1bNmcZ3ew$O">
+    <property role="3g1f40" value="WorkflowProof" />
+    <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+    <node concept="3gIvZJ" id="1bNmcZ3ew$R" role="3gIvZz">
+      <property role="3gIvZX" value="WFD-001" />
+    </node>
+    <node concept="3gIvZH" id="1bNmcZ3ew$S" role="3gIvZy">
+      <property role="3gIvZS" value="1.0" />
+    </node>
+    <node concept="3g1f6L" id="1bNmcZ3ew$T" role="3g1f4v">
+      <property role="3g1f57" value="drafted" />
+      <property role="3g1f56" value="false" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3ew$W" role="3gIvZz">
+        <property role="3gIvZX" value="WFS-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3ew$X" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+    <node concept="3g1f6L" id="1bNmcZ3ew$Y" role="3g1f4v">
+      <property role="3g1f57" value="approved" />
+      <property role="3g1f56" value="true" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3ew_1" role="3gIvZz">
+        <property role="3gIvZX" value="WFS-002" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3ew_2" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+    <node concept="3g1f47" id="1bNmcZ3ew_3" role="3g1f4u">
+      <property role="3g1f45" value="the prescription intent carries an approved dose constraint set" />
+      <property role="3g1f44" value="any later edit to the constraint set returns the object to drafted" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <ref role="3g1f43" node="1bNmcZ3ew$T" />
+      <ref role="3g1f42" node="1bNmcZ3ew$Y" />
+      <ref role="3g1f41" node="1bNmcZ3gpZB" />
+      <node concept="3gIvZJ" id="1bNmcZ3ew_6" role="3gIvZz">
+        <property role="3gIvZX" value="TRN-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3ew_7" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+  </node>
+  <node concept="3g1f5E" id="1bNmcZ3gpZt">
+    <property role="3g1f5Q" value="AuthorityProof" />
+    <property role="3g1f5P" value="Stage A governance mirror" />
+    <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+    <node concept="3gIvZJ" id="1bNmcZ3gpZw" role="3gIvZz">
+      <property role="3gIvZX" value="POL-001" />
+    </node>
+    <node concept="3gIvZH" id="1bNmcZ3gpZx" role="3gIvZy">
+      <property role="3gIvZS" value="1.0" />
+    </node>
+    <node concept="3g1f5t" id="1bNmcZ3gpZy" role="3g1f5O">
+      <property role="3g1f5j" value="Radiation Oncologist" />
+      <property role="3g1f5i" value="board certification" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3gpZ_" role="3gIvZz">
+        <property role="3gIvZX" value="PRO-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3gpZA" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+    <node concept="3g1f5s" id="1bNmcZ3gpZB" role="3g1f5N">
+      <property role="3g1f5h" value="approveTreatmentPlan" />
+      <property role="3g1f5g" value="authorizes release of a prescription intent" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3gpZE" role="3gIvZz">
+        <property role="3gIvZX" value="OPR-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3gpZF" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+    <node concept="3g1f5H" id="1bNmcZ3gpZG" role="3g1f5M">
+      <property role="3g1f5C" value="true" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <ref role="3g1f5B" node="1bNmcZ3gpZy" />
+      <ref role="3g1f5A" node="1bNmcZ3gpZB" />
+      <ref role="3g1f5_" node="1bNmcZ3ewz8" />
+      <ref role="3g1f5$" node="1bNmcZ3ewyY" />
+      <node concept="3gIvZJ" id="1bNmcZ3gpZJ" role="3gIvZz">
+        <property role="3gIvZX" value="CAP-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3gpZK" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+    <node concept="3g1f5G" id="1bNmcZ3gpZL" role="3g1f5L">
+      <property role="3g1f5y" value="radiation.oncologist.on.record" />
+      <property role="3g1f5x" value="183owDga$eg/HUMAN" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <ref role="3g1f5w" node="1bNmcZ3gpZy" />
+      <ref role="3g1f5Z" node="1bNmcZ3gpZB" />
+      <node concept="3gIvZJ" id="1bNmcZ3gpZO" role="3gIvZz">
+        <property role="3gIvZX" value="ACR-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3gpZP" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+  </node>
+  <node concept="3g1f5D" id="1bNmcZ3gpZZ">
+    <property role="3g1f5K" value="ReleaseProof" />
+    <property role="3g1f4f" value="Stage A governance mirror" />
+    <property role="3g1f4e" value="draft" />
+    <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+    <node concept="3gIvZJ" id="1bNmcZ3gq02" role="3gIvZz">
+      <property role="3gIvZX" value="REL-001" />
+    </node>
+    <node concept="3gIvZH" id="1bNmcZ3gq03" role="3gIvZy">
+      <property role="3gIvZS" value="1.0" />
+    </node>
+    <node concept="3g1f6K" id="1bNmcZ3gq04" role="3g1f4d">
+      <property role="3g1f55" value="primaryEvidence" />
+      <property role="3g1f54" value="2Up8EKRKlMr/institutional_standard" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3gq07" role="3gIvZz">
+        <property role="3gIvZX" value="EVP-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3gq08" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+      <node concept="3gIvZB" id="1bNmcZ3gq09" role="3g1f53">
+        <property role="3gIvY6" value="AAPM TG-263" />
+        <property role="3gIvY5" value="https://www.aapm.org/pubs/reports/RPT_263.pdf" />
+        <property role="3gIvY3" value="2024-02-29" />
+      </node>
+    </node>
+    <node concept="3g1f50" id="1bNmcZ3gq0_" role="3g1f4c">
+      <property role="3g1f5r" value="stageAMirror" />
+      <property role="3g1f5q" value="structural representation only; no clinical use" />
+      <property role="3g1f5p" value="2026-08-20" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3gq0C" role="3gIvZz">
+        <property role="3gIvZX" value="CUE-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3gq0D" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
     </node>
   </node>
 </model>
