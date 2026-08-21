@@ -268,6 +268,10 @@
         {
           "module": "nltps.roles.common",
           "kind": "EXTENDS"
+        },
+        {
+          "module": "nltps.clinicalintent",
+          "kind": "DEFAULT"
         }
       ],
       "external_explicit": [],
@@ -294,6 +298,10 @@
         {
           "module": "nltps.roles.common",
           "kind": "EXTENDS"
+        },
+        {
+          "module": "nltps.clinicalintent",
+          "kind": "DEFAULT"
         }
       ],
       "external_explicit": [],
@@ -320,6 +328,10 @@
         {
           "module": "nltps.roles.common",
           "kind": "EXTENDS"
+        },
+        {
+          "module": "nltps.clinicalintent",
+          "kind": "DEFAULT"
         }
       ],
       "external_explicit": [],
@@ -346,6 +358,10 @@
         {
           "module": "nltps.roles.common",
           "kind": "EXTENDS"
+        },
+        {
+          "module": "nltps.clinicalintent",
+          "kind": "DEFAULT"
         }
       ],
       "external_explicit": [],

@@ -633,20 +633,30 @@ class InstantiabilityTests(unittest.TestCase):
     was written. The question the lapse rule has to ask is whether an instance can exist.
     """
 
+    def before_mps3(self) -> dict:
+        """Reachability over MPS-1 and MPS-2 only.
+
+        These assertions are about the rule, not about where the programme has got to.
+        Reading the live cumulative view would make them restate the current frontier and
+        need editing at every checkpoint, which is how a test stops being a test.
+        """
+        specs = [p for p in features.feature_specs() if "mps3" not in p.name]
+        return features.compute_reachability(features.load_features(specs))
+
     def test_abstract_base_with_no_concrete_subconcept_is_not_instantiable(self) -> None:
-        reach = features.compute_reachability()
+        reach = self.before_mps3()
         # roles.common declares no root, so neither abstract base can hold an instance.
         self.assertNotIn("RoleCommand", reach["instantiable"])
         self.assertNotIn("RoleProjection", reach["instantiable"])
 
     def test_an_abstract_base_never_appears_in_the_orphan_report(self) -> None:
         # Which is exactly why the report is the wrong signal for the lapse rule.
-        reach = features.compute_reachability()
+        reach = self.before_mps3()
         self.assertNotIn("RoleCommand", reach["unreachable"])
         self.assertNotIn("RoleProjection", reach["unreachable"])
 
     def test_a_concrete_orphan_is_neither_instantiable_nor_omitted(self) -> None:
-        reach = features.compute_reachability()
+        reach = self.before_mps3()
         for holder in ("ActionRef", "OperationalRoleRef", "SemanticTargetRef",
                        "WorkflowStateRef"):
             self.assertIn(holder, reach["unreachable"], holder)
@@ -658,18 +668,35 @@ class InstantiabilityTests(unittest.TestCase):
             self.assertIn(name, reach["instantiable"], name)
 
     def test_an_abstract_base_becomes_instantiable_through_a_concrete_subconcept(self) -> None:
-        # What MPS-3 will do: a rootable projection extending the abstract base makes the
-        # base instantiable, which is what should lapse ROL-C-002 and ROL-C-003.
-        merged = copy.deepcopy(features.load_features())
-        merged["languages"]["nltps.roles.radonc"] = {
-            "concepts": [
-                {"name": "RadoncProjection", "superconcept": "RoleProjection",
-                 "rootable": True, "abstract": False, "children": [], "references": []},
-            ]
-        }
-        reach = features.compute_reachability(merged)
-        self.assertIn("RoleProjection", reach["instantiable"])
-        self.assertNotIn("RoleCommand", reach["instantiable"])
+        # The MPS-3 freeze is what does it: concrete rootable projections extend the
+        # abstract bases, and a concrete command sits under the projection root. This is
+        # the event ROL-C-002 and ROL-C-003 were deferred against.
+        before, after = self.before_mps3(), features.compute_reachability()
+        for base in ("RoleProjection", "RoleCommand"):
+            self.assertNotIn(base, before["instantiable"], base)
+            self.assertIn(base, after["instantiable"], base)
+
+    def test_the_holders_become_instantiable_with_the_projection_roots(self) -> None:
+        before, after = self.before_mps3(), features.compute_reachability()
+        for holder in ("SemanticTargetRef", "ActionRef", "WorkflowStateRef",
+                       "OperationalRoleRef"):
+            self.assertNotIn(holder, before["instantiable"], holder)
+            self.assertIn(holder, after["instantiable"], holder)
+
+    def test_extends_visibility_does_not_manufacture_reachability(self) -> None:
+        """A professional language sees clinicalintent, but seeing is not containing."""
+        before, after = self.before_mps3(), features.compute_reachability()
+        newly = set(after["reachable"]) - set(before["reachable"])
+        roles_common = {"SemanticTargetRef", "ActionRef", "WorkflowStateRef",
+                        "OperationalRoleRef"}
+        projection = {c["name"]
+                      for lang, body in features.load_features().get("languages", {}).items()
+                      if lang.startswith("nltps.roles.") and lang != "nltps.roles.common"
+                      for c in body["concepts"]}
+        self.assertEqual(newly, roles_common | projection,
+                         "only the projection concepts and the holders they host should "
+                         "become reachable; a semantic-core concept appearing here would "
+                         "mean a reference had been treated as containment")
 
 
 class CrossCheckpointReachabilityTests(unittest.TestCase):
@@ -717,13 +744,16 @@ class CrossCheckpointReachabilityTests(unittest.TestCase):
         self.assertNotIn("PhysicalQuantity", unreachable)
         self.assertNotIn("ExternalReference", unreachable)
 
-    def test_only_the_rootless_projection_holders_remain_unreachable(self) -> None:
-        # roles.common declares no root by design; its concrete holders are correctly
-        # reported until MPS-3 supplies a rootable projection.
+    def test_mps3_closes_the_orphan_report(self) -> None:
+        # roles.common declared no root by design, so its four concrete holders were
+        # reported until MPS-3 supplied rootable projections to host them. With the MPS-3
+        # specification present every concrete concept has a containment path.
+        specs = [p for p in features.feature_specs() if "mps3" not in p.name]
         self.assertEqual(
-            features.compute_reachability()["unreachable"],
+            features.compute_reachability(features.load_features(specs))["unreachable"],
             ["ActionRef", "OperationalRoleRef", "SemanticTargetRef", "WorkflowStateRef"],
         )
+        self.assertEqual(features.compute_reachability()["unreachable"], [])
 
     def test_a_later_checkpoint_container_makes_the_concept_reachable(self) -> None:
         merged = self.merged_with(self.mps2_host_for("PhysicalQuantity"))
@@ -740,7 +770,8 @@ class CrossCheckpointReachabilityTests(unittest.TestCase):
     def test_default_load_spans_every_present_specification(self) -> None:
         self.assertEqual(
             [p.name for p in features.feature_specs()],
-            ["mps1-concept-features.yaml", "mps2-concept-features.yaml"],
+            ["mps1-concept-features.yaml", "mps2-concept-features.yaml",
+             "mps3-concept-features.yaml"],
         )
 
     def test_a_later_specification_resolves_inherited_superconcepts(self) -> None:
@@ -874,6 +905,238 @@ class DeferralTransitionTests(unittest.TestCase):
                       "ExternalReference.retrievedDate"):
             self.assertEqual(by_label[label]["lapsed_at"], "MPS-2", label)
             self.assertEqual(by_label[label]["carried_to"], "MPS-MAT-005B", label)
+
+
+class ReferenceVisibilityGateTests(unittest.TestCase):
+    """A reference may cross a DEFAULT edge; it may not cross an undeclared one.
+
+    Containment was policed from the start, references were not. Nothing stopped a
+    specification from naming a concept in a language its owner never declared, and MPS
+    would only report it during materialization, as an unresolved reference.
+    """
+
+    def run_gate(self, blueprint: dict, spec: dict) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            bp = Path(tmp) / "skeleton.json"
+            fp = Path(tmp) / "features.yaml"
+            bp.write_text(json.dumps(blueprint), encoding="utf-8")
+            fp.write_text(json.dumps(spec), encoding="utf-8")
+            original = (features.BLUEPRINT_PATH, features.FEATURES_PATH)
+            features.BLUEPRINT_PATH, features.FEATURES_PATH = bp, fp
+            try:
+                errors, _ = features.check()
+            finally:
+                features.BLUEPRINT_PATH, features.FEATURES_PATH = original
+        return errors
+
+    def scaffold(self, prof_dependencies: list[dict]) -> tuple[dict, dict]:
+        blueprint = {
+            "languages": [
+                language("semantic", roots=[], nonroots=["SemanticThing"]),
+                language("common", nonroots=["CommonThing"]),
+                language("prof", dependencies=prof_dependencies,
+                         roots=["ProfRoot"], nonroots=[]),
+            ]
+        }
+
+        def concept(name, **kw):
+            base = {"name": name, "rootable": False, "abstract": False,
+                    "superconcept": "BaseConcept", "intent": "fixture",
+                    "editor": "<name>", "properties": [], "children": [],
+                    "references": [], "constraints": []}
+            base.update(kw)
+            return base
+
+        spec = {
+            "datatypes": [],
+            "languages": {
+                "semantic": {"concepts": [concept("SemanticThing")], "constraints": []},
+                "common": {"concepts": [concept("CommonThing")], "constraints": []},
+                "prof": {
+                    "concepts": [concept(
+                        "ProfRoot", rootable=True,
+                        references=[{"name": "names", "target": "SemanticThing",
+                                     "cardinality": "1"}])],
+                    "constraints": [],
+                },
+            },
+        }
+        return blueprint, spec
+
+    def test_reference_across_a_declared_default_edge_is_accepted(self) -> None:
+        blueprint, spec = self.scaffold([
+            {"module": "common", "kind": "EXTENDS"},
+            {"module": "semantic", "kind": "DEFAULT"},
+        ])
+        errors = self.run_gate(blueprint, spec)
+        self.assertEqual([e for e in errors if "does not declare" in e], [], errors)
+
+    def test_reference_to_an_undeclared_language_is_rejected(self) -> None:
+        blueprint, spec = self.scaffold([{"module": "common", "kind": "EXTENDS"}])
+        errors = self.run_gate(blueprint, spec)
+        self.assertTrue(
+            any("does not declare as a dependency" in e for e in errors),
+            f"expected an undeclared-reference rejection, got {errors}",
+        )
+
+    def test_containment_is_still_stricter_than_reference(self) -> None:
+        # The DEFAULT edge that legalises the reference must not legalise containment.
+        blueprint, spec = self.scaffold([
+            {"module": "common", "kind": "EXTENDS"},
+            {"module": "semantic", "kind": "DEFAULT"},
+        ])
+        spec["languages"]["prof"]["concepts"][0]["children"] = [
+            {"name": "held", "target": "SemanticThing", "cardinality": "0..n"}
+        ]
+        errors = self.run_gate(blueprint, spec)
+        self.assertTrue(
+            any("permits references, not containment" in e for e in errors),
+            f"expected a containment rejection, got {errors}",
+        )
+
+    def test_the_live_specifications_declare_every_reference_they_make(self) -> None:
+        errors, _ = features.check(
+            Path(features.BLUEPRINT_PATH).parent / "mps3-concept-features.yaml")
+        self.assertEqual([e for e in errors if "does not declare" in e], [], errors)
+
+
+class ProjectionLanguageGateTests(unittest.TestCase):
+    """The projection layer consumes authorization; it never restates it.
+
+    Each fixture is the shortcut that looks harmless while drafting: give the projection a
+    capability reference, let a view carry an action, let one profession borrow another's
+    vocabulary. All of them would survive a review that only read the concept names.
+    """
+
+    def gate(self):
+        import check_role_ontology as ro
+
+        return ro
+
+    def run_with(self, spec: dict) -> list[str]:
+        ro = self.gate()
+        import yaml as _yaml
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "mps3.yaml"
+            path.write_text(_yaml.safe_dump(spec), encoding="utf-8")
+            original = ro.PROJECTION_PATH
+            ro.PROJECTION_PATH = path
+            try:
+                errors, present = ro.check_projection_languages()
+            finally:
+                ro.PROJECTION_PATH = original
+        self.assertTrue(present)
+        return errors
+
+    def spec(self, **overrides) -> dict:
+        concepts = [
+            {"name": "AlphaProjection", "rootable": True, "abstract": False,
+             "properties": [], "children": [], "references": [
+                 {"name": "intendedRole", "target": "ProfessionalRole",
+                  "cardinality": "1"}]},
+            {"name": "AlphaView", "rootable": False, "abstract": False,
+             "properties": [{"name": "viewName", "type": "string", "cardinality": "1"}],
+             "children": [{"name": "subjects", "target": "SemanticTargetRef",
+                           "cardinality": "0..n"}],
+             "references": []},
+            {"name": "AlphaTask", "rootable": False, "abstract": False,
+             "properties": [{"name": "taskKind", "type": "AlphaTaskKindEnum",
+                             "cardinality": "1"}],
+             "children": [], "references": []},
+        ]
+        spec = {
+            "datatypes": [
+                {"name": "AlphaTaskKindEnum", "kind": "enumeration", "owner": "roles.alpha",
+                 "values": ["alpha_review", "alpha_request"]},
+                {"name": "BetaTaskKindEnum", "kind": "enumeration", "owner": "roles.beta",
+                 "values": ["beta_review"]},
+            ],
+            "languages": {
+                "roles.alpha": {"concepts": concepts, "constraints": []},
+                "roles.beta": {"concepts": [
+                    {"name": "BetaProjection", "rootable": True, "abstract": False,
+                     "properties": [], "children": [], "references": []}],
+                    "constraints": []},
+            },
+        }
+        spec.update(overrides)
+        return spec
+
+    def test_the_frozen_shape_is_accepted(self) -> None:
+        self.assertEqual(self.run_with(self.spec()), [])
+
+    def test_missing_file_is_inactive_not_passing(self) -> None:
+        ro = self.gate()
+        original = ro.PROJECTION_PATH
+        ro.PROJECTION_PATH = Path("does-not-exist-mps3.yaml")
+        try:
+            errors, present = ro.check_projection_languages()
+        finally:
+            ro.PROJECTION_PATH = original
+        self.assertEqual(errors, [])
+        self.assertFalse(present, "an absent specification must report inactive")
+
+    def test_reference_to_an_authorization_concept_is_rejected(self) -> None:
+        spec = self.spec()
+        spec["languages"]["roles.alpha"]["concepts"][2]["references"] = [
+            {"name": "capability", "target": "RoleCapability", "cardinality": "1"}]
+        self.assertTrue(any("authorization concept" in e for e in self.run_with(spec)))
+
+    def test_context_binding_must_target_the_credential(self) -> None:
+        spec = self.spec()
+        spec["languages"]["roles.alpha"]["concepts"][0]["references"] = [
+            {"name": "intendedRole", "target": "OperationalRole", "cardinality": "1"}]
+        self.assertTrue(any("credential" in e for e in self.run_with(spec)))
+
+    def test_semantic_core_enumeration_on_a_projection_is_rejected(self) -> None:
+        spec = self.spec()
+        spec["languages"]["roles.alpha"]["concepts"][2]["properties"] = [
+            {"name": "autonomyLevel", "type": "AutonomyLevelEnum", "cardinality": "1"}]
+        self.assertTrue(any("does not own" in e for e in self.run_with(spec)))
+
+    def test_borrowing_another_professions_vocabulary_is_rejected(self) -> None:
+        spec = self.spec()
+        spec["languages"]["roles.alpha"]["concepts"][2]["properties"] = [
+            {"name": "taskKind", "type": "BetaTaskKindEnum", "cardinality": "1"}]
+        self.assertTrue(any("another's interaction vocabulary" in e
+                            for e in self.run_with(spec)))
+
+    def test_overlapping_interaction_kinds_are_rejected(self) -> None:
+        spec = self.spec()
+        spec["datatypes"][1]["values"] = ["alpha_review"]
+        self.assertTrue(any("share interaction kinds" in e for e in self.run_with(spec)))
+
+    def test_an_actionable_view_is_rejected(self) -> None:
+        spec = self.spec()
+        spec["languages"]["roles.alpha"]["concepts"][1]["children"].append(
+            {"name": "actions", "target": "ActionRef", "cardinality": "0..n"})
+        self.assertTrue(any("read-only review surface" in e for e in self.run_with(spec)))
+
+    def test_abstract_and_rootable_is_rejected(self) -> None:
+        spec = self.spec()
+        spec["languages"]["roles.alpha"]["concepts"][0]["abstract"] = True
+        self.assertTrue(any("abstract and rootable" in e for e in self.run_with(spec)))
+
+    def test_a_language_without_exactly_one_root_is_rejected(self) -> None:
+        spec = self.spec()
+        spec["languages"]["roles.alpha"]["concepts"][1]["rootable"] = True
+        self.assertTrue(any("rootable concepts" in e for e in self.run_with(spec)))
+
+    def test_an_approval_kind_in_a_preparing_surface_is_rejected(self) -> None:
+        ro = self.gate()
+        spec = self.spec()
+        spec["languages"]["nltps.roles.dosimetry"] = spec["languages"].pop("roles.alpha")
+        spec["datatypes"][0]["owner"] = "nltps.roles.dosimetry"
+        spec["datatypes"][0]["values"] = ["candidate_generation", "plan_approval"]
+        errors = self.run_with(spec)
+        self.assertTrue(any("does not authorize it" in e for e in errors), errors)
+
+    def test_the_live_specification_passes_every_projection_rule(self) -> None:
+        ro = self.gate()
+        errors, present = ro.check_projection_languages()
+        self.assertTrue(present, "mps3-concept-features.yaml should be active")
+        self.assertEqual(errors, [])
 
 
 class RoleOntologyFreezeTests(unittest.TestCase):

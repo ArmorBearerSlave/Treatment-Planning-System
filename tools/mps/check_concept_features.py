@@ -13,6 +13,10 @@ Enforced here:
   * every superconcept resolves to BaseConcept, a concept in the same language, or a
     concept in a language reachable by an EXTENDS dependency -- a DEFAULT dependency
     does not make a concept available as a superconcept;
+  * every reference targets a concept the owning language can actually see: its own, an
+    EXTENDS ancestor's, or a DEFAULT dependency's. Containment is stricter and excludes
+    DEFAULT, but a reference to a language nobody declared is not legal either, and
+    nothing checked it before MPS-3;
   * properties and references are single-valued and children may be multi-valued,
     matching what the MPS metamodel can actually express;
   * every declared datatype is used and every used datatype is declared;
@@ -90,6 +94,25 @@ def extends_closure(blueprint: dict) -> dict[str, set[str]]:
     return closure
 
 
+def default_dependencies(blueprint: dict) -> dict[str, set[str]]:
+    """Languages each language declares with kind DEFAULT.
+
+    DEFAULT is reference visibility and nothing more: the dependency policy defines it as
+    a module dependency for behavior, constraints and references only. It is deliberately
+    not transitive here. A language that wants to name another language's concept says so
+    itself rather than inheriting the right through an ancestor, which is what keeps the
+    declared graph an honest description of what each language actually reaches.
+    """
+    return {
+        entry["name"]: {
+            dependency["module"]
+            for dependency in entry["dependencies"]
+            if dependency["kind"] == "DEFAULT"
+        }
+        for entry in blueprint["languages"]
+    }
+
+
 def check(features_path: Path | None = None) -> tuple[list[str], dict[str, int]]:
     """Validate one checkpoint's feature specification against the blueprint.
 
@@ -117,6 +140,7 @@ def check(features_path: Path | None = None) -> tuple[list[str], dict[str, int]]
 
     # One closure, two call sites: superconcept legality and containment legality.
     extends_targets = extends_closure(blueprint)
+    default_targets = default_dependencies(blueprint)
 
     blueprint_concepts = {
         entry["name"]: {
@@ -241,6 +265,24 @@ def check(features_path: Path | None = None) -> tuple[list[str], dict[str, int]]
                                 f"its transitive EXTENDS ancestors "
                                 f"{sorted(extends_targets.get(language, set())) or '[]'}; "
                                 f"a DEFAULT dependency permits references, not containment"
+                            )
+                    elif kind_name == "references":
+                        # Weaker than containment but not absent. A reference may cross a
+                        # DEFAULT edge, which containment may not, but it may not target a
+                        # language the owner never declared at all: MPS would fail to
+                        # resolve it, and the failure would surface during materialization
+                        # rather than here.
+                        target_owner = concept_owner[target]
+                        visible = ({language}
+                                   | extends_targets.get(language, set())
+                                   | default_targets.get(language, set()))
+                        if target_owner not in visible:
+                            errors.append(
+                                f"{label}.{link.get('name')} references {target} owned by "
+                                f"{target_owner}, which {language} does not declare as a "
+                                f"dependency; it can see "
+                                f"{sorted(visible - {language}) or '[]'}. Add the "
+                                f"dependency to the blueprint or retarget the reference"
                             )
                     cardinality = link.get("cardinality")
                     if cardinality not in CARDINALITIES:

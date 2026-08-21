@@ -388,12 +388,16 @@ mps_language_constraints:
       - nltps.clinicalintent
     nltps.roles.radonc:
       - nltps.roles.common
+      - nltps.clinicalintent
     nltps.roles.physics:
       - nltps.roles.common
+      - nltps.clinicalintent
     nltps.roles.dosimetry:
       - nltps.roles.common
+      - nltps.clinicalintent
     nltps.roles.therapy:
       - nltps.roles.common
+      - nltps.clinicalintent
   default_model_persistence: file-per-root
   unique_ownership_includes:
     - root_concepts

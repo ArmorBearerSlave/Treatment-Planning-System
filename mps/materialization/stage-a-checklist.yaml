@@ -247,6 +247,18 @@ acceptance_items:
       by itself or a transitive EXTENDS ancestor.
     status: pending
     evidence: []
+    feature_specification: mps/bootstrap/mps3-concept-features.yaml
+    frozen_inventory: >-
+      12 concepts, three per professional language: a concrete rootable <Prof>Projection,
+      a read-only <Prof>View, and a concrete <Prof>Task specialising RoleCommand. Four
+      profession-owned enumerations carry the interaction vocabularies and cost nothing
+      against the ceiling, which derives to 78.
+    blueprint_dependency_amendment: >-
+      Each professional language gained a DEFAULT dependency on nltps.clinicalintent so
+      the projection can name the ProfessionalRole it is written for. DEFAULT is reference
+      visibility only; the containment gate continues to reject containment of a
+      clinicalintent concept. No concept was added or removed and the ceiling did not
+      move.
   - id: MPS-MAT-003D
     checkpoint: MPS-4
     item: >-
@@ -628,33 +640,73 @@ acceptance_items:
         would reject the leap date and one stuck at true would accept 2026-02-31.
       logical_date_semantics_unchanged: true
     metamodel_finding:
-      finding: MPS 2026.1 does not enforce cardinality 1 on a reference link.
-      observed: >-
+      finding: >-
+        CORRECTED AT MPS-3. As recorded at MPS-2 this read "MPS 2026.1 does not enforce
+        cardinality 1 on a reference link". That is wrong. MPS does enforce it, and
+        reports the violation on the reference descriptor rather than in the node-level
+        problems array.
+      original_observation: >-
         A StateTransition whose source, target and actorRole references were all unset
-        passed check_root_node_problems, passed IntelliJ file inspection, and built
-        successfully.
+        appeared to pass check_root_node_problems, passed IntelliJ file inspection, and
+        built successfully.
+      what_was_actually_wrong: >-
+        The reader, not the toolchain. The MPS-2 session printed only the node-level
+        problems array from the check result and never inspected children[].problems or
+        references[].problems, where MPS reports obligatory-role violations. The
+        diagnostic was present in the result and was discarded before it was read.
+      mps3_re_test: >-
+        A controlled experiment on one concept, RequirementBaseline, in the proof sandbox:
+        one probe omitted the mandatory child version, one omitted the mandatory reference
+        lifecycleState. The child probe produced "No child in the obligatory role
+        'version'" and the reference probe produced "No reference in the obligatory role
+        'lifecycleState'", both on the feature descriptor, both silent at node level, both
+        invisible to file inspection and to a native build. The MPS-1 mandatory-child
+        result therefore reproduces exactly, and children and references behave
+        identically. Both probes were deleted and the sandbox restored byte-identical.
       consequence: >-
-        The frozen specification recorded those three as enforced by MPS metamodel
-        cardinality. That is not true in this toolchain, so CLI-C-006 checks them
-        explicitly. This sits alongside the missing-mandatory-child hazard CLAUDE.md
-        already records: no single checker is sufficient.
+        CLI-C-006 keeps its three explicit reference checks. They are no longer a
+        substitute for absent enforcement but defence in depth and an attributable,
+        constraint-named diagnostic, which a bare obligatory-role message is not. The
+        durable control moved to read-back discipline: a session that inspects only
+        node-level problems will not see an obligatory-role violation for either a child
+        or a reference.
+      acceptance_unchanged: >-
+        This corrects a finding, not the acceptance. CLI-C-006 was demonstrated at MPS-2
+        with five separate diagnostics and remains proven; the five-case GOV-C-007 matrix
+        and every other item of MPS-2 evidence are untouched.
     scoped_exclusions:
     - constraint: ROL-C-002
       deferral_class: non_instantiability
       affected_concept: RoleCommand
-      status: deferred, shape prohibition enforced at gate level
-      reactivation_condition: >-
-        Reachability. The MPS-3 professional projections declare concrete rootable
-        concepts extending RoleProjection, at which point a RoleCommand instance can
-        exist and the behavioural demonstration becomes possible.
+      status: lapsed at MPS-3, active proof obligation
+      lapsed_at: MPS-3
       carried_to: MPS-MAT-005C
+      lapse_trigger: >-
+        The MPS-3 feature specification declares <Prof>Task, a concrete RoleCommand
+        subconcept, contained by the concrete rootable <Prof>Projection. RoleCommand
+        therefore has an instance path and the behavioural demonstration is possible.
+      lapse_was_automatic: >-
+        No human reactivation decision was made or required. non_instantiability is the
+        class that expires on its own: check_materialization_plan compared the recorded
+        deferral against cumulative instantiability and failed the gate until this record
+        was updated. It was observed failing before the record was changed, which is the
+        evidence that the machinery fires rather than the assertion that it would.
+      lapse_note: >-
+        Recorded rather than deleted. MPS-2 acceptance was granted with this deferral in
+        force and that history stands; the obligation has moved, not vanished.
     - constraint: ROL-C-003
       deferral_class: non_instantiability
       affected_concept: SemanticTargetRef
-      status: deferred, shape prohibition enforced at gate level
-      reactivation_condition: >-
-        Reachability, as for ROL-C-002.
+      status: lapsed at MPS-3, active proof obligation
+      lapsed_at: MPS-3
       carried_to: MPS-MAT-005C
+      lapse_trigger: >-
+        <Prof>View.subjects and the inherited RoleCommand.targets both give
+        SemanticTargetRef a containment path from a concrete projection root.
+      lapse_was_automatic: >-
+        As for ROL-C-002; the gate refused the stale record before it was corrected.
+      lapse_note: >-
+        Recorded rather than deleted, for the same reason.
     inherited_obligations_note: >-
       These arrived from MPS-MAT-005A when the MPS-2 feature specification was frozen.
       None may be closed without the demonstrated rejection its wording requires; each is
@@ -701,6 +753,45 @@ acceptance_items:
       the permitted EXTENDS ancestry.
     status: pending
     evidence: []
+    feature_specification: mps/bootstrap/mps3-concept-features.yaml
+    inherited_obligations_note: >-
+      These arrived from MPS-MAT-005B when the MPS-3 feature specification was frozen and
+      the concrete professional projections made their affected concepts instantiable. The
+      lapse was automatic and was observed firing: check_materialization_plan failed on the
+      stale records before they were updated. None may be closed without the demonstrated
+      rejection its wording requires; each is required, not demonstrated.
+    inherited_obligations:
+    - constraint: ROL-C-002
+      arrived_by: automatic lapse of a non_instantiability deferral at MPS-3
+      affected_concept: RoleCommand
+      instantiability_path: <Prof>Projection (root) -> tasks -> <Prof>Task
+      proof: >-
+        A <Prof>Task shown to have no child role admitting an ActionDefinition directly,
+        with the positive control that a <Prof>Task holding an ActionRef whose action
+        resolves to an ActionDefinition is accepted.
+    - constraint: ROL-C-003
+      arrived_by: automatic lapse of a non_instantiability deferral at MPS-3
+      affected_concept: SemanticTargetRef
+      instantiability_path: >-
+        <Prof>Projection (root) -> views -> <Prof>View -> subjects -> SemanticTargetRef
+      proof: >-
+        A SemanticTargetRef instance carrying exactly one resolved target and no children,
+        with the negative example that a holder declaring a second or multi-valued
+        reference is rejected by the specification gate.
+    new_obligations:
+    - constraint: PRJ-C-008
+      item: shared-state proof
+      proof: >-
+        A RadoncView subject and a PhysicsView subject whose SemanticTargetRef targets are
+        read back from MPS and compared; equal node references are the proof that two
+        professions inspect one authoritative object rather than two copies.
+    read_back_requirement: >-
+      Every created link is read back individually and compared against
+      mps3-concept-features.yaml, feature by feature, including sourceCardinality and
+      metaClass. Read-back inspects the feature descriptors on each node, not only the
+      node-level problems array: obligatory-role violations for children and references
+      alike are reported there and are invisible to a reader that looks only at the node
+      level. Batch-call success and a clean model check are not evidence.
   - id: MPS-MAT-005D
     checkpoint: MPS-4
     item: >-

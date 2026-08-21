@@ -1,0 +1,1484 @@
+schema_version: "0.1"
+register_id: MPS3-CF-001
+title: MPS-3 concept feature specification, the four professional projection languages
+status: proposed_pending_accountable_review
+decision: ADR-001
+architecture_baseline: ENG-PKG-01-v0.6
+implementation_state: specification_not_live_mps_serialization
+
+purpose: >-
+  The blueprint names twelve concepts across four professional languages and stops at the
+  name. This file fixes owner, superconcept, rootability, properties, datatypes, children,
+  references, cardinalities, editors and constraints before the first concept is created,
+  so MPS-3 is transcription against a reviewed design rather than design at the keyboard.
+
+authority: >-
+  Proposed. Nothing here is approved, and creating a concept in MPS does not approve it.
+  Freezing fixes the shape the materialization session must transcribe; it makes no claim
+  of clinical correctness, risk acceptability, or approval.
+
+governing_invariant: >-
+  Semantic languages own authoritative state. Professional role languages own projections,
+  commands, review surfaces and role-specific authoring interactions. There is exactly one
+  authoritative object for treatment intent, prescription and constraint state, candidate
+  plan, workflow state, approval state, evidence, technical review state and
+  treatment-readiness state, and it lives in a semantic-core language. A professional
+  language references those objects and never copies them.
+
+why_three_concepts_per_profession: >-
+  The allocation was tested rather than assumed. Each professional surface needs a
+  concrete rootable projection, a read-only review grouping, and an actionable command;
+  that is three. The six or seven candidate interactions per profession are not concepts:
+  each is a member of a profession-owned enumeration on the command, and the clinical verb
+  it invokes is an ActionDefinition instance in clinicalintent reached through the
+  inherited ActionRef holder. Making a concept per verb would put clinical vocabulary in
+  the projection layer, which is precisely what the governing invariant forbids, and would
+  duplicate ActionDefinition. Twelve concepts is therefore the design answer and not a
+  count preserved for its own sake; the cumulative ceiling stays 78 because the design did
+  not move it.
+
+blueprint_amendment:
+  what: >-
+    Each professional language gains a DEFAULT dependency on nltps.clinicalintent, in
+    language-skeleton.json and in spec/architecture.yaml mps_language_constraints.
+  why: >-
+    The projection must name the professional context it is written for, and
+    ProfessionalRole is owned by clinicalintent. Before the amendment a professional
+    language could see only itself, nltps.roles.common and nltps.foundation, so
+    intendedRole had no legal target. DEFAULT is the correct kind: the dependency policy
+    defines it as visibility for behavior, constraints and references only, and the
+    containment gate continues to reject any attempt to contain a clinicalintent concept.
+  what_it_did_not_change: >-
+    No concept was added or removed. The MPS-3 ceiling derives to 78 before and after.
+  rejected_alternatives: >-
+    Binding context through the inherited OperationalRoleRef holder would conflate the
+    credential with the workflow function, which mps2-role-ontology.yaml
+    separation_of_concerns forbids. A string property naming the profession would be an
+    uncontrolled string that resolves to no authoritative node.
+
+representation_policy: >-
+  MPS offers three primitive datatypes and no real or date; nothing in MPS-3 needs either.
+  MPS properties are single-valued and reference links are 1 or 0..1, so every projection
+  collection is a child of a holder concept. No property or reference in this
+  specification is multi-valued.
+
+authorization_separation: >-
+  Authority is never expressed in the projection layer. A professional task names an
+  interaction with a profession-owned enumeration and names an action by referencing an
+  ActionDefinition; whether an actor may perform that action is decided by AuthorityPolicy,
+  RoleCapability and the CLI-C-005 predicate that discharged GOV-C-007 at MPS-2. MPS-3
+  neither owns nor restates that predicate. The four task-kind enumerations share no
+  member, so the separation between clinical approval, technical release review, planning
+  interaction and readiness verification is structural: a task cannot carry another
+  profession's interaction kind, whatever the editor offers.
+
+read_back_requirement: >-
+  MPS-2 created 34 of 37 links with the metamodel default cardinality while every call
+  returned ok true and the model check reported no problems. For MPS-3 the materialization
+  session shall read every created link back individually and compare sourceCardinality
+  and metaClass against this specification, feature by feature. Batch-call success and a
+  clean model check are not evidence. Read-back shall inspect the feature descriptors on
+  each node, not only the node-level problems array: obligatory-role violations for both
+  children and references are reported there and are invisible to a reader that looks only
+  at the node level.
+
+datatypes:
+- name: RadoncTaskKindEnum
+  kind: enumeration
+  owner: nltps.roles.radonc
+  logical_type: enumeration
+  mps_type: EnumerationDeclaration
+  values:
+  - prescription_review
+  - target_intent_review
+  - clinical_priority_review
+  - candidate_plan_comparison
+  - clinical_tradeoff_acceptance
+  - plan_revision_request
+  - clinical_approval
+  source: ConOps professional interaction surfaces
+  traceability: source-derived professional interaction
+  carried_by: RadoncTask.taskKind
+  note: clinical_approval is the only approval member anywhere in the projection layer, and it is
+    expressible only here. It names the interaction; whether a particular actor may perform it is
+    decided by RoleCapability and CLI-C-005, not by this enumeration. An EnumerationDeclaration is
+    not a ConceptDeclaration, so the four enumerations cost nothing against the 78 concept ceiling.
+- name: PhysicsTaskKindEnum
+  kind: enumeration
+  owner: nltps.roles.physics
+  logical_type: enumeration
+  mps_type: EnumerationDeclaration
+  values:
+  - technical_plan_review
+  - machine_configuration_review
+  - robustness_review
+  - dose_algorithm_review
+  - technical_release_review
+  - independent_verification_request
+  - qa_safety_escalation
+  source: ConOps professional interaction surfaces
+  traceability: source-derived professional interaction
+  carried_by: PhysicsTask.taskKind
+  note: technical_release_review is a technical judgement, not a clinical one. clinical_approval does
+    not exist in this enumeration, so no physics task can express physician clinical approval. An
+    EnumerationDeclaration is not a ConceptDeclaration, so the four enumerations cost nothing against
+    the 78 concept ceiling.
+- name: DosimetryTaskKindEnum
+  kind: enumeration
+  owner: nltps.roles.dosimetry
+  logical_type: enumeration
+  mps_type: EnumerationDeclaration
+  values:
+  - planning_strategy_authoring
+  - optimization_objective_setting
+  - candidate_generation
+  - candidate_refinement
+  - tradeoff_documentation
+  - physics_review_request
+  source: ConOps professional interaction surfaces
+  traceability: source-derived professional interaction
+  carried_by: DosimetryTask.taskKind
+  note: 'Every member is authoring, documentation or request. There is deliberately no approval member
+    of any kind: preparing a plan is not approving it, and the enumeration is where that distinction
+    is made unforgeable. An EnumerationDeclaration is not a ConceptDeclaration, so the four enumerations
+    cost nothing against the 78 concept ceiling.'
+- name: TherapyTaskKindEnum
+  kind: enumeration
+  owner: nltps.roles.therapy
+  logical_type: enumeration
+  mps_type: EnumerationDeclaration
+  values:
+  - treatment_setup_review
+  - treatment_parameter_verification
+  - transfer_verification
+  - delivery_readiness_recording
+  - setup_conflict_escalation
+  source: ConOps professional interaction surfaces
+  traceability: source-derived professional interaction
+  carried_by: TherapyTask.taskKind
+  note: 'delivery_readiness_recording records that setup and parameters were verified. It is not a
+    release decision: no release or approval member exists in this enumeration, so recording readiness
+    cannot be mistaken for authorizing delivery of an unapproved plan. An EnumerationDeclaration is
+    not a ConceptDeclaration, so the four enumerations cost nothing against the 78 concept ceiling.'
+languages:
+  nltps.roles.radonc:
+    professional_responsibility: clinical intent and clinical acceptability
+    intended_professional_role: RadiationOncologist
+    concepts:
+    - owner: nltps.roles.radonc
+      name: RadoncProjection
+      rootable: true
+      abstract: false
+      superconcept: RoleProjection
+      traceability: authorization projection
+      intent: 'File-per-root Radiation Oncologist workspace. It is the concrete rootable projection
+        that gives clinical intent and clinical acceptability a professional surface over shared semantic
+        state. It owns no clinical state: every object it presents is reached by reference through
+        a holder, never contained. Being concrete and rootable is what finally makes the roles.common
+        infrastructure instantiable.'
+      source: language-skeleton.json root_concepts; mps2-role-ontology.yaml roles_common_holder_purpose;
+        ADR-001 role-language ownership invariant
+      properties: []
+      inherited_properties:
+      - name: projectionName
+        from: RoleProjection
+        type: string
+        cardinality: '1'
+      children:
+      - name: views
+        target: RadoncView
+        cardinality: 0..n
+      - name: tasks
+        target: RadoncTask
+        cardinality: 0..n
+      references:
+      - name: intendedRole
+        target: ProfessionalRole
+        cardinality: '1'
+        note: 'The professional context this projection is written for. It is a reference into clinicalintent
+          through the DEFAULT dependency added for MPS-3, so it is visibility without containment.
+          It establishes intended context and confers nothing: authority is resolved by RoleCapability
+          and the CLI-C-005 predicate, never by this link.'
+      editor: radiation oncologist projection <projectionName> for <intendedRole> { <views> <tasks>
+        }
+      editor_responsibilities:
+      - shows the bound ProfessionalRole read-only, so professional context is visible but not silently
+        editable from the projection surface
+      - groups read-only views above actionable tasks so the two are never confused at the point of
+        use
+      - surfaces validation feedback from the constraint set inline on the offending task rather than
+        on the root
+      constraints:
+      - PRJ-C-001
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-004
+      - PRJ-C-005
+      - PRJ-C-008
+    - owner: nltps.roles.radonc
+      name: RadoncView
+      rootable: false
+      abstract: false
+      superconcept: BaseConcept
+      traceability: workflow projection
+      intent: 'A read-only review surface grouping the shared semantic objects a Radiation Oncologist
+        inspects, for example prescription and candidate-plan review for one patient-free governance
+        case. It is read-only by construction rather than by a flag: it declares no ActionRef child,
+        so there is no structural way for a view to carry an action.'
+      source: language-skeleton.json non_root_concepts; role-specific review views
+      properties:
+      - name: viewName
+        type: string
+        cardinality: '1'
+        note: 'A display label for the grouping. It carries no semantics: every object under review
+          is a typed SemanticTargetRef, so the label can never be the only thing identifying what
+          is shown.'
+      children:
+      - name: subjects
+        target: SemanticTargetRef
+        cardinality: 0..n
+        note: Holders owned by roles.common, contained legally through EXTENDS. Each carries one scalar
+          reference to a GovernedElement, which is how two professions inspect one authoritative object.
+      references: []
+      editor: radonc view <viewName> { <subjects> }
+      editor_responsibilities:
+      - renders every subject read-only, with the referenced object's own identifier shown rather
+        than a local copy of its name
+      - offers no action affordance at all, matching the structural absence of ActionRef
+      constraints:
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-007
+      - PRJ-C-008
+    - owner: nltps.roles.radonc
+      name: RadoncTask
+      rootable: false
+      abstract: false
+      superconcept: RoleCommand
+      traceability: source-derived professional interaction
+      intent: One actionable Radiation Oncologist interaction with governed semantic state. The interaction
+        it represents is typed by RadoncTaskKindEnum and the action it invokes is a referenced ActionDefinition,
+        so neither the clinical verb nor the authority to perform it lives in this language. Being
+        a concrete RoleCommand is what makes RoleCommand and the four holders instantiable.
+      source: ConOps professional interaction surfaces; mps2-role-ontology.yaml roles_common_holder_purpose
+      properties:
+      - name: taskKind
+        type: RadoncTaskKindEnum
+        cardinality: '1'
+        note: Typed, not a string. The profession's interaction vocabulary is an enumeration owned
+          by this language, which is what makes the boundary between professions structural instead
+          of advisory.
+      inherited_properties:
+      - name: commandName
+        from: RoleCommand
+        type: string
+        cardinality: '1'
+      inherited_children:
+      - name: targets
+        from: RoleCommand
+        target: SemanticTargetRef
+        cardinality: 0..n
+      - name: actions
+        from: RoleCommand
+        target: ActionRef
+        cardinality: 0..n
+      - name: states
+        from: RoleCommand
+        target: WorkflowStateRef
+        cardinality: 0..n
+      - name: roles
+        from: RoleCommand
+        target: OperationalRoleRef
+        cardinality: 0..n
+      children: []
+      references: []
+      editor: radonc task <taskKind> <commandName> { on <targets> invoking <actions> in <states> as
+        <roles> }
+      editor_responsibilities:
+      - shows taskKind as a typed choice, never free text
+      - shows the invoked ActionDefinition and its autonomyLevel read-only, so the user can see that
+        an A4 action is being proposed without the editor implying it will be permitted
+      - 'presents the task as a request: the surface never renders an outcome, because the outcome
+        is decided by the governed workflow'
+      - escalation and review-request kinds render identically to other kinds, so no visual affordance
+        suggests additional authority
+      constraints:
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-005
+      - PRJ-C-006
+    constraints:
+    - id: PRJ-C-001
+      statement: A professional projection may reference authoritative semantic state owned by another
+        language, provided that language is declared as a dependency. Reference visibility follows
+        the declared EXTENDS ancestry and DEFAULT dependencies, and nothing else.
+      source_constraint: professional projections reference authoritative semantic state through declared
+        dependencies
+      applies_to:
+      - RadoncProjection
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py reference visibility
+        check
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: RadoncProjection.intendedRole targeting ProfessionalRole while nltps.roles.radonc
+        declares no dependency on nltps.clinicalintent. The gate rejects the reference as targeting
+        a language the owner cannot see.
+      positive_example: 'The frozen design: nltps.roles.radonc declares nltps.clinicalintent DEFAULT,
+        so intendedRole resolves. False rejection here would make the whole projection layer unable
+        to name the semantics it projects, so the positive control matters as much as the negative
+        one.'
+    - id: PRJ-C-002
+      statement: A professional projection concept declares no property, child or reference that re-expresses
+        clinical state. It introduces no prescription, candidate plan, dose constraint, approval state
+        or workflow state of its own; every such object is referenced through a holder.
+      source_constraint: the projection introduces no clinical semantics of its own
+      applies_to:
+      - RadoncProjection
+      - RadoncView
+      - RadoncTask
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py containment check
+        plus tools/mps/check_role_ontology.py projection rules
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: A concept RadoncPrescription or RadoncPlan owned by nltps.roles.radonc, or
+        RadoncTask gaining a property typed AutonomyLevelEnum or AuthorityClassEnum, which would re-express
+        authority in the projection layer.
+      positive_example: RadoncTask.taskKind typed RadoncTaskKindEnum, an enumeration owned by this
+        language describing an interaction, not authority.
+    - id: PRJ-C-003
+      statement: A professional projection concept may contain only concepts owned by its own language
+        or by a transitive EXTENDS ancestor. A DEFAULT dependency permits references and never containment.
+      source_constraint: containment stays within the EXTENDS ancestry
+      applies_to:
+      - RadoncProjection
+      - RadoncView
+      - RadoncTask
+      traceability: MPS representation scaffolding
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py containment check
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: RadoncView declaring a child targeting ClinicalObjectType, which nltps.roles.radonc
+        can see only through the DEFAULT dependency on nltps.clinicalintent. The gate rejects it as
+        containment through a DEFAULT dependency.
+      positive_example: RadoncView.subjects containing SemanticTargetRef, owned by nltps.roles.common,
+        which nltps.roles.radonc EXTENDS. This must not be rejected.
+    - id: PRJ-C-004
+      statement: A professional projection binds exactly one intended ProfessionalRole. The binding
+        establishes professional context only; it is not an authorization and confers no permission.
+      source_constraint: the professional projection resolves to its intended professional context
+      applies_to:
+      - RadoncProjection
+      traceability: authorization projection
+      enforcement: MPS metamodel cardinality 1 for presence, verified empirically at the MPS-3 freeze;
+        plus a gate rule that the binding targets ProfessionalRole and not OperationalRole, RoleCapability
+        or AuthorizedActor
+      proof_status: active at MPS-3
+      negative_example: RadoncProjection.intendedRole retargeted at OperationalRole, which would conflate
+        the credential with the workflow function and contradict mps2-role-ontology.yaml separation_of_concerns.
+        Separately, a RadoncProjection instance with intendedRole unset, which MPS reports as "No
+        reference in the obligatory role 'intendedRole'" on the reference descriptor.
+      positive_example: intendedRole bound to the RadiationOncologist ProfessionalRole instance, with
+        authority still decided by RoleCapability.
+      note: The MPS-3 freeze re-tested obligatory-role enforcement empirically and found that MPS
+        does report a missing mandatory reference, on the reference descriptor rather than in the
+        node-level problems array. No additional checking rule is therefore written for presence;
+        the read-back requirement is that the materialization session inspects feature descriptors,
+        not only node-level problems.
+    - id: PRJ-C-005
+      statement: The projection layer declares no authorization feature. No professional concept references
+        RoleCapability, AuthorityPolicy or AuthorizedActor, and none declares a property typed by
+        an enumeration owned by a semantic-core language. Seeing a command in an editor is not evidence
+        of authority to execute it.
+      source_constraint: editor visibility does not grant authorization
+      applies_to:
+      - RadoncProjection
+      - RadoncTask
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_role_ontology.py
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: RadoncTask gaining a reference to RoleCapability, which would let the projection
+        carry its own authorization decision, or a property typed AutonomyLevelEnum, which would let
+        it restate the A4 discriminator that CLI-C-005 owns.
+      positive_example: RadoncTask referencing an ActionDefinition through the inherited ActionRef
+        holder. The action is named; the authority to perform it is resolved elsewhere, by AuthorityPolicy
+        and CLI-C-005.
+    - id: PRJ-C-006
+      statement: 'The radonc surface expresses clinical review and clinical approval. It expresses
+        no technical release, no machine configuration, no optimization objective and no delivery
+        readiness: those members do not exist in RadoncTaskKindEnum, so a radonc task cannot carry
+        them at all.'
+      source_constraint: a professional surface expresses only its own profession's interaction kinds
+      applies_to:
+      - RadoncTask
+      traceability: source-derived professional interaction
+      enforcement: 'MPS metamodel typing: taskKind is typed by an enumeration owned by this language,
+        and the four professional enumerations share no member; tools/mps/check_role_ontology.py checks
+        the disjointness and the profession-specific prohibitions'
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: RadoncTask.taskKind retyped as PhysicsTaskKindEnum, or RadoncTaskKindEnum
+        gaining a member belonging to another profession's surface. Both are rejected by the projection
+        rules.
+      positive_example: RadoncTask.taskKind typed RadoncTaskKindEnum. clinical_approval is the only
+        approval member anywhere in the projection layer, and it is expressible only here. It names
+        the interaction; whether a particular actor may perform it is decided by RoleCapability and
+        CLI-C-005, not by this enumeration.
+    - id: PRJ-C-007
+      statement: A professional view is read-only by construction. It declares no ActionRef child
+        and no action-bearing feature, so a review surface cannot become an actionable one by editing
+        an instance.
+      source_constraint: read-only review surfaces are distinguished from actionable ones
+      applies_to:
+      - RadoncView
+      traceability: workflow projection
+      enforcement: gate-level structural rule, tools/mps/check_role_ontology.py
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: RadoncView gaining a child targeting ActionRef, or a boolean actionable property
+        that an instance could flip. The structural absence is the enforcement; a flag would not be.
+      positive_example: RadoncView holding only subjects, each a SemanticTargetRef.
+    - id: PRJ-C-008
+      statement: Professional projections of different professions reference the same authoritative
+        semantic object. No profession owns a copy of an object another profession also inspects.
+      source_constraint: different professional projections reference one authoritative semantic object
+      applies_to:
+      - RadoncProjection
+      - RadoncView
+      traceability: workflow projection
+      enforcement: MPS behavioural demonstration on instances at MPS-3, plus the gate-level prohibition
+        on profession-owned semantic concepts
+      proof_status: active at MPS-3, behavioural proof owed at MPS-MAT-005C
+      negative_example: Two profession-owned copies of one candidate plan, for example a RadoncPlan
+        concept holding its own dose data. Rejected at gate level by PRJ-C-002 before any instance
+        exists.
+      positive_example: 'The frozen shared-state proof case: a RadoncView subject and a PhysicsView
+        subject whose SemanticTargetRef.target resolve to the same CandidatePlan node reference, demonstrated
+        by comparing the resolved target node references and finding them equal.'
+  nltps.roles.physics:
+    professional_responsibility: technical correctness and technical release readiness
+    intended_professional_role: MedicalPhysicist
+    concepts:
+    - owner: nltps.roles.physics
+      name: PhysicsProjection
+      rootable: true
+      abstract: false
+      superconcept: RoleProjection
+      traceability: authorization projection
+      intent: 'File-per-root Medical Physicist workspace. It is the concrete rootable projection that
+        gives technical correctness and technical release readiness a professional surface over shared
+        semantic state. It owns no clinical state: every object it presents is reached by reference
+        through a holder, never contained. Being concrete and rootable is what finally makes the roles.common
+        infrastructure instantiable.'
+      source: language-skeleton.json root_concepts; mps2-role-ontology.yaml roles_common_holder_purpose;
+        ADR-001 role-language ownership invariant
+      properties: []
+      inherited_properties:
+      - name: projectionName
+        from: RoleProjection
+        type: string
+        cardinality: '1'
+      children:
+      - name: views
+        target: PhysicsView
+        cardinality: 0..n
+      - name: tasks
+        target: PhysicsTask
+        cardinality: 0..n
+      references:
+      - name: intendedRole
+        target: ProfessionalRole
+        cardinality: '1'
+        note: 'The professional context this projection is written for. It is a reference into clinicalintent
+          through the DEFAULT dependency added for MPS-3, so it is visibility without containment.
+          It establishes intended context and confers nothing: authority is resolved by RoleCapability
+          and the CLI-C-005 predicate, never by this link.'
+      editor: medical physicist projection <projectionName> for <intendedRole> { <views> <tasks> }
+      editor_responsibilities:
+      - shows the bound ProfessionalRole read-only, so professional context is visible but not silently
+        editable from the projection surface
+      - groups read-only views above actionable tasks so the two are never confused at the point of
+        use
+      - surfaces validation feedback from the constraint set inline on the offending task rather than
+        on the root
+      constraints:
+      - PRJ-C-001
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-004
+      - PRJ-C-005
+      - PRJ-C-008
+    - owner: nltps.roles.physics
+      name: PhysicsView
+      rootable: false
+      abstract: false
+      superconcept: BaseConcept
+      traceability: workflow projection
+      intent: 'A read-only review surface grouping the shared semantic objects a Medical Physicist
+        inspects, for example technical review of a candidate plan and the machine profile it assumes.
+        It is read-only by construction rather than by a flag: it declares no ActionRef child, so
+        there is no structural way for a view to carry an action.'
+      source: language-skeleton.json non_root_concepts; role-specific review views
+      properties:
+      - name: viewName
+        type: string
+        cardinality: '1'
+        note: 'A display label for the grouping. It carries no semantics: every object under review
+          is a typed SemanticTargetRef, so the label can never be the only thing identifying what
+          is shown.'
+      children:
+      - name: subjects
+        target: SemanticTargetRef
+        cardinality: 0..n
+        note: Holders owned by roles.common, contained legally through EXTENDS. Each carries one scalar
+          reference to a GovernedElement, which is how two professions inspect one authoritative object.
+      references: []
+      editor: physics view <viewName> { <subjects> }
+      editor_responsibilities:
+      - renders every subject read-only, with the referenced object's own identifier shown rather
+        than a local copy of its name
+      - offers no action affordance at all, matching the structural absence of ActionRef
+      constraints:
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-007
+      - PRJ-C-008
+    - owner: nltps.roles.physics
+      name: PhysicsTask
+      rootable: false
+      abstract: false
+      superconcept: RoleCommand
+      traceability: source-derived professional interaction
+      intent: One actionable Medical Physicist interaction with governed semantic state. The interaction
+        it represents is typed by PhysicsTaskKindEnum and the action it invokes is a referenced ActionDefinition,
+        so neither the clinical verb nor the authority to perform it lives in this language. Being
+        a concrete RoleCommand is what makes RoleCommand and the four holders instantiable.
+      source: ConOps professional interaction surfaces; mps2-role-ontology.yaml roles_common_holder_purpose
+      properties:
+      - name: taskKind
+        type: PhysicsTaskKindEnum
+        cardinality: '1'
+        note: Typed, not a string. The profession's interaction vocabulary is an enumeration owned
+          by this language, which is what makes the boundary between professions structural instead
+          of advisory.
+      inherited_properties:
+      - name: commandName
+        from: RoleCommand
+        type: string
+        cardinality: '1'
+      inherited_children:
+      - name: targets
+        from: RoleCommand
+        target: SemanticTargetRef
+        cardinality: 0..n
+      - name: actions
+        from: RoleCommand
+        target: ActionRef
+        cardinality: 0..n
+      - name: states
+        from: RoleCommand
+        target: WorkflowStateRef
+        cardinality: 0..n
+      - name: roles
+        from: RoleCommand
+        target: OperationalRoleRef
+        cardinality: 0..n
+      children: []
+      references: []
+      editor: physics task <taskKind> <commandName> { on <targets> invoking <actions> in <states>
+        as <roles> }
+      editor_responsibilities:
+      - shows taskKind as a typed choice, never free text
+      - shows the invoked ActionDefinition and its autonomyLevel read-only, so the user can see that
+        an A4 action is being proposed without the editor implying it will be permitted
+      - 'presents the task as a request: the surface never renders an outcome, because the outcome
+        is decided by the governed workflow'
+      - escalation and review-request kinds render identically to other kinds, so no visual affordance
+        suggests additional authority
+      constraints:
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-005
+      - PRJ-C-006
+    constraints:
+    - id: PRJ-C-001
+      statement: A professional projection may reference authoritative semantic state owned by another
+        language, provided that language is declared as a dependency. Reference visibility follows
+        the declared EXTENDS ancestry and DEFAULT dependencies, and nothing else.
+      source_constraint: professional projections reference authoritative semantic state through declared
+        dependencies
+      applies_to:
+      - PhysicsProjection
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py reference visibility
+        check
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: PhysicsProjection.intendedRole targeting ProfessionalRole while nltps.roles.physics
+        declares no dependency on nltps.clinicalintent. The gate rejects the reference as targeting
+        a language the owner cannot see.
+      positive_example: 'The frozen design: nltps.roles.physics declares nltps.clinicalintent DEFAULT,
+        so intendedRole resolves. False rejection here would make the whole projection layer unable
+        to name the semantics it projects, so the positive control matters as much as the negative
+        one.'
+    - id: PRJ-C-002
+      statement: A professional projection concept declares no property, child or reference that re-expresses
+        clinical state. It introduces no prescription, candidate plan, dose constraint, approval state
+        or workflow state of its own; every such object is referenced through a holder.
+      source_constraint: the projection introduces no clinical semantics of its own
+      applies_to:
+      - PhysicsProjection
+      - PhysicsView
+      - PhysicsTask
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py containment check
+        plus tools/mps/check_role_ontology.py projection rules
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: A concept PhysicsPrescription or PhysicsPlan owned by nltps.roles.physics,
+        or PhysicsTask gaining a property typed AutonomyLevelEnum or AuthorityClassEnum, which would
+        re-express authority in the projection layer.
+      positive_example: PhysicsTask.taskKind typed PhysicsTaskKindEnum, an enumeration owned by this
+        language describing an interaction, not authority.
+    - id: PRJ-C-003
+      statement: A professional projection concept may contain only concepts owned by its own language
+        or by a transitive EXTENDS ancestor. A DEFAULT dependency permits references and never containment.
+      source_constraint: containment stays within the EXTENDS ancestry
+      applies_to:
+      - PhysicsProjection
+      - PhysicsView
+      - PhysicsTask
+      traceability: MPS representation scaffolding
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py containment check
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: PhysicsView declaring a child targeting ClinicalObjectType, which nltps.roles.physics
+        can see only through the DEFAULT dependency on nltps.clinicalintent. The gate rejects it as
+        containment through a DEFAULT dependency.
+      positive_example: PhysicsView.subjects containing SemanticTargetRef, owned by nltps.roles.common,
+        which nltps.roles.physics EXTENDS. This must not be rejected.
+    - id: PRJ-C-004
+      statement: A professional projection binds exactly one intended ProfessionalRole. The binding
+        establishes professional context only; it is not an authorization and confers no permission.
+      source_constraint: the professional projection resolves to its intended professional context
+      applies_to:
+      - PhysicsProjection
+      traceability: authorization projection
+      enforcement: MPS metamodel cardinality 1 for presence, verified empirically at the MPS-3 freeze;
+        plus a gate rule that the binding targets ProfessionalRole and not OperationalRole, RoleCapability
+        or AuthorizedActor
+      proof_status: active at MPS-3
+      negative_example: PhysicsProjection.intendedRole retargeted at OperationalRole, which would
+        conflate the credential with the workflow function and contradict mps2-role-ontology.yaml
+        separation_of_concerns. Separately, a PhysicsProjection instance with intendedRole unset,
+        which MPS reports as "No reference in the obligatory role 'intendedRole'" on the reference
+        descriptor.
+      positive_example: intendedRole bound to the MedicalPhysicist ProfessionalRole instance, with
+        authority still decided by RoleCapability.
+      note: The MPS-3 freeze re-tested obligatory-role enforcement empirically and found that MPS
+        does report a missing mandatory reference, on the reference descriptor rather than in the
+        node-level problems array. No additional checking rule is therefore written for presence;
+        the read-back requirement is that the materialization session inspects feature descriptors,
+        not only node-level problems.
+    - id: PRJ-C-005
+      statement: The projection layer declares no authorization feature. No professional concept references
+        RoleCapability, AuthorityPolicy or AuthorizedActor, and none declares a property typed by
+        an enumeration owned by a semantic-core language. Seeing a command in an editor is not evidence
+        of authority to execute it.
+      source_constraint: editor visibility does not grant authorization
+      applies_to:
+      - PhysicsProjection
+      - PhysicsTask
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_role_ontology.py
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: PhysicsTask gaining a reference to RoleCapability, which would let the projection
+        carry its own authorization decision, or a property typed AutonomyLevelEnum, which would let
+        it restate the A4 discriminator that CLI-C-005 owns.
+      positive_example: PhysicsTask referencing an ActionDefinition through the inherited ActionRef
+        holder. The action is named; the authority to perform it is resolved elsewhere, by AuthorityPolicy
+        and CLI-C-005.
+    - id: PRJ-C-006
+      statement: 'The physics surface expresses technical review and technical release review. It
+        expresses no clinical approval, no clinical priority and no clinical tradeoff acceptance:
+        those members do not exist in PhysicsTaskKindEnum.'
+      source_constraint: a professional surface expresses only its own profession's interaction kinds
+      applies_to:
+      - PhysicsTask
+      traceability: source-derived professional interaction
+      enforcement: 'MPS metamodel typing: taskKind is typed by an enumeration owned by this language,
+        and the four professional enumerations share no member; tools/mps/check_role_ontology.py checks
+        the disjointness and the profession-specific prohibitions'
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: PhysicsTask.taskKind retyped as RadoncTaskKindEnum, or PhysicsTaskKindEnum
+        gaining a member belonging to another profession's surface. Both are rejected by the projection
+        rules.
+      positive_example: PhysicsTask.taskKind typed PhysicsTaskKindEnum. technical_release_review is
+        a technical judgement, not a clinical one. clinical_approval does not exist in this enumeration,
+        so no physics task can express physician clinical approval.
+    - id: PRJ-C-007
+      statement: A professional view is read-only by construction. It declares no ActionRef child
+        and no action-bearing feature, so a review surface cannot become an actionable one by editing
+        an instance.
+      source_constraint: read-only review surfaces are distinguished from actionable ones
+      applies_to:
+      - PhysicsView
+      traceability: workflow projection
+      enforcement: gate-level structural rule, tools/mps/check_role_ontology.py
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: PhysicsView gaining a child targeting ActionRef, or a boolean actionable property
+        that an instance could flip. The structural absence is the enforcement; a flag would not be.
+      positive_example: PhysicsView holding only subjects, each a SemanticTargetRef.
+    - id: PRJ-C-008
+      statement: Professional projections of different professions reference the same authoritative
+        semantic object. No profession owns a copy of an object another profession also inspects.
+      source_constraint: different professional projections reference one authoritative semantic object
+      applies_to:
+      - PhysicsProjection
+      - PhysicsView
+      traceability: workflow projection
+      enforcement: MPS behavioural demonstration on instances at MPS-3, plus the gate-level prohibition
+        on profession-owned semantic concepts
+      proof_status: active at MPS-3, behavioural proof owed at MPS-MAT-005C
+      negative_example: Two profession-owned copies of one candidate plan, for example a PhysicsPlan
+        concept holding its own dose data. Rejected at gate level by PRJ-C-002 before any instance
+        exists.
+      positive_example: 'The frozen shared-state proof case: a RadoncView subject and a PhysicsView
+        subject whose SemanticTargetRef.target resolve to the same CandidatePlan node reference, demonstrated
+        by comparing the resolved target node references and finding them equal.'
+  nltps.roles.dosimetry:
+    professional_responsibility: plan construction, optimization and candidate preparation
+    intended_professional_role: Dosimetrist
+    concepts:
+    - owner: nltps.roles.dosimetry
+      name: DosimetryProjection
+      rootable: true
+      abstract: false
+      superconcept: RoleProjection
+      traceability: authorization projection
+      intent: 'File-per-root Dosimetrist workspace. It is the concrete rootable projection that gives
+        plan construction, optimization and candidate preparation a professional surface over shared
+        semantic state. It owns no clinical state: every object it presents is reached by reference
+        through a holder, never contained. Being concrete and rootable is what finally makes the roles.common
+        infrastructure instantiable.'
+      source: language-skeleton.json root_concepts; mps2-role-ontology.yaml roles_common_holder_purpose;
+        ADR-001 role-language ownership invariant
+      properties: []
+      inherited_properties:
+      - name: projectionName
+        from: RoleProjection
+        type: string
+        cardinality: '1'
+      children:
+      - name: views
+        target: DosimetryView
+        cardinality: 0..n
+      - name: tasks
+        target: DosimetryTask
+        cardinality: 0..n
+      references:
+      - name: intendedRole
+        target: ProfessionalRole
+        cardinality: '1'
+        note: 'The professional context this projection is written for. It is a reference into clinicalintent
+          through the DEFAULT dependency added for MPS-3, so it is visibility without containment.
+          It establishes intended context and confers nothing: authority is resolved by RoleCapability
+          and the CLI-C-005 predicate, never by this link.'
+      editor: dosimetrist projection <projectionName> for <intendedRole> { <views> <tasks> }
+      editor_responsibilities:
+      - shows the bound ProfessionalRole read-only, so professional context is visible but not silently
+        editable from the projection surface
+      - groups read-only views above actionable tasks so the two are never confused at the point of
+        use
+      - surfaces validation feedback from the constraint set inline on the offending task rather than
+        on the root
+      constraints:
+      - PRJ-C-001
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-004
+      - PRJ-C-005
+      - PRJ-C-008
+    - owner: nltps.roles.dosimetry
+      name: DosimetryView
+      rootable: false
+      abstract: false
+      superconcept: BaseConcept
+      traceability: workflow projection
+      intent: 'A read-only review surface grouping the shared semantic objects a Dosimetrist inspects,
+        for example optimization objectives and the candidate plans they produced. It is read-only
+        by construction rather than by a flag: it declares no ActionRef child, so there is no structural
+        way for a view to carry an action.'
+      source: language-skeleton.json non_root_concepts; role-specific review views
+      properties:
+      - name: viewName
+        type: string
+        cardinality: '1'
+        note: 'A display label for the grouping. It carries no semantics: every object under review
+          is a typed SemanticTargetRef, so the label can never be the only thing identifying what
+          is shown.'
+      children:
+      - name: subjects
+        target: SemanticTargetRef
+        cardinality: 0..n
+        note: Holders owned by roles.common, contained legally through EXTENDS. Each carries one scalar
+          reference to a GovernedElement, which is how two professions inspect one authoritative object.
+      references: []
+      editor: dosimetry view <viewName> { <subjects> }
+      editor_responsibilities:
+      - renders every subject read-only, with the referenced object's own identifier shown rather
+        than a local copy of its name
+      - offers no action affordance at all, matching the structural absence of ActionRef
+      constraints:
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-007
+      - PRJ-C-008
+    - owner: nltps.roles.dosimetry
+      name: DosimetryTask
+      rootable: false
+      abstract: false
+      superconcept: RoleCommand
+      traceability: source-derived professional interaction
+      intent: One actionable Dosimetrist interaction with governed semantic state. The interaction
+        it represents is typed by DosimetryTaskKindEnum and the action it invokes is a referenced
+        ActionDefinition, so neither the clinical verb nor the authority to perform it lives in this
+        language. Being a concrete RoleCommand is what makes RoleCommand and the four holders instantiable.
+      source: ConOps professional interaction surfaces; mps2-role-ontology.yaml roles_common_holder_purpose
+      properties:
+      - name: taskKind
+        type: DosimetryTaskKindEnum
+        cardinality: '1'
+        note: Typed, not a string. The profession's interaction vocabulary is an enumeration owned
+          by this language, which is what makes the boundary between professions structural instead
+          of advisory.
+      inherited_properties:
+      - name: commandName
+        from: RoleCommand
+        type: string
+        cardinality: '1'
+      inherited_children:
+      - name: targets
+        from: RoleCommand
+        target: SemanticTargetRef
+        cardinality: 0..n
+      - name: actions
+        from: RoleCommand
+        target: ActionRef
+        cardinality: 0..n
+      - name: states
+        from: RoleCommand
+        target: WorkflowStateRef
+        cardinality: 0..n
+      - name: roles
+        from: RoleCommand
+        target: OperationalRoleRef
+        cardinality: 0..n
+      children: []
+      references: []
+      editor: dosimetry task <taskKind> <commandName> { on <targets> invoking <actions> in <states>
+        as <roles> }
+      editor_responsibilities:
+      - shows taskKind as a typed choice, never free text
+      - shows the invoked ActionDefinition and its autonomyLevel read-only, so the user can see that
+        an A4 action is being proposed without the editor implying it will be permitted
+      - 'presents the task as a request: the surface never renders an outcome, because the outcome
+        is decided by the governed workflow'
+      - escalation and review-request kinds render identically to other kinds, so no visual affordance
+        suggests additional authority
+      constraints:
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-005
+      - PRJ-C-006
+    constraints:
+    - id: PRJ-C-001
+      statement: A professional projection may reference authoritative semantic state owned by another
+        language, provided that language is declared as a dependency. Reference visibility follows
+        the declared EXTENDS ancestry and DEFAULT dependencies, and nothing else.
+      source_constraint: professional projections reference authoritative semantic state through declared
+        dependencies
+      applies_to:
+      - DosimetryProjection
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py reference visibility
+        check
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: DosimetryProjection.intendedRole targeting ProfessionalRole while nltps.roles.dosimetry
+        declares no dependency on nltps.clinicalintent. The gate rejects the reference as targeting
+        a language the owner cannot see.
+      positive_example: 'The frozen design: nltps.roles.dosimetry declares nltps.clinicalintent DEFAULT,
+        so intendedRole resolves. False rejection here would make the whole projection layer unable
+        to name the semantics it projects, so the positive control matters as much as the negative
+        one.'
+    - id: PRJ-C-002
+      statement: A professional projection concept declares no property, child or reference that re-expresses
+        clinical state. It introduces no prescription, candidate plan, dose constraint, approval state
+        or workflow state of its own; every such object is referenced through a holder.
+      source_constraint: the projection introduces no clinical semantics of its own
+      applies_to:
+      - DosimetryProjection
+      - DosimetryView
+      - DosimetryTask
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py containment check
+        plus tools/mps/check_role_ontology.py projection rules
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: A concept DosimetryPrescription or DosimetryPlan owned by nltps.roles.dosimetry,
+        or DosimetryTask gaining a property typed AutonomyLevelEnum or AuthorityClassEnum, which would
+        re-express authority in the projection layer.
+      positive_example: DosimetryTask.taskKind typed DosimetryTaskKindEnum, an enumeration owned by
+        this language describing an interaction, not authority.
+    - id: PRJ-C-003
+      statement: A professional projection concept may contain only concepts owned by its own language
+        or by a transitive EXTENDS ancestor. A DEFAULT dependency permits references and never containment.
+      source_constraint: containment stays within the EXTENDS ancestry
+      applies_to:
+      - DosimetryProjection
+      - DosimetryView
+      - DosimetryTask
+      traceability: MPS representation scaffolding
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py containment check
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: DosimetryView declaring a child targeting ClinicalObjectType, which nltps.roles.dosimetry
+        can see only through the DEFAULT dependency on nltps.clinicalintent. The gate rejects it as
+        containment through a DEFAULT dependency.
+      positive_example: DosimetryView.subjects containing SemanticTargetRef, owned by nltps.roles.common,
+        which nltps.roles.dosimetry EXTENDS. This must not be rejected.
+    - id: PRJ-C-004
+      statement: A professional projection binds exactly one intended ProfessionalRole. The binding
+        establishes professional context only; it is not an authorization and confers no permission.
+      source_constraint: the professional projection resolves to its intended professional context
+      applies_to:
+      - DosimetryProjection
+      traceability: authorization projection
+      enforcement: MPS metamodel cardinality 1 for presence, verified empirically at the MPS-3 freeze;
+        plus a gate rule that the binding targets ProfessionalRole and not OperationalRole, RoleCapability
+        or AuthorizedActor
+      proof_status: active at MPS-3
+      negative_example: DosimetryProjection.intendedRole retargeted at OperationalRole, which would
+        conflate the credential with the workflow function and contradict mps2-role-ontology.yaml
+        separation_of_concerns. Separately, a DosimetryProjection instance with intendedRole unset,
+        which MPS reports as "No reference in the obligatory role 'intendedRole'" on the reference
+        descriptor.
+      positive_example: intendedRole bound to the Dosimetrist ProfessionalRole instance, with authority
+        still decided by RoleCapability.
+      note: The MPS-3 freeze re-tested obligatory-role enforcement empirically and found that MPS
+        does report a missing mandatory reference, on the reference descriptor rather than in the
+        node-level problems array. No additional checking rule is therefore written for presence;
+        the read-back requirement is that the materialization session inspects feature descriptors,
+        not only node-level problems.
+    - id: PRJ-C-005
+      statement: The projection layer declares no authorization feature. No professional concept references
+        RoleCapability, AuthorityPolicy or AuthorizedActor, and none declares a property typed by
+        an enumeration owned by a semantic-core language. Seeing a command in an editor is not evidence
+        of authority to execute it.
+      source_constraint: editor visibility does not grant authorization
+      applies_to:
+      - DosimetryProjection
+      - DosimetryTask
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_role_ontology.py
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: DosimetryTask gaining a reference to RoleCapability, which would let the projection
+        carry its own authorization decision, or a property typed AutonomyLevelEnum, which would let
+        it restate the A4 discriminator that CLI-C-005 owns.
+      positive_example: DosimetryTask referencing an ActionDefinition through the inherited ActionRef
+        holder. The action is named; the authority to perform it is resolved elsewhere, by AuthorityPolicy
+        and CLI-C-005.
+    - id: PRJ-C-006
+      statement: The dosimetry surface expresses planning and request-for-review only. It carries
+        no approval member, clinical or technical, so no dosimetry task can express an approval however
+        the editor is driven.
+      source_constraint: a professional surface expresses only its own profession's interaction kinds
+      applies_to:
+      - DosimetryTask
+      traceability: source-derived professional interaction
+      enforcement: 'MPS metamodel typing: taskKind is typed by an enumeration owned by this language,
+        and the four professional enumerations share no member; tools/mps/check_role_ontology.py checks
+        the disjointness and the profession-specific prohibitions'
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: DosimetryTask.taskKind retyped as RadoncTaskKindEnum, or DosimetryTaskKindEnum
+        gaining a member belonging to another profession's surface. Both are rejected by the projection
+        rules.
+      positive_example: 'DosimetryTask.taskKind typed DosimetryTaskKindEnum. Every member is authoring,
+        documentation or request. There is deliberately no approval member of any kind: preparing
+        a plan is not approving it, and the enumeration is where that distinction is made unforgeable.'
+    - id: PRJ-C-007
+      statement: A professional view is read-only by construction. It declares no ActionRef child
+        and no action-bearing feature, so a review surface cannot become an actionable one by editing
+        an instance.
+      source_constraint: read-only review surfaces are distinguished from actionable ones
+      applies_to:
+      - DosimetryView
+      traceability: workflow projection
+      enforcement: gate-level structural rule, tools/mps/check_role_ontology.py
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: DosimetryView gaining a child targeting ActionRef, or a boolean actionable
+        property that an instance could flip. The structural absence is the enforcement; a flag would
+        not be.
+      positive_example: DosimetryView holding only subjects, each a SemanticTargetRef.
+    - id: PRJ-C-008
+      statement: Professional projections of different professions reference the same authoritative
+        semantic object. No profession owns a copy of an object another profession also inspects.
+      source_constraint: different professional projections reference one authoritative semantic object
+      applies_to:
+      - DosimetryProjection
+      - DosimetryView
+      traceability: workflow projection
+      enforcement: MPS behavioural demonstration on instances at MPS-3, plus the gate-level prohibition
+        on profession-owned semantic concepts
+      proof_status: active at MPS-3, behavioural proof owed at MPS-MAT-005C
+      negative_example: Two profession-owned copies of one candidate plan, for example a DosimetryPlan
+        concept holding its own dose data. Rejected at gate level by PRJ-C-002 before any instance
+        exists.
+      positive_example: 'The frozen shared-state proof case: a RadoncView subject and a PhysicsView
+        subject whose SemanticTargetRef.target resolve to the same CandidatePlan node reference, demonstrated
+        by comparing the resolved target node references and finding them equal.'
+  nltps.roles.therapy:
+    professional_responsibility: treatment readiness and delivery-facing verification
+    intended_professional_role: RadiationTherapist
+    concepts:
+    - owner: nltps.roles.therapy
+      name: TherapyProjection
+      rootable: true
+      abstract: false
+      superconcept: RoleProjection
+      traceability: authorization projection
+      intent: 'File-per-root Radiation Therapist workspace. It is the concrete rootable projection
+        that gives treatment readiness and delivery-facing verification a professional surface over
+        shared semantic state. It owns no clinical state: every object it presents is reached by reference
+        through a holder, never contained. Being concrete and rootable is what finally makes the roles.common
+        infrastructure instantiable.'
+      source: language-skeleton.json root_concepts; mps2-role-ontology.yaml roles_common_holder_purpose;
+        ADR-001 role-language ownership invariant
+      properties: []
+      inherited_properties:
+      - name: projectionName
+        from: RoleProjection
+        type: string
+        cardinality: '1'
+      children:
+      - name: views
+        target: TherapyView
+        cardinality: 0..n
+      - name: tasks
+        target: TherapyTask
+        cardinality: 0..n
+      references:
+      - name: intendedRole
+        target: ProfessionalRole
+        cardinality: '1'
+        note: 'The professional context this projection is written for. It is a reference into clinicalintent
+          through the DEFAULT dependency added for MPS-3, so it is visibility without containment.
+          It establishes intended context and confers nothing: authority is resolved by RoleCapability
+          and the CLI-C-005 predicate, never by this link.'
+      editor: radiation therapist projection <projectionName> for <intendedRole> { <views> <tasks>
+        }
+      editor_responsibilities:
+      - shows the bound ProfessionalRole read-only, so professional context is visible but not silently
+        editable from the projection surface
+      - groups read-only views above actionable tasks so the two are never confused at the point of
+        use
+      - surfaces validation feedback from the constraint set inline on the offending task rather than
+        on the root
+      constraints:
+      - PRJ-C-001
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-004
+      - PRJ-C-005
+      - PRJ-C-008
+    - owner: nltps.roles.therapy
+      name: TherapyView
+      rootable: false
+      abstract: false
+      superconcept: BaseConcept
+      traceability: workflow projection
+      intent: 'A read-only review surface grouping the shared semantic objects a Radiation Therapist
+        inspects, for example setup and treatment parameters for a plan already released by the governed
+        workflow. It is read-only by construction rather than by a flag: it declares no ActionRef
+        child, so there is no structural way for a view to carry an action.'
+      source: language-skeleton.json non_root_concepts; role-specific review views
+      properties:
+      - name: viewName
+        type: string
+        cardinality: '1'
+        note: 'A display label for the grouping. It carries no semantics: every object under review
+          is a typed SemanticTargetRef, so the label can never be the only thing identifying what
+          is shown.'
+      children:
+      - name: subjects
+        target: SemanticTargetRef
+        cardinality: 0..n
+        note: Holders owned by roles.common, contained legally through EXTENDS. Each carries one scalar
+          reference to a GovernedElement, which is how two professions inspect one authoritative object.
+      references: []
+      editor: therapy view <viewName> { <subjects> }
+      editor_responsibilities:
+      - renders every subject read-only, with the referenced object's own identifier shown rather
+        than a local copy of its name
+      - offers no action affordance at all, matching the structural absence of ActionRef
+      constraints:
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-007
+      - PRJ-C-008
+    - owner: nltps.roles.therapy
+      name: TherapyTask
+      rootable: false
+      abstract: false
+      superconcept: RoleCommand
+      traceability: source-derived professional interaction
+      intent: One actionable Radiation Therapist interaction with governed semantic state. The interaction
+        it represents is typed by TherapyTaskKindEnum and the action it invokes is a referenced ActionDefinition,
+        so neither the clinical verb nor the authority to perform it lives in this language. Being
+        a concrete RoleCommand is what makes RoleCommand and the four holders instantiable.
+      source: ConOps professional interaction surfaces; mps2-role-ontology.yaml roles_common_holder_purpose
+      properties:
+      - name: taskKind
+        type: TherapyTaskKindEnum
+        cardinality: '1'
+        note: Typed, not a string. The profession's interaction vocabulary is an enumeration owned
+          by this language, which is what makes the boundary between professions structural instead
+          of advisory.
+      inherited_properties:
+      - name: commandName
+        from: RoleCommand
+        type: string
+        cardinality: '1'
+      inherited_children:
+      - name: targets
+        from: RoleCommand
+        target: SemanticTargetRef
+        cardinality: 0..n
+      - name: actions
+        from: RoleCommand
+        target: ActionRef
+        cardinality: 0..n
+      - name: states
+        from: RoleCommand
+        target: WorkflowStateRef
+        cardinality: 0..n
+      - name: roles
+        from: RoleCommand
+        target: OperationalRoleRef
+        cardinality: 0..n
+      children: []
+      references: []
+      editor: therapy task <taskKind> <commandName> { on <targets> invoking <actions> in <states>
+        as <roles> }
+      editor_responsibilities:
+      - shows taskKind as a typed choice, never free text
+      - shows the invoked ActionDefinition and its autonomyLevel read-only, so the user can see that
+        an A4 action is being proposed without the editor implying it will be permitted
+      - 'presents the task as a request: the surface never renders an outcome, because the outcome
+        is decided by the governed workflow'
+      - escalation and review-request kinds render identically to other kinds, so no visual affordance
+        suggests additional authority
+      constraints:
+      - PRJ-C-002
+      - PRJ-C-003
+      - PRJ-C-005
+      - PRJ-C-006
+    constraints:
+    - id: PRJ-C-001
+      statement: A professional projection may reference authoritative semantic state owned by another
+        language, provided that language is declared as a dependency. Reference visibility follows
+        the declared EXTENDS ancestry and DEFAULT dependencies, and nothing else.
+      source_constraint: professional projections reference authoritative semantic state through declared
+        dependencies
+      applies_to:
+      - TherapyProjection
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py reference visibility
+        check
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: TherapyProjection.intendedRole targeting ProfessionalRole while nltps.roles.therapy
+        declares no dependency on nltps.clinicalintent. The gate rejects the reference as targeting
+        a language the owner cannot see.
+      positive_example: 'The frozen design: nltps.roles.therapy declares nltps.clinicalintent DEFAULT,
+        so intendedRole resolves. False rejection here would make the whole projection layer unable
+        to name the semantics it projects, so the positive control matters as much as the negative
+        one.'
+    - id: PRJ-C-002
+      statement: A professional projection concept declares no property, child or reference that re-expresses
+        clinical state. It introduces no prescription, candidate plan, dose constraint, approval state
+        or workflow state of its own; every such object is referenced through a holder.
+      source_constraint: the projection introduces no clinical semantics of its own
+      applies_to:
+      - TherapyProjection
+      - TherapyView
+      - TherapyTask
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py containment check
+        plus tools/mps/check_role_ontology.py projection rules
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: A concept TherapyPrescription or TherapyPlan owned by nltps.roles.therapy,
+        or TherapyTask gaining a property typed AutonomyLevelEnum or AuthorityClassEnum, which would
+        re-express authority in the projection layer.
+      positive_example: TherapyTask.taskKind typed TherapyTaskKindEnum, an enumeration owned by this
+        language describing an interaction, not authority.
+    - id: PRJ-C-003
+      statement: A professional projection concept may contain only concepts owned by its own language
+        or by a transitive EXTENDS ancestor. A DEFAULT dependency permits references and never containment.
+      source_constraint: containment stays within the EXTENDS ancestry
+      applies_to:
+      - TherapyProjection
+      - TherapyView
+      - TherapyTask
+      traceability: MPS representation scaffolding
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py containment check
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: TherapyView declaring a child targeting ClinicalObjectType, which nltps.roles.therapy
+        can see only through the DEFAULT dependency on nltps.clinicalintent. The gate rejects it as
+        containment through a DEFAULT dependency.
+      positive_example: TherapyView.subjects containing SemanticTargetRef, owned by nltps.roles.common,
+        which nltps.roles.therapy EXTENDS. This must not be rejected.
+    - id: PRJ-C-004
+      statement: A professional projection binds exactly one intended ProfessionalRole. The binding
+        establishes professional context only; it is not an authorization and confers no permission.
+      source_constraint: the professional projection resolves to its intended professional context
+      applies_to:
+      - TherapyProjection
+      traceability: authorization projection
+      enforcement: MPS metamodel cardinality 1 for presence, verified empirically at the MPS-3 freeze;
+        plus a gate rule that the binding targets ProfessionalRole and not OperationalRole, RoleCapability
+        or AuthorizedActor
+      proof_status: active at MPS-3
+      negative_example: TherapyProjection.intendedRole retargeted at OperationalRole, which would
+        conflate the credential with the workflow function and contradict mps2-role-ontology.yaml
+        separation_of_concerns. Separately, a TherapyProjection instance with intendedRole unset,
+        which MPS reports as "No reference in the obligatory role 'intendedRole'" on the reference
+        descriptor.
+      positive_example: intendedRole bound to the RadiationTherapist ProfessionalRole instance, with
+        authority still decided by RoleCapability.
+      note: The MPS-3 freeze re-tested obligatory-role enforcement empirically and found that MPS
+        does report a missing mandatory reference, on the reference descriptor rather than in the
+        node-level problems array. No additional checking rule is therefore written for presence;
+        the read-back requirement is that the materialization session inspects feature descriptors,
+        not only node-level problems.
+    - id: PRJ-C-005
+      statement: The projection layer declares no authorization feature. No professional concept references
+        RoleCapability, AuthorityPolicy or AuthorizedActor, and none declares a property typed by
+        an enumeration owned by a semantic-core language. Seeing a command in an editor is not evidence
+        of authority to execute it.
+      source_constraint: editor visibility does not grant authorization
+      applies_to:
+      - TherapyProjection
+      - TherapyTask
+      traceability: authorization projection
+      enforcement: gate-level structural rule, tools/mps/check_role_ontology.py
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: TherapyTask gaining a reference to RoleCapability, which would let the projection
+        carry its own authorization decision, or a property typed AutonomyLevelEnum, which would let
+        it restate the A4 discriminator that CLI-C-005 owns.
+      positive_example: TherapyTask referencing an ActionDefinition through the inherited ActionRef
+        holder. The action is named; the authority to perform it is resolved elsewhere, by AuthorityPolicy
+        and CLI-C-005.
+    - id: PRJ-C-006
+      statement: The therapy surface expresses verification, recording and escalation. It carries
+        no approval and no release member, so treatment-readiness verification can never express plan-release
+        authority.
+      source_constraint: a professional surface expresses only its own profession's interaction kinds
+      applies_to:
+      - TherapyTask
+      traceability: source-derived professional interaction
+      enforcement: 'MPS metamodel typing: taskKind is typed by an enumeration owned by this language,
+        and the four professional enumerations share no member; tools/mps/check_role_ontology.py checks
+        the disjointness and the profession-specific prohibitions'
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: TherapyTask.taskKind retyped as RadoncTaskKindEnum, or TherapyTaskKindEnum
+        gaining a member belonging to another profession's surface. Both are rejected by the projection
+        rules.
+      positive_example: 'TherapyTask.taskKind typed TherapyTaskKindEnum. delivery_readiness_recording
+        records that setup and parameters were verified. It is not a release decision: no release
+        or approval member exists in this enumeration, so recording readiness cannot be mistaken for
+        authorizing delivery of an unapproved plan.'
+    - id: PRJ-C-007
+      statement: A professional view is read-only by construction. It declares no ActionRef child
+        and no action-bearing feature, so a review surface cannot become an actionable one by editing
+        an instance.
+      source_constraint: read-only review surfaces are distinguished from actionable ones
+      applies_to:
+      - TherapyView
+      traceability: workflow projection
+      enforcement: gate-level structural rule, tools/mps/check_role_ontology.py
+      proof_status: active at MPS-3, proven at gate level
+      negative_example: TherapyView gaining a child targeting ActionRef, or a boolean actionable property
+        that an instance could flip. The structural absence is the enforcement; a flag would not be.
+      positive_example: TherapyView holding only subjects, each a SemanticTargetRef.
+    - id: PRJ-C-008
+      statement: Professional projections of different professions reference the same authoritative
+        semantic object. No profession owns a copy of an object another profession also inspects.
+      source_constraint: different professional projections reference one authoritative semantic object
+      applies_to:
+      - TherapyProjection
+      - TherapyView
+      traceability: workflow projection
+      enforcement: MPS behavioural demonstration on instances at MPS-3, plus the gate-level prohibition
+        on profession-owned semantic concepts
+      proof_status: active at MPS-3, behavioural proof owed at MPS-MAT-005C
+      negative_example: Two profession-owned copies of one candidate plan, for example a TherapyPlan
+        concept holding its own dose data. Rejected at gate level by PRJ-C-002 before any instance
+        exists.
+      positive_example: 'The frozen shared-state proof case: a RadoncView subject and a PhysicsView
+        subject whose SemanticTargetRef.target resolve to the same CandidatePlan node reference, demonstrated
+        by comparing the resolved target node references and finding them equal.'
+
+cardinality_audit:
+  method: >-
+    A controlled experiment run against the live toolchain during this freeze, on one
+    concept, nltps.governance.structure.RequirementBaseline, in the proof sandbox. One
+    probe omitted the mandatory child version, the other omitted the mandatory reference
+    lifecycleState. Both probes were deleted afterwards and the sandbox model restored
+    byte-identical.
+  results:
+    - feature_kind: child
+      cardinality: "1"
+      node_level_problems: silent
+      feature_descriptor: "ERROR: No child in the obligatory role 'version'"
+      file_inspection: silent
+      native_build: passes
+    - feature_kind: reference
+      cardinality: "1"
+      node_level_problems: silent
+      feature_descriptor: "ERROR: No reference in the obligatory role 'lifecycleState'"
+      file_inspection: silent
+      native_build: passes
+  finding: >-
+    Children and references behave identically. MPS does enforce cardinality 1 on both,
+    and reports the violation on the feature descriptor rather than in the node-level
+    problems array. Neither is caught by file inspection or by a native build.
+  correction: >-
+    This overturns the finding recorded at MPS-2, which stated that MPS does not enforce
+    cardinality 1 on a reference. That conclusion came from a reader that printed only the
+    node-level problems array and therefore discarded the diagnostic. The defect was the
+    reader, not the toolchain. stage-a-checklist.yaml MPS-MAT-005B and CLAUDE.md are
+    corrected in the same commit. The MPS-2 acceptance itself is unchanged: CLI-C-006 was
+    demonstrated with five separate diagnostics and remains proven.
+  consequence_for_mps3: >-
+    Structural cardinality is a proven enforcement mechanism for presence, so no MPS-3
+    constraint writes a redundant presence rule. The obligation moves to read-back
+    discipline instead: a session that inspects only node-level problems will not see an
+    obligatory-role violation.
+  explicit_presence_rules_required: >-
+    None. Every MPS-3 reference declared cardinality 1 is intendedRole, whose presence the
+    metamodel reports. CLI-C-006 keeps its explicit reference checks from MPS-2: they are
+    now defence in depth and an attributable, constraint-named diagnostic rather than a
+    substitute for absent enforcement.
+
+instantiability_at_freeze:
+  method: >-
+    Cumulative across mps1, mps2 and this specification, computed by
+    check_concept_features.compute_reachability. Traversal starts at rootable concepts,
+    follows child containment, counts children inherited from superconcepts, and allows
+    subconcept substitution. An abstract concept is instantiable only through a concrete
+    subconcept that is itself reachable.
+  paths:
+    RoleProjection:
+      status: instantiable
+      path: "<Prof>Projection (concrete, rootable) is a subconcept of RoleProjection"
+      note: >-
+        RoleProjection stays abstract and non-rootable. It becomes instantiable because a
+        concrete subconcept is reachable, which is the distinction the MPS-2 lapse-rule fix
+        introduced.
+    RoleCommand:
+      status: instantiable
+      path: "<Prof>Projection (root) -> tasks -> <Prof>Task, a concrete subconcept of RoleCommand"
+    SemanticTargetRef:
+      status: instantiable
+      path: >-
+        <Prof>Projection (root) -> views -> <Prof>View -> subjects -> SemanticTargetRef,
+        and independently <Prof>Projection -> tasks -> <Prof>Task -> targets (inherited
+        from RoleCommand) -> SemanticTargetRef
+    ActionRef:
+      status: instantiable
+      path: "<Prof>Projection (root) -> tasks -> <Prof>Task -> actions (inherited) -> ActionRef"
+    WorkflowStateRef:
+      status: instantiable
+      path: "<Prof>Projection (root) -> tasks -> <Prof>Task -> states (inherited) -> WorkflowStateRef"
+    OperationalRoleRef:
+      status: instantiable
+      path: "<Prof>Projection (root) -> tasks -> <Prof>Task -> roles (inherited) -> OperationalRoleRef"
+  orphan_report_after_mps3: empty
+  no_semantic_core_leak: >-
+    Adding the twelve concepts makes sixteen concepts newly reachable: the twelve
+    themselves and the four roles.common holders. No foundation, governance,
+    clinicalintent or realization concept becomes reachable. EXTENDS makes a language's
+    concepts available as superconcepts and DEFAULT makes them referable; neither creates
+    a containment path, and reachability follows containment only. This was computed, not
+    asserted.
+
+deferral_transitions:
+  - constraints: [ROL-C-002, ROL-C-003]
+    from: deferred at MPS-2, non_instantiability
+    to: ACTIVE at MPS-3, deferral lapsed automatically
+    affected_concepts: [RoleCommand, SemanticTargetRef]
+    trigger: >-
+      The concrete professional projections make RoleCommand and SemanticTargetRef
+      instantiable. non_instantiability is the class that lapses automatically on
+      instantiability, so no human reactivation decision is required and none was made;
+      check_materialization_plan fails while a lapsed deferral remains recorded as active.
+    contrast_with_gov_c_007: >-
+      GOV-C-007 was semantic_model_absence, which never lapses on its own and required the
+      deliberate reclassification recorded at MPS-2. These two are the other class.
+    carried_to: MPS-MAT-005C
+    not_proven_here: >-
+      Lapsing makes the obligation active, not demonstrated. The behavioural proof belongs
+      to MPS-3 materialization and is owed against MPS-MAT-005C.
+    proof_design:
+      ROL-C-002:
+        affected_concept: RoleCommand
+        instantiability_path: "<Prof>Projection (root) -> tasks -> <Prof>Task"
+        negative_example: >-
+          A <Prof>Task containing an ActionDefinition directly instead of an ActionRef
+          holder. The specification gate rejects the shape; the behavioural demonstration
+          is that no such child role exists on an instantiated task.
+        positive_control: >-
+          A <Prof>Task holding an ActionRef whose action resolves to an ActionDefinition,
+          accepted with no problem reported.
+        expected_mechanism: >-
+          MPS metamodel containment typing, read back from the instantiated task, plus the
+          gate-level containment check.
+      ROL-C-003:
+        affected_concept: SemanticTargetRef
+        instantiability_path: >-
+          <Prof>Projection (root) -> views -> <Prof>View -> subjects -> SemanticTargetRef
+        negative_example: >-
+          A holder carrying a second reference or a multi-valued one; the specification
+          gate rejects a multi-valued reference outright.
+        positive_control: >-
+          A SemanticTargetRef instance carrying exactly one resolved target, accepted.
+        expected_mechanism: >-
+          MPS metamodel cardinality on the holder reference, now empirically confirmed to
+          report an unset obligatory reference on the reference descriptor.
+
+shared_state_proof_design:
+  claim: >-
+    Two different professional projections reference one authoritative semantic object,
+    and neither owns a copy.
+  construction: >-
+    One CandidatePlan-typed ClinicalObjectType instance already exists in the proof
+    sandbox under PlanIntentProof. A RadoncProjection holds a RadoncView whose subjects
+    contain a SemanticTargetRef targeting it; a PhysicsProjection holds a PhysicsView
+    whose subjects contain a SemanticTargetRef targeting the same node.
+  evidence_required: >-
+    Read both SemanticTargetRef target references back from MPS and compare the resolved
+    node references for equality. Equal references are the proof; two structurally similar
+    objects would not be.
+  negative_control: >-
+    A profession-owned duplicate, for example a RadoncPlan concept, is rejected at gate
+    level by PRJ-C-002 before any instance can exist.
+  carried_to: MPS-MAT-005C
+
+gov_c_007_unchanged: >-
+  GOV-C-007 was discharged at MPS-2 by CLI-C-005 and its five-case actor-kind matrix.
+  MPS-3 neither recreates nor moves it. The professional projections consume the
+  authorization model; they do not own the A4 authority predicate, and no MPS-3 constraint
+  restates it.
+
+counts:
+  languages: 4
+  concepts_per_language: 3
+  mps3_new_concepts: 12
+  mps2_cumulative: 66
+  mps3_cumulative_ceiling: 78
+  datatypes_declared: 4
+  constraints_per_language: 8
+  constraints_total: 32
+  blueprint_concept_amendment: none
+  blueprint_dependency_amendment: nltps.clinicalintent DEFAULT added to four languages

@@ -45,6 +45,7 @@ whether the migration is correct.
 - Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
 - Concept design that MPS-1 transcribed: `mps/bootstrap/mps1-concept-features.yaml`
 - Concept design that MPS-2 transcribed: `mps/bootstrap/mps2-concept-features.yaml`
+- Concept design frozen for MPS-3: `mps/bootstrap/mps3-concept-features.yaml`
 - Role and authorization ontology frozen for MPS-2: `mps/bootstrap/mps2-role-ontology.yaml`
 - Module graph, dependency kinds, per-checkpoint inventories: `mps/bootstrap/language-skeleton.json`
 
@@ -62,8 +63,31 @@ observed so far was unnecessary and was removed through model-aware tooling, nev
 editing `.mpl`.
 
 A concept may take a superconcept only from its own language or from a language declared
-`EXTENDS`. Changing a dependency kind is a controlled blueprint change, not an IDE
-convenience.
+`EXTENDS`. A concept may *contain* only what its own language or a transitive `EXTENDS`
+ancestor owns. A concept may *reference* anything its language declares, `EXTENDS` or
+`DEFAULT` -- but not a language it declares no dependency on at all; that reference would
+fail to resolve during materialization, and since MPS-3 the specification gate rejects it.
+Changing a dependency kind is a controlled blueprint change, not an IDE convenience.
+
+## The projection layer owns no authority
+
+The four professional languages are projections, not semantic languages. They present
+authoritative state through one profession's lens and own none of it: there is exactly one
+`CandidatePlan`, one approval state, one workflow state, and a projection reaches them by
+reference through a `roles.common` holder. A profession-owned copy is the failure this
+layer exists to prevent.
+
+Authority is never expressed here. A professional task names an interaction with an
+enumeration its own language owns and names an action by referencing an `ActionDefinition`;
+whether an actor may perform it is decided by `AuthorityPolicy`, `RoleCapability` and the
+CLI-C-005 predicate that discharged GOV-C-007 at MPS-2. **Seeing a command in an editor is
+not permission to run it.** `tools/mps/check_role_ontology.py` refuses a projection concept
+that references `RoleCapability`, `AuthorityPolicy` or `AuthorizedActor`, that carries an
+enumeration owned by a semantic-core language, that makes a review surface actionable, or
+that lets one profession express another's interaction. The four task-kind enumerations
+share no member, which is what makes clinical approval, technical release review, planning
+interaction and readiness verification structurally distinct rather than distinct by
+convention.
 
 ## Evidence before acceptance
 
@@ -90,22 +114,29 @@ A passing `check_root_node_problems` is not sufficient acceptance evidence by it
 Acceptance requires read-back, plus the applicable node-scope and model-scope checks,
 plus a native build or check result. No single checker is sufficient.
 
-Two failures observed at MPS-2, each silent in every checker that ran before it:
+Three failures observed so far, each silent in every checker that ran before it:
 
 - **A `cardinality` key on a link in `CREATE_CONCEPTS` is ignored.** 34 of 37 links were
   created with the metamodel default `0..1` instead of the specified `1` or `0..n`, with
   `ok: true` throughout and a clean model check. Set `sourceCardinality` explicitly and
   read it back; `0..1` is serialized as absent, so absent means default, not unset.
-- **MPS does not enforce cardinality `1` on a reference link.** A node with three
-  mandatory references all unset passed the node check, passed file inspection, and
-  built. A constraint that depends on a reference being present must say so in a checking
-  rule; the metamodel will not say it. This sits beside the missing-mandatory-child
-  hazard above.
+- **`check_root_node_problems` reports obligatory-role violations on the feature
+  descriptor, not in the node-level `problems` array.** A missing mandatory child appears
+  under `children[].problems` and a missing mandatory reference under
+  `references[].problems`. A reader that prints only node-level `problems` discards both
+  and sees a clean result. Neither is caught by file inspection or by a native build.
+- `mps_mcp_scaffold_editor` leaves the inline display property of every reference cell
+  unresolved. The model check reports nothing; the Java compiler reports `variable
+  property might not have been initialized`. Point each one at a real property of the
+  concept it displays.
 
-`mps_mcp_scaffold_editor` leaves the inline display property of every reference cell
-unresolved. The model check reports nothing; the Java compiler reports `variable property
-might not have been initialized`. Point each one at a real property of the concept it
-displays.
+MPS-2 recorded a fourth, that MPS does not enforce cardinality `1` on a reference. **That
+was wrong and is withdrawn.** An MPS-3 experiment on one concept -- one probe missing a
+mandatory child, one missing a mandatory reference -- produced `No child in the obligatory
+role 'version'` and `No reference in the obligatory role 'lifecycleState'`. Children and
+references behave identically and both are enforced. The defect was the reader. Structural
+cardinality is a proven presence mechanism; what it needs is a read-back that looks in the
+right place.
 
 ## Deferrals are conditional, not permanent
 
