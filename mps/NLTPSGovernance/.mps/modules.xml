@@ -7,6 +7,10 @@
       <modulePath path="$PROJECT_DIR$/languages/nltps.governance/nltps.governance.mpl" folder="" />
       <modulePath path="$PROJECT_DIR$/languages/nltps.realization/nltps.realization.mpl" folder="" />
       <modulePath path="$PROJECT_DIR$/languages/nltps.roles.common/nltps.roles.common.mpl" folder="" />
+      <modulePath path="$PROJECT_DIR$/languages/nltps.roles.dosimetry/nltps.roles.dosimetry.mpl" folder="" />
+      <modulePath path="$PROJECT_DIR$/languages/nltps.roles.physics/nltps.roles.physics.mpl" folder="" />
+      <modulePath path="$PROJECT_DIR$/languages/nltps.roles.radonc/nltps.roles.radonc.mpl" folder="" />
+      <modulePath path="$PROJECT_DIR$/languages/nltps.roles.therapy/nltps.roles.therapy.mpl" folder="" />
       <modulePath path="$PROJECT_DIR$/sandbox/nltps.proof/nltps.proof.msd" folder="proof" />
     </projectModules>
   </component>
