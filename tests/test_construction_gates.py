@@ -387,13 +387,14 @@ class SessionControlsGateTests(unittest.TestCase):
         self.assertTrue(any("describes checkpoints" in e for e in errors))
 
     def test_claiming_an_open_checkpoint_is_closed_is_rejected(self) -> None:
-        # MPS-3 is the open checkpoint now that MPS-2 has closed; the fixture tracks
-        # the frontier rather than naming a checkpoint that has since been accepted.
+        # The fixture names whichever checkpoint is still open, so it keeps testing the
+        # frontier instead of a checkpoint that has since been accepted. MPS-4 is last,
+        # so this stops needing an edit here.
         errors = self._mutate(
-            "    MPS-3  the four professional role projections",
-            "    MPS-3  the four professional role projections       closed",
+            "    MPS-4  realization + the 119-HLR import",
+            "    MPS-4  realization + the 119-HLR import             closed",
         )
-        self.assertTrue(any("marks MPS-3 closed" in e for e in errors))
+        self.assertTrue(any("marks MPS-4 closed" in e for e in errors))
 
     def test_prescribing_a_missing_script_is_rejected(self) -> None:
         errors = self._mutate(
@@ -428,5 +429,5 @@ class SessionControlsGateTests(unittest.TestCase):
         self.assertIn("MPS-0", closed)
         self.assertIn("MPS-1", closed)
         self.assertIn("MPS-2", closed)
-        self.assertNotIn("MPS-3", closed)
+        self.assertIn("MPS-3", closed)
         self.assertNotIn("MPS-4", closed)

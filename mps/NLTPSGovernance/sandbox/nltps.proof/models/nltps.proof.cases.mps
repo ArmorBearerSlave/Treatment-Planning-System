@@ -5,9 +5,26 @@
     <use id="4709dc1d-8658-45c6-b6ee-185bd2ba1b14" name="nltps.governance" version="0" />
     <use id="87311da3-67f4-4168-a5e2-0a32e6781088" name="nltps.foundation" version="0" />
     <use id="dbcbafd2-9884-4f01-8836-da8cbf2c072f" name="nltps.clinicalintent" version="0" />
+    <use id="12705dba-f436-4675-8d88-79a0f43738a5" name="nltps.roles.radonc" version="0" />
+    <use id="5b19e2ff-ed83-482c-ba24-1b8dca166673" name="nltps.roles.physics" version="0" />
+    <use id="32a5fe33-a49d-4203-b3e1-5054d68a5daf" name="nltps.roles.common" version="0" />
   </languages>
   <imports />
   <registry>
+    <language id="12705dba-f436-4675-8d88-79a0f43738a5" name="nltps.roles.radonc">
+      <concept id="1365532761382949442" name="nltps.roles.radonc.structure.RadoncProjection" flags="ng" index="3h$cEd">
+        <reference id="1365532761382949448" name="intendedRole" index="3h$cE7" />
+        <child id="1365532761382949447" name="tasks" index="3h$cE8" />
+        <child id="1365532761382949446" name="views" index="3h$cE9" />
+      </concept>
+      <concept id="1365532761382949441" name="nltps.roles.radonc.structure.RadoncTask" flags="ng" index="3h$cEe">
+        <property id="1365532761382949445" name="taskKind" index="3h$cEa" />
+      </concept>
+      <concept id="1365532761382949440" name="nltps.roles.radonc.structure.RadoncView" flags="ng" index="3h$cEf">
+        <property id="1365532761382949443" name="viewName" index="3h$cEc" />
+        <child id="1365532761382949444" name="subjects" index="3h$cEb" />
+      </concept>
+    </language>
     <language id="87311da3-67f4-4168-a5e2-0a32e6781088" name="nltps.foundation">
       <concept id="1365532761364539167" name="nltps.foundation.structure.GovernedElement" flags="ng" index="3gIvZg">
         <reference id="1365532761364539184" name="lifecycleState" index="3gIvZZ" />
@@ -125,6 +142,44 @@
         <property id="1365532761364587990" name="harm" index="3gI3Op" />
         <property id="1365532761364587989" name="description" index="3gI3Oq" />
         <property id="1365532761364587988" name="hazardId" index="3gI3Or" />
+      </concept>
+    </language>
+    <language id="5b19e2ff-ed83-482c-ba24-1b8dca166673" name="nltps.roles.physics">
+      <concept id="1365532761382949453" name="nltps.roles.physics.structure.PhysicsProjection" flags="ng" index="3h$cE2">
+        <reference id="1365532761382949459" name="intendedRole" index="3h$cEs" />
+        <child id="1365532761382949458" name="tasks" index="3h$cEt" />
+        <child id="1365532761382949457" name="views" index="3h$cEu" />
+      </concept>
+      <concept id="1365532761382949452" name="nltps.roles.physics.structure.PhysicsTask" flags="ng" index="3h$cE3">
+        <property id="1365532761382949456" name="taskKind" index="3h$cEv" />
+      </concept>
+      <concept id="1365532761382949451" name="nltps.roles.physics.structure.PhysicsView" flags="ng" index="3h$cE4">
+        <property id="1365532761382949454" name="viewName" index="3h$cE1" />
+        <child id="1365532761382949455" name="subjects" index="3h$cE0" />
+      </concept>
+    </language>
+    <language id="32a5fe33-a49d-4203-b3e1-5054d68a5daf" name="nltps.roles.common">
+      <concept id="1365532761375877592" name="nltps.roles.common.structure.OperationalRoleRef" flags="ng" index="3g1f4n">
+        <reference id="1365532761375877597" name="role" index="3g1f4i" />
+      </concept>
+      <concept id="1365532761375877591" name="nltps.roles.common.structure.WorkflowStateRef" flags="ng" index="3g1f4o">
+        <reference id="1365532761375877596" name="state" index="3g1f4j" />
+      </concept>
+      <concept id="1365532761375877590" name="nltps.roles.common.structure.ActionRef" flags="ng" index="3g1f4p">
+        <reference id="1365532761375877595" name="action" index="3g1f4k" />
+      </concept>
+      <concept id="1365532761375877589" name="nltps.roles.common.structure.SemanticTargetRef" flags="ng" index="3g1f4q">
+        <reference id="1365532761375877594" name="target" index="3g1f4l" />
+      </concept>
+      <concept id="1365532761375877588" name="nltps.roles.common.structure.RoleProjection" flags="ng" index="3g1f4r">
+        <property id="1365532761375877593" name="projectionName" index="3g1f4m" />
+      </concept>
+      <concept id="1365532761375877600" name="nltps.roles.common.structure.RoleCommand" flags="ng" index="3g1f4J">
+        <property id="1365532761375877601" name="commandName" index="3g1f4I" />
+        <child id="1365532761375877605" name="roles" index="3g1f4E" />
+        <child id="1365532761375877604" name="states" index="3g1f4F" />
+        <child id="1365532761375877603" name="actions" index="3g1f4G" />
+        <child id="1365532761375877602" name="targets" index="3g1f4H" />
       </concept>
     </language>
     <language id="dbcbafd2-9884-4f01-8836-da8cbf2c072f" name="nltps.clinicalintent">
@@ -600,6 +655,17 @@
         <property role="3gIvZS" value="1.0" />
       </node>
     </node>
+    <node concept="3g1f5t" id="1bNmcZ3xMSR" role="3g1f5O">
+      <property role="3g1f5j" value="Medical Physicist" />
+      <property role="3g1f5i" value="board certification in medical physics" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3xMSU" role="3gIvZz">
+        <property role="3gIvZX" value="PRO-002" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3xMSV" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
   </node>
   <node concept="3g1f5D" id="1bNmcZ3gpZZ">
     <property role="3g1f5K" value="ReleaseProof" />
@@ -638,6 +704,52 @@
       </node>
       <node concept="3gIvZH" id="1bNmcZ3gq0D" role="3gIvZy">
         <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+  </node>
+  <node concept="3h$cEd" id="1bNmcZ3xMT5">
+    <property role="3g1f4m" value="RadoncClinicalReview" />
+    <ref role="3h$cE7" node="1bNmcZ3gpZy" />
+    <node concept="3h$cEf" id="1bNmcZ3xMT6" role="3h$cE9">
+      <property role="3h$cEc" value="candidatePlanClinicalReview" />
+      <node concept="3g1f4q" id="1bNmcZ3xMT7" role="3h$cEb">
+        <ref role="3g1f4l" node="1bNmcZ3ewz3" />
+      </node>
+    </node>
+    <node concept="3h$cEe" id="1bNmcZ3xMT8" role="3h$cE8">
+      <property role="3g1f4I" value="approveCandidatePlan" />
+      <property role="3h$cEa" value="70q02MNHk8Y/clinical_approval" />
+      <node concept="3g1f4q" id="1bNmcZ3xMT9" role="3g1f4H">
+        <ref role="3g1f4l" node="1bNmcZ3ewz3" />
+      </node>
+      <node concept="3g1f4p" id="1bNmcZ3xMTa" role="3g1f4G">
+        <ref role="3g1f4k" node="1bNmcZ3ewz8" />
+      </node>
+      <node concept="3g1f4o" id="1bNmcZ3xMTb" role="3g1f4F">
+        <ref role="3g1f4j" node="1bNmcZ3ew$Y" />
+      </node>
+      <node concept="3g1f4n" id="1bNmcZ3xMTc" role="3g1f4E">
+        <ref role="3g1f4i" node="1bNmcZ3gpZB" />
+      </node>
+    </node>
+  </node>
+  <node concept="3h$cE2" id="1bNmcZ3xMTv">
+    <property role="3g1f4m" value="PhysicsTechnicalReview" />
+    <ref role="3h$cEs" node="1bNmcZ3xMSR" />
+    <node concept="3h$cE4" id="1bNmcZ3xMTw" role="3h$cEu">
+      <property role="3h$cE1" value="candidatePlanTechnicalReview" />
+      <node concept="3g1f4q" id="1bNmcZ3xMTx" role="3h$cE0">
+        <ref role="3g1f4l" node="1bNmcZ3ewz3" />
+      </node>
+    </node>
+    <node concept="3h$cE3" id="1bNmcZ3xMTy" role="3h$cEt">
+      <property role="3g1f4I" value="reviewCandidatePlanTechnically" />
+      <property role="3h$cEv" value="6p5vN_eLW6s/technical_plan_review" />
+      <node concept="3g1f4q" id="1bNmcZ3xMTz" role="3g1f4H">
+        <ref role="3g1f4l" node="1bNmcZ3ewz3" />
+      </node>
+      <node concept="3g1f4p" id="1bNmcZ3xMT$" role="3g1f4G">
+        <ref role="3g1f4k" node="1bNmcZ3ewzd" />
       </node>
     </node>
   </node>

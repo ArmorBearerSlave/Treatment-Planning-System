@@ -12,12 +12,17 @@
   </facets>
   <dependencies>
     <dependency reexport="false">dbcbafd2-9884-4f01-8836-da8cbf2c072f(nltps.clinicalintent)</dependency>
+    <dependency reexport="false">12705dba-f436-4675-8d88-79a0f43738a5(nltps.roles.radonc)</dependency>
+    <dependency reexport="false">5b19e2ff-ed83-482c-ba24-1b8dca166673(nltps.roles.physics)</dependency>
   </dependencies>
   <languageVersions>
     <language slang="l:ceab5195-25ea-4f22-9b92-103b95ca8c0c:jetbrains.mps.lang.core" version="2" />
     <language slang="l:dbcbafd2-9884-4f01-8836-da8cbf2c072f:nltps.clinicalintent" version="0" />
     <language slang="l:87311da3-67f4-4168-a5e2-0a32e6781088:nltps.foundation" version="0" />
     <language slang="l:4709dc1d-8658-45c6-b6ee-185bd2ba1b14:nltps.governance" version="0" />
+    <language slang="l:32a5fe33-a49d-4203-b3e1-5054d68a5daf:nltps.roles.common" version="0" />
+    <language slang="l:5b19e2ff-ed83-482c-ba24-1b8dca166673:nltps.roles.physics" version="0" />
+    <language slang="l:12705dba-f436-4675-8d88-79a0f43738a5:nltps.roles.radonc" version="0" />
   </languageVersions>
   <dependencyVersions>
     <module reference="3f233e7f-b8a6-46d2-a57f-795d56775243(Annotations)" version="0" />
@@ -28,6 +33,9 @@
     <module reference="dbcbafd2-9884-4f01-8836-da8cbf2c072f(nltps.clinicalintent)" version="0" />
     <module reference="87311da3-67f4-4168-a5e2-0a32e6781088(nltps.foundation)" version="0" />
     <module reference="4745dc6f-8462-405d-b92b-cf0ea82dac23(nltps.proof)" version="0" />
+    <module reference="32a5fe33-a49d-4203-b3e1-5054d68a5daf(nltps.roles.common)" version="0" />
+    <module reference="5b19e2ff-ed83-482c-ba24-1b8dca166673(nltps.roles.physics)" version="0" />
+    <module reference="12705dba-f436-4675-8d88-79a0f43738a5(nltps.roles.radonc)" version="0" />
   </dependencyVersions>
 </solution>
 

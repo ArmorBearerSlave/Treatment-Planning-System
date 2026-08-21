@@ -39,7 +39,7 @@ whether the migration is correct.
     MPS-0  project and the four language modules          closed
     MPS-1  foundation + governance                        closed
     MPS-2  clinical intent + roles.common                closed
-    MPS-3  the four professional role projections
+    MPS-3  the four professional role projections        closed
     MPS-4  realization + the 119-HLR import
 
 - Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
@@ -116,10 +116,11 @@ plus a native build or check result. No single checker is sufficient.
 
 Three failures observed so far, each silent in every checker that ran before it:
 
-- **A `cardinality` key on a link in `CREATE_CONCEPTS` is ignored.** 34 of 37 links were
-  created with the metamodel default `0..1` instead of the specified `1` or `0..n`, with
-  `ok: true` throughout and a clean model check. Set `sourceCardinality` explicitly and
-  read it back; `0..1` is serialized as absent, so absent means default, not unset.
+- **A `cardinality` key on a link in `CREATE_CONCEPTS` is ignored.** 34 of 37 links at
+  MPS-2, then 16 of 16 at MPS-3, were created with the metamodel default `0..1` instead of
+  the specified `1` or `0..n`, with `ok: true` throughout and a clean model check. Assume
+  every link is wrong until read back. Set `sourceCardinality` explicitly; `0..1` is
+  serialized as absent, so absent means default, not unset.
 - **`check_root_node_problems` reports obligatory-role violations on the feature
   descriptor, not in the node-level `problems` array.** A missing mandatory child appears
   under `children[].problems` and a missing mandatory reference under
@@ -129,6 +130,11 @@ Three failures observed so far, each silent in every checker that ran before it:
   unresolved. The model check reports nothing; the Java compiler reports `variable
   property might not have been initialized`. Point each one at a real property of the
   concept it displays.
+- **An enumeration property set to a member that does not belong to its enumeration is
+  accepted silently.** The write returns `ok: true`, the value persists unresolvable with
+  `null` where the member id belongs, and no checker or build reports it. A resolved
+  member reads back as `<memberId>/<name>`; a corrupt one reads back as
+  `<fragment>/null`. Read enum properties back and check for the id.
 
 MPS-2 recorded a fourth, that MPS does not enforce cardinality `1` on a reference. **That
 was wrong and is withdrawn.** An MPS-3 experiment on one concept -- one probe missing a

@@ -245,8 +245,43 @@ acceptance_items:
       Professional role projection concepts are disjoint, exhaustive, and single-owner
       against the blueprint inventory, and every projection contains only concepts owned
       by itself or a transitive EXTENDS ancestor.
-    status: pending
-    evidence: []
+    status: complete
+    evidence:
+    - 12 concepts materialized through MPS MCP model-aware operations, transcribing
+      mps3-concept-features.yaml exactly, three per professional language
+    - 65 structure-aspect nodes across the four languages = 12 ConceptDeclaration
+      + 8 PropertyDeclaration + 16 LinkDeclaration + 4 EnumerationDeclaration
+      + 25 EnumerationMemberDeclaration
+    - cumulative total 78 concepts across 433 structure nodes over nine modules;
+      check_module_graph.py --checkpoint MPS-3 derives the ceiling from the blueprint
+      and observes 78 of 78
+    - each professional module carries exactly the frozen dependency shape, EXTENDS
+      nltps.roles.common and DEFAULT nltps.clinicalintent, with no redundant foundation
+      EXTENDS, no lang.core and no JDK; foundation visibility is transitive
+    - 12 minimum editors created, one per concept; all four languages generate and
+      compile with no error
+    - read-back compared every persisted concept against the frozen specification feature
+      by feature -- superconcept, rootability, abstractness, property datatypes, link
+      targets, metaClass and cardinality -- plus all 25 enumeration members and their
+      presentations, and reports zero divergence
+    read_back_finding: >-
+      Every one of the 16 declared links persisted with the MPS default cardinality 0..1
+      instead of the specified 0..n or 1, with ok:true throughout. At MPS-2 the rate was
+      34 of 37; here it was 16 of 16. The cardinality key on a link in CREATE_CONCEPTS is
+      simply ignored. All 16 were set explicitly through sourceCardinality and re-verified.
+    external_dependency_events: >-
+      MPS auto-added a DEFAULT companion to the nltps.roles.common EXTENDS edge on all
+      four modules. Each was removed through model-aware tooling and the EXTENDS edge
+      re-declared, since deleting a dependency removes the EXTENDS collection entry too.
+      No other undeclared dependency appeared, and no .mpl was edited.
+    hazard_metric_unchanged: >-
+      Materializing 12 concepts did not move the source-explicit hazard numerator. It
+      remains 76 of 2,144.
+    proof_sandbox_isolation: >-
+      All MPS-3 proof instances live in the nltps.proof solution, whose descriptor is an
+      .msd outside languages/. The module graph gate counts structure aspects under
+      languages/ only, so the proof content contributes zero concepts and zero
+      structure-aspect nodes to the 78 / 433 accounting.
     feature_specification: mps/bootstrap/mps3-concept-features.yaml
     frozen_inventory: >-
       12 concepts, three per professional language: a concrete rootable <Prof>Projection,
@@ -678,9 +713,11 @@ acceptance_items:
     - constraint: ROL-C-002
       deferral_class: non_instantiability
       affected_concept: RoleCommand
-      status: lapsed at MPS-3, active proof obligation
+      status: lapsed at MPS-3, discharged at MPS-3
       lapsed_at: MPS-3
       carried_to: MPS-MAT-005C
+      discharged_at: MPS-3
+      discharge_evidence: see MPS-MAT-005C evidence
       lapse_trigger: >-
         The MPS-3 feature specification declares <Prof>Task, a concrete RoleCommand
         subconcept, contained by the concrete rootable <Prof>Projection. RoleCommand
@@ -697,9 +734,11 @@ acceptance_items:
     - constraint: ROL-C-003
       deferral_class: non_instantiability
       affected_concept: SemanticTargetRef
-      status: lapsed at MPS-3, active proof obligation
+      status: lapsed at MPS-3, discharged at MPS-3
       lapsed_at: MPS-3
       carried_to: MPS-MAT-005C
+      discharged_at: MPS-3
+      discharge_evidence: see MPS-MAT-005C evidence
       lapse_trigger: >-
         <Prof>View.subjects and the inherited RoleCommand.targets both give
         SemanticTargetRef a containment path from a concrete projection root.
@@ -751,8 +790,104 @@ acceptance_items:
       Professional role projection constraints, typesystems, editors, and negative model
       tests pass, including demonstrated rejection of containment that reaches outside
       the permitted EXTENDS ancestry.
-    status: pending
-    evidence: []
+    status: complete
+    completion_qualifier: COMPLETE
+    completion_basis: >-
+      Both inherited obligations are discharged behaviourally on instances that could not
+      exist before this checkpoint, and every MPS-3 constraint is proven by the mechanism
+      its frozen enforcement class names. No MPS-3 deferral remains and none was created.
+    controlled_constraint_inventory:
+      declared: 8
+      identifiers: PRJ-C-001 through PRJ-C-008, each stated once per professional language
+      proven_at_gate_level: 5
+      proven_behaviourally: 3
+      mps_checking_rules_added: 0
+      note: >-
+        No MPS checking rule was written at MPS-3. Every architectural invariant is
+        enforced by the specification gate or by MPS metamodel typing and cardinality, and
+        the freeze recorded that adding a rule on top of a working mechanism would inflate
+        the constraint count without adding enforcement. The project-wide checking-rule
+        total is unchanged at 15.
+    evidence:
+    - 'ROL-C-002 PROVEN. Negative: adding an ActionDefinition directly to
+      RadoncTask.actions is rejected -- "Concept assignability error: Actual concept
+      ActionDefinition, Expected concept(s) ActionRef, Parent concept RadoncTask, Role
+      actions". Positive: the same task holding an ActionRef whose action resolves to the
+      A4 ActionDefinition reports no problems.'
+    - 'ROL-C-003 PROVEN. Negative, no children: adding any child to a SemanticTargetRef is
+      rejected -- "Child role subjects not found in concept SemanticTargetRef". Negative,
+      exactly one scalar reference: clearing SemanticTargetRef.target produces "No
+      reference in the obligatory role target" on the reference descriptor. Positive: the
+      holder carrying one resolved target reports no problems.'
+    - 'PRJ-C-004 PROVEN. A RadoncProjection created without intendedRole renders as
+      "<no intendedRole>" and reports "No reference in the obligatory role intendedRole"
+      on the reference descriptor; the node-level problems array is silent. Binding the
+      RadiationOncologist ProfessionalRole clears it.'
+    - 'PRJ-C-002 and PRJ-C-003 PROVEN. Containing a semantic-core concept is rejected --
+      adding a ClinicalObjectType to RadoncView.subjects gives "Actual concept
+      ClinicalObjectType, Expected concept(s) SemanticTargetRef". Containing a
+      roles.common holder through the EXTENDS ancestry is accepted, which is the positive
+      control that the prohibition is not simply blanket refusal.'
+    - 'PRJ-C-006 PROVEN. Setting PhysicsTask.taskKind to the RadOnc member
+      clinical_approval does not produce a valid physics task: the value persists
+      unresolvable and the properly resolved member carries its enumeration id, so no
+      physics task can express clinical approval. Restored to technical_plan_review, which
+      resolves.'
+    - 'PRJ-C-008 PROVEN. A RadoncView subject and a PhysicsView subject were read back
+      from MPS and their SemanticTargetRef targets compared: both resolve to the identical
+      node r:098128cc-...(nltps.proof.cases)/1365532761380227267, the CandidatePlan
+      ClinicalObjectType. Two professions, two credentials, one authoritative object and
+      no profession-owned copy.'
+    - native check - whole-project MAKE with rebuild reports success and a ready runtime;
+      every proof-sandbox root reports no problems
+    instantiability_verified:
+      method: cumulative reachability over mps1, mps2 and mps3 specifications
+      RoleProjection: instantiable through the concrete rootable <Prof>Projection subconcepts
+      RoleCommand: "instantiable through <Prof>Projection (root) -> tasks -> <Prof>Task"
+      SemanticTargetRef: >-
+        instantiable through <Prof>Projection -> views -> <Prof>View -> subjects, and
+        independently through <Prof>Task -> targets inherited from RoleCommand
+      ActionRef: "instantiable through <Prof>Task -> actions, inherited from RoleCommand"
+      WorkflowStateRef: "instantiable through <Prof>Task -> states, inherited from RoleCommand"
+      OperationalRoleRef: "instantiable through <Prof>Task -> roles, inherited from RoleCommand"
+      orphan_report: empty
+      note: >-
+        RoleProjection and RoleCommand remain abstract and therefore report reachable
+        false; they are instantiable through concrete subconcepts. That is the distinction
+        the MPS-2 lapse-rule correction introduced, and it is what makes these two
+        obligations discharge rather than look stale.
+    authorization_separation_evidence: >-
+      The four task-kind enumerations are disjoint and each is owned by its own language.
+      RadoncTaskKindEnum is the only one carrying clinical_approval; PhysicsTaskKindEnum is
+      the only one carrying technical_release_review; DosimetryTaskKindEnum and
+      TherapyTaskKindEnum carry no approval or release member at all. Cross-assignment was
+      attempted and does not yield a valid value. No projection concept references
+      RoleCapability, AuthorityPolicy or AuthorizedActor, and none carries a semantic-core
+      enumeration, so nothing in the projection layer can express an authorization
+      decision. A RadoncTask naming the A4 authorizeRelease ActionDefinition is a request
+      to act; whether it may act is still decided by AuthorityPolicy, RoleCapability and
+      CLI-C-005. Editor visibility is not authorization.
+    toolchain_finding:
+      finding: >-
+        An enumeration property set to a member name that does not belong to its
+        enumeration is accepted silently. The MCP write returns ok:true, the value
+        persists in an unresolvable form carrying null where the member id belongs, and
+        check_root_node_problems reports nothing at node, child or reference level. A
+        native rebuild also passes.
+      observed_during: >-
+        The PRJ-C-006 cross-profession proof, setting PhysicsTask.taskKind to the RadOnc
+        member clinical_approval.
+      consequence: >-
+        The profession-separation invariant still holds -- the value is not a valid
+        PhysicsTaskKindEnum member and no physics task can express clinical approval. What
+        this adds is a write-path hazard: an enum property must be read back and its
+        persisted value checked for a resolved member id, because neither the checker nor
+        the build will report a corrupt one. This joins the ignored-cardinality hazard as
+        a case where ok:true means nothing.
+      not_a_contradiction_of_the_freeze: >-
+        The frozen enforcement class for PRJ-C-006 names metamodel typing plus the gate
+        disjointness check. Both hold. The finding concerns how a bad write behaves, not
+        whether the separation is enforced.
     feature_specification: mps/bootstrap/mps3-concept-features.yaml
     inherited_obligations_note: >-
       These arrived from MPS-MAT-005B when the MPS-3 feature specification was frozen and
