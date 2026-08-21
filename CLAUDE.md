@@ -40,12 +40,19 @@ whether the migration is correct.
     MPS-1  foundation + governance                        closed
     MPS-2  clinical intent + roles.common                closed
     MPS-3  the four professional role projections        closed
-    MPS-4  realization + the 119-HLR import
+    MPS-4  realization + the 119-HLR import               feature freeze blocked
 
 - Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
 - Concept design that MPS-1 transcribed: `mps/bootstrap/mps1-concept-features.yaml`
 - Concept design that MPS-2 transcribed: `mps/bootstrap/mps2-concept-features.yaml`
 - Concept design frozen for MPS-3: `mps/bootstrap/mps3-concept-features.yaml`
+- MPS-4 is not frozen. Four decisions block it, recorded as `open_decisions_blocking_mps4`
+  on the MPS-4 checkpoint in `stage-a-checklist.yaml`. They are not engineering judgements
+  a materialization session may make for itself: the import contract names `Requirement`
+  as the destination for 119 roots, but `Requirement` is not rootable, its mandatory
+  `category` and `lifecycleState` have no source in the bundle, and the provenance the
+  contract mandates has no property to live on. **Do not begin MPS-4 by choosing answers
+  to these.**
 - Role and authorization ontology frozen for MPS-2: `mps/bootstrap/mps2-role-ontology.yaml`
 - Module graph, dependency kinds, per-checkpoint inventories: `mps/bootstrap/language-skeleton.json`
 

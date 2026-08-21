@@ -160,6 +160,113 @@ checkpoints:
     acceptance_items:
       [MPS-MAT-003D, MPS-MAT-005D, MPS-MAT-004B, MPS-MAT-006, MPS-MAT-007,
        MPS-MAT-008, MPS-MAT-009]
+    feature_freeze_status: >-
+      BLOCKED. The realization metamodel half of the MPS-4 freeze is decidable, but the
+      119-HLR import contract cannot be frozen against the current controlled record: the
+      destination the record names cannot receive the corpus the record supplies. Four
+      decisions are open and none of them is an engineering judgement a materialization
+      session may make for itself. They were found by mapping every bundle field onto the
+      frozen Requirement concept rather than by inspection of counts.
+    open_decisions_blocking_mps4:
+      - id: MPS4-OD-001
+        title: Requirement is not rootable, but the import contract requires 119 Requirement roots
+        evidence: >-
+          mps/import/README.md step 3 says "Create one Requirement root per HLR under
+          file-per-root persistence", and this checklist's MPS-4 scope says "create 119
+          file-per-root Requirement roots". mps1-concept-features.yaml declares Requirement
+          with rootable false, and language-skeleton.json lists it under governance
+          non_root_concepts. A non-rootable concept cannot be a root, so MPS-MAT-006 as
+          worded is not satisfiable today.
+        blocks: [MPS-MAT-004B, MPS-MAT-006]
+        options:
+          - >-
+            Make Requirement rootable. Concept counts do not change, so no ceiling moves
+            and MPS-1 acceptance evidence stays true; but it changes the semantics of a
+            closed checkpoint and would edit governance structure persistence at MPS-4.
+          - >-
+            Add a rootable MPS-4 realization concept that carries one imported requirement.
+            Leaves MPS-1 untouched, but realization EXTENDS foundation only and holds
+            governance at DEFAULT, so it could not contain a governance Requirement without
+            also changing that dependency kind, and it risks duplicating requirement
+            semantics in realization.
+          - >-
+            Import 119 RequirementBaseline roots, one per HLR. Needs no amendment and is
+            semantically wrong: a baseline is a collection, not a requirement.
+        recommendation: >-
+          The first option, made deliberately and recorded as a controlled change to a
+          closed checkpoint. It is the only one that keeps requirement semantics in
+          governance where they belong, and rootability is a property of the declaration
+          rather than of the inventory, so nothing that MPS-1 demonstrated becomes untrue.
+      - id: MPS4-OD-002
+        title: Requirement.category is mandatory and the corpus carries no category
+        evidence: >-
+          Requirement.category is RequirementCategoryEnum with cardinality 1 and three
+          values: functional, cross_cutting_safety_and_assurance_constraint, operational.
+          hlr-baseline.json carries id, domain, normative text, source hazard text,
+          verification methods, source line and hashes. There is no category field, and no
+          controlled artifact assigns one per HLR: spec/requirements.yaml carries only an
+          authoritative_view of F/SA/O, and spec/construction/exemplars.yaml contains no
+          HLR record at all.
+        blocks: [MPS-MAT-006]
+        why_not_an_engineering_decision: >-
+          Classifying 119 controlled requirements as functional, safety-and-assurance or
+          operational is a governance classification with downstream effect on risk and
+          verification. Inventing it during import would manufacture controlled content
+          from nothing, which is the failure mode this programme's metric-integrity rule
+          exists to prevent.
+        options:
+          - source the classification from an accountable reviewer before import
+          - derive it from domain by a frozen, reviewed mapping table
+          - relax the cardinality to 0..1, which changes a closed checkpoint's semantics
+        recommendation: >-
+          A frozen domain-to-category mapping reviewed and recorded before import, so the
+          derivation is attributable and reproducible rather than decided per record.
+      - id: MPS4-OD-003
+        title: Requirement.lifecycleState is a mandatory reference with no source value
+        evidence: >-
+          GovernedElement declares lifecycleState as a reference with cardinality 1, and
+          MPS-3 proved empirically that MPS reports an unset obligatory reference. The
+          bundle says nothing about lifecycle. The mirror is explicitly non-authoritative
+          (authoritative false, authority_stage A_mirror), so the correct state is a
+          decision about what an imported mirror requirement is.
+        blocks: [MPS-MAT-006]
+        options:
+          - a single frozen mirror lifecycle state applied to all 119
+          - a state derived from the Stage A authority position
+        recommendation: >-
+          One frozen state, named in the import contract, so every imported root carries
+          the same attributable value and no per-record judgement is made.
+      - id: MPS4-OD-004
+        title: The mandated provenance has nowhere to live on Requirement
+        evidence: >-
+          mps/import/README.md step 5 requires setting mirror provenance, source line,
+          source hash, record hash, domain, source/hazard field and verification methods.
+          Requirement declares statement, domain and category only, and inherits identifier,
+          version, aliases and provenance children from GovernedElement. There is no
+          property for source line, source sha256 or record sha256. Separately, the bundle's
+          source_hazard values are free text such as "SCP; PRN; AUTH", while
+          Requirement.hazards is HazardRef pointing at Hazard nodes whose hazardId matches
+          ^H-[0-9]{2}$, so the hazard field has no typed destination either.
+        blocks: [MPS-MAT-006, MPS-MAT-007]
+        note: >-
+          GovernedElement.provenance is ProvenanceRef with cardinality 0..n, which may be
+          the intended home; that has to be confirmed against ProvenanceRef's own features
+          rather than assumed, and it does not by itself solve the free-text hazard field.
+        options:
+          - map provenance onto the existing GovernedElement.provenance children if it fits
+          - add provenance properties to Requirement, which moves the MPS-1 ceiling and
+            reopens a closed checkpoint's inventory
+          - carry provenance in a realization-side record referencing each imported root
+        recommendation: >-
+          Confirm ProvenanceRef first. If it fits, no amendment is needed anywhere, which
+          is much the cheapest outcome and keeps every ceiling still.
+    what_was_completed_instead: >-
+      The post-MPS-3 enum persistence-integrity control, which had to land before MPS-4
+      writes anything. The realization metamodel half of the freeze was analysed and is
+      decidable, but was not written: a mps4-concept-features.yaml covering the seventeen
+      concepts while the import contract stayed open would activate the MPS-4 feature
+      checks over a specification that is complete in name only, and would read as a
+      freeze that had settled questions it had not.
 
 acceptance_items:
   - id: MPS-MAT-001
