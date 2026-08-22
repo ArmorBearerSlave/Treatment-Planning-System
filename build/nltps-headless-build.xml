@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Headless build of the controlled NLTPSGovernance MPS project.
+
+  This runs outside the interactive IDE. It is invoked by tools/mps/headless_build.py,
+  which validates the toolchain first; run that rather than this file directly, so a
+  wrong MPS build or a missing installation is refused before anything is generated.
+
+  Mechanism. MPS 2026.1 ships its own Ant (lib/ant), its own JDK (jbr), and the MPS Ant
+  task library (lib/ant/lib/ant-mps.jar). The task used here is <mps.make>, which the
+  antlib registers as jetbrains.mps.build.ant.MakeTask and which forks a CoreWorker into
+  a separate JVM. Nothing here talks to a running IDE.
+
+  ant-mps.jar needs org.jdom, which MPS keeps in lib/util-8.jar, and the two must be on
+  the *taskdef* classpath rather than Ant's own. Putting ant-mps.jar on Ant's classloader
+  (for instance with -lib) loads MakeTask from a classloader that cannot see util-8.jar,
+  and the task then fails to instantiate with NoClassDefFoundError: org/jdom/JDOMException.
+
+  The worker is given its own idea.system/config/log paths. Left to itself it writes into
+  the MPS installation directory, which is not writable under Program Files, and the build
+  dies before doing any work.
+
+  Modules are listed explicitly rather than discovered. The list is the build's statement
+  of coverage, and tests/test_headless_build.py holds it equal to the project's own
+  modules.xml, so a module added to the project but not to the build is a test failure
+  rather than something silently unbuilt.
+-->
+<project name="nltps-headless" default="make" basedir="..">
+
+  <!-- Every one of these is supplied by the wrapper; the defaults only make the file
+       runnable by hand for diagnosis. -->
+  <property name="mps.home" location="C:/Program Files/JetBrains/MPS 2026.1"/>
+  <property name="project.dir" location="${basedir}/mps/NLTPSGovernance"/>
+  <property name="work.dir" location="${basedir}/build/work"/>
+  <property name="build.heap" value="4g"/>
+
+  <path id="mps.ant.path">
+    <pathelement location="${mps.home}/lib/ant/lib/ant-mps.jar"/>
+    <pathelement location="${mps.home}/lib/util-8.jar"/>
+  </path>
+
+  <taskdef resource="jetbrains/mps/build/ant/antlib.xml" classpathref="mps.ant.path"/>
+
+  <target name="make">
+    <mkdir dir="${work.dir}"/>
+    <echo message="mps.home    = ${mps.home}"/>
+    <echo message="project.dir = ${project.dir}"/>
+    <echo message="work.dir    = ${work.dir}"/>
+
+    <mps.make mpsHome="${mps.home}" failOnError="true" logLevel="info" fork="true">
+      <jvmargs>
+        <arg value="-ea"/>
+        <arg value="-Xmx${build.heap}"/>
+        <arg value="-Didea.system.path=${work.dir}/system"/>
+        <arg value="-Didea.config.path=${work.dir}/config"/>
+        <arg value="-Didea.log.path=${work.dir}/log"/>
+        <arg value="-Didea.plugins.path=${mps.home}/plugins"/>
+      </jvmargs>
+
+      <!-- strictMode makes generation refuse to proceed past a generation error rather
+           than emitting whatever it managed. It does not evaluate the languages' own
+           checking rules; see the limitation recorded against MPS-MAT-008. -->
+      <settings strictMode="true"/>
+
+      <module file="${project.dir}/languages/nltps.foundation/nltps.foundation.mpl"/>
+      <module file="${project.dir}/languages/nltps.governance/nltps.governance.mpl"/>
+      <module file="${project.dir}/languages/nltps.clinicalintent/nltps.clinicalintent.mpl"/>
+      <module file="${project.dir}/languages/nltps.roles.common/nltps.roles.common.mpl"/>
+      <module file="${project.dir}/languages/nltps.roles.radonc/nltps.roles.radonc.mpl"/>
+      <module file="${project.dir}/languages/nltps.roles.physics/nltps.roles.physics.mpl"/>
+      <module file="${project.dir}/languages/nltps.roles.dosimetry/nltps.roles.dosimetry.mpl"/>
+      <module file="${project.dir}/languages/nltps.roles.therapy/nltps.roles.therapy.mpl"/>
+      <module file="${project.dir}/languages/nltps.realization/nltps.realization.mpl"/>
+      <module file="${project.dir}/corpus/nltps.corpus/nltps.corpus.msd"/>
+      <module file="${project.dir}/sandbox/nltps.proof/nltps.proof.msd"/>
+    </mps.make>
+  </target>
+
+</project>

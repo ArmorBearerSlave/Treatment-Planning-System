@@ -56,6 +56,39 @@ them is domain modelling:
 model, and `MPS-MAT-009` is not the implementer's to record at all. `MPS-MAT-004B` closed
 once the corpus was converted and the layout observed.
 
+## The headless build, and what it proved about the ones before it
+
+`build/nltps-headless-build.xml` drives MPS's own `<mps.make>`, run by
+`python tools/mps/headless_build.py`. The toolchain is entirely the pinned installation:
+Ant from `MPS_HOME/lib/ant`, the JDK from `MPS_HOME/jbr`, tasks from
+`lib/ant/lib/ant-mps.jar`. A system Ant or an ambient `JAVA_HOME` would make the result
+depend on the host, so neither is consulted, and `MPS_HOME/build.txt` is compared with
+the pinned build number and a mismatch refused. Two things are not optional:
+`ant-mps.jar` needs `org.jdom` from `lib/util-8.jar` **on the taskdef classpath rather
+than Ant's own**, and the worker needs its own `idea.system`/`config`/`log` paths or it
+tries to write into Program Files. `autoPluginDiscovery="true"` crashes CoreWorker in
+this build and is left off.
+
+It runs, and `MPS-MAT-008` is still open, for two reasons worth carrying forward.
+
+**Generation is not checking.** A `VerificationClaim` violating REA-C-002 and REA-C-003
+was placed in the proof sandbox, confirmed rejected by the model checker, and the
+headless build then completed over it with exit code 0. **A reproducible headless
+generator is not a reproducible headless validator.** Never present build success as
+evidence that the model is valid; the acceptance wording asks for model tests as a
+separate clause precisely because they are a separate thing, and the project declares
+none.
+
+**The project has never built from a clean state.** `nltps.foundation.behavior` holds one
+root, a baseLanguage `ClassConcept`, and no `ConceptBehavior`; MPS still generates
+`Language.java` referencing a `BehaviorAspectDescriptor` that the aspect generator never
+emits. Delete every `source_gen` and `classes_gen` and the interactive IDE fails exactly
+as the headless build does. Four checkpoints stayed green on generated output produced
+before that aspect took its current shape. **A long-lived IDE with a warm output tree
+will keep a project green that cannot be built at all** — recorded as `POST-MPS4-01`,
+and not to be fixed by improvising a change to a language aspect at the end of a build
+session.
+
 - Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
 - Concept design that MPS-1 transcribed: `mps/bootstrap/mps1-concept-features.yaml`
 - Concept design that MPS-2 transcribed: `mps/bootstrap/mps2-concept-features.yaml`
@@ -288,6 +321,7 @@ python tools/mps/check_role_ontology.py
 python tools/mps/check_materialization_plan.py
 python tools/mps/check_hlr_root_placement.py
 python tools/mps/check_model_persistence.py
+python tools/mps/headless_build.py --validate-only
 python tools/mps/export_hlr_corpus.py --check
 python tools/mps/check_stage_b_equivalence.py
 python tools/spec/build_trace_graph.py --check

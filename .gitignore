@@ -32,3 +32,6 @@ source_gen.caches/
 classes_gen/
 test_gen/
 test_gen.caches/
+# headless build scratch: MPS worker system/config/log and captured build logs.
+# build/nltps-headless-build.xml beside it is controlled and is not ignored.
+build/work/

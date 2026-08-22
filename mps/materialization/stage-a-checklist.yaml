@@ -1339,15 +1339,98 @@ acceptance_items:
     item: Headless build and model tests pass without the experimental agent toolkit.
     status: pending
     blocked_reason: >-
-      The project has no headless MPS build. Every native build in this checkpoint was a
-      whole-project rebuild issued through the agent toolkit inside the running IDE, which is
-      the opposite of what this item asks for. A rebuild that succeeds under the toolkit is
-      not evidence that one succeeds without it.
-    evidence:
-    - 'What does hold: whole-project rebuild successful, model-scope checks clean on
-      nltps.realization.structure, nltps.realization.editor, nltps.realization.typesystem,
-      nltps.corpus.hlr and nltps.proof.cases, and 236 Python regression tests passing outside
-      MPS entirely.'
+      Not for want of a mechanism any more. The native headless mechanism is identified,
+      implemented and runs: MPS 2026.1 ships Apache Ant, a JDK and the MPS Ant task library,
+      and build/nltps-headless-build.xml drives <mps.make>, which forks
+      jetbrains.mps.tool.builder.CoreWorker into its own JVM with no IDE involvement. It is
+      blocked because the project does not build from a clean state -- by any means, headless
+      or interactive -- and because a build that does succeed would not be evaluating the
+      checking rules.
+    discovered_defect:
+      id: POST-MPS4-01
+      summary: The project has never been buildable from a clean generated state.
+      detail: >-
+        nltps.foundation.behavior contains exactly one root, a baseLanguage ClassConcept
+        holding the CalendarDates helper, and no ConceptBehavior at all. MPS treats a model
+        named *.behavior as the language's behaviour aspect, so the language descriptor
+        generates Language.java referencing nltps.foundation.behavior.BehaviorAspectDescriptor;
+        the behaviour aspect generator emits that class only from ConceptBehavior roots, of
+        which there are none. The reference therefore dangles and Java compilation fails with
+        "cannot find symbol: class BehaviorAspectDescriptor".
+      pre_existing: >-
+        Confirmed, and not introduced by this work. After deleting every source_gen,
+        classes_gen and source_gen.caches directory, a whole-project rebuild issued through
+        the agent toolkit into the running IDE fails with the identical error. Every green
+        build in MPS-0 through MPS-4 was incremental on top of generated output produced
+        before the behaviour aspect reached its current shape. The staleness was invisible
+        precisely because no build had ever started from nothing.
+      why_it_matters: >-
+        This is the class of finding a headless build exists to produce. An interactive IDE
+        is a long-lived process with a warm output tree, and a project can remain green in it
+        for four checkpoints while not being reproducible at all.
+      disposition: >-
+        Not fixed here. The remedy touches MPS-owned persistence in a language aspect, and
+        the two candidate remedies -- giving the behaviour aspect a ConceptBehavior root, or
+        moving the CalendarDates helper out of the behaviour aspect -- are controlled model
+        decisions, not build-system engineering. Improvising either at the end of a build
+        session would be exactly the "altering semantics to make a build pass" this item
+        forbids.
+    established:
+    - 'Mechanism: bundled Apache Ant at MPS_HOME/lib/ant, driven by the bundled JDK at
+      MPS_HOME/jbr, loading jetbrains/mps/build/ant/antlib.xml from lib/ant/lib/ant-mps.jar
+      and running <mps.make>. No system Ant and no ambient JAVA_HOME participate.'
+    - 'Invocation: python tools/mps/headless_build.py. It validates MPS_HOME/build.txt
+      against the pinned MPS-261.25134.779 and refuses a mismatch, checks the bundled JDK,
+      Ant, launcher and task jar, the build descriptor and the project, then runs the build
+      in a subprocess and captures the log.'
+    - 'Two classpath facts that are not optional: ant-mps.jar needs org.jdom from
+      lib/util-8.jar and both must be on the taskdef classpath rather than Ant''s own, or
+      MakeTask fails to instantiate; and the worker needs its own idea.system, idea.config
+      and idea.log paths, or it tries to write into the installation directory under Program
+      Files and dies before doing any work.'
+    - 'autoPluginDiscovery="true" is unusable in this build: CoreWorker raises
+      IllegalArgumentException "The flag ''myAutoLoadPluginsMode'' is set, nothing to return"
+      before loading anything. The attribute is left off.'
+    - 'Generated-output policy, decided before the first build and then verified against what
+      the build actually emitted rather than assumed: source_gen, source_gen.caches,
+      classes_gen, test_gen and test_gen.caches are derived and ignored, and build/work joins
+      them. Across four headless builds the controlled-source diff stayed empty.'
+    semantic_teeth_result:
+      verdict: THE HEADLESS BUILD DOES NOT EVALUATE MPS CHECKING RULES
+      method: >-
+        A VerificationClaim with verdict passed and no bound evidence was added to
+        nltps.proof.cases through model-aware tooling. The model checker rejected it, naming
+        REA-C-002 and REA-C-003. The headless build was then run from a fresh process against
+        that same persisted model and reported BUILD SUCCESSFUL with exit code 0. The fixture
+        was removed and the model re-verified clean.
+      reading: >-
+        Generation and compilation are not checking. A reproducible headless generator is not
+        a reproducible headless validator, and this one is the former. Recorded rather than
+        concealed, because a build whose success cannot be distinguished from "nothing was
+        checked" must not be presented as validation coverage.
+      consequence_for_this_item: >-
+        The acceptance wording asks for a headless build AND model tests. The project declares
+        no jetbrains.mps.lang.test model, so the second clause currently has nothing to run.
+        Closing on it would be a pass over an empty population -- the failure mode this
+        programme has now caught four times -- so it is not claimed.
+    non_idempotence_finding: >-
+      The first headless build succeeded and every later one failed. The first ran against a
+      source_gen tree left behind by the IDE and consumed artifacts it does not itself
+      produce; once it had rewritten that tree, the missing BehaviorAspectDescriptor was
+      exposed. A single green run is therefore not evidence for this item, which is why the
+      contract requires a second independent build.
+    remaining_to_close:
+    - Resolve POST-MPS4-01 so the project generates from a clean state.
+    - Establish whether <mps.make> can be made to emit the behaviour aspect descriptor once
+      that model is well-formed, and confirm a cold build followed by a second independent
+      cold build.
+    - 'Decide what satisfies the model-tests clause: either author jetbrains.mps.lang.test
+      models and run them through the launchtests task the same antlib registers, or amend
+      the acceptance wording. Do not treat zero tests as tests passing.'
+    - Only then add tools/mps/check_headless_build_currency.py, keyed on a hash of the
+      controlled model tree rather than on a commit sha so a documentation commit does not
+      invalidate build evidence, and bind it to this item the way the persistence gate is
+      bound to MPS-MAT-004B.
   - id: MPS-MAT-009
     checkpoint: MPS-4
     item: Independent Stage A review confirms no patient data, credentials, signing keys, or
