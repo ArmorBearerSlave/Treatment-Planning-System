@@ -1815,21 +1815,39 @@ acceptance_items:
                 getClassPath would have been reported as a wrong classpath and a defect fixed
                 that did not exist.
               result: >-
-                THE FAILURE SURVIVES. With system, config and log deleted, the run reproduces
+                With system, config and log deleted, a new worker run reproduces
                 java.lang.ClassNotFoundException on the same fully-qualified class and the
-                reports still read tests="0". The stale-index explanation is ruled out and
-                every subsequent probe reading is trustworthy, which is the property this
-                step was run for rather than a hoped-for fix.
+                reports still read tests="0". Stated exactly: the contents of that
+                launchtests system directory were not a sufficient cause of the failure.
+              wording_withdrawn: >-
+                An earlier version of this entry said the stale-index explanation was ruled
+                out and every subsequent probe reading was trustworthy. Both are withdrawn.
+                Project-local caches, generated dependency caches, duplicate module
+                registration and a differently-originated module instance all remain
+                logically possible, and "trustworthy readings" would prejudge the module
+                identity question the probe exists to answer. This is the fourth wording of
+                this kind corrected in this item, and the shape has been identical every
+                time: an observation restated one step stronger than it was made.
               standing_gap: >-
                 The build descriptor creates work.dir and deletes reports.dir, and removes
                 nothing else. Worker state accumulates across every invocation with nothing
                 to bound it. Whether the test target should clear system/ each run is a
                 decision for the unit that closes this item, not something to change while a
                 diagnosis is open.
+            probe_mechanism_first: >-
+              Prove the mechanism before trusting any value it produces. The diagnostic must
+              observe the actual forked launchtests process at the failing call, not an
+              equivalent environment reconstructed elsewhere whose equivalence would itself
+              need proving. Starting the worker with JDWP and breaking in
+              TestDiscoveryContributor immediately before moduleClassLoader.loadClass gives
+              the real SModule, facet, classloader and resource path in situ. A probe built
+              as a second implementation is a second thing to be wrong.
             acceptance_for_the_probe: >-
-              Not a green. One uniquely identified boundary along descriptor, facet path,
-              physical class, own resource, own class, delegated class. If the probe ends
-              without locating that boundary, nothing is changed afterwards in the same unit.
+              Not a green, and not a passing test. One uniquely identified boundary along
+              descriptor, facet path, physical class, own resource, own class, delegated
+              class, captured with the full exception and cause chain of the delegated load.
+              If the probe ends without isolating that boundary, the readings are recorded
+              and nothing is repaired in the same unit.
             next_unit: >-
               Runtime classloader introspection, before any artifact is built. Establish what
               the worker thinks nltps.modeltests is: its descriptor file, isPackaged,
