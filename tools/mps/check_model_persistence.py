@@ -30,6 +30,10 @@ import sys
 from pathlib import Path
 from xml.etree import ElementTree
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import mps_layout  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PROJECT = REPO_ROOT / "mps" / "NLTPSGovernance"
 ARCHITECTURE = REPO_ROOT / "spec" / "architecture.yaml"
@@ -78,7 +82,7 @@ def observe(project_root: Path) -> list[dict]:
             continue
         folder = marker.parent
         seen_dirs.add(folder)
-        roots = sorted(p for p in folder.glob("*.mps") if p.is_file())
+        roots = mps_layout.root_files(folder)
         observed.append({
             "reference": model_ref(marker) or folder.name,
             "path": str(folder.relative_to(project_root)),

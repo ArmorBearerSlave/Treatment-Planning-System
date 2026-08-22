@@ -45,6 +45,10 @@ import sys
 from pathlib import Path
 from xml.etree import ElementTree
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import mps_layout  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MPS_ROOT = REPO_ROOT / "mps" / "NLTPSGovernance"
 
@@ -146,18 +150,33 @@ def parse_model(path: Path) -> dict:
     return doc
 
 
+def merge_documents(model_path: Path) -> dict:
+    """One model's parse, whether it is one document or a folder of them."""
+    documents = mps_layout.documents(model_path)
+    merged = parse_model(documents[0])
+    merged["path"] = model_path
+    for extra in documents[1:]:
+        doc = parse_model(extra)
+        merged["imports"].update(doc["imports"])
+        merged["enums"].update(doc["enums"])
+        merged["property_decls"].update(doc["property_decls"])
+        merged["index_to_property"].update(doc["index_to_property"])
+        merged["values"].extend(doc["values"])
+    return merged
+
+
 def collect() -> tuple[dict[str, dict], dict[str, dict]]:
     """Every model in the project, and the enumerations reachable by model ref + node id."""
     models: dict[str, dict] = {}
-    # rglob walks into .mps/, the project's own settings directory, whose name collides
-    # with the model extension and which is not readable as a model.
-    paths = sorted(
-        p for p in MPS_ROOT.rglob("*.mps")
-        if p.is_file() and ".mps" not in {part for part in p.parts[:-1]}
-    )
-    for path in paths:
+    # discover() knows both layouts. Globbing *.mps would miss every root of a converted
+    # model, and this gate would then pass over a smaller population without saying so --
+    # which is the failure it exists to prevent, turned on itself.
+    # include_generated: MPS's own descriptor models mirror the declared enumerations and
+    # carried more than half the values this gate used to examine. Excluding them would
+    # halve the population and still print PASS.
+    for path in mps_layout.discover(MPS_ROOT, include_generated=True):
         try:
-            doc = parse_model(path)
+            doc = merge_documents(path)
         except ElementTree.ParseError as exc:
             raise SystemExit(f"ERROR: {path} is not parseable XML: {exc}")
         models[doc["ref"] or str(path)] = doc

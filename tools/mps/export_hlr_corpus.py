@@ -27,9 +27,23 @@ import sys
 from pathlib import Path
 from xml.etree import ElementTree
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import mps_layout  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MODEL = (REPO_ROOT / "mps" / "NLTPSGovernance" / "corpus" / "nltps.corpus"
-                 / "models" / "nltps.corpus.hlr.mps")
+CORPUS_MODELS = REPO_ROOT / "mps" / "NLTPSGovernance" / "corpus" / "nltps.corpus" / "models"
+
+
+def corpus_model() -> Path:
+    """The import model, in whichever layout it is currently persisted."""
+    folder = CORPUS_MODELS / "nltps.corpus.hlr"
+    if mps_layout.is_file_per_root(folder):
+        return folder
+    return CORPUS_MODELS / "nltps.corpus.hlr.mps"
+
+
+DEFAULT_MODEL = corpus_model()
 DEFAULT_OUT = REPO_ROOT / "mps" / "import" / "hlr-corpus-export.json"
 
 IMPORTED_HLR = "nltps.realization.structure.ImportedHLR"
@@ -51,21 +65,30 @@ class Model:
 
     def __init__(self, path: Path) -> None:
         self.path = path
-        root = ElementTree.parse(path).getroot()
-        self.model_ref = root.get("ref", "")
+        self.model_ref = ""
         self.concept_by_index: dict[str, str] = {}
         self.feature_by_index: dict[str, str] = {}
-        for concept in root.iter("concept"):
-            index, name = concept.get("index"), concept.get("name")
-            if index and name:
-                self.concept_by_index[index] = name
-            for kind in ("property", "child", "reference"):
-                for feature in concept.findall(kind):
-                    findex, fname = feature.get("index"), feature.get("name")
-                    if findex and fname:
-                        self.feature_by_index[findex] = fname
-        self.roots = list(root.findall("node"))
+        self.roots: list[ElementTree.Element] = []
         self.by_id: dict[str, ElementTree.Element] = {}
+
+        # A single-file model is one document; a file-per-root model is `.model` plus one
+        # `.mpsr` per root. Registry entries are merged across documents because a root
+        # file carries only the indices it uses, and an index absent from one document may
+        # be defined in another.
+        for document in mps_layout.documents(path):
+            root = ElementTree.parse(document).getroot()
+            self.model_ref = self.model_ref or root.get("ref", "")
+            for concept in root.iter("concept"):
+                index, name = concept.get("index"), concept.get("name")
+                if index and name:
+                    self.concept_by_index[index] = name
+                for kind in ("property", "child", "reference"):
+                    for feature in concept.findall(kind):
+                        findex, fname = feature.get("index"), feature.get("name")
+                        if findex and fname:
+                            self.feature_by_index[findex] = fname
+            self.roots.extend(root.findall("node"))
+
         for node in self.roots:
             self._index(node)
 
@@ -212,12 +235,13 @@ def main() -> int:
                         help="fail if the file on disk differs from what would be written")
     args = parser.parse_args()
 
-    if not args.model.exists():
-        print(f"ERROR: model is missing: {args.model}", file=sys.stderr)
+    model_path = args.model if args.model != DEFAULT_MODEL else corpus_model()
+    if not model_path.exists():
+        print(f"ERROR: model is missing: {model_path}", file=sys.stderr)
         return 1
 
     try:
-        records = export(args.model)
+        records = export(model_path)
     except ModelError as error:
         print(f"ERROR: {error}", file=sys.stderr)
         return 1
@@ -233,7 +257,7 @@ def main() -> int:
         if current != text:
             print("ERROR: the export on disk does not match the model", file=sys.stderr)
             return 1
-        print(f"PASS: {len(records)} exported records match the model at {args.model.name}")
+        print(f"PASS: {len(records)} exported records match the model at {model_path.name}")
         return 0
 
     args.out.parent.mkdir(parents=True, exist_ok=True)

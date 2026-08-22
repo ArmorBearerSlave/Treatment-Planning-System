@@ -186,6 +186,78 @@ class ClassifierTests(unittest.TestCase):
         self.assertEqual(len(result["invalid"]), 1)
 
 
+class FilePerRootLayoutTests(unittest.TestCase):
+    """The same corpus, persisted the way MPS writes it after conversion."""
+
+    def build(self, root: Path, *, registry_in_roots: bool) -> Path:
+        """A per-root model: `.model` for the header, one `.mpsr` per root."""
+        folder = root / "corpus" / "models" / "test.corpus.hlr"
+        folder.mkdir(parents=True, exist_ok=True)
+        header = HEADER.format(ref=IMPORT_MODEL) + "</model>\n"
+        with io.open(folder / ".model", "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(header)
+        for index, name in enumerate(("GOV_001", "GOV_002"), start=1):
+            body = hlr_root(f"n{index}", identifier=f"GOV-{index:03d}")
+            if registry_in_roots:
+                text = HEADER.format(ref=IMPORT_MODEL) + body + "</model>\n"
+            else:
+                text = f'<?xml version="1.0" encoding="UTF-8"?>\n<model ref="{IMPORT_MODEL}">\n' \
+                       + body + "</model>\n"
+            with io.open(folder / f"{name}.mpsr", "w", encoding="utf-8",
+                         newline="\n") as handle:
+                handle.write(text)
+        return folder
+
+    def test_the_reader_finds_the_roots_when_the_registry_is_only_in_the_header(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = self.build(Path(tmp), registry_in_roots=False)
+            model = exporter.Model(folder)
+            self.assertEqual(model.model_ref, IMPORT_MODEL)
+            self.assertEqual(len(model.roots), 2)
+            self.assertEqual({model.concept(n) for n in model.roots}, {exporter.IMPORTED_HLR})
+
+    def test_the_reader_finds_the_roots_when_each_root_repeats_the_registry(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = self.build(Path(tmp), registry_in_roots=True)
+            model = exporter.Model(folder)
+            self.assertEqual(len(model.roots), 2)
+            self.assertEqual({model.concept(n) for n in model.roots}, {exporter.IMPORTED_HLR})
+
+    def test_a_converted_model_is_one_model_not_one_per_root(self) -> None:
+        # The count that would otherwise look deliberate: 119 roots reported as 119 models.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.build(root, registry_in_roots=False)
+            self.assertEqual(len(placement.model_files(root)), 1)
+
+    def test_the_placement_classifier_counts_roots_in_a_converted_model(self) -> None:
+        # Without layout awareness this returned zero: not an error, just nothing, which is
+        # indistinguishable from the roots never having been imported.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.build(root, registry_in_roots=False)
+            result = placement.scan(root, import_model=IMPORT_MODEL)
+            self.assertEqual(len(result["counted"]), 2)
+            self.assertEqual(result["invalid"], [])
+
+    def test_a_converted_structure_aspect_is_still_recognised_as_one(self) -> None:
+        # A converted `<lang>.structure` is a folder, so a suffix match on `.structure.mps`
+        # alone would stop recognising it and an ImportedHLR root there would be counted.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            folder = root / "languages" / "lang" / "models" / "lang.structure"
+            folder.mkdir(parents=True)
+            with io.open(folder / ".model", "w", encoding="utf-8", newline="\n") as handle:
+                handle.write(HEADER.format(ref=IMPORT_MODEL) + "</model>\n")
+            with io.open(folder / "X.mpsr", "w", encoding="utf-8", newline="\n") as handle:
+                handle.write(HEADER.format(ref=IMPORT_MODEL) + hlr_root("n1") + "</model>\n")
+            self.assertTrue(placement.is_structure_aspect(folder, root))
+            result = placement.scan(root, import_model=IMPORT_MODEL)
+            self.assertEqual(result["counted"], [])
+            self.assertEqual(len(result["invalid"]), 1)
+            self.assertIn("structure aspect", result["invalid"][0])
+
+
 class LiveProjectTests(unittest.TestCase):
     """The live project must satisfy the same rule, not just the fixtures."""
 

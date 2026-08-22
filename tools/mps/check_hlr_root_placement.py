@@ -33,6 +33,7 @@ from xml.etree import ElementTree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import mps_layout  # noqa: E402
 from export_hlr_corpus import IMPORTED_HLR, Model  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -52,8 +53,12 @@ def is_structure_aspect(path: Path, project_root: Path) -> bool:
     except ValueError:
         return False
     parts = relative.parts
-    return (len(parts) >= 4 and parts[0] == "languages" and parts[2] == "models"
-            and parts[-1].endswith(".structure.mps"))
+    if not (len(parts) >= 4 and parts[0] == "languages" and parts[2] == "models"):
+        return False
+    # A structure aspect is `<lang>.structure.mps` as a file, or `<lang>.structure` as a
+    # converted folder. Matching only the file suffix would let a converted structure
+    # aspect stop being recognised as one.
+    return parts[-1].endswith(".structure.mps") or parts[-1].endswith(".structure")
 
 
 def has_two_part_provenance(model: Model, node: ElementTree.Element) -> bool:
@@ -81,10 +86,12 @@ def classify_root(model: Model, node: ElementTree.Element, path: Path,
 
 
 def model_files(project_root: Path) -> list[Path]:
-    # `.mps` is also the name of the IDE's own settings directory; walking into it is a
-    # permission error, not a model.
-    return sorted(p for p in project_root.rglob("*.mps")
-                  if ".mps" not in p.parts and p.is_file())
+    """Every authored model, in whichever layout it is persisted.
+
+    A converted model is a folder of `.mpsr` root files, so a `*.mps` glob would find
+    none of its roots and the count would silently fall to zero rather than error.
+    """
+    return mps_layout.discover(project_root)
 
 
 def scan(project_root: Path, import_model: str = IMPORT_MODEL) -> dict:

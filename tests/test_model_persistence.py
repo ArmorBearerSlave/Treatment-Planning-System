@@ -58,19 +58,19 @@ class ObservationTests(unittest.TestCase):
     def test_a_folder_with_a_dot_model_marker_is_seen_as_file_per_root(self) -> None:
         observed = self.observe({
             "corpus/models/test.corpus.hlr/.model": MODEL.format(ref=REF),
-            "corpus/models/test.corpus.hlr/GOV_001.mps": "<node />\n",
-            "corpus/models/test.corpus.hlr/GOV_002.mps": "<node />\n",
+            "corpus/models/test.corpus.hlr/GOV_001.mpsr": "<node />\n",
+            "corpus/models/test.corpus.hlr/GOV_002.mpsr": "<node />\n",
         })
         self.assertEqual(len(observed), 1)
         self.assertEqual(observed[0]["persistence"], persistence.FILE_PER_ROOT)
         self.assertEqual(observed[0]["root_files"], 2)
 
     def test_root_files_inside_a_per_root_folder_are_not_counted_as_models(self) -> None:
-        # Each root is a .mps file. Counting them as models would report a converted corpus
+        # Each root is a .mpsr file. Counting them as models would report a converted corpus
         # as 119 models rather than one, and the count would look deliberate.
         observed = self.observe({
             "corpus/models/test.corpus.hlr/.model": MODEL.format(ref=REF),
-            "corpus/models/test.corpus.hlr/GOV_001.mps": MODEL.format(ref=OTHER),
+            "corpus/models/test.corpus.hlr/GOV_001.mpsr": MODEL.format(ref=OTHER),
         })
         self.assertEqual([e["reference"] for e in observed], [REF])
 
@@ -105,7 +105,7 @@ class VerdictTests(unittest.TestCase):
     def test_a_contracted_model_in_the_declared_mode_passes(self) -> None:
         _, errors = self.check({
             "corpus/models/test.corpus.hlr/.model": MODEL.format(ref=REF),
-            "corpus/models/test.corpus.hlr/GOV_001.mps": "<node />\n",
+            "corpus/models/test.corpus.hlr/GOV_001.mpsr": "<node />\n",
         }, persistence.FILE_PER_ROOT)
         self.assertEqual(errors, [])
 
@@ -122,7 +122,7 @@ class VerdictTests(unittest.TestCase):
         # controlled document does.
         observed, errors = self.check({
             "corpus/models/test.corpus.hlr/.model": MODEL.format(ref=REF),
-            "corpus/models/test.corpus.hlr/GOV_001.mps": "<node />\n",
+            "corpus/models/test.corpus.hlr/GOV_001.mpsr": "<node />\n",
             "languages/lang/models/test.other.mps": MODEL.format(ref=OTHER),
         }, persistence.FILE_PER_ROOT)
         self.assertEqual(errors, [])
