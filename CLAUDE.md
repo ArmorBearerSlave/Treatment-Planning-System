@@ -90,13 +90,18 @@ moving the utility into `nltps.foundation.typesystem` where its three callers li
 behaviour aspect is left present and empty, which is sufficient — its existence does not
 trigger the reference, its having content does.
 
-**Moving a root between models breaks incoming references silently.**
-`MOVE_NODE_TO_PARENT` with a `modelReference` preserves node identity but does not repoint
-what pointed at it: all three call sites still addressed the vacated model, printed as
-`null.null`, and `check_root_node_problems` reported no problems. `FIX_REFERENCES` per
-affected root repairs them. **Re-run `FIND_USAGES` after any cross-model move** — the
-checker will not tell you, and a fix count is a claim about what the tool did, not about
-what the model now says.
+**Node identity, reference integrity and semantic behaviour are three separate
+properties, and preserving one proves nothing about the other two.** The `CalendarDates`
+move demonstrated all three at once: `MOVE_NODE_TO_PARENT` with a `modelReference` kept the
+node id, every incoming reference broke, `check_root_node_problems` reported no problems,
+and only the usage index showed the damage — three call sites still addressing the vacated
+model, printing `null.null`. `FIX_REFERENCES` per affected root repaired them.
+
+So after any cross-model move, all three are checked separately: read the id back, re-run
+`FIND_USAGES`, and re-run the behavioural control that established the semantics in the
+first place. A fix count is a claim about what the tool did, not about what the model now
+says, and compiling is not behaving — this utility once returned false for every input and
+produced a false calendar PASS that only read-back caught.
 
 - Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
 - Concept design that MPS-1 transcribed: `mps/bootstrap/mps1-concept-features.yaml`

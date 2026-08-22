@@ -1496,6 +1496,26 @@ acceptance_items:
           BehaviorAspectDescriptor reference exists anywhere in generated output. The eight
           empty behaviour aspects are unaffected, which the nine-language completion is what
           establishes rather than the prediction that preceded it.
+        accepted_residue:
+          decision: >-
+            Recorded, not mutated. None of it has roots, none produces a
+            BehaviorAspectDescriptor, and the nine-language clean build establishes that none
+            of it is functionally relevant. Editing MPS persistence for cosmetic parity would
+            put avoidable model-aware writes on the critical path of an acceptance item, for
+            no acceptance benefit. If a trivial MPS-native cleanup exists and its behaviour is
+            understood, it can be considered later and separately.
+          in_the_emptied_behaviour_model: >-
+            nltps.foundation.behavior retains three used languages, the general-purpose devkit,
+            an empty registry, and four imports -- nltps.foundation.structure plus java.lang,
+            java.time and java.time.format -- that followed CalendarDates in and no longer have
+            anything to serve.
+          in_the_receiving_model: >-
+            nltps.foundation.typesystem now imports nltps.foundation.behavior, a model that is
+            empty, which the move left behind when the reference stopped crossing models. It
+            also gained java.time and java.time.format marked implicit="true" rather than as
+            declared imports. Both are weaker declarations than the explicit ones they replace,
+            and both are functionally sufficient: the leap-date positive control passing is
+            what proves java.time.LocalDate resolves, not the import table.
       evidence:
       - 'Call sites re-verified through MPS''s usage index, not grep: three StaticMethodCall
         nodes resolving to CalendarDates.isValidCalendarDate(string):boolean -- two in
@@ -1607,10 +1627,30 @@ acceptance_items:
       evidence_required_beyond_verdict: >-
         A green task that discovered nothing is not a pass. Record the test module and model
         selected, the number of tests discovered, the names of the tests executed, passed
-        and failed counts, the report location and the process exit code. Then run the teeth
-        sequence: fail first and identify the intended test by name, repair only that
-        failure, rerun and require the same test population discovered with all passing, and
-        run once more from a fresh process for repeatability.
+        and failed counts, the report location and the process exit code.
+      frozen_contract:
+        testmodules_resolves: required
+        authored_test_count: frozen as N before the first run
+        discovered_test_count: must equal N
+        executed_test_count: must equal N
+        haltOnFailure: >-
+          true, required. Without it a real semantic failure degrades into a successful Ant
+          invocation with the failure buried in a report nobody reads, which is the same
+          shape as a build that succeeds over an invalid model.
+        failure_status_observable: required
+        reports_retained: required
+      teeth_cycle:
+        - baseline, valid population - N of N discovered, N of N pass
+        - introduce the deliberate REA-C-002 violation - verdict passed with no evidence
+        - rerun - the same N discovered, the intended semantic test fails by name, the task fails
+        - repair the fixture
+        - rerun - the same N discovered, N of N pass
+        - repeat from a fresh process - N of N pass again
+      why_the_count_must_not_move: >-
+        Holding the discovered count equal before, during and after the deliberate failure
+        excludes three false-green cases in one control: testmodules resolving to nothing,
+        discovery silently changing between runs, and the failing test simply disappearing
+        rather than failing. A verdict alone distinguishes none of them.
     remaining_to_close:
     - 'DONE: POST-MPS4-01 corrected; cold build completes all nine languages, and a second
       independent build succeeds on the first build''s own output.'
