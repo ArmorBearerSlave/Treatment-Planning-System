@@ -1746,20 +1746,42 @@ acceptance_items:
               forked classpath by itself, which is not the same as loading these plugins into
               the MPS runtime.
             result: >-
-              Discovery now selects the test. The runner reports "error building test suite -
+              MPS test-root recognition works. The runner reports "error building test suite -
               java.lang.ClassNotFoundException:
               nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test",
-              naming the exact generated class. Before the plugin wiring it reported tests="0"
-              and never named anything. Selection is repaired; the remaining gap is that the
-              compiled class is not reachable from the launcher's classloader.
-            still_zero_executed: >-
-              discovered is no longer the blocker but executed is still 0, so the
-              discovery-repair control has not passed and RED has not begun. The next
-              question is narrow: classes_gen output versus what the JUnit launcher's
-              classloader can see. LaunchTestTask exposes addLibraryJar and a library element
-              typed ModuleJarDataType, and the module's java facet carries ext="no" where the
-              languages carry ext="yes". Establish which of those matters before changing
-              either.
+              naming the exact generated class, where before the plugin wiring it reported
+              tests="0" and named nothing.
+            state_stated_precisely: >-
+              An earlier wording of this entry said "discovery now selects the test" and
+              "selection is repaired". That overstates it and is corrected here.
+              TestDiscoveryContributor calls moduleClassLoader.loadClass(testClassName) and
+              only then adds the ClassSelector, so the ClassNotFoundException is raised
+              before tests.add. The exact state is: authored executable test 1, MPS test root
+              recognized 1, JUnit selector constructed 0, executed 0. Structural and model
+              discovery is fixed; class materialization is the sole remaining boundary.
+            java_facet_ruled_out: >-
+              Do not change ext="no". JetBrains' own testSubtypingTest, the same class of
+              NodesTestCase solution, carries exactly
+              facet type="java" compile="mps" classes="mps" ext="no" with generated classes
+              at ${module}/classes_gen, plus a bare tests facet. ext="no" is canonical, not
+              an anomaly, and the earlier pairing of it with addLibraryJar as two equally
+              plausible candidates was wrong.
+            actual_cause: >-
+              The canonical pipeline does not point testmodules at a source .msd. JetBrains
+              assembles a runtime module jar holding the compiled classes and a
+              META-INF/module.xml whose classpath contains an entry path=".", associates it
+              with an adjacent -src.jar carrying the descriptor and models, and puts the
+              runtime jar in the tests path. Feeding the raw .msd was enough for MPS to walk
+              the model and derive the generated class name, and not enough to make the
+              compiled class reachable through that module's runtime classloader.
+            next_unit: >-
+              Artifact and classloader repair only. Leave the SimpleNodeTest with its node id
+              and name, its trivial body, the three plugin declarations, the JNA fix and the
+              java facet untouched. Assemble nltps.modeltests as a runtime module jar plus a
+              matching source jar, preferring the MPS build machinery over a hand-maintained
+              module.xml, and make that jar the testmodules input. Do not substitute the
+              library element for the test module itself: in the canonical build, library
+              carries supporting module jars and the test solution belongs in testmodules.
           still_open: >-
             Discovery remains 0 after the JNA fix. The crash is gone and the module is
             registered, so what remains is why TestDiscovery.surveyModule finds no test root
