@@ -1843,9 +1843,56 @@ acceptance_items:
                 MPS runtime with the repository loaded. WorkerBase declares a Script
                 constructor, work() and dispose(); CoreWorker extends it and warns "Can't find
                 suitable constructor (prefer the one that takes Script/Platform instances)".
+              equivalence_claim_withdrawn: >-
+                An earlier wording said the probe observes the failing runtime rather than a
+                reconstructed environment, so no equivalence needs proving. Withdrawn.
+                launchtests takes a project element and registers modules by opening the
+                project and reading .mps/modules.xml; mps.run-worker takes a repository
+                element and registers them from descriptors directly, bypassing the project.
+                Different loading paths -- and a differently-originated module instance is one
+                of the two causes still open, so the probe may construct exactly the
+                divergence it was built to detect.
+              reproduction_control: >-
+                Step 0, before any reading is taken or used: assert that
+                moduleClassLoader.loadClass(FQN) fails with the same exception on the same
+                fully-qualified name. If it fails, the runtime matches. If it succeeds, that
+                is itself a finding -- the failure is specific to project-based loading -- and
+                no reading from that run may be used. Teeth before measurement.
+              repository_scope: >-
+                Point modules dir at the whole project, not the test module alone.
+                nltps.modeltests depends on nltps.proof which uses the languages, so a
+                repository holding only the test module fails for missing dependencies, and
+                that failure is the probe's own configuration wearing the costume of a result.
+              worker_entry_contract: >-
+                A CoreWorker subclass with only a Script constructor and an overridden work()
+                is not sufficient as the worker class. In fork mode MpsLoadTask launches
+                java <worker-class> <dumped-script-file>, and CoreWorker.main expects exactly
+                three arguments -- script file, module reference, class name -- then builds a
+                fresh base CoreWorker and loads the requested class through ModuleClassCode.
+                It never instantiates the subclass or dispatches to its work(). The probe
+                therefore declares its own main, reads the script with Script.fromDumpInFile,
+                and calls workFromMain, which runs the normal lifecycle: inherited
+                MpsEnvironment, the overridden work(), event flush, dispose.
+              bootstrap_precondition: >-
+                The probe jar must be on the forked JVM's classpath, which is assembled from
+                the Ant JVM's java.class.path plus MpsLoadTask.calculateClassPath. repository
+                and library populate the MPS environment after the worker class has been
+                launched and do not make the worker class itself loadable.
+              two_stage_unit: >-
+                First a bootstrap control: compile and jar the probe, then establish by
+                observation that the forked mps.run-worker actually enters main and work with
+                the intended repository loaded, by printing a unique marker and the resolved
+                nltps.modeltests module reference. No target diagnosis in that stage. Only
+                once that passes are the real readings collected. A probe that never enters
+                the intended worker and merely exits successfully has worthless readings, for
+                the same reason every other control in this item exists.
+              acceptance_second_edge: >-
+                A probe that localises something without first reproducing the failure has
+                also failed. A clean set of readings from a repository-loaded module would
+                look like observation and be reconstruction.
               why_this_and_not_a_reimplementation: >-
-                It observes the failing runtime rather than an environment reconstructed to
-                resemble it, so no equivalence needs proving. It is a plain Java class in a
+                It runs inside the same CoreWorker and MPS runtime that fails. It is a plain
+                Java class in a
                 plain jar compiled against mps-tool.jar and mps-core.jar with the bundled JDK:
                 build engineering, no MPS Build model and no MPS persistence, so nothing frozen
                 is touched. Every piece of wiring already paid for transfers unchanged -- the
