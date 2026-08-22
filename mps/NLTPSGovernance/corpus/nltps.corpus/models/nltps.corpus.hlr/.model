@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model ref="r:42669edd-f887-4e0e-a7a4-d7a2958f0e96(nltps.corpus.hlr)" content="header">
+  <persistence version="9" />
+  <languages>
+    <use id="08070d1a-4999-4bfd-a38c-2b1b3ffd9ef4" name="nltps.realization" version="0" />
+    <use id="4709dc1d-8658-45c6-b6ee-185bd2ba1b14" name="nltps.governance" version="0" />
+    <use id="87311da3-67f4-4168-a5e2-0a32e6781088" name="nltps.foundation" version="0" />
+  </languages>
+  <imports />
+</model>
+

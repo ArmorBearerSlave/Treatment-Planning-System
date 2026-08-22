@@ -25,8 +25,9 @@ sys.path.insert(0, str(REPO_ROOT / "tools" / "mps"))
 import check_stage_b_equivalence as stage_b  # noqa: E402
 import export_hlr_corpus as exporter  # noqa: E402
 
-MODEL = (REPO_ROOT / "mps" / "NLTPSGovernance" / "corpus" / "nltps.corpus"
-         / "models" / "nltps.corpus.hlr.mps")
+# Resolved rather than spelled out: the corpus is a single file or a folder of roots
+# depending on its persistence mode, and this suite must not care which.
+MODEL = exporter.corpus_model()
 BUNDLE = REPO_ROOT / "mps" / "import" / "hlr-baseline.json"
 EXPORT = REPO_ROOT / "mps" / "import" / "hlr-corpus-export.json"
 

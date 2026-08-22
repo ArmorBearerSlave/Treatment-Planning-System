@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model ref="r:42669edd-f887-4e0e-a7a4-d7a2958f0e96(nltps.corpus.hlr)" content="root">
+  <persistence version="9" />
+  <imports />
+  <registry>
+    <language id="87311da3-67f4-4168-a5e2-0a32e6781088" name="nltps.foundation">
+      <concept id="1365532761364539167" name="nltps.foundation.structure.GovernedElement" flags="ng" index="3gIvZg">
+        <reference id="1365532761364539184" name="lifecycleState" index="3gIvZZ" />
+        <child id="1365532761364539181" name="version" index="3gIvZy" />
+        <child id="1365532761364539180" name="identifier" index="3gIvZz" />
+      </concept>
+      <concept id="1365532761364539170" name="nltps.foundation.structure.Version" flags="ng" index="3gIvZH">
+        <property id="1365532761364539191" name="value" index="3gIvZS" />
+      </concept>
+      <concept id="1365532761364539168" name="nltps.foundation.structure.StableId" flags="ng" index="3gIvZJ">
+        <property id="1365532761364539186" name="value" index="3gIvZX" />
+      </concept>
+    </language>
+    <language id="4709dc1d-8658-45c6-b6ee-185bd2ba1b14" name="nltps.governance">
+      <concept id="1365532761364587965" name="nltps.governance.structure.RiskBaseline" flags="ng" index="3gI3PM">
+        <property id="1365532761364588028" name="name" index="3gI3ON" />
+        <child id="1365532761364588029" name="hazards" index="3gI3OM" />
+      </concept>
+      <concept id="1365532761364587952" name="nltps.governance.structure.Hazard" flags="ng" index="3gI3PZ">
+        <property id="1365532761364587990" name="harm" index="3gI3Op" />
+        <property id="1365532761364587989" name="description" index="3gI3Oq" />
+        <property id="1365532761364587988" name="hazardId" index="3gI3Or" />
+      </concept>
+    </language>
+  </registry>
+  <node concept="3gI3PM" id="1bNmcZ3JG_1">
+    <property role="3gI3ON" value="StageAMirrorHazards" />
+    <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+    <node concept="3gIvZJ" id="1bNmcZ3JG_4" role="3gIvZz">
+      <property role="3gIvZX" value="RISK-MIRROR" />
+    </node>
+    <node concept="3gIvZH" id="1bNmcZ3JG_5" role="3gIvZy">
+      <property role="3gIvZS" value="0.2" />
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_6" role="3gI3OM">
+      <property role="3gI3Or" value="H-01" />
+      <property role="3gI3Oq" value="Wrong patient, course, study, frame of reference, or plan version is selected or associated." />
+      <property role="3gI3Op" value="Planning or a state-changing action may be applied to the wrong anatomy, prescription, or clinical object." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JG_9" role="3gIvZz">
+        <property role="3gIvZX" value="H01" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JG_a" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_b" role="3gI3OM">
+      <property role="3gI3Or" value="H-02" />
+      <property role="3gI3Oq" value="Speech or language processing misinterprets negation, number, unit, laterality, object, priority, or an ambiguous instruction." />
+      <property role="3gI3Op" value="The typed intent may request an unintended planning action or parameter." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JG_e" role="3gIvZz">
+        <property role="3gIvZX" value="H02" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JG_f" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_g" role="3gI3OM">
+      <property role="3gI3Or" value="H-03" />
+      <property role="3gI3Oq" value="A clinical recommendation, evidence item, or dose constraint is hallucinated, outdated, conflicted, or inapplicable." />
+      <property role="3gI3Op" value="A candidate or review may be represented as evidence-based when its rule does not apply." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JG_j" role="3gIvZz">
+        <property role="3gIvZX" value="H03" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JG_k" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_l" role="3gI3OM">
+      <property role="3gI3Or" value="H-04" />
+      <property role="3gI3Oq" value="A prescription, trial protocol, or authenticated physician intent is altered, overridden, or represented incorrectly." />
+      <property role="3gI3Op" value="Planning may proceed against intent that was not authorized by the responsible clinician." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JG_o" role="3gIvZz">
+        <property role="3gIvZX" value="H04" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JG_p" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_q" role="3gI3OM">
+      <property role="3gI3Or" value="H-05" />
+      <property role="3gI3Oq" value="A contour is missing, mislabeled, geometrically implausible, truncated, or clinically incorrect." />
+      <property role="3gI3Op" value="Optimization or dose evaluation may use incorrect target or organ-at-risk anatomy." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JG_t" role="3gIvZz">
+        <property role="3gIvZX" value="H05" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JG_u" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_v" role="3gI3OM">
+      <property role="3gI3Or" value="H-06" />
+      <property role="3gI3Oq" value="A rigid or deformable registration is unsuitable and propagates incorrect anatomy, geometry, or accumulated dose." />
+      <property role="3gI3Op" value="Contours or dose may be interpreted in the wrong spatial relationship." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JG_y" role="3gIvZz">
+        <property role="3gIvZX" value="H06" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JG_z" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_$" role="3gI3OM">
+      <property role="3gI3Or" value="H-07" />
+      <property role="3gI3Oq" value="Dose basis, biological model, fractionation, BED or EQD2 basis, units, or structure definition is mismatched." />
+      <property role="3gI3Op" value="Dose objectives or comparisons may be numerically valid but clinically incommensurate." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JG_B" role="3gIvZz">
+        <property role="3gIvZX" value="H07" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JG_C" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_D" role="3gI3OM">
+      <property role="3gI3Or" value="H-08" />
+      <property role="3gI3Oq" value="A dose calculation, optimizer, machine model, or technique is used outside its commissioned envelope." />
+      <property role="3gI3Op" value="A candidate may contain unverified dose or machine behavior and appear clinically usable." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JG_G" role="3gIvZz">
+        <property role="3gIvZX" value="H08" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JG_H" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_I" role="3gI3OM">
+      <property role="3gI3Or" value="H-09" />
+      <property role="3gI3Oq" value="Proton range, setup, motion, or interplay uncertainty is omitted, incomplete, or misconfigured." />
+      <property role="3gI3Op" value="A proton candidate may appear robust while clinically important uncertainty is not evaluated." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JG_L" role="3gIvZz">
+        <property role="3gIvZX" value="H09" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JG_M" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_N" role="3gI3OM">
+      <property role="3gI3Or" value="H-10" />
+      <property role="3gI3Oq" value="Candidate plans share a hidden systematic defect, lack meaningful diversity, or are infeasible or undeliverable." />
+      <property role="3gI3Op" value="Reviewers may select among alternatives that do not represent safe or deliverable choices." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JG_Q" role="3gIvZz">
+        <property role="3gIvZX" value="H10" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JG_R" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_S" role="3gI3OM">
+      <property role="3gI3Or" value="H-11" />
+      <property role="3gI3Oq" value="Optimization silently relaxes a hard constraint or changes a clinical priority." />
+      <property role="3gI3Op" value="A candidate may violate the approved planning intent without a visible decision trail." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JG_V" role="3gIvZz">
+        <property role="3gIvZX" value="H11" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JG_W" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JG_X" role="3gI3OM">
+      <property role="3gI3Or" value="H-12" />
+      <property role="3gI3Oq" value="DICOM or another external transfer corrupts, omits, transforms, duplicates, or misassociates plan data." />
+      <property role="3gI3Op" value="Wrong or incomplete clinical objects may enter a TPS, PACS, OIS, QA, review, or treatment workflow." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JGA0" role="3gIvZz">
+        <property role="3gIvZX" value="H12" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JGA1" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JGA2" role="3gI3OM">
+      <property role="3gI3Or" value="H-13" />
+      <property role="3gI3Oq" value="AI output weakens independent professional review through shared logic, data, automation bias, or false representation of authority." />
+      <property role="3gI3Op" value="A reviewer may accept an unsuitable result or fail to exercise required independent judgment." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JGA5" role="3gIvZz">
+        <property role="3gIvZX" value="H13" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JGA6" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JGA7" role="3gI3OM">
+      <property role="3gI3Or" value="H-14" />
+      <property role="3gI3Oq" value="Unauthorized access, prompt injection, malicious content, compromised software or model, or protected-health-information leakage occurs." />
+      <property role="3gI3Op" value="Clinical data, system integrity, authority, or availability may be compromised." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JGAa" role="3gIvZz">
+        <property role="3gIvZX" value="H14" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JGAb" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JGAc" role="3gI3OM">
+      <property role="3gI3Or" value="H-15" />
+      <property role="3gI3Oq" value="Evidence, software, or model becomes stale, drifts, fails a subgroup, or degrades without detection." />
+      <property role="3gI3Op" value="A previously acceptable output may become unreliable while remaining available to users." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JGAf" role="3gIvZz">
+        <property role="3gIvZX" value="H15" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JGAg" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JGAh" role="3gI3OM">
+      <property role="3gI3Or" value="H-16" />
+      <property role="3gI3Oq" value="An outage, timeout, retry, partial result, or failed dependency leaves incomplete work that appears valid." />
+      <property role="3gI3Op" value="A partial or degraded artifact may be promoted, reviewed, transferred, or relied upon as complete." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JGAk" role="3gIvZz">
+        <property role="3gIvZX" value="H16" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JGAl" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JGAm" role="3gI3OM">
+      <property role="3gI3Or" value="H-17" />
+      <property role="3gI3Oq" value="A post-approval edit or dependency change invalidates contours, dose, QA, approval, or transfer status without detection." />
+      <property role="3gI3Op" value="Downstream evidence may remain apparently current after its basis has changed." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JGAp" role="3gIvZz">
+        <property role="3gIvZX" value="H17" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JGAq" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3gI3PZ" id="1bNmcZ3JGAr" role="3gI3OM">
+      <property role="3gI3Or" value="H-18" />
+      <property role="3gI3Oq" value="Users over-trust fluent explanations, under-trust valid alerts, or misunderstand system limits and state." />
+      <property role="3gI3Op" value="Human decisions may be biased by presentation rather than clinical evidence and professional judgment." />
+      <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+      <node concept="3gIvZJ" id="1bNmcZ3JGAu" role="3gIvZz">
+        <property role="3gIvZX" value="H18" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JGAv" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+  </node>
+</model>
+

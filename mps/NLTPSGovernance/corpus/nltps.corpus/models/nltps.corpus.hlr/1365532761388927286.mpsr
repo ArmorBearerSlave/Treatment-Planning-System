@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model ref="r:42669edd-f887-4e0e-a7a4-d7a2958f0e96(nltps.corpus.hlr)" content="root">
+  <persistence version="9" />
+  <imports />
+  <registry>
+    <language id="87311da3-67f4-4168-a5e2-0a32e6781088" name="nltps.foundation">
+      <concept id="1365532761364539179" name="nltps.foundation.structure.LifecycleVocabulary" flags="ng" index="3gIvZ$">
+        <property id="1365532761364539218" name="name" index="3gIvYt" />
+        <child id="1365532761364539219" name="states" index="3gIvYs" />
+      </concept>
+      <concept id="1365532761364539171" name="nltps.foundation.structure.LifecycleState" flags="ng" index="3gIvZG">
+        <property id="1365532761364539196" name="terminal" index="3gIvZN" />
+        <property id="1365532761364539195" name="ordinal" index="3gIvZO" />
+        <property id="1365532761364539194" name="state" index="3gIvZP" />
+      </concept>
+    </language>
+  </registry>
+  <node concept="3gIvZ$" id="1bNmcZ3JG$Q">
+    <property role="3gIvYt" value="StageAMirrorLifecycle" />
+    <node concept="3gIvZG" id="1bNmcZ3JG$R" role="3gIvYs">
+      <property role="3gIvZP" value="3szh2WtgW$O/proposed" />
+      <property role="3gIvZO" value="1" />
+      <property role="3gIvZN" value="false" />
+    </node>
+  </node>
+</model>
+

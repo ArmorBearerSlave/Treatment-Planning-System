@@ -40,7 +40,7 @@ whether the migration is correct.
     MPS-1  foundation + governance                        closed
     MPS-2  clinical intent + roles.common                closed
     MPS-3  the four professional role projections        closed
-    MPS-4  realization + the 119-HLR import               materialized; three items open
+    MPS-4  realization + the 119-HLR import               materialized; two items open
 
 **Stage A is materially complete but not formally closed.** The metamodel, the four
 professional projections, the corpus mirror, its provenance, the source-explicit hazard
@@ -48,16 +48,13 @@ links and Stage-B equivalence are all present; no metamodel or corpus-content ga
 The three open acceptance items are closure evidence of three different kinds, and none of
 them is domain modelling:
 
-    MPS-MAT-004B  Convert to File-Per-Root Format on the corpus model,   integration
-                  then observe the layout MPS wrote
     MPS-MAT-008   a real command-line MPS build entry point, executed    build system
                   outside the IDE process
     MPS-MAT-009   independent review of the completed Stage A evidence   assurance
 
-`MPS-MAT-008` still needs build-system engineering and `MPS-MAT-004B` needs an IDE
-capability the MCP surface does not expose; neither is a matter of writing more model.
-`MPS-MAT-009` is not the implementer's to record at all. Each carries its reason and, for
-`004B`, its closure procedure in the checklist.
+`MPS-MAT-008` still needs build-system engineering; neither is a matter of writing more
+model, and `MPS-MAT-009` is not the implementer's to record at all. `MPS-MAT-004B` closed
+once the corpus was converted and the layout observed.
 
 - Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
 - Concept design that MPS-1 transcribed: `mps/bootstrap/mps1-concept-features.yaml`
@@ -242,22 +239,29 @@ declaration against `spec/architecture.yaml` and never observes the layout on di
 four checkpoints closed green on a constraint that was never in force. **A gate that
 compares two declarations with each other verifies neither.**
 
-It cannot be fixed from here. `mps_mcp_update_model` supports only `RENAME` and
+It could not be fixed from here. `mps_mcp_update_model` supports only `RENAME` and
 `DELETE`, and `mps_mcp_create_model` takes no persistence argument; MPS does it in one
-IDE action, `Convert to File-Per-Root Format`. Reproducing that action's internal API
-through the MPS console on a controlled corpus would not be evidence-grade work, and
-rewriting the layout on disk is prohibited outright. **A control the sanctioned route
-cannot reach is an integration deficiency to report, with the action that would fix it
-named — not a thing to reach around.**
+IDE action, `Convert to File-Per-Root Format`, which a person invokes. **A control the
+sanctioned route cannot reach is an integration deficiency to report, with the action
+that would fix it named — not a thing to reach around.** The corpus was converted that
+way and `MPS-MAT-004B` closed on the observed layout.
 
 The durable fix is the gate, not the conversion. `tools/mps/check_model_persistence.py`
-observes what MPS wrote — a `.mps` file is single-file, a folder holding `.model` is
-file-per-root — reports every authored model, and fails on any model a controlled
-contract binds. It fails today, correctly: 47 of 47 authored models are single-file. It
-joins the CI workflow at the commit that closes `MPS-MAT-004B`;
-`tests/test_model_persistence.py` ties the gate's verdict to that item's recorded
-status, so neither can move without the other. **Whenever a control compares one
-declaration with another, it is verifying that someone wrote the same word twice.**
+observes what MPS wrote and fails on any model a controlled contract binds, reporting the
+rest; `tests/test_model_persistence.py` ties its verdict to the acceptance item in both
+directions. **Whenever a control compares one declaration with another, it is verifying
+that someone wrote the same word twice.**
+
+**The absence of an IDE action is not evidence about state.** MPS hides `Convert to
+File-Per-Root Format` when the model is already per-root, but equally when the selection
+is not a model or the model is read-only. Observe the layout; do not read the menu.
+
+MPS writes a converted model as a folder: `.model` carries `content="header"` with the
+used languages and imports and no registry, and each root is a `<nodeId>.mpsr` carrying
+`content="root"` and its own registry. **The root extension is `.mpsr`, not `.mps`.**
+Anything that finds models by globbing `*.mps` sees a converted model as empty —
+`tools/mps/mps_layout.py` is the one place that knows this, and every corpus reader goes
+through it.
 
 ## Metric integrity
 
@@ -283,7 +287,7 @@ python tools/mps/check_concept_features.py
 python tools/mps/check_role_ontology.py
 python tools/mps/check_materialization_plan.py
 python tools/mps/check_hlr_root_placement.py
-python tools/mps/check_model_persistence.py --report
+python tools/mps/check_model_persistence.py
 python tools/mps/export_hlr_corpus.py --check
 python tools/mps/check_stage_b_equivalence.py
 python tools/spec/build_trace_graph.py --check

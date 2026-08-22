@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model ref="r:42669edd-f887-4e0e-a7a4-d7a2958f0e96(nltps.corpus.hlr)" content="root">
+  <persistence version="9" />
+  <imports />
+  <registry>
+    <language id="87311da3-67f4-4168-a5e2-0a32e6781088" name="nltps.foundation">
+      <concept id="1365532761364539167" name="nltps.foundation.structure.GovernedElement" flags="ng" index="3gIvZg">
+        <reference id="1365532761364539184" name="lifecycleState" index="3gIvZZ" />
+        <child id="1365532761364539183" name="provenance" index="3gIvZw" />
+        <child id="1365532761364539182" name="aliases" index="3gIvZx" />
+        <child id="1365532761364539181" name="version" index="3gIvZy" />
+        <child id="1365532761364539180" name="identifier" index="3gIvZz" />
+      </concept>
+      <concept id="1365532761364539175" name="nltps.foundation.structure.ProvenanceRef" flags="ng" index="3gIvZC">
+        <property id="1365532761364539208" name="sha256" index="3gIvY7" />
+        <property id="1365532761364539207" name="sourceLine" index="3gIvY8" />
+        <property id="1365532761364539206" name="sourcePath" index="3gIvY9" />
+      </concept>
+      <concept id="1365532761364539170" name="nltps.foundation.structure.Version" flags="ng" index="3gIvZH">
+        <property id="1365532761364539191" name="value" index="3gIvZS" />
+      </concept>
+      <concept id="1365532761364539169" name="nltps.foundation.structure.Alias" flags="ng" index="3gIvZI">
+        <property id="1365532761364539245" name="retired" index="3gIvYy" />
+        <property id="1365532761364539189" name="scheme" index="3gIvZU" />
+        <property id="1365532761364539188" name="value" index="3gIvZV" />
+      </concept>
+      <concept id="1365532761364539168" name="nltps.foundation.structure.StableId" flags="ng" index="3gIvZJ">
+        <property id="1365532761364539186" name="value" index="3gIvZX" />
+      </concept>
+    </language>
+    <language id="4709dc1d-8658-45c6-b6ee-185bd2ba1b14" name="nltps.governance">
+      <concept id="1365532761364587933" name="nltps.governance.structure.VerificationMethodEntry" flags="ng" index="3gI3Pi">
+        <property id="1365532761364587939" name="method" index="3gI3PG" />
+      </concept>
+      <concept id="1365532761364587948" name="nltps.governance.structure.Requirement" flags="ng" index="3gI3Pz">
+        <property id="1365532761364587972" name="category" index="3gI3Ob" />
+        <property id="1365532761364587971" name="domain" index="3gI3Oc" />
+        <property id="1365532761364587970" name="statement" index="3gI3Od" />
+        <child id="1365532761364587974" name="hazards" index="3gI3O9" />
+        <child id="1365532761364587973" name="verificationMethods" index="3gI3Oa" />
+      </concept>
+      <concept id="1365532761364587960" name="nltps.governance.structure.HazardRef" flags="ng" index="3gI3PR">
+        <reference id="1365532761364588019" name="hazard" index="3gI3OW" />
+      </concept>
+    </language>
+    <language id="08070d1a-4999-4bfd-a38c-2b1b3ffd9ef4" name="nltps.realization">
+      <concept id="1365532761387707713" name="nltps.realization.structure.ImportedHLR" flags="ng" index="3hnRme">
+        <property id="1365532761388928862" name="sourceHazardText" index="3hjpuh" />
+        <property id="1365532761387707733" name="authoritative" index="3hnRmq" />
+        <property id="1365532761387707732" name="bundleId" index="3hnRmr" />
+      </concept>
+    </language>
+  </registry>
+  <node concept="3hnRme" id="1bNmcZ3JGMk">
+    <property role="3gI3Od" value="The NL-TPS shall make approved clinical objects immutable or version-controlled and shall require re-review of every affected downstream object after a change." />
+    <property role="3gI3Oc" value="26fKV4gKT$1/REV" />
+    <property role="3gI3Ob" value="1Pg7pL_yGnB/functional" />
+    <property role="3hnRmr" value="NLTPS-HLR-MIRROR-0.2" />
+    <property role="3hnRmq" value="false" />
+    <property role="3hjpuh" value="MODE; INFO; H-17" />
+    <ref role="3gIvZZ" node="1bNmcZ3JG$R" />
+    <node concept="3gIvZJ" id="1bNmcZ3JGMo" role="3gIvZz">
+      <property role="3gIvZX" value="REV-008" />
+    </node>
+    <node concept="3gIvZH" id="1bNmcZ3JGMp" role="3gIvZy">
+      <property role="3gIvZS" value="0.2" />
+    </node>
+    <node concept="3gIvZI" id="1bNmcZ3JGMq" role="3gIvZx">
+      <property role="3gIvZV" value="HFR-REV-008" />
+      <property role="3gIvZU" value="F/SA/O category ID" />
+      <property role="3gIvYy" value="false" />
+    </node>
+    <node concept="3gI3Pi" id="1bNmcZ3JGMr" role="3gI3Oa">
+      <property role="3gI3PG" value="24m8Ybx32Ky/T" />
+    </node>
+    <node concept="3gI3Pi" id="1bNmcZ3JGMs" role="3gI3Oa">
+      <property role="3gI3PG" value="2pBNHL3$JL8/A" />
+    </node>
+    <node concept="3gIvZC" id="1bNmcZ3JGMt" role="3gIvZw">
+      <property role="3gIvY9" value="overleaf/NL_TPS_High_Level_Requirements.tex" />
+      <property role="3gIvY8" value="418" />
+      <property role="3gIvY7" value="13a1622a5e499d7389a4d1049c7271fd9211c59bb4675227363055a8834a0e61" />
+    </node>
+    <node concept="3gIvZC" id="1bNmcZ3JGMu" role="3gIvZw">
+      <property role="3gIvY9" value="overleaf/NL_TPS_High_Level_Requirements.tex" />
+      <property role="3gIvY7" value="c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4" />
+    </node>
+    <node concept="3gI3PR" id="1bNmcZ3JGMv" role="3gI3O9">
+      <ref role="3gI3OW" node="1bNmcZ3JGAm" />
+    </node>
+  </node>
+</model>
+

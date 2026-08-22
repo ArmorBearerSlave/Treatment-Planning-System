@@ -32,13 +32,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from export_hlr_corpus import IMPORTED_HLR, Model  # noqa: E402
+from export_hlr_corpus import IMPORTED_HLR, Model, corpus_model  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_BUNDLE = REPO_ROOT / "mps" / "import" / "hlr-baseline.json"
 DEFAULT_EXPORT = REPO_ROOT / "mps" / "import" / "hlr-corpus-export.json"
-DEFAULT_MODEL = (REPO_ROOT / "mps" / "NLTPSGovernance" / "corpus" / "nltps.corpus"
-                 / "models" / "nltps.corpus.hlr.mps")
+DEFAULT_MODEL = corpus_model()
 DEFAULT_TABLE = REPO_ROOT / "mps" / "import" / "stage-b-equivalence.csv"
 
 COLUMNS = ["source_id", "source_artifact_path", "source_record_sha256", "mps_root_identity",
@@ -70,7 +69,9 @@ def root_identity(model_path: Path) -> dict[str, str]:
         ids = model.children(node, "identifier")
         if len(ids) != 1:
             continue
-        identity[model.prop(ids[0], "value")] = f"{model_path.name}/{node.get('id')}"
+        # The model reference, not the filename: a filename changes when persistence
+        # changes, and this column is meant to identify the node, not where MPS put it.
+        identity[model.prop(ids[0], "value")] = f"{model.model_ref}/{node.get('id')}"
     return identity
 
 

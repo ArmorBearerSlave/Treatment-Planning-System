@@ -486,63 +486,63 @@ acceptance_items:
   - id: MPS-MAT-004B
     checkpoint: MPS-4
     item: File-per-root persistence is demonstrated on normative instance models.
-    status: pending
-    blocked_reason: >-
-      Not blocked for want of a model any more. nltps.corpus.hlr now holds 119 normative
-      instance roots, so the persistence mode is finally exercisable. It is blocked because
-      the MPS Projectional Agent Toolkit exposes no operation that sets or converts a model's
-      persistence mode: mps_mcp_update_model supports only RENAME and DELETE, and
-      mps_mcp_create_model takes no persistence argument. The corpus model is therefore
-      single-file, like every other model in the project.
-    diagnosis: >-
-      MPS itself can do this in one action. jetbrains.mps.ide.actions
-      .ConvertToFilePerRootPersistence_Action, presented as "Convert to File-Per-Root Format",
-      switches a model to PreinstalledModelFactoryTypes.PER_ROOT_XML. It is an IDE action, not
-      an MCP operation, so it needs a person to invoke it on the model in the running IDE.
-      Replicating it through the MPS console would mean reproducing an internal API this
-      session cannot verify against documentation, on a controlled corpus, which is not
-      evidence-grade work. Editing the persistence layout on disk is prohibited outright by
-      ADR-001, and being unable to reach a control through the sanctioned route is an
-      integration deficiency to report, not a reason to reach around it.
-    additional_finding: >-
-      project.default_model_persistence has been declared file-per-root since MPS-0 in both
-      spec/architecture.yaml and language-skeleton.json, and no model in the project has ever
-      used it. check_language_skeleton compares the two declarations with each other and never
-      observes the layout on disk, so MPS-0 through MPS-3 closed green on a constraint that
-      was never in force. This is not something MPS-4 introduced.
-    control_amendment: >-
-      tools/mps/check_model_persistence.py now observes the persistence MPS actually wrote,
-      rather than comparing one declaration with another. It reports every authored model and
-      fails on any model a controlled contract binds -- currently the designated import model
-      named by file_per_root_contract. It presently fails, correctly: 47 authored models, all
-      single-file, against a declaration of file-per-root. The gate is deliberately not yet in
-      the CI workflow, because adding a step that is known to fail would make the suite red
-      for a reason the suite cannot fix; it joins CI at the same commit that closes this item.
-    reader_prerequisite: >-
-      Done in advance, at the commit that records this procedure. MPS writes per-root files
-      with the extension .mpsr and the header in .model, and every corpus reader discovered
-      models by globbing *.mps. A correct conversion would therefore have made the placement
-      gate count zero imported roots and the exporter report a missing model -- a mechanical
-      failure indistinguishable from the conversion destroying the corpus. tools/mps/
-      mps_layout.py now holds the layout knowledge in one place, and the export, placement,
-      enum and persistence readers all use it. Fixtures drive a synthetic per-root corpus in
-      both plausible shapes, with the registry only in .model and with it repeated in each
-      root file, because which one MPS writes is not documented in anything available here.
-    closure_procedure:
-    - In the running IDE, on the nltps.corpus.hlr model itself and not on an individual
-      ImportedHLR root, invoke Convert to File-Per-Root Format. Let MPS complete and save it,
-      and do not move, rename or edit any generated persistence file afterwards.
-    - Read the resulting layout back and confirm 119 root files plus the model marker, with
-      the roots still classified by check_hlr_root_placement and the export still byte-equal.
-    - Run tools/mps/check_model_persistence.py; it must pass.
-    - 'Add that command to .github/workflows/controlled-spec-gates.yml and set this item
-      complete. tests/test_model_persistence.py couples the two: while this item is open the
-      gate must fail, and once it is complete the gate must pass, so neither can move alone.'
+    status: complete
+    completion_qualifier: COMPLETE
+    completion_basis: >-
+      The layout was observed on disk and cross-checked against the MPS runtime, not inferred
+      from having invoked the IDE action. The action was reported absent when the question was
+      asked, which is ambiguous on its own -- MPS hides Convert to File-Per-Root Format when a
+      model is already per-root, but also when the selection is not a model or the model is
+      read-only -- so the menu was not treated as evidence in either direction.
+    observed_layout:
+      model: r:42669edd-f887-4e0e-a7a4-d7a2958f0e96(nltps.corpus.hlr)
+      path: corpus/nltps.corpus/models/nltps.corpus.hlr
+      shape: a folder, not a file
+      header: .model, carrying content="header" with the used languages and imports and no
+        registry
+      root_files: 121 .mpsr documents, each carrying content="root" and its own registry
+      superseded: the single-file corpus/nltps.corpus/models/nltps.corpus.hlr.mps is gone,
+        so the two layouts do not coexist and nothing can read the stale one by accident
     evidence:
-    - 'Ready when unblocked: 119 roots, each independently addressable, in a solution model
-      outside every language, with the placement gate already enforcing where they may live.'
-    - 'Observed state, recorded rather than assumed: declared file-per-root, 47 of 47 authored
-      models persisted single-file.'
+    - 'check_model_persistence: PASS. Declared file-per-root; the contracted model is
+      persisted that way; observed across the project file-per-root 1, single-file 46. The
+      other 46 are reported and not enforced, because the project default is a default and
+      only file_per_root_contract binds a model.'
+    - '121 attributable root persistence units: 119 ImportedHLR roots plus the
+      StageAMirrorLifecycle vocabulary and the StageAMirrorHazards risk baseline. The two
+      infrastructure roots are distinguished by concept, not by filename.'
+    - 'check_hlr_root_placement: PASS. 119 imported HLR roots, all in the designated import
+      model, none in a language structure aspect, each carrying two-part provenance. 0 missing
+      and 0 duplicate: the classifier reads concept and model, and a duplicate stable id is a
+      conflict it reports rather than merges.'
+    - 'check_module_graph --checkpoint MPS-4: 96 of 96 concepts across 527 structure nodes.
+      Converting the persistence of instance data moved the concept inventory by zero, which
+      is the point of keeping the corpus out of a structure aspect.'
+    - 'export_hlr_corpus --check: PASS, and the export is byte-identical to the file committed
+      before the conversion. The model now lives in 121 documents instead of one and says
+      exactly the same thing.'
+    - 'check_stage_b_equivalence: 119/119 equivalent over 17 compared fields per record.'
+    - 'Hazard profile unchanged: 73 with hazards, 46 without, 18 distinct, 94 typed links.
+      Every root still reads authoritative false and references the one proposed Stage A
+      mirror lifecycle state.'
+    - 'check_enum_persistence: PASS over 74 models and 13,918 persisted values, including the
+      2,118 in the corpus, now read out of 121 separate documents.'
+    - 'The source-explicit hazard metric is unchanged at 76 / 2,144. Changing how a corpus is
+      stored is not hazard-specific engineering review.'
+    reader_prerequisite_discharged: >-
+      Done at f6a8f54, before the layout changed. MPS writes per-root documents with the
+      extension .mpsr and the header in .model, and every corpus reader discovered models by
+      globbing *.mps. Without that work this conversion would have made the placement gate
+      count zero imported roots, the exporter report a missing model, and the enum gate examine
+      a smaller population while still printing PASS. Both plausible registry shapes were
+      fixtured because the real one was not documented; MPS turned out to repeat the registry
+      in each root file, which the merging reader already handled.
+    control_amendment: >-
+      tools/mps/check_model_persistence.py replaced a control that compared spec/architecture
+      .yaml with mps/bootstrap/language-skeleton.json and never opened a model. That control
+      passed for four checkpoints on a constraint no model satisfied.
+      tests/test_model_persistence.py ties the gate's verdict to this item's recorded status in
+      both directions, so a future regression cannot be closed by editing either one alone.
   - id: MPS-MAT-005A
     checkpoint: MPS-1
     item: >-
