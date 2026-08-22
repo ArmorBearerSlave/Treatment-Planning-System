@@ -544,6 +544,30 @@ acceptance_items:
       tests/test_model_persistence.py ties the gate's verdict to this item's recorded status in
       both directions, so a future regression cannot be closed by editing either one alone.
   - id: MPS-MAT-005A
+    build_clause_status:
+      state: unreproduced
+      applies_to: the native rebuild cited in this item's evidence
+      reason: >-
+        Every build in MPS-0 through MPS-4 was incremental on generated output that already
+        contained a BehaviorAspectDescriptor class. POST-MPS4-01, recorded against
+        MPS-MAT-008, establishes that the project does not build from a clean state at all:
+        after deleting every source_gen and classes_gen directory, both the headless build
+        and a whole-project rebuild issued into the running IDE fail with "cannot find
+        symbol: class BehaviorAspectDescriptor".
+      what_this_does_not_mean: >-
+        The item is not reopened and the claim is not withdrawn. Unreproduced is not false.
+        What discharges this item is per-node read-back against the controlled source, the
+        model checker's verdicts on named negative and positive examples, and the gates --
+        none of which runs a build. The rebuild was corroboration, not the load-bearing
+        evidence.
+      what_has_to_happen: >-
+        Once POST-MPS4-01 is corrected and a cold whole-project build reaches and completes
+        all nine languages, re-verify this clause against that build. If the cold build
+        surfaces anything in this item's aspects, the item reopens then and not before.
+      for_the_independent_reviewer: >-
+        Read the build sentence in this item's evidence as unreproduced pending that cold
+        build. It is the one claim here that a reviewer could otherwise take on trust and
+        find does not currently hold.
     checkpoint: MPS-1
     item: >-
       Foundation and governance constraints, typesystems, editors, and negative model
@@ -811,6 +835,30 @@ acceptance_items:
         anywhere in the MPS-1 constraint set. Any future rule that compares magnitudes
         must parse the string-backed value numerically first.
   - id: MPS-MAT-005B
+    build_clause_status:
+      state: unreproduced
+      applies_to: the native rebuild cited in this item's evidence
+      reason: >-
+        Every build in MPS-0 through MPS-4 was incremental on generated output that already
+        contained a BehaviorAspectDescriptor class. POST-MPS4-01, recorded against
+        MPS-MAT-008, establishes that the project does not build from a clean state at all:
+        after deleting every source_gen and classes_gen directory, both the headless build
+        and a whole-project rebuild issued into the running IDE fail with "cannot find
+        symbol: class BehaviorAspectDescriptor".
+      what_this_does_not_mean: >-
+        The item is not reopened and the claim is not withdrawn. Unreproduced is not false.
+        What discharges this item is per-node read-back against the controlled source, the
+        model checker's verdicts on named negative and positive examples, and the gates --
+        none of which runs a build. The rebuild was corroboration, not the load-bearing
+        evidence.
+      what_has_to_happen: >-
+        Once POST-MPS4-01 is corrected and a cold whole-project build reaches and completes
+        all nine languages, re-verify this clause against that build. If the cold build
+        surfaces anything in this item's aspects, the item reopens then and not before.
+      for_the_independent_reviewer: >-
+        Read the build sentence in this item's evidence as unreproduced pending that cold
+        build. It is the one claim here that a reviewer could otherwise take on trust and
+        find does not currently hold.
     checkpoint: MPS-2
     item: >-
       Clinical-intent and roles.common constraints, typesystems, editors, and negative
@@ -1025,6 +1073,30 @@ acceptance_items:
           the MPS-3 professional projections supply concrete rootable projections. The
           shape prohibitions are enforced at gate level in the meantime.
   - id: MPS-MAT-005C
+    build_clause_status:
+      state: unreproduced
+      applies_to: the native rebuild cited in this item's evidence
+      reason: >-
+        Every build in MPS-0 through MPS-4 was incremental on generated output that already
+        contained a BehaviorAspectDescriptor class. POST-MPS4-01, recorded against
+        MPS-MAT-008, establishes that the project does not build from a clean state at all:
+        after deleting every source_gen and classes_gen directory, both the headless build
+        and a whole-project rebuild issued into the running IDE fail with "cannot find
+        symbol: class BehaviorAspectDescriptor".
+      what_this_does_not_mean: >-
+        The item is not reopened and the claim is not withdrawn. Unreproduced is not false.
+        What discharges this item is per-node read-back against the controlled source, the
+        model checker's verdicts on named negative and positive examples, and the gates --
+        none of which runs a build. The rebuild was corroboration, not the load-bearing
+        evidence.
+      what_has_to_happen: >-
+        Once POST-MPS4-01 is corrected and a cold whole-project build reaches and completes
+        all nine languages, re-verify this clause against that build. If the cold build
+        surfaces anything in this item's aspects, the item reopens then and not before.
+      for_the_independent_reviewer: >-
+        Read the build sentence in this item's evidence as unreproduced pending that cold
+        build. It is the one claim here that a reviewer could otherwise take on trust and
+        find does not currently hold.
     checkpoint: MPS-3
     item: >-
       Professional role projection constraints, typesystems, editors, and negative model
@@ -1168,6 +1240,30 @@ acceptance_items:
       alike are reported there and are invisible to a reader that looks only at the node
       level. Batch-call success and a clean model check are not evidence.
   - id: MPS-MAT-005D
+    build_clause_status:
+      state: unreproduced
+      applies_to: the native rebuild cited in this item's evidence
+      reason: >-
+        Every build in MPS-0 through MPS-4 was incremental on generated output that already
+        contained a BehaviorAspectDescriptor class. POST-MPS4-01, recorded against
+        MPS-MAT-008, establishes that the project does not build from a clean state at all:
+        after deleting every source_gen and classes_gen directory, both the headless build
+        and a whole-project rebuild issued into the running IDE fail with "cannot find
+        symbol: class BehaviorAspectDescriptor".
+      what_this_does_not_mean: >-
+        The item is not reopened and the claim is not withdrawn. Unreproduced is not false.
+        What discharges this item is per-node read-back against the controlled source, the
+        model checker's verdicts on named negative and positive examples, and the gates --
+        none of which runs a build. The rebuild was corroboration, not the load-bearing
+        evidence.
+      what_has_to_happen: >-
+        Once POST-MPS4-01 is corrected and a cold whole-project build reaches and completes
+        all nine languages, re-verify this clause against that build. If the cold build
+        surfaces anything in this item's aspects, the item reopens then and not before.
+      for_the_independent_reviewer: >-
+        Read the build sentence in this item's evidence as unreproduced pending that cold
+        build. It is the one claim here that a reviewer could otherwise take on trust and
+        find does not currently hold.
     checkpoint: MPS-4
     item: Realization constraints, typesystems, editors, and negative model tests pass,
       including demonstrated rejection of deliberately invalid nodes.
@@ -1419,6 +1515,23 @@ acceptance_items:
       produce; once it had rewritten that tree, the missing BehaviorAspectDescriptor was
       exposed. A single green run is therefore not evidence for this item, which is why the
       contract requires a second independent build.
+    native_test_mechanism_found:
+      task: launchtests
+      registered_in: jetbrains/mps/build/ant/antlib.xml inside lib/ant/lib/ant-mps.jar
+      since: MPS 2022.3
+      surface: >-
+        LaunchTestTask accepts a nested <project>, <testmodules>, <library> and <macro>, and
+        carries haltOnFailure, failOnError, reports, fork and openPackages. Unlike mps.make it
+        does take a <project> element. jetbrains.mps.lang.test ships in
+        plugins/mps-testing/languages, its generator in plugins/mps-testing/languages/gentest,
+        and lib/mpsant/mps-tool.jar carries ConsoleTestReporter, ITestReporter and
+        XmlTestReporter.
+      reading: >-
+        The full antlib was enumerated rather than searched for one task: migrate, generate,
+        gentest, copyModels, runMPS, mps.make, mps.run-worker and launchtests. A native
+        headless model-test mechanism therefore exists, so the model-tests clause of this
+        item should be satisfied rather than amended. Trying to make mps.make evaluate
+        checking rules would be the weaker answer to a question MPS already answers.
     remaining_to_close:
     - Resolve POST-MPS4-01 so the project generates from a clean state.
     - Establish whether <mps.make> can be made to emit the behaviour aspect descriptor once
