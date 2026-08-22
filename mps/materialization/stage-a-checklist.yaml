@@ -1801,6 +1801,31 @@ acceptance_items:
               every static file inspection look correct while the classloader is built from
               another representation. Module identity has to come from the runtime, and until
               it does these two rows constrain the answer without deciding it.
+            step_zero_cache_clear:
+              why_first: >-
+                build/work had reached 159M and its system/ -- caches, index including
+                binarymodeldigest2, LocalHistory -- had never been cleared in this item. Every
+                make and every launchtests invocation, the POST-MPS4-01 cold build included,
+                shared one idea.system.path. That build was cold with respect to source_gen
+                and classes_gen and warm with respect to the worker index, which does not
+                weaken it, but nltps.modeltests was created after most of those cached runs.
+                A stale module or classpath entry is exactly the shape that produces a
+                classloader unable to see a module's classes. The ordering matters more than
+                the possibility: the introspection probe reads the same values, so a stale
+                getClassPath would have been reported as a wrong classpath and a defect fixed
+                that did not exist.
+              result: >-
+                THE FAILURE SURVIVES. With system, config and log deleted, the run reproduces
+                java.lang.ClassNotFoundException on the same fully-qualified class and the
+                reports still read tests="0". The stale-index explanation is ruled out and
+                every subsequent probe reading is trustworthy, which is the property this
+                step was run for rather than a hoped-for fix.
+              standing_gap: >-
+                The build descriptor creates work.dir and deletes reports.dir, and removes
+                nothing else. Worker state accumulates across every invocation with nothing
+                to bound it. Whether the test target should clear system/ each run is a
+                decision for the unit that closes this item, not something to change while a
+                diagnosis is open.
             acceptance_for_the_probe: >-
               Not a green. One uniquely identified boundary along descriptor, facet path,
               physical class, own resource, own class, delegated class. If the probe ends
