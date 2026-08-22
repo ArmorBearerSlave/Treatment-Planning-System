@@ -15,10 +15,20 @@
       <concept id="1216913645126" name="jetbrains.mps.lang.test.structure.NodesTestCase" flags="lg" index="1lH9Xt">
         <property id="2616911529524314943" name="accessMode" index="3DII0k" />
         <child id="1217501822150" name="nodesToCheck" index="1SKRRt" />
+        <child id="1217501895093" name="testMethods" index="1SL9yI" />
       </concept>
       <concept id="1216989428737" name="jetbrains.mps.lang.test.structure.TestNode" flags="ng" index="1qefOq">
         <child id="1216989461394" name="nodeToCheck" index="1qenE9" />
       </concept>
+      <concept id="1225978065297" name="jetbrains.mps.lang.test.structure.SimpleNodeTest" flags="ng" index="1LZb2c" />
+    </language>
+    <language id="f3061a53-9226-4cc5-a443-f952ceaf5816" name="jetbrains.mps.baseLanguage">
+      <concept id="1068580123132" name="jetbrains.mps.baseLanguage.structure.BaseMethodDeclaration" flags="ng" index="3clF44">
+        <child id="1068580123133" name="returnType" index="3clF45" />
+        <child id="1068580123135" name="body" index="3clF47" />
+      </concept>
+      <concept id="1068580123136" name="jetbrains.mps.baseLanguage.structure.StatementList" flags="sn" stub="5293379017992965193" index="3clFbS" />
+      <concept id="1068581517677" name="jetbrains.mps.baseLanguage.structure.VoidType" flags="in" index="3cqZAl" />
     </language>
     <language id="87311da3-67f4-4168-a5e2-0a32e6781088" name="nltps.foundation">
       <concept id="1365532761364539167" name="nltps.foundation.structure.GovernedElement" flags="ng" index="3gIvZg">
@@ -64,6 +74,11 @@
           <property role="3gIvZS" value="0.2" />
         </node>
       </node>
+    </node>
+    <node concept="1LZb2c" id="1bNmcZ3WSdO" role="1SL9yI">
+      <property role="TrG5h" value="testAssessedClaimWithoutEvidenceIsRejected" />
+      <node concept="3cqZAl" id="1bNmcZ3WSdR" role="3clF45" />
+      <node concept="3clFbS" id="1bNmcZ3WSdS" role="3clF47" />
     </node>
   </node>
 </model>

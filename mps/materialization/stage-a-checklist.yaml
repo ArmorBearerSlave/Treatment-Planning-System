@@ -1731,6 +1731,35 @@ acceptance_items:
             the 286-module graph already demonstrates. REQUIRES_MPS_PLATFORM is set by the
             discovery participant from ITestable.isMpsStartRequired, which NodesTestCase
             answers true. Both removed from the hypothesis tree.
+          discovery_repaired:
+            fixture: >-
+              NodesTestMethod is abstract; testMethods must hold its concrete subtype
+              SimpleNodeTest. With one SimpleNodeTest authored -- final name
+              testAssessedClaimWithoutEvidenceIsRejected, node 1365532761392382836, VoidType
+              return, trivial body -- generation produces exactly one @Test and the class
+              compiles. N = 1 is now an executable-test count, not a count of test roots.
+            launcher: >-
+              The three plugins JetBrains' own generated 2026.1 test builds declare --
+              jetbrains.mps.core, jetbrains.mps.junit5, jetbrains.mps.testing -- are added to
+              launchtests only, before project and testmodules. Generation was already proven
+              and was not touched. LaunchTestTask does put the mps-testing launcher jar on the
+              forked classpath by itself, which is not the same as loading these plugins into
+              the MPS runtime.
+            result: >-
+              Discovery now selects the test. The runner reports "error building test suite -
+              java.lang.ClassNotFoundException:
+              nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test",
+              naming the exact generated class. Before the plugin wiring it reported tests="0"
+              and never named anything. Selection is repaired; the remaining gap is that the
+              compiled class is not reachable from the launcher's classloader.
+            still_zero_executed: >-
+              discovered is no longer the blocker but executed is still 0, so the
+              discovery-repair control has not passed and RED has not begun. The next
+              question is narrow: classes_gen output versus what the JUnit launcher's
+              classloader can see. LaunchTestTask exposes addLibraryJar and a library element
+              typed ModuleJarDataType, and the module's java facet carries ext="no" where the
+              languages carry ext="yes". Establish which of those matters before changing
+              either.
           still_open: >-
             Discovery remains 0 after the JNA fix. The crash is gone and the module is
             registered, so what remains is why TestDiscovery.surveyModule finds no test root

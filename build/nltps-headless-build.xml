@@ -110,6 +110,17 @@
         <arg value="-Didea.log.path=${work.dir}/log"/>
         <arg value="-Didea.plugins.path=${mps.home}/plugins"/>
       </jvmargs>
+      <!--
+        The three plugins JetBrains' own generated 2026.1 test builds load before
+        <project> and <testmodules>. LaunchTestTask does put the mps-testing launcher
+        support jar on the forked classpath by itself, but that is not the same as loading
+        these plugins into the MPS runtime: without them the language-test discovery
+        extension is unavailable, and a module can resolve, its model load and its test
+        class compile while nothing is ever discovered.
+      -->
+      <plugin id="jetbrains.mps.core" path="${mps.home}/plugins/mps-core"/>
+      <plugin id="jetbrains.mps.junit5" path="${mps.home}/plugins/mps-junit5"/>
+      <plugin id="jetbrains.mps.testing" path="${mps.home}/plugins/mps-testing"/>
       <project path="${project.dir}"/>
       <!-- TestModules exposes only a generic add(), i.e. an Ant resource collection,
            so the module descriptor is named by a fileset rather than a <module> element. -->
