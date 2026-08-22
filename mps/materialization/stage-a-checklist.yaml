@@ -1886,6 +1886,43 @@ acceptance_items:
                 once that passes are the real readings collected. A probe that never enters
                 the intended worker and merely exits successfully has worthless readings, for
                 the same reason every other control in this item exists.
+              worker_base_corrected: >-
+                The probe extends LaunchTestWorker, not CoreWorker. CoreWorker
+                .createEnvironment starts an MpsEnvironment; LaunchTestWorker
+                .createEnvironment starts an IdeaEnvironment with withTestModeOn. Those are
+                materially different execution environments, so a matching
+                ClassNotFoundException under a CoreWorker probe would establish only that the
+                failure also exists under another environment, and would not make the
+                classloader readings equivalent to the failing launchtests process.
+                Subclassing LaunchTestWorker inherits the real createEnvironment rather than
+                reconstructing it. Verified present in
+                plugins/mps-testing/languages/launcher/jetbrains.mps.lang.test.launcher.jar.
+              remaining_known_divergence: >-
+                One deliberate difference survives the change of base class: production
+                launchtests opens its project and registers testmodules through
+                LibraryInitializer and ModulesMiner, while the probe populates the repository
+                through the repository element. Module population therefore still differs,
+                which is exactly why the reproduction control is not optional.
+              step_zero_wording: >-
+                If the delegated load reproduces the same exception on the same
+                fully-qualified name, the finding is not "the runtime matches". It is that
+                the failure reproduces under the same LaunchTestWorker and IdeaEnvironment
+                startup semantics, with repository-based module population as the remaining
+                known loading-path difference. If it instead succeeds, stop immediately: that
+                localises the defect toward project and testmodule registration versus
+                repository registration, and no later reading from that probe may be used to
+                diagnose the original failure.
+              bootstrap_classpath_now_two_jars: >-
+                Generic MpsLoadTask does not add the test-launcher support jar the way
+                LaunchTestTask does, so both the probe jar and
+                plugins/mps-testing/languages/launcher/jetbrains.mps.lang.test.launcher.jar
+                must be on the fork JVM's classpath before main executes.
+              stage_one_evidence: >-
+                PROBE_BOOTSTRAP_ENTERED with a unique marker, WORKER_SUPERCLASS
+                LaunchTestWorker, ENVIRONMENT_CLASS jetbrains.mps.tool.environment
+                .IdeaEnvironment, and the resolved nltps.modeltests module reference. Printing
+                the environment class is what distinguishes inheriting the real startup from
+                believing one has.
               probe_jar_placement: >-
                 The same lever already proven in this build. ant-mps.jar needed org.jdom from
                 lib/util-8.jar on the taskdef classpath rather than Ant's own, and the forked
