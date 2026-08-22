@@ -12,7 +12,6 @@
   </facets>
   <accessoryModels />
   <dependencies>
-    <dependency reexport="false">4709dc1d-8658-45c6-b6ee-185bd2ba1b14(nltps.governance)</dependency>
     <dependency reexport="false">dbcbafd2-9884-4f01-8836-da8cbf2c072f(nltps.clinicalintent)</dependency>
   </dependencies>
   <languageVersions>
@@ -63,6 +62,7 @@
   </dependencyVersions>
   <extendedLanguages>
     <extendedLanguage>87311da3-67f4-4168-a5e2-0a32e6781088(nltps.foundation)</extendedLanguage>
+    <extendedLanguage>4709dc1d-8658-45c6-b6ee-185bd2ba1b14(nltps.governance)</extendedLanguage>
   </extendedLanguages>
 </language>
 
