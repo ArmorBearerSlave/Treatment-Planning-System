@@ -93,8 +93,15 @@
     <mkdir dir="${work.dir}"/>
     <delete dir="${reports.dir}" quiet="true"/>
     <mkdir dir="${reports.dir}"/>
+    <!--
+      jnaLibraryPath is required, not optional. Without it test discovery throws
+      NoClassDefFoundError: com.sun.jna.Native inside ModelSourceRootWalker while
+      collecting a module's models, and launchtests reports BUILD SUCCESSFUL over
+      tests="0". The failure is swallowed into a zero-test run rather than surfaced.
+    -->
     <launchtests mpsHome="${mps.home}" haltOnFailure="true" failOnError="true"
-                 reports="${reports.dir}" fork="true">
+                 reports="${reports.dir}" fork="true"
+                 jnaLibraryPath="${mps.home}/lib/jna">
       <jvmargs>
         <arg value="-ea"/>
         <arg value="-Xmx${build.heap}"/>

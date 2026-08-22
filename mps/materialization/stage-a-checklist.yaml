@@ -1664,12 +1664,35 @@ acceptance_items:
           REA_C_002_evidence_required_for_assessed_verdict_Test.java and classes_gen holds
           the corresponding .class, which imports org.junit.jupiter. The gap is between the
           compiled test classes and what the runner discovers, not in the fixture.
-        next_diagnosis: >-
-          LaunchTestTask exposes setOpenTest and setOpenPackages alongside the testmodules
-          resource collection; the module's tests-facet output may also need to reach the
-          runner's classpath. Establish discovery before touching the fixture, and re-run the
-          teeth cycle from red once discovery is proven, because a green obtained by changing
-          the fixture would prove nothing about the runner.
+        terminology: >-
+          This is a discovery-control failure, not a semantic RED. authored = 1,
+          discovered = 0, executed = 0: the sentinel node is red, but its semantics were
+          never exercised, so this run cannot serve as the RED member of the later red-green
+          proof. That cycle starts only once discovery is exactly 1.
+        diagnosis_so_far:
+          testmodules_resolution: >-
+            PROVEN. The fileset form resolves and the runner logs "Registered module
+            nltps.modeltests for test auto-discovery". What TestModules consumes is a module
+            descriptor named by an Ant resource collection.
+          project_and_module_visibility: >-
+            PROVEN. The runner loads 286 modules into its classloading graph and registers
+            the test module. Generation and compilation were already established:
+            test_gen holds the _Test.java and classes_gen the matching .class.
+          first_cause_found_and_fixed: >-
+            Discovery was throwing. NoClassDefFoundError "Could not initialize class
+            com.sun.jna.Native" was raised inside ModelSourceRootWalker while collecting a
+            module's models, and launchtests swallowed it into a zero-test run reported as
+            BUILD SUCCESSFUL. MpsLoadTask exposes jnaLibraryPath; setting it to
+            MPS_HOME/lib/jna, where jnidispatch.dll lives, clears the exception entirely.
+            This is the third instance of one pattern: the headless worker must be told
+            where its own dependencies live, after org.jdom on the taskdef classpath and
+            idea.system.path for the worker's writable directories.
+          still_open: >-
+            Discovery remains 0 after the JNA fix. The crash is gone and the module is
+            registered, so what remains is why TestDiscovery.surveyModule finds no test root
+            in a module whose test class is generated and compiled. Do not touch
+            openTest or openPackages first: changing selection controls before the
+            resolution path is understood risks a working configuration nobody can explain.
       why_the_count_must_not_move: >-
         Holding the discovered count equal before, during and after the deliberate failure
         excludes three false-green cases in one control: testmodules resolving to nothing,
