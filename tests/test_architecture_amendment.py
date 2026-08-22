@@ -135,10 +135,32 @@ class StagedInventoryTests(unittest.TestCase):
         }
 
     def test_staged_inventory_matches_the_frozen_allocation(self) -> None:
+        # MPS-4 moved from 95 to 96 at the MPS-4 freeze: ImportedHLR was added to
+        # nltps.realization so the 119 imported requirement roots have a rootable concept
+        # to be, without reopening MPS-1's decision that Requirement is not rootable.
         self.assertEqual(
             self.ceilings(),
-            {"MPS-1": 40, "MPS-2": 66, "MPS-3": 78, "MPS-4": 95},
+            {"MPS-1": 40, "MPS-2": 66, "MPS-3": 78, "MPS-4": 96},
         )
+
+    def test_the_realization_inventory_is_eighteen_concepts(self) -> None:
+        blueprint = json.loads(graph.BLUEPRINT_PATH.read_text(encoding="utf-8"))
+        entry = next(e for e in blueprint["languages"] if e["name"] == "nltps.realization")
+        roots, nonroots = entry["root_concepts"], entry["non_root_concepts"]
+        self.assertEqual(len(roots) + len(nonroots), 18)
+        self.assertIn("ImportedHLR", roots)
+        self.assertNotIn("ImportedHLR", nonroots)
+        # Counted once, in exactly one collection, like every other concept.
+        self.assertEqual(len(set(roots) & set(nonroots)), 0)
+        self.assertEqual(len(set(roots + nonroots)), 18)
+
+    def test_importing_the_corpus_does_not_move_the_ceiling(self) -> None:
+        """The 119 HLRs are instances of ImportedHLR, not 119 more concepts.
+
+        If they were ever counted as concepts the MPS-4 ceiling would read 214 and the
+        gate would be measuring requirement volume instead of metamodel size.
+        """
+        self.assertEqual(self.ceilings()["MPS-4"], 96)
 
     def test_every_checkpoint_ceiling_is_strictly_larger_than_the_last(self) -> None:
         # A checkpoint that adds languages but not concepts has no distinct inventory,
@@ -771,7 +793,7 @@ class CrossCheckpointReachabilityTests(unittest.TestCase):
         self.assertEqual(
             [p.name for p in features.feature_specs()],
             ["mps1-concept-features.yaml", "mps2-concept-features.yaml",
-             "mps3-concept-features.yaml"],
+             "mps3-concept-features.yaml", "mps4-concept-features.yaml"],
         )
 
     def test_a_later_specification_resolves_inherited_superconcepts(self) -> None:
@@ -905,6 +927,205 @@ class DeferralTransitionTests(unittest.TestCase):
                       "ExternalReference.retrievedDate"):
             self.assertEqual(by_label[label]["lapsed_at"], "MPS-2", label)
             self.assertEqual(by_label[label]["carried_to"], "MPS-MAT-005B", label)
+
+
+class DatedDependencyAmendmentTests(unittest.TestCase):
+    """A dependency-kind change belongs to the checkpoint that performs it.
+
+    nltps.realization raises governance from DEFAULT to EXTENDS at MPS-4, so ImportedHLR
+    can inherit Requirement. The blueprint records the final shape, but the descriptor is
+    mutated by the MPS-4 materialization session. Without a date on the amendment the gate
+    would compare the live module against a future blueprint and report the amendment
+    itself as a defect at every earlier checkpoint.
+    """
+
+    def blueprint(self) -> dict:
+        return json.loads(graph.BLUEPRINT_PATH.read_text(encoding="utf-8"))
+
+    def realization_dependency(self) -> dict:
+        entry = next(e for e in self.blueprint()["languages"]
+                     if e["name"] == "nltps.realization")
+        return next(d for d in entry["dependencies"] if d["module"] == "nltps.governance")
+
+    def test_the_amendment_declares_when_it_lands_and_what_it_replaces(self) -> None:
+        dependency = self.realization_dependency()
+        self.assertEqual(dependency["kind"], "EXTENDS")
+        self.assertEqual(dependency["effective_at"], "MPS-4")
+        self.assertEqual(dependency["prior_kind"], "DEFAULT")
+
+    def test_before_the_amendment_the_prior_kind_is_expected(self) -> None:
+        errors, _ = graph.check(None, "MPS-3")
+        self.assertEqual([e for e in errors if "nltps.realization" in e], [], errors)
+
+    def test_at_the_amendment_checkpoint_the_new_kind_is_required(self) -> None:
+        # The descriptor still carries DEFAULT because this is a design freeze; the MPS-4
+        # session performs the mutation. The gate must say so rather than pass quietly.
+        errors, _ = graph.check(None, "MPS-4")
+        self.assertTrue(
+            any("nltps.realization" in e and "EXTENDS" in e for e in errors),
+            f"MPS-4 must require the raised dependency, got {errors}",
+        )
+
+    def test_an_undated_dependency_is_expected_at_every_checkpoint(self) -> None:
+        """Only a dated amendment gets the grace period."""
+        entry = next(e for e in self.blueprint()["languages"]
+                     if e["name"] == "nltps.clinicalintent")
+        for dependency in entry["dependencies"]:
+            self.assertNotIn("effective_at", dependency,
+                             "clinicalintent has no pending amendment")
+
+
+class SemanticCoreContainmentGateTests(unittest.TestCase):
+    """EXTENDS grants superconcept visibility; it does not transfer containment ownership.
+
+    MPS-4 gives nltps.realization EXTENDS nltps.governance for exactly one reason: so that
+    ImportedHLR can inherit Requirement without reopening MPS-1's decision that Requirement
+    is not rootable. Under the old rule that single inheritance need would also have handed
+    realization the right to contain Hazard, Decision, RiskControl and every other governed
+    concept, silently and forever. These fixtures pin both sides of the distinction, because
+    a rule that only ever sees the intended case is not evidence that it excludes the rest.
+    """
+
+    def run_gate(self, blueprint: dict, spec: dict) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            bp = Path(tmp) / "skeleton.json"
+            fp = Path(tmp) / "features.yaml"
+            bp.write_text(json.dumps(blueprint), encoding="utf-8")
+            fp.write_text(json.dumps(spec), encoding="utf-8")
+            original = (features.BLUEPRINT_PATH, features.FEATURES_PATH)
+            features.BLUEPRINT_PATH, features.FEATURES_PATH = bp, fp
+            try:
+                errors, _ = features.check()
+            finally:
+                features.BLUEPRINT_PATH, features.FEATURES_PATH = original
+        return errors
+
+    def concept(self, name, **kw):
+        base = {"name": name, "rootable": False, "abstract": False,
+                "superconcept": "BaseConcept", "intent": "fixture", "editor": "<name>",
+                "properties": [], "children": [], "references": [], "constraints": []}
+        base.update(kw)
+        return base
+
+    def scaffold(self, *, realization_children=None, realization_super="BaseConcept",
+                 whitelist=None):
+        """Two semantic-core languages, the second extending the first.
+
+        Deliberately mirrors the real shape: gov owns Requirement, Hazard and Decision;
+        real EXTENDS gov and owns one concept of its own.
+        """
+        blueprint = {
+            "semantic_core_languages": ["gov", "real"],
+            "semantic_core_containment_whitelist": whitelist or [],
+            "languages": [
+                language("gov", nonroots=["Requirement", "Hazard", "Decision"]),
+                language("real", dependencies=[{"module": "gov", "kind": "EXTENDS"}],
+                         roots=["ImportedHLR"], nonroots=["Evidence"]),
+            ],
+        }
+        spec = {
+            "datatypes": [],
+            "languages": {
+                "gov": {"concepts": [self.concept("Requirement"), self.concept("Hazard"),
+                                     self.concept("Decision")],
+                        "constraints": []},
+                "real": {
+                    "concepts": [
+                        self.concept("ImportedHLR", rootable=True,
+                                     superconcept=realization_super,
+                                     children=realization_children or []),
+                        self.concept("Evidence"),
+                    ],
+                    "constraints": [],
+                },
+            },
+        }
+        return blueprint, spec
+
+    # ------------------------------------------------------------------ accept
+
+    def test_inheriting_a_governance_concept_across_extends_is_accepted(self) -> None:
+        """ImportedHLR extends Requirement. This is the whole point of the edge."""
+        blueprint, spec = self.scaffold(realization_super="Requirement")
+        errors = self.run_gate(blueprint, spec)
+        self.assertEqual([e for e in errors if "superconcept" in e or "containment" in e],
+                         [], errors)
+
+    def test_containing_an_own_language_concept_is_accepted(self) -> None:
+        blueprint, spec = self.scaffold(
+            realization_super="Requirement",
+            realization_children=[{"name": "evidence", "target": "Evidence",
+                                   "cardinality": "0..n"}])
+        self.assertEqual([e for e in self.run_gate(blueprint, spec) if "contains" in e],
+                         [], "a language must still contain what it owns")
+
+    def test_a_whitelisted_pair_is_accepted(self) -> None:
+        blueprint, spec = self.scaffold(
+            realization_super="Requirement",
+            realization_children=[{"name": "held", "target": "Hazard",
+                                   "cardinality": "0..n"}],
+            whitelist=[{"owner": "real", "contains": "Hazard", "from": "gov",
+                        "why": "fixture"}])
+        self.assertEqual([e for e in self.run_gate(blueprint, spec) if "contains" in e],
+                         [], "an explicit blueprint exception must be honoured")
+
+    # ------------------------------------------------------------------ reject
+
+    def assert_rejected(self, target: str) -> None:
+        blueprint, spec = self.scaffold(
+            realization_super="Requirement",
+            realization_children=[{"name": "held", "target": target,
+                                   "cardinality": "0..n"}])
+        errors = self.run_gate(blueprint, spec)
+        self.assertTrue(
+            any("semantic-core language gov owns" in e and target in e for e in errors),
+            f"expected containment of {target} to be rejected, got {errors}",
+        )
+
+    def test_containing_governance_requirement_is_rejected(self) -> None:
+        # Inheriting Requirement is the sanctioned exception; containing one is not.
+        self.assert_rejected("Requirement")
+
+    def test_containing_governance_hazard_is_rejected(self) -> None:
+        self.assert_rejected("Hazard")
+
+    def test_containing_governance_decision_is_rejected(self) -> None:
+        self.assert_rejected("Decision")
+
+    def test_inheritance_and_containment_are_judged_independently(self) -> None:
+        """The same concept may be a legal superconcept and an illegal child."""
+        blueprint, spec = self.scaffold(
+            realization_super="Requirement",
+            realization_children=[{"name": "held", "target": "Requirement",
+                                   "cardinality": "0..n"}])
+        errors = self.run_gate(blueprint, spec)
+        self.assertFalse([e for e in errors if "superconcept requires EXTENDS" in e],
+                         "inheriting Requirement must stay legal")
+        self.assertTrue([e for e in errors if "containment ownership" in e],
+                        "containing Requirement must be rejected")
+
+    # ------------------------------------------------------------------ live
+
+    def test_the_live_blueprint_whitelists_only_what_it_must(self) -> None:
+        blueprint = json.loads(Path(features.BLUEPRINT_PATH).read_text(encoding="utf-8"))
+        pairs = {(e["owner"], e["contains"])
+                 for e in blueprint["semantic_core_containment_whitelist"]}
+        self.assertEqual(
+            pairs,
+            {("nltps.clinicalintent", "PhysicalQuantity"),
+             ("nltps.clinicalintent", "ExternalReference")},
+            "the whitelist should hold only the foundation representation concepts "
+            "clinicalintent embeds; anything else needs its own review",
+        )
+
+    def test_realization_extends_governance_without_containing_it(self) -> None:
+        blueprint = json.loads(Path(features.BLUEPRINT_PATH).read_text(encoding="utf-8"))
+        real = next(e for e in blueprint["languages"] if e["name"] == "nltps.realization")
+        kinds = {d["module"]: d["kind"] for d in real["dependencies"]}
+        self.assertEqual(kinds["nltps.governance"], "EXTENDS")
+        self.assertNotIn(("nltps.realization", "Requirement"),
+                         {(e["owner"], e["contains"])
+                          for e in blueprint["semantic_core_containment_whitelist"]})
 
 
 class ReferenceVisibilityGateTests(unittest.TestCase):

@@ -253,7 +253,18 @@ def check(
     for entry in in_scope:
         by_kind: dict[str, set[str]] = {"extends": set(), "depends": set()}
         for dependency in entry["dependencies"]:
-            key = "extends" if dependency["kind"] == "EXTENDS" else "depends"
+            kind = dependency["kind"]
+            # A dependency whose kind a later checkpoint raises carries the checkpoint it
+            # lands at. Before then the module legitimately still holds the prior kind, and
+            # comparing it against the final blueprint would report the amendment itself as
+            # a defect. nltps.realization is the case: governance moves DEFAULT to EXTENDS
+            # at MPS-4 so ImportedHLR can inherit Requirement, and the MPS-4 session is what
+            # mutates the descriptor.
+            effective = dependency.get("effective_at")
+            if (effective is not None and checkpoint is not None
+                    and checkpoint_ordinal(checkpoint) < checkpoint_ordinal(effective)):
+                kind = dependency.get("prior_kind", kind)
+            key = "extends" if kind == "EXTENDS" else "depends"
             by_kind[key].add(dependency["module"])
         by_kind["external"] = set(entry.get("external_explicit", []))
         expected[entry["name"]] = by_kind

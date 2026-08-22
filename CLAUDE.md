@@ -40,21 +40,23 @@ whether the migration is correct.
     MPS-1  foundation + governance                        closed
     MPS-2  clinical intent + roles.common                closed
     MPS-3  the four professional role projections        closed
-    MPS-4  realization + the 119-HLR import               feature freeze blocked
+    MPS-4  realization + the 119-HLR import               feature freeze complete
 
 - Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
 - Concept design that MPS-1 transcribed: `mps/bootstrap/mps1-concept-features.yaml`
 - Concept design that MPS-2 transcribed: `mps/bootstrap/mps2-concept-features.yaml`
 - Concept design frozen for MPS-3: `mps/bootstrap/mps3-concept-features.yaml`
-- MPS-4 is not frozen. Four decisions block it, recorded as `open_decisions_blocking_mps4`
-  on the MPS-4 checkpoint in `stage-a-checklist.yaml`. They are not engineering judgements
-  a materialization session may make for itself: the import contract names `Requirement`
-  as the destination for 119 roots, but `Requirement` is not rootable, its mandatory
-  `category` and `lifecycleState` have no source in the bundle, and the provenance the
-  contract mandates has no property to live on. **Do not begin MPS-4 by choosing answers
-  to these.**
+- Concept design frozen for MPS-4: `mps/bootstrap/mps4-concept-features.yaml`, which also
+  carries the 119-HLR import, neutral export and Stage-B equivalence contracts
 - Role and authorization ontology frozen for MPS-2: `mps/bootstrap/mps2-role-ontology.yaml`
 - Module graph, dependency kinds, per-checkpoint inventories: `mps/bootstrap/language-skeleton.json`
+
+The 119 imported HLRs are **instances of `ImportedHLR`, not concepts**. They persist in
+the import model and never under `languages/*/models/*.structure.mps`, because the module
+graph gate derives the concept inventory from exactly those files: a root landing there
+would be counted as a concept and the MPS-4 ceiling would read 215 instead of 96. That is
+the most expensive way this checkpoint can fail, because the number would still look
+deliberate.
 
 `--checkpoint MPS-N` on `tools/mps/check_module_graph.py` derives the expected language
 set and concept ceiling from the blueprint. Do not reintroduce a hard-coded ceiling;
@@ -71,7 +73,12 @@ editing `.mpl`.
 
 A concept may take a superconcept only from its own language or from a language declared
 `EXTENDS`. A concept may *contain* only what its own language or a transitive `EXTENDS`
-ancestor owns. A concept may *reference* anything its language declares, `EXTENDS` or
+ancestor owns — and never what a *different semantic-core language* owns unless the pair
+is in `semantic_core_containment_whitelist` in the blueprint. MPS-4 gives
+`nltps.realization` `EXTENDS nltps.governance` for one narrow reason, so `ImportedHLR` can
+inherit `Requirement`; that must not become permission to contain `Hazard`, `Decision`,
+`RiskControl` or any other governed state. **EXTENDS grants superconcept visibility, never
+containment ownership.** A concept may *reference* anything its language declares, `EXTENDS` or
 `DEFAULT` -- but not a language it declares no dependency on at all; that reference would
 fail to resolve during materialization, and since MPS-3 the specification gate rejects it.
 Changing a dependency kind is a controlled blueprint change, not an IDE convenience.

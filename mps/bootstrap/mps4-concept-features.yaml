@@ -1,0 +1,1093 @@
+schema_version: "0.1"
+register_id: MPS4-CF-001
+title: MPS-4 concept feature specification, realization and the 119-HLR import
+status: proposed_pending_accountable_review
+decision: ADR-001
+architecture_baseline: ENG-PKG-01-v0.6
+implementation_state: specification_not_live_mps_serialization
+
+purpose: >-
+  Fixes the eighteen realization concepts and the import, export and equivalence contracts
+  before any of them is created, so MPS-4 is transcription against a reviewed design. It
+  also settles the four decisions that blocked this freeze, each by evidence rather than
+  by choosing a plausible answer.
+
+authority: >-
+  Proposed. Nothing here is approved, and creating a concept in MPS does not approve it.
+  Freezing fixes the shape the materialization session must transcribe; it makes no claim
+  of clinical correctness, risk acceptability, or approval.
+
+ownership_invariant: >-
+  Realization owns implementation, evidence and runtime realization semantics. It does not
+  own intent, authority, workflow or requirement semantics, and it does not restate them.
+  The one apparent exception, ImportedHLR, is explained where it is declared: it is a
+  realization-owned root carrying governance-domain content, which is a persistence
+  exception and not a transfer of ownership.
+
+blocked_decisions_resolved:
+  MPS4-OD-001:
+    was: Requirement is not rootable, but the import contract requires 119 Requirement roots.
+    resolved: >-
+      A concrete rootable realization subtype, ImportedHLR extends Requirement. MPS-1 is
+      untouched: Requirement stays non-rootable and keeps its semantics. Tested rather than
+      assumed, because every existing precedent in this repository has an abstract parent
+      and Requirement is concrete: a probe subtype was created, persisted rootable true,
+      built, and accepted an actual root instance. The probe also inherited GOV-C-001 and
+      failed on a statement with no shall, then passed with a real one, which shows the
+      imported roots are governed by the requirement rules they inherit. The probe was
+      deleted and every touched file restored byte-identical.
+    cost: >-
+      nltps.realization gains one concept, 17 to 18, and the MPS-4 ceiling moves 95 to 96.
+      The derived sequence is 40 / 66 / 78 / 96. No earlier checkpoint moves.
+  MPS4-OD-002:
+    was: Requirement.category is mandatory and the corpus carried no category.
+    resolved: >-
+      The controlled F/SA/O document states a Category ID and the Source ID it aliases on
+      every row, so the category is a lookup. The importer now carries it: 69 functional,
+      25 cross_cutting_safety_and_assurance_constraint, 25 operational, every source id
+      aliased exactly once, corroborated against spec/quality_attributes.yaml. Nothing
+      reads requirement wording, and the ACC domain shows why that matters: its
+      requirements span all three categories, so no domain-level shortcut could be right.
+  MPS4-OD-003:
+    was: Requirement.lifecycleState is a mandatory reference with no source value.
+    resolved: >-
+      LifecycleStateEnum already contains proposed, which is exactly the document-control
+      baseline: proposed high-level requirements, not yet approved or allocated to a
+      clinical release. No enumeration amendment is needed. See lifecycle_contract for how
+      the Stage A mirror scoping is carried without claiming clinical maturity.
+  MPS4-OD-004:
+    was: The mandated provenance had nowhere to live on Requirement.
+    resolved: >-
+      GovernedElement.provenance is ProvenanceRef with cardinality 0..n, whose stated
+      intent is binding a governed element to the controlled source it was mirrored from by
+      path, line and content hash. Its three features accept the bundle exactly: all 119
+      source_line values are integers, all 119 record hashes and the source hash match the
+      declared pattern, and all 119 ids match the StableId pattern. No concept and no
+      property is added and no ceiling moves.
+
+representation_policy: >-
+  MPS offers three primitive datatypes and no real or date. Hashes are strings carrying a
+  64-hex pattern, as everywhere else in this model. MPS properties are single-valued and
+  reference links are 1 or 0..1, so every collection is a child.
+
+datatypes:
+- name: VerificationVerdictEnum
+  kind: enumeration
+  owner: nltps.realization
+  logical_type: enumeration
+  mps_type: EnumerationDeclaration
+  values:
+  - not_assessed
+  - passed
+  - failed
+  - blocked
+  traceability: realization evidence
+  source: ConOps V&V verdicts
+  note: not_assessed is first so it is the reading of an untouched claim. A verdict is stated by a
+    reviewer; REA-C-003 forbids computing it from child records.
+- name: EvidenceKindEnum
+  kind: enumeration
+  owner: nltps.realization
+  logical_type: enumeration
+  mps_type: EnumerationDeclaration
+  values:
+  - executable_result
+  - manual_record
+  - inspection_note
+  - analysis_report
+  traceability: realization evidence
+  source: ConOps evidence expectations
+  note: Distinguishes what kind of artifact is expected, not whether it exists.
+- name: DataDirectionEnum
+  kind: enumeration
+  owner: nltps.realization
+  logical_type: enumeration
+  mps_type: EnumerationDeclaration
+  values:
+  - read
+  - write
+  - read_write
+  traceability: realization structure
+  source: 'blueprint required constraint: adapter capabilities declare direction'
+  note: Mandatory on every capability. An adapter whose direction is unstated cannot be reviewed for
+    safety.
+- name: TrustZoneEnum
+  kind: enumeration
+  owner: nltps.realization
+  logical_type: enumeration
+  mps_type: EnumerationDeclaration
+  values:
+  - clinical_network
+  - segmented_research
+  - vendor_managed
+  - public
+  traceability: realization structure
+  source: ConOps security zoning
+  note: Mandatory on every capability, for the same reason as direction.
+languages:
+  nltps.realization:
+    concepts:
+    - owner: nltps.realization
+      name: ArchitectureRealization
+      rootable: true
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization structure
+      intent: 'File-per-root container for how the governed intent is actually built: the components
+        that implement it, the teams accountable for them, the allocations binding requirements to
+        components, and the configuration baselines those components were built at.'
+      source: language-skeleton.json root_concepts; ADR-001 realization allocation
+      properties:
+      - name: name
+        type: string
+        cardinality: '1'
+      children:
+      - name: components
+        target: Component
+        cardinality: 0..n
+      - name: teams
+        target: Team
+        cardinality: 0..n
+      - name: allocations
+        target: Allocation
+        cardinality: 0..n
+      - name: configurations
+        target: ConfigurationBaseline
+        cardinality: 0..n
+      references: []
+      editor: architecture realization <name> { <components> <teams> <allocations> <configurations>
+        }
+      constraints:
+      - REA-C-001
+    - owner: nltps.realization
+      name: Component
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization structure
+      intent: One implementation unit that realizes governed intent. It names what it is responsible
+        for and the team accountable for it; it restates no clinical semantics of its own.
+      source: ConOps component architecture
+      properties:
+      - name: componentName
+        type: string
+        cardinality: '1'
+      - name: responsibility
+        type: string
+        cardinality: 0..1
+      children: []
+      references:
+      - name: owningTeam
+        target: Team
+        cardinality: '1'
+        note: The accountable owner. Cardinality 1 is the mechanism for REA-C-001, and MPS-3 proved
+          empirically that an unset obligatory reference is reported on the reference descriptor.
+      editor: component <componentName> owned by <owningTeam> [<responsibility>]
+      constraints:
+      - REA-C-001
+    - owner: nltps.realization
+      name: Team
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization structure
+      intent: An accountable owner of realized work. A team is the unit accountability attaches to;
+        it is not a person and carries no personnel record.
+      source: ConOps accountability model
+      properties:
+      - name: teamName
+        type: string
+        cardinality: '1'
+      - name: accountableRole
+        type: string
+        cardinality: 0..1
+        note: A role title, never a named individual. Stage A carries no personnel data.
+      children: []
+      references: []
+      editor: team <teamName> [<accountableRole>]
+      constraints:
+      - REA-C-001
+    - owner: nltps.realization
+      name: Allocation
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization structure
+      intent: 'Binds one governed requirement to the component that realizes it and the team accountable
+        for that realization. The requirement is referenced, never contained: allocation records where
+        work lands, it does not own the requirement.'
+      source: spec/allocations.yaml; ADR-001 realization allocation
+      properties:
+      - name: rationale
+        type: string
+        cardinality: 0..1
+      children: []
+      references:
+      - name: allocatedRequirement
+        target: Requirement
+        cardinality: '1'
+        note: Governance owns Requirement; realization references it across the EXTENDS edge. ImportedHLR
+          is a Requirement, so an imported root substitutes here without a second link.
+      - name: component
+        target: Component
+        cardinality: '1'
+      - name: owningTeam
+        target: Team
+        cardinality: '1'
+      editor: allocate <allocatedRequirement> to <component> owned by <owningTeam>
+      constraints:
+      - REA-C-001
+    - owner: nltps.realization
+      name: ConfigurationBaseline
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization evidence
+      intent: The configuration a component was built and verified at, fingerprinted so a verification
+        claim can name the thing it actually tested.
+      source: ConOps configuration control
+      properties:
+      - name: baselineName
+        type: string
+        cardinality: '1'
+      - name: configurationHash
+        type: string
+        cardinality: '1'
+        pattern: ^[0-9a-f]{64}$
+        logical_type: sha256 digest
+        mps_type: string
+        note: Logical type is a digest; MPS has only string, so the pattern carries the constraint,
+          as with every other hash in this model.
+      children: []
+      references: []
+      editor: configuration <baselineName> @ <configurationHash>
+      constraints:
+      - REA-C-001
+    - owner: nltps.realization
+      name: InterfaceCatalog
+      rootable: true
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization structure
+      intent: File-per-root container for the interface families the realization exposes and consumes.
+      source: language-skeleton.json root_concepts
+      properties:
+      - name: name
+        type: string
+        cardinality: '1'
+      children:
+      - name: families
+        target: InterfaceFamily
+        cardinality: 0..n
+      references: []
+      editor: interface catalog <name> { <families> }
+      constraints:
+      - REA-C-001
+    - owner: nltps.realization
+      name: InterfaceFamily
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization structure
+      intent: A group of interface contracts that share a purpose and evolve together.
+      source: ConOps interface architecture
+      properties:
+      - name: familyName
+        type: string
+        cardinality: '1'
+      children:
+      - name: contracts
+        target: InterfaceContract
+        cardinality: 0..n
+      references: []
+      editor: interface family <familyName> { <contracts> }
+      constraints:
+      - REA-C-001
+    - owner: nltps.realization
+      name: InterfaceContract
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization structure
+      intent: One contract between a providing and a consuming component, stating whether the exchange
+        is synchronous.
+      source: ConOps interface architecture
+      properties:
+      - name: contractName
+        type: string
+        cardinality: '1'
+      - name: synchronous
+        type: boolean
+        cardinality: '1'
+      children: []
+      references:
+      - name: provider
+        target: Component
+        cardinality: '1'
+      - name: consumer
+        target: Component
+        cardinality: '1'
+      editor: contract <contractName> from <provider> to <consumer> [synchronous <synchronous>]
+      constraints:
+      - REA-C-001
+    - owner: nltps.realization
+      name: VerificationBaseline
+      rootable: true
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization evidence
+      intent: File-per-root container for the verification claims made at one baseline.
+      source: language-skeleton.json root_concepts; ConOps V&V model
+      properties:
+      - name: name
+        type: string
+        cardinality: '1'
+      children:
+      - name: claims
+        target: VerificationClaim
+        cardinality: 0..n
+      references: []
+      editor: verification baseline <name> { <claims> }
+      constraints:
+      - REA-C-002
+      - REA-C-003
+    - owner: nltps.realization
+      name: VerificationClaim
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization evidence
+      intent: A claim that one governed requirement has been verified, with the evidence that supports
+        it. This is the concept whose absence forced the GOV-C-004 literal example to be substituted
+        at MPS-1; its arrival is what makes the original example constructible.
+      source: ConOps V&V model; GOV-C-004 frozen negative example
+      properties:
+      - name: claimName
+        type: string
+        cardinality: '1'
+      - name: verdict
+        type: VerificationVerdictEnum
+        cardinality: '1'
+        note: Stated, never computed. REA-C-003 forbids inferring a parent verdict from child records.
+      children:
+      - name: criteria
+        target: AcceptanceCriterion
+        cardinality: 0..n
+      - name: executableSuites
+        target: ExecutableSuiteRef
+        cardinality: 0..n
+      - name: manualEvidence
+        target: ManualEvidenceRef
+        cardinality: 0..n
+      - name: evidenceRequirements
+        target: EvidenceRequirement
+        cardinality: 0..n
+      references:
+      - name: verifies
+        target: Requirement
+        cardinality: '1'
+        note: Referenced across the EXTENDS edge, never contained.
+      - name: owningTeam
+        target: Team
+        cardinality: '1'
+      - name: atConfiguration
+        target: ConfigurationBaseline
+        cardinality: 0..1
+      editor: verification claim <claimName> verdict <verdict> for <verifies> { <criteria> <executableSuites>
+        <manualEvidence> <evidenceRequirements> }
+      constraints:
+      - REA-C-001
+      - REA-C-002
+      - REA-C-003
+    - owner: nltps.realization
+      name: AcceptanceCriterion
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization evidence
+      intent: One condition a verification claim must satisfy, and whether it is stated measurably.
+        An unmeasurable criterion is recorded as such rather than quietly treated as met.
+      source: ConOps acceptance criteria
+      properties:
+      - name: criterionText
+        type: string
+        cardinality: '1'
+      - name: measurable
+        type: boolean
+        cardinality: '1'
+      children: []
+      references: []
+      editor: criterion <criterionText> [measurable <measurable>]
+      constraints:
+      - REA-C-002
+    - owner: nltps.realization
+      name: ExecutableSuiteRef
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization evidence
+      intent: Names an executable suite that produces evidence for a claim.
+      source: ConOps V&V automation
+      properties:
+      - name: suiteId
+        type: string
+        cardinality: '1'
+      - name: toolchain
+        type: string
+        cardinality: 0..1
+      children: []
+      references: []
+      editor: executable suite <suiteId> [<toolchain>]
+      constraints:
+      - REA-C-002
+    - owner: nltps.realization
+      name: ManualEvidenceRef
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization evidence
+      intent: Names a manual evidence record, where it is held and who recorded it, for a claim no
+        executable suite can support.
+      source: ConOps V&V manual evidence
+      properties:
+      - name: evidenceId
+        type: string
+        cardinality: '1'
+      - name: recordLocation
+        type: string
+        cardinality: '1'
+      - name: recordedByRole
+        type: string
+        cardinality: '1'
+        note: A role, never a named individual.
+      children: []
+      references: []
+      editor: manual evidence <evidenceId> at <recordLocation> by <recordedByRole>
+      constraints:
+      - REA-C-002
+    - owner: nltps.realization
+      name: EvidenceRequirement
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization evidence
+      intent: What evidence a claim is expected to produce, stated before the evidence exists so an
+        absent record is visible rather than merely missing.
+      source: ConOps evidence expectations
+      properties:
+      - name: requirementText
+        type: string
+        cardinality: '1'
+      - name: evidenceKind
+        type: EvidenceKindEnum
+        cardinality: '1'
+      children: []
+      references: []
+      editor: evidence requirement <evidenceKind> <requirementText>
+      constraints:
+      - REA-C-002
+    - owner: nltps.realization
+      name: AdapterCatalog
+      rootable: true
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization structure
+      intent: File-per-root container for the external systems this realization exchanges data with.
+      source: language-skeleton.json root_concepts
+      properties:
+      - name: name
+        type: string
+        cardinality: '1'
+      children:
+      - name: systems
+        target: ExternalSystem
+        cardinality: 0..n
+      references: []
+      editor: adapter catalog <name> { <systems> }
+      constraints:
+      - REA-C-004
+    - owner: nltps.realization
+      name: ExternalSystem
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization structure
+      intent: One system outside the NL-TPS boundary that an adapter talks to.
+      source: ConOps external interfaces
+      properties:
+      - name: systemName
+        type: string
+        cardinality: '1'
+      - name: vendor
+        type: string
+        cardinality: 0..1
+      children:
+      - name: capabilities
+        target: AdapterCapability
+        cardinality: 0..n
+      references: []
+      editor: external system <systemName> [<vendor>] { <capabilities> }
+      constraints:
+      - REA-C-004
+    - owner: nltps.realization
+      name: AdapterCapability
+      rootable: false
+      abstract: false
+      superconcept: GovernedElement
+      traceability: realization structure
+      intent: One capability of an adapter, declaring its direction of data flow, the trust zone it
+        operates in, its destination, and the commissioned profile it is approved under. All four
+        are mandatory because an adapter whose direction or trust zone is unstated cannot be reviewed
+        for safety.
+      source: ConOps adapter model; blueprint required constraint
+      properties:
+      - name: capabilityName
+        type: string
+        cardinality: '1'
+      - name: direction
+        type: DataDirectionEnum
+        cardinality: '1'
+      - name: trustZone
+        type: TrustZoneEnum
+        cardinality: '1'
+      - name: destination
+        type: string
+        cardinality: '1'
+      - name: commissionedProfile
+        type: string
+        cardinality: '1'
+      children: []
+      references: []
+      editor: capability <capabilityName> <direction> in <trustZone> to <destination> under <commissionedProfile>
+      constraints:
+      - REA-C-004
+    - owner: nltps.realization
+      name: ImportedHLR
+      rootable: true
+      abstract: false
+      superconcept: Requirement
+      traceability: governance-domain content under a realization-owned persistence exception
+      intent: 'One imported high-level requirement, as a root, so the controlled corpus can persist
+        file-per-root. It is a Requirement by subtype: statement, domain, category, verification methods,
+        identifier, version, aliases, provenance, lifecycle state and hazard/trace semantics are all
+        inherited from governance and none of them is restated here.'
+      source: mps/import/README.md; mps/import/hlr-baseline.json; MPS4-OD-001
+      properties:
+      - name: bundleId
+        type: string
+        cardinality: '1'
+        note: Which import bundle produced this root, e.g. NLTPS-HLR-MIRROR-0.2. An import-context
+          fact with no inherited home.
+      - name: authoritative
+        type: boolean
+        cardinality: '1'
+        default: false
+        note: 'False for every Stage A root. MPS booleans default to false, so the safe value is also
+          the default: a root that somehow escapes the importer still reads as non-authoritative.'
+      children: []
+      references: []
+      editor: imported HLR <identifier> [<bundleId>] { <statement> }
+      constraints:
+      - REA-C-005
+      - REA-C-006
+      - REA-C-007
+      ownership_exception: "ImportedHLR is governance-domain content represented by a realization-owned\n\
+        \        concrete root solely to satisfy MPS root persistence, without reopening the closed\n\
+        \        MPS-1 decision that Requirement is not rootable. It remains a subtype of governance\n\
+        \        Requirement and inherits every requirement semantic from there. Realization\n   \
+        \     ownership is a persistence and realization exception, not a transfer of requirement\n\
+        \        semantic ownership out of governance. A later reader should not conclude that\n \
+        \       requirements have migrated into realization: they have not, and the containment\n\
+        \        gate refuses realization any right to contain governance state."
+      inherited_from_requirement:
+      - name: statement
+        kind: property
+        source_field: normative_text_latex
+      - name: domain
+        kind: property
+        source_field: domain
+      - name: category
+        kind: property
+        source_field: category
+        note: Supplied by the F/SA/O alias table through the import bundle; never inferred from requirement
+          wording.
+      - name: verificationMethods
+        kind: child
+        source_field: verification_methods
+      inherited_from_governed_element:
+      - name: identifier
+        kind: child
+        target: StableId
+        source_field: id
+      - name: version
+        kind: child
+        target: Version
+        source_field: source.requirements_version
+      - name: aliases
+        kind: child
+        target: Alias
+        source_field: category_id
+        note: The HFR/HNFR/HOR category identifier, preserved as a parallel identifier with scheme
+          'F/SA/O category ID'.
+      - name: provenance
+        kind: child
+        target: ProvenanceRef
+        source_field: see provenance_contract
+      - name: lifecycleState
+        kind: reference
+        target: LifecycleState
+        source_field: see lifecycle_contract
+    constraints:
+    - id: REA-C-001
+      statement: Every realized obligation names an accountable owner. A Component, an Allocation
+        and a VerificationClaim each reference exactly one Team.
+      source_constraint: every realized obligation has an accountable owner
+      applies_to:
+      - Component
+      - Allocation
+      - VerificationClaim
+      traceability: realization structure
+      enforcement: MPS metamodel cardinality 1 on the owningTeam reference, confirmed empirically
+        at MPS-3 to report an unset obligatory reference on the reference descriptor
+      proof_status: active at MPS-4
+      negative_example: A Component with owningTeam unset. MPS reports No reference in the obligatory
+        role owningTeam on the reference descriptor; the node-level problems array stays silent, so
+        read-back has to inspect feature descriptors to see it.
+      positive_example: The same Component bound to a Team, accepted.
+    - id: REA-C-002
+      statement: Every VerificationClaim binds at least one ExecutableSuiteRef or at least one ManualEvidenceRef.
+        A claim supported by neither asserts a result nothing can be traced to.
+      source_constraint: every VerificationClaim binds an executable suite or explicit manual evidence
+        record
+      applies_to:
+      - VerificationClaim
+      traceability: realization evidence
+      enforcement: MPS checking rule. Neither child can carry cardinality 1..n on its own, because
+        either one satisfies the obligation; the disjunction is not expressible in the metamodel and
+        needs a rule.
+      proof_status: active at MPS-4
+      negative_example: A VerificationClaim with no executableSuites and no manualEvidence children.
+      positive_example: A claim with one ManualEvidenceRef and no executable suite must be accepted,
+        and so must the reverse. A rule demanding both would be wrong, and only the positive control
+        catches that.
+    - id: REA-C-003
+      statement: A verdict is stated, never inferred. A VerificationClaim whose verdict is passed
+        must bind evidence, and no verdict is computed from the records beneath it.
+      source_constraint: parent PASS is never inferred from child records
+      applies_to:
+      - VerificationClaim
+      - VerificationBaseline
+      traceability: realization evidence
+      enforcement: 'MPS checking rule rejecting a passed verdict with no bound evidence, plus the
+        absence of any derived-verdict feature anywhere in the language: there is nothing for an inference
+        to write into.'
+      proof_status: active at MPS-4
+      negative_example: A VerificationClaim with verdict passed and neither an ExecutableSuiteRef
+        nor a ManualEvidenceRef child.
+      positive_example: A claim with verdict not_assessed and no evidence is accepted. Absence of
+        evidence is a legitimate state; it is only a passing verdict that requires support.
+    - id: REA-C-004
+      statement: Every AdapterCapability declares direction, trust zone, destination and commissioned
+        profile. All four are mandatory.
+      source_constraint: adapter capabilities declare read/write direction, trust zone, destination,
+        and commissioned profile
+      applies_to:
+      - AdapterCapability
+      traceability: realization structure
+      enforcement: 'MPS metamodel: direction and trustZone are typed by realization-owned enumerations
+        and destination and commissionedProfile are mandatory strings. tools/mps/check_enum_persistence.py
+        additionally rejects a persisted member that does not belong to the declared enumeration.'
+      proof_status: active at MPS-4
+      negative_example: A capability whose direction is set to a TrustZoneEnum member. MPS accepts
+        the write and persists it unresolved with null where the member name belongs; the enum persistence
+        gate is what rejects it, because no checker or build does.
+      positive_example: A capability with all four stated, accepted.
+    - id: REA-C-005
+      statement: ImportedHLR is a realization-owned root that inherits governance Requirement. Realization
+        declares no child whose target a semantic-core language owns, so inheriting Requirement confers
+        no right to contain Requirement, Hazard, Decision, RiskControl or any other governed state.
+      source_constraint: imported requirement roots are realization-owned persistence, not a transfer
+        of requirement semantics out of governance
+      applies_to:
+      - ImportedHLR
+      traceability: governance-domain content under a realization-owned persistence exception
+      enforcement: gate-level structural rule, tools/mps/check_concept_features.py semantic-core containment
+        check against the blueprint whitelist
+      proof_status: active at MPS-4, proven at gate level
+      negative_example: A realization concept declaring a child targeting Hazard, Decision or Requirement,
+        rejected with EXTENDS grants superconcept visibility, not containment ownership.
+      positive_example: ImportedHLR extends Requirement, and a realization concept containing another
+        realization concept. Both must be accepted; a rule that rejected the inheritance would defeat
+        the amendment it exists to permit.
+    - id: REA-C-006
+      statement: 'Every ImportedHLR carries exactly two ProvenanceRef children, distinguished by role:
+        one fingerprinting the source row and one fingerprinting the source artifact.'
+      source_constraint: every imported requirement root carries deterministic two-part source provenance
+      applies_to:
+      - ImportedHLR
+      traceability: realization evidence
+      enforcement: import contract plus the equivalence check. The two are told apart by content,
+        not by child position, because MPS child order is not a contract this design is willing to
+        depend on.
+      proof_status: active at MPS-4
+      negative_example: An imported root with one ProvenanceRef, or with two whose sourceLine values
+        are both set, which would leave the record and artifact entries indistinguishable by role.
+      positive_example: The two entries frozen in provenance_contract, still recognised by role after
+        a round trip that reorders children.
+    - id: REA-C-007
+      statement: Imported requirement roots persist in the designated import model and never in a
+        language structure aspect. Importing the corpus adds instances, not concepts, and leaves the
+        checkpoint concept ceiling unchanged.
+      source_constraint: imported requirement roots persist in the import model and never in a structure
+        aspect
+      applies_to:
+      - ImportedHLR
+      traceability: MPS representation scaffolding
+      enforcement: gate-level structural rule. check_module_graph derives the concept inventory from
+        languages/*/models/*.structure.mps, so a root landing there would be counted as a concept
+        and the MPS-4 ceiling would read 215 instead of 96.
+      proof_status: active at MPS-4, proven at gate level
+      negative_example: An ImportedHLR root written under a *.structure.mps path, classified as invalid
+        import placement rather than counted as requirement persistence.
+      positive_example: 119 roots in the import model, with the MPS-4 ceiling still deriving to 96.
+
+lifecycle_contract:
+  decision: >-
+    All 119 imported roots reference one controlled LifecycleState instance whose state is
+    proposed. That is the document-control baseline of the source, not a claim about any
+    requirement's clinical maturity.
+  construction:
+    vocabulary: >-
+      A LifecycleVocabulary root named StageAMirrorLifecycle, in the import model, holding
+      exactly one LifecycleState.
+    state:
+      state: proposed
+      ordinal: 1
+      terminal: false
+  why_not_a_new_enumeration_value: >-
+    LifecycleStateEnum already contains proposed and the source says these are proposed
+    high-level requirements, not yet approved or allocated to a clinical release. Adding a
+    MIRRORED_STAGE_A value would invent vocabulary to say what an existing value already
+    says accurately.
+  how_the_mirror_scoping_is_carried: >-
+    By the vocabulary the state belongs to, not by the state node. LifecycleState declares
+    no name property, so StageAMirrorLifecycle is where the Stage A scoping lives. A later
+    reader must not mistake that node for a general-purpose proposed shared with clinical
+    content; the import contract names it explicitly for that reason.
+  what_it_does_not_assert: >-
+    Nothing about approval, release, allocation to a clinical release, or authority. The
+    mirror is non-authoritative and every ImportedHLR also carries authoritative false.
+
+provenance_contract:
+  shape: exactly two ProvenanceRef children per imported root
+  distinguished_by: role, determined by content, never by child position
+  entries:
+    - role: recordProvenance
+      sourcePath: the bundle source.path
+      sourceLine: the record source_line
+      sha256: the record record_sha256
+      identified_by: sourceLine is set
+    - role: sourceArtifactProvenance
+      sourcePath: the bundle source.path
+      sourceLine: absent
+      sha256: the bundle source.sha256
+      identified_by: sourceLine is absent
+  why_not_by_position: >-
+    MPS child order is stable in practice but is not a contract this design is willing to
+    depend on across an import, an export and a round trip. Reading provenance[0] and
+    provenance[1] would make equivalence depend on serialization order; reading the entry
+    whose sourceLine is set makes it depend on content. The two entries are distinguishable
+    by construction because exactly one of them carries a line number.
+  classification_provenance: >-
+    The category comes from a second controlled document, whose own SHA-256 the bundle
+    records as classification_source. It is deliberately not folded into record_sha256:
+    that hash is the fingerprint of the HLR source row and Stage B equivalence compares it
+    against that document, so absorbing a value from another one would redefine it.
+
+import_contract:
+  source_population: exactly 119 HLRs
+  source_identity: mps/import/hlr-baseline.json, bundle_id NLTPS-HLR-MIRROR-<version>
+  source_provenance: >-
+    source.path, source.document_id, source.requirements_version, source.source_date and
+    source.sha256, plus classification_source.path and classification_source.sha256.
+  destination_concept: nltps.realization.structure.ImportedHLR
+  mapping: one source HLR to one ImportedHLR root, total and injective
+  field_mapping:
+    - {source: id, destination: identifier StableId value}
+    - {source: normative_text_latex, destination: statement}
+    - {source: domain, destination: domain}
+    - {source: category, destination: category}
+    - {source: category_id, destination: an Alias child, scheme F/SA/O category ID}
+    - {source: verification_methods, destination: verificationMethods entries}
+    - {source: source_line, destination: recordProvenance sourceLine}
+    - {source: record_sha256, destination: recordProvenance sha256}
+    - {source: source.sha256, destination: sourceArtifactProvenance sha256}
+    - {source: source.requirements_version, destination: version value}
+    - {source: bundle_id, destination: bundleId}
+    - {source: normative_text_plain, destination: not imported}
+  normative_text_plain_is_not_imported: >-
+    It is a review projection of the exact LaTeX, not a second authority. Importing both
+    would create two texts that could drift, and the exact text is the one equivalence
+    compares.
+  source_hazard_is_not_imported_as_hazard_references: >-
+    source_hazard values are free text such as SCP; PRN; AUTH. Requirement.hazards
+    references Hazard nodes whose hazardId matches ^H-[0-9]{2}$, so these tokens have no
+    typed destination. They are retained in the bundle as source content and are not
+    manufactured into Hazard nodes. Establishing an authoritative token-to-hazard mapping
+    is separate work and is not assumed here.
+  identifier_preservation: >-
+    The stable id is the source id, unchanged. The category id is preserved as a parallel
+    Alias rather than replacing it, which is what the classification migration promised.
+  ordering: >-
+    Import processes records in ascending source id. Order affects nothing in the result,
+    and stating it removes a source of nondeterminism from any later comparison.
+  transactionality: >-
+    One repository write command for the complete baseline, rolled back entirely on any
+    error. A partial corpus is worse than none: it looks like a successful import.
+  idempotence: >-
+    Re-importing an identical bundle makes no semantic change. A root that already exists
+    with different normative content is a conflict, reported and never silently resolved.
+  failure_behaviour:
+    malformed_record: reject the import, roll back, report the record
+    duplicate_source_id: reject; the bundle builder already fails closed on this
+    missing_record: reject; the count and the domain distribution are both checked
+    unexpected_domain: reject
+    unsupported_verification_method: reject
+    existing_root_with_different_content: report the conflict, change nothing
+  not_sufficient_evidence: >-
+    119 roots created is not evidence of a correct import. The evidence is the per-root
+    table required by equivalence_contract, with 119 attributable rows.
+
+hlr_root_classifier:
+  purpose: >-
+    Decide what counts as an imported HLR root without reading identifier text. The proof
+    sandbox already contains GOV-001 and GOV-001-1 on proof instances, so any classifier
+    keyed on identifier shape would count them.
+  rule: >-
+    A node is an imported HLR root if and only if all of: it is a root node; its concept is
+    nltps.realization.structure.ImportedHLR; it resides in the designated import model; and
+    it carries the two-part provenance required by REA-C-006.
+  excludes_by_construction:
+    - >-
+      Proof sandbox instances, which are RequirementBaseline and Requirement in
+      nltps.proof.cases, not ImportedHLR in the import model.
+    - Any node whose concept merely resembles a requirement.
+  required_fixtures:
+    - a proof-sandbox identifier such as GOV-001 is not counted as an imported HLR root
+    - a valid imported root in the import model is counted
+    - an ImportedHLR root in the wrong model is rejected as invalid placement
+    - a node in the import model whose concept is not ImportedHLR is not counted
+    - an ImportedHLR root under a structure aspect path is rejected, not counted
+
+file_per_root_contract:
+  model: the designated import model, a solution model outside languages/
+  never: >-
+    Not in any languages/*/models/*.structure.mps. check_module_graph derives the concept
+    inventory from those files, so a root there would be counted as a concept and the MPS-4
+    ceiling would read 215 instead of 96. This is the single most expensive way this
+    checkpoint could fail, because the count would still look deliberate.
+  persistence_mode: file-per-root, as project.default_model_persistence already requires
+  file_count_expectation: >-
+    119 root files for the corpus, plus the model descriptor and the StageAMirrorLifecycle
+    vocabulary root. Infrastructure files are distinguished by not being ImportedHLR roots,
+    not by filename.
+  naming: >-
+    MPS owns root filenames and derives them from the node, so the contract does not invent
+    a scheme. What is frozen is the relationship: exactly one file per imported root, one
+    root per file, and the stable identifier recoverable from the node rather than from the
+    filename.
+  collision_rule: >-
+    Two roots with the same stable identifier are a conflict, not a merge and not a rename.
+    The import stops and reports both.
+
+neutral_export_contract:
+  purpose: a representation comparable to the controlled input without MPS specifics
+  canonical_fields:
+    - id
+    - domain
+    - category
+    - category_id
+    - statement_latex
+    - verification_methods
+    - record_provenance: {source_path, source_line, sha256}
+    - source_artifact_provenance: {source_path, sha256}
+    - lifecycle_state
+    - authoritative
+    - bundle_id
+  excluded_fields:
+    - MPS node ids, model references and any other transient identity
+    - filenames and paths inside the MPS project
+    - child ordering
+  ordering: records ascending by id; verification_methods in the source order
+  encoding: UTF-8, LF newlines, JSON with sorted keys and a trailing newline
+  normalization: >-
+    None applied to statement_latex: it is compared exactly. Newline normalization applies
+    to the file, not to field content, so a host that writes CRLF cannot make an export
+    differ from the same model exported elsewhere.
+  host_independence: >-
+    Nothing in the export may depend on the operating system, the filesystem or an MPS
+    session. The MPS-1 finding that a PowerShell generator emitted CRLF is the precedent:
+    the same model must export byte-identically on any host.
+
+equivalence_contract:
+  purpose: Stage B evidence that the imported model says what the controlled input says
+  comparison: field by field, per record, over the 119 ids
+  exact_equality:
+    - id
+    - statement_latex
+    - domain
+    - category
+    - category_id
+    - record_provenance.sha256
+    - source_artifact_provenance.sha256
+    - record_provenance.source_line
+  set_equality:
+    - verification_methods
+  order_insensitive:
+    - the two provenance entries, matched by role rather than by position
+  normalized_equality:
+    - none
+  tolerated_representation_change:
+    - >-
+      MPS node identity, which has no counterpart in the source and is excluded from the
+      export.
+    - >-
+      Child ordering within a root, which is why provenance entries are matched by content.
+  failure_categories:
+    missing_root: a source id with no exported record
+    duplicate_root: a source id exported more than once
+    extra_root: an exported record whose id is not in the source
+    identifier_mismatch: an id present but not equal
+    text_mismatch: statement_latex differs from normative_text_latex
+    feature_mismatch: domain, category, category_id or verification_methods differ
+    trace_mismatch: an alias or allocation link that does not correspond
+    provenance_mismatch: a hash or source line that differs, or a role that cannot be matched
+    lifecycle_mismatch: a root not referencing the StageAMirrorLifecycle state
+  forbidden_evidence:
+    - a count-only comparison
+    - looks equivalent, or any judgement not reducible to a named field comparison
+    - one aggregate PASS
+  per_root_evidence:
+    required_rows: 119
+    columns:
+      - source_id
+      - source_artifact_path
+      - source_record_sha256
+      - mps_root_identity
+      - neutral_export_identity
+      - equivalence_verdict
+    note: >-
+      One row per requirement, each independently attributable. An aggregate result cannot
+      show which requirement was not compared.
+
+gov_c_004_reactivation:
+  constraint: GOV-C-004
+  deferral_class: literal_example_substitution
+  status_before: mechanism implemented and proven, literal negative example substituted
+  status_at_mps4: reactivated at MPS-4, active proof obligation
+  why_now: >-
+    The frozen record says the literal example must be re-exercised when the verification
+    concept becomes available. VerificationClaim is declared here and is instantiable
+    through VerificationBaseline root -> claims -> VerificationClaim, so the original
+    example is constructible for the first time.
+  literal_example: Hazard --MITIGATES--> VerificationClaim
+  mechanism_unchanged: >-
+    GOV-C-002 source and target validation against the TraceRelation allowed lists. The
+    mechanism was proven at MPS-1 with Hazard MITIGATES Requirement substituted; MPS-4 runs
+    the literal example against that same unchanged mechanism.
+  not_automatic: >-
+    literal_example_substitution does not lapse on reachability. Like semantic_model_absence
+    it requires deliberate reclassification, and nothing in the gate will notice if this is
+    forgotten. That is why it is budgeted here rather than discovered during materialization.
+  three_class_audit_at_mps4:
+    non_instantiability: >-
+      Lapses automatically when instantiability changes. None is open: ROL-C-002 and
+      ROL-C-003 lapsed and were discharged at MPS-3.
+    semantic_model_absence: >-
+      Requires deliberate reclassification. None is open: GOV-C-007 was reactivated at
+      MPS-2 and proven there.
+    literal_example_substitution: >-
+      Requires deliberate reclassification. GOV-C-004 is the one open record and this
+      checkpoint is where it resolves.
+  carried_to: MPS-MAT-005D
+
+acceptance_mapping:
+  MPS-MAT-003D:
+    wording: Realization concepts are disjoint, exhaustive, and single-owner against the
+      blueprint inventory.
+    evidence_required:
+      - 18 concepts materialized, matching this specification feature by feature
+      - cumulative ceiling deriving to 96 with the sequence 40 / 66 / 78 / 96
+      - every link read back individually against the frozen contract
+      - every persisted enumeration value resolving to its declared enumeration
+      - the realization module carrying EXTENDS governance and no undeclared dependency
+  MPS-MAT-005D:
+    wording: Realization constraints, typesystems, editors, and negative model tests pass,
+      including demonstrated rejection of deliberately invalid nodes.
+    evidence_required:
+      - REA-C-001 through REA-C-007, each with its frozen negative example demonstrated
+      - positive controls where a false rejection would matter, named in each constraint
+      - the GOV-C-004 literal example demonstrated against the unchanged mechanism
+      - 18 minimum editors, with all four languages building
+  MPS-MAT-004B:
+    wording: File-per-root persistence is demonstrated on normative instance models.
+    evidence_required:
+      - the import model in file-per-root mode
+      - one file per imported root and one root per file
+      - no imported root under any languages/*/models/*.structure.mps path
+      - the concept ceiling still deriving to 96 after the corpus is imported
+  MPS-MAT-006:
+    wording: The HLR importer accepts the schema-valid bundle and creates exactly 119 roots.
+    evidence_required:
+      - schema validation of the bundle before any write
+      - exactly 119 ImportedHLR roots by the structural classifier, not by identifier text
+      - the proof sandbox demonstrably excluded from that count
+      - every mandatory inherited feature populated from the mapping above
+      - idempotence, and a reported conflict on differing content
+  MPS-MAT-007:
+    wording: Neutral reverse export has zero unexplained discrepancy from controlled input.
+    evidence_required:
+      - the neutral export as specified, byte-stable across repeated runs
+      - the 119-row per-root equivalence table
+      - every failure category checked and reported, not only the count
+  MPS-MAT-008:
+    wording: Headless build and model tests pass without the experimental agent toolkit.
+    evidence_required:
+      - a build run without the MCP toolkit in the loop
+      - note that every prior checkpoint used MCP for authoring; this item is about the
+        build being reproducible without it
+  MPS-MAT-009:
+    wording: Independent Stage A review confirms no patient data, credentials, signing keys,
+      or authority cutover.
+    evidence_required:
+      - a named reviewer, since this item is a human judgement and no gate can stand in for it
+      - the repository hygiene gate as supporting evidence only
+
+persistence_assumptions_carried_into_mps4:
+  links: >-
+    Every created child and reference is presumed persisted incorrectly until individually
+    read back and compared against this specification for type, target, cardinality and
+    containment semantics. MPS-2 lost 34 of 37 cardinalities silently and MPS-3 lost 16 of
+    16, both with ok:true throughout. No sampling.
+  enumerations: >-
+    Every enum-valued property is presumed unresolved or foreign until its persisted member
+    resolves to the property's declared enumeration.
+    tools/mps/check_enum_persistence.py is the mechanical check and must be run after any
+    session that writes enum values.
+  diagnostics: >-
+    Read-back inspects node-level problems, child descriptors and reference descriptors.
+    MPS reports an obligatory-role violation on the feature descriptor, and a reader that
+    looks only at the node level sees a clean result. That mistake produced a wrong finding
+    at MPS-2 which had to be withdrawn at MPS-3.
+
+counts:
+  realization_concepts: 18
+  rootable: 5
+  non_rootable: 13
+  datatypes_declared: 4
+  constraints: 7
+  mps3_cumulative: 78
+  mps4_cumulative_ceiling: 96
+  hlr_roots_imported_at_mps4: 119
+  hlr_roots_are_instances_not_concepts: true
+  ceiling_after_import: 96

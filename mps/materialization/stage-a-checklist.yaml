@@ -161,13 +161,59 @@ checkpoints:
       [MPS-MAT-003D, MPS-MAT-005D, MPS-MAT-004B, MPS-MAT-006, MPS-MAT-007,
        MPS-MAT-008, MPS-MAT-009]
     feature_freeze_status: >-
-      BLOCKED. The realization metamodel half of the MPS-4 freeze is decidable, but the
-      119-HLR import contract cannot be frozen against the current controlled record: the
-      destination the record names cannot receive the corpus the record supplies. Four
-      decisions are open and none of them is an engineering judgement a materialization
-      session may make for itself. They were found by mapping every bundle field onto the
-      frozen Requirement concept rather than by inspection of counts.
-    open_decisions_blocking_mps4:
+      FROZEN. mps/bootstrap/mps4-concept-features.yaml specifies eighteen realization
+      concepts and the import, export and equivalence contracts. All four blocking
+      decisions were resolved by evidence rather than by choosing a plausible answer; the
+      records below are retained so the reasoning stays attributable.
+    feature_specification: mps/bootstrap/mps4-concept-features.yaml
+    controlled_amendments_at_freeze:
+      realization_inventory: 17 -> 18, adding ImportedHLR
+      mps4_ceiling: 95 -> 96
+      derived_sequence: 40 / 66 / 78 / 96
+      realization_governance_dependency: DEFAULT -> EXTENDS
+      semantic_core_containment: >-
+        A new blueprint whitelist and gate rule. EXTENDS grants superconcept visibility
+        across a semantic-core boundary and never containment ownership, so realization
+        inheriting Requirement does not become permission to contain Hazard, Decision or
+        RiskControl. The whitelist holds only the two foundation representation concepts
+        clinicalintent already embeds.
+      descriptor_note: >-
+        The blueprint changed; the .mpl did not. The dependency mutation is performed by
+        the MPS-4 materialization session through MCP, which then verifies the resulting
+        graph. This is a design freeze and touched no MPS persistence.
+    ownership_exception: >-
+      ImportedHLR is governance-domain content represented by a realization-owned concrete
+      root solely to satisfy MPS root persistence without reopening the closed MPS-1
+      decision that Requirement is not rootable. It remains a subtype of governance
+      Requirement. Realization ownership is a persistence exception, not a transfer of
+      requirement semantic ownership; requirements have not migrated into realization, and
+      the containment gate refuses realization any right to contain governance state.
+    resolved_decisions:
+      MPS4-OD-001: >-
+        CLOSED by ImportedHLR, a concrete rootable realization subtype of Requirement.
+        Tested rather than assumed: every existing precedent in this repository has an
+        abstract parent and Requirement is concrete, so a probe subtype was created, read
+        back rootable, built, and accepted an actual root instance. The probe also
+        inherited GOV-C-001 and failed on a statement with no shall, then passed with a
+        real one. Probe deleted, every touched file restored byte-identical.
+      MPS4-OD-002: >-
+        CLOSED at f7cca81. The controlled F/SA/O document states a Category ID and the
+        Source ID it aliases on every row, so the category is a lookup: 69 / 25 / 25, every
+        source id aliased exactly once, corroborated against spec/quality_attributes.yaml.
+        No requirement wording is read; ACC spans all three categories, so no domain-level
+        shortcut would have been right.
+      MPS4-OD-003: >-
+        CLOSED without amending the lifecycle vocabulary. LifecycleStateEnum already
+        contains proposed, which is the document-control baseline verbatim. See
+        lifecycle_contract in the feature specification for how Stage A mirror scoping is
+        carried by the vocabulary instance rather than by claiming clinical maturity.
+      MPS4-OD-004: >-
+        CLOSED with no concept, property or ceiling change. GovernedElement.provenance is
+        ProvenanceRef 0..n, whose stated intent is binding a governed element to the source
+        it was mirrored from by path, line and content hash. All 119 source lines are
+        integers, all 120 hashes match the declared pattern, and all 119 ids match the
+        StableId pattern.
+    open_decisions_retained_for_traceability:
       - id: MPS4-OD-001
         title: Requirement is not rootable, but the import contract requires 119 Requirement roots
         evidence: >-
@@ -260,7 +306,10 @@ checkpoints:
         recommendation: >-
           Confirm ProvenanceRef first. If it fits, no amendment is needed anywhere, which
           is much the cheapest outcome and keeps every ceiling still.
-    what_was_completed_instead: >-
+    superseded_note: >-
+      The four records above were the blocking analysis. They are retained because the
+      reasoning that closed them is worth keeping, not because anything remains open.
+    what_was_blocked_before_the_audit: >-
       The post-MPS-3 enum persistence-integrity control, which had to land before MPS-4
       writes anything. The realization metamodel half of the freeze was analysed and is
       decidable, but was not written: a mps4-concept-features.yaml covering the seventeen
@@ -525,7 +574,27 @@ acceptance_items:
 
       - constraint: GOV-C-004
         deferral_class: literal_example_substitution
-        status: mechanism implemented and proven, literal negative example substituted
+        status: reactivated at MPS-4, active proof obligation
+        reactivated_at: MPS-4
+        reactivation_concept: VerificationClaim
+        carried_to: MPS-MAT-005D
+        literal_example: Hazard --MITIGATES--> VerificationClaim
+        transition_rationale: >-
+          The frozen record said the literal example must be re-exercised when the
+          verification concept becomes available. VerificationClaim is declared in
+          mps4-concept-features.yaml and is instantiable through VerificationBaseline root
+          -> claims -> VerificationClaim, so the original example is constructible for the
+          first time. The mechanism is unchanged: GOV-C-002 source and target validation
+          against the TraceRelation allowed lists, proven at MPS-1 with the substituted
+          example.
+        not_automatic: >-
+          literal_example_substitution does not lapse on reachability. Like
+          semantic_model_absence it needs deliberate reclassification, and no gate would
+          have noticed if this had been forgotten; it fails by not firing. Budgeting it at
+          the freeze is the only reason it is not a discovery during materialization.
+        active_means: >-
+          Required, not demonstrated. The behavioural proof belongs to MPS-4 materialization.
+        prior_status: mechanism implemented and proven, literal negative example substituted
         specified_negative_example: >-
           A TraceLink from Hazard to a verification entity using MITIGATES.
         not_literally_instantiable_because: >-

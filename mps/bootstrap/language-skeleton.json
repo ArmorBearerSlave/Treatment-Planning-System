@@ -180,7 +180,10 @@
         },
         {
           "module": "nltps.governance",
-          "kind": "DEFAULT"
+          "kind": "EXTENDS",
+          "effective_at": "MPS-4",
+          "prior_kind": "DEFAULT",
+          "why": "Raised so ImportedHLR can inherit governance Requirement. The MPS-4 materialization session performs the descriptor mutation; before that checkpoint the module legitimately still carries DEFAULT."
         },
         {
           "module": "nltps.clinicalintent",
@@ -198,7 +201,8 @@
         "ArchitectureRealization",
         "InterfaceCatalog",
         "VerificationBaseline",
-        "AdapterCatalog"
+        "AdapterCatalog",
+        "ImportedHLR"
       ],
       "non_root_concepts": [
         "Component",
@@ -219,7 +223,10 @@
         "every realized obligation has an accountable owner",
         "every VerificationClaim binds an executable suite or explicit manual evidence record",
         "parent PASS is never inferred from child records",
-        "adapter capabilities declare read/write direction, trust zone, destination, and commissioned profile"
+        "adapter capabilities declare read/write direction, trust zone, destination, and commissioned profile",
+        "imported requirement roots are realization-owned persistence, not a transfer of requirement semantics out of governance",
+        "every imported requirement root carries deterministic two-part source provenance",
+        "imported requirement roots persist in the import model and never in a structure aspect"
       ]
     },
     {
@@ -426,5 +433,26 @@
     "EXTENDS": "Target concepts are available as superconcepts in this language's structure aspect. Required wherever a concept declares a superconcept from the target.",
     "DEFAULT": "Module dependency for behavior, constraints, and references only. A concept in this language shall not declare a superconcept from a DEFAULT target.",
     "change_rule": "Upgrading DEFAULT to EXTENDS, or downgrading EXTENDS to DEFAULT, is a controlled change to this blueprint. It shall not be made silently in the IDE; the module graph gate compares each kind separately."
-  }
+  },
+  "semantic_core_languages": [
+    "nltps.foundation",
+    "nltps.governance",
+    "nltps.clinicalintent",
+    "nltps.realization"
+  ],
+  "semantic_core_containment_whitelist": [
+    {
+      "owner": "nltps.clinicalintent",
+      "contains": "PhysicalQuantity",
+      "from": "nltps.foundation",
+      "why": "a dose constraint carries its limit; unit and dose basis travel with the number"
+    },
+    {
+      "owner": "nltps.clinicalintent",
+      "contains": "ExternalReference",
+      "from": "nltps.foundation",
+      "why": "an evidence profile cites the controlled sources outside the model"
+    }
+  ],
+  "semantic_core_containment_rule": "A language may declare a superconcept from any transitive EXTENDS ancestor. It may not declare a CHILD whose target concept a different semantic-core language owns unless that pair appears in semantic_core_containment_whitelist. EXTENDS grants inheritance visibility, never containment ownership: nltps.realization extends nltps.governance so ImportedHLR can inherit Requirement, and that must not become permission to contain Hazard, Decision, RiskControl or any other governed state."
 }

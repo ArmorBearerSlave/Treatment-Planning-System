@@ -17,6 +17,13 @@ Enforced here:
     EXTENDS ancestor's, or a DEFAULT dependency's. Containment is stricter and excludes
     DEFAULT, but a reference to a language nobody declared is not legal either, and
     nothing checked it before MPS-3;
+  * containment never crosses a semantic-core ownership boundary on the strength of an
+    EXTENDS edge alone. MPS-4 gives nltps.realization EXTENDS nltps.governance so that
+    ImportedHLR can inherit Requirement; without this rule that one narrow inheritance
+    need would also hand realization the right to contain Hazard, Decision, RiskControl
+    and every other governed concept. Such containment is a controlled exception listed in
+    the blueprint whitelist, and today the whitelist holds only the two foundation
+    representation concepts clinicalintent legitimately embeds;
   * properties and references are single-valued and children may be multi-valued,
     matching what the MPS metamodel can actually express;
   * every declared datatype is used and every used datatype is declared;
@@ -141,6 +148,11 @@ def check(features_path: Path | None = None) -> tuple[list[str], dict[str, int]]
     # One closure, two call sites: superconcept legality and containment legality.
     extends_targets = extends_closure(blueprint)
     default_targets = default_dependencies(blueprint)
+    semantic_core = set(blueprint.get("semantic_core_languages", ()))
+    containment_whitelist = {
+        (entry["owner"], entry["contains"])
+        for entry in blueprint.get("semantic_core_containment_whitelist", ())
+    }
 
     blueprint_concepts = {
         entry["name"]: {
@@ -265,6 +277,25 @@ def check(features_path: Path | None = None) -> tuple[list[str], dict[str, int]]
                                 f"its transitive EXTENDS ancestors "
                                 f"{sorted(extends_targets.get(language, set())) or '[]'}; "
                                 f"a DEFAULT dependency permits references, not containment"
+                            )
+                        elif (target_owner != language
+                              and target_owner in semantic_core
+                              and (language, target) not in containment_whitelist):
+                            # EXTENDS alone is not enough here. nltps.realization extends
+                            # nltps.governance so ImportedHLR can inherit Requirement;
+                            # inheritance visibility must not quietly become permission to
+                            # contain Hazard, Decision, RiskControl or any other governed
+                            # state. Crossing a semantic-core ownership boundary by
+                            # containment is a controlled exception, listed in the
+                            # blueprint, not a consequence of a dependency kind.
+                            errors.append(
+                                f"{label}.{link.get('name')} contains {target}, which the "
+                                f"semantic-core language {target_owner} owns. EXTENDS "
+                                f"grants superconcept visibility, not containment "
+                                f"ownership; add the pair to "
+                                f"semantic_core_containment_whitelist in the blueprint if "
+                                f"this is genuinely intended, or reference {target} "
+                                f"instead of containing it"
                             )
                     elif kind_name == "references":
                         # Weaker than containment but not absent. A reference may cross a
