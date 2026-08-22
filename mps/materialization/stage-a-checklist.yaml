@@ -1886,6 +1886,24 @@ acceptance_items:
                 once that passes are the real readings collected. A probe that never enters
                 the intended worker and merely exits successfully has worthless readings, for
                 the same reason every other control in this item exists.
+              simplification_settled_by_trial: >-
+                The probe does not need mps.run-worker at all. LaunchTestTask inherits
+                setWorker from MpsLoadTask and assigns its own worker string at construction,
+                so a worker attribute on launchtests overrides it. Settled by trial rather
+                than by reading a constant pool: with worker="nltps.probe.DoesNotExistProbe"
+                the run fails with ClassNotFoundException naming that class and never reaches
+                the test class, where a clobbered attribute would have produced the ordinary
+                run. One attribute, and a clobbered value would have cost only the run already
+                in hand.
+              what_the_simplification_removes: >-
+                The probe runs through the production launchtests task with only the worker
+                swapped, so the project is opened and testmodules registered through
+                LibraryInitializer and ModulesMiner exactly as in the failing run. That
+                retires the repository-versus-project population divergence recorded as the
+                last surviving difference, and it removes one of the two jar placements, since
+                launcherSupport already puts the launcher jar on the fork classpath. Only the
+                probe jar needs placing. The reproduction control stays regardless: it costs
+                one assertion and it is what makes any reading citable.
               worker_base_corrected: >-
                 The probe extends LaunchTestWorker, not CoreWorker. CoreWorker
                 .createEnvironment starts an MpsEnvironment; LaunchTestWorker
