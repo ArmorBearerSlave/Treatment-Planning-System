@@ -1646,6 +1646,30 @@ acceptance_items:
         - repair the fixture
         - rerun - the same N discovered, N of N pass
         - repeat from a fresh process - N of N pass again
+      first_contact_result:
+        verdict: THE CONTRACT CAUGHT A FALSE GREEN ON ITS FIRST RUN
+        what_happened: >-
+          The sentinel test was authored deliberately red -- a VerificationClaim with verdict
+          passed and no evidence, which REA-C-002 and REA-C-003 both reject -- and launchtests
+          returned BUILD SUCCESSFUL with exit code 0. The JUnit reports it wrote say
+          tests="0" failures="0", contain no testcase element, and never name the authored
+          test.
+        why_it_matters: >-
+          Without the frozen authored = discovered = executed = N requirement this would have
+          been recorded as launchtests PASS, and MPS-MAT-008 would have closed on a task that
+          ran nothing. The contract was written before the fixture precisely so that it could
+          not be relaxed once a green result was in hand, and it earned that on first contact.
+        not_a_missing_test: >-
+          The test generated and compiled. test_gen holds
+          REA_C_002_evidence_required_for_assessed_verdict_Test.java and classes_gen holds
+          the corresponding .class, which imports org.junit.jupiter. The gap is between the
+          compiled test classes and what the runner discovers, not in the fixture.
+        next_diagnosis: >-
+          LaunchTestTask exposes setOpenTest and setOpenPackages alongside the testmodules
+          resource collection; the module's tests-facet output may also need to reach the
+          runner's classpath. Establish discovery before touching the fixture, and re-run the
+          teeth cycle from red once discovery is proven, because a green obtained by changing
+          the fixture would prove nothing about the runner.
       why_the_count_must_not_move: >-
         Holding the discovered count equal before, during and after the deliberate failure
         excludes three false-green cases in one control: testmodules resolving to nothing,

@@ -13,6 +13,7 @@
       <modulePath path="$PROJECT_DIR$/languages/nltps.roles.radonc/nltps.roles.radonc.mpl" folder="" />
       <modulePath path="$PROJECT_DIR$/languages/nltps.roles.therapy/nltps.roles.therapy.mpl" folder="" />
       <modulePath path="$PROJECT_DIR$/sandbox/nltps.proof/nltps.proof.msd" folder="proof" />
+      <modulePath path="$PROJECT_DIR$/tests/nltps.modeltests/nltps.modeltests.msd" folder="tests" />
     </projectModules>
   </component>
 </project>

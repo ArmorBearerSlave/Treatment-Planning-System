@@ -33,6 +33,7 @@
   <property name="project.dir" location="${basedir}/mps/NLTPSGovernance"/>
   <property name="work.dir" location="${basedir}/build/work"/>
   <property name="build.heap" value="4g"/>
+  <property name="reports.dir" location="${work.dir}/reports"/>
 
   <path id="mps.ant.path">
     <pathelement location="${mps.home}/lib/ant/lib/ant-mps.jar"/>
@@ -73,7 +74,42 @@
       <module file="${project.dir}/languages/nltps.realization/nltps.realization.mpl"/>
       <module file="${project.dir}/corpus/nltps.corpus/nltps.corpus.msd"/>
       <module file="${project.dir}/sandbox/nltps.proof/nltps.proof.msd"/>
+      <module file="${project.dir}/tests/nltps.modeltests/nltps.modeltests.msd"/>
     </mps.make>
+  </target>
+
+  <!--
+    Headless model tests. mps.make generates and compiles; it does not evaluate the
+    languages' checking rules, which was established by placing a VerificationClaim that
+    REA-C-002 and REA-C-003 both reject into the proof sandbox and watching the build
+    complete over it with exit code 0. launchtests is the half of the pipeline that
+    asserts semantics, so the two targets are not interchangeable and neither is
+    sufficient alone.
+
+    haltOnFailure is required: without it a semantic failure degrades into a successful
+    Ant invocation with the failure buried in a report.
+  -->
+  <target name="test">
+    <mkdir dir="${work.dir}"/>
+    <delete dir="${reports.dir}" quiet="true"/>
+    <mkdir dir="${reports.dir}"/>
+    <launchtests mpsHome="${mps.home}" haltOnFailure="true" failOnError="true"
+                 reports="${reports.dir}" fork="true">
+      <jvmargs>
+        <arg value="-ea"/>
+        <arg value="-Xmx${build.heap}"/>
+        <arg value="-Didea.system.path=${work.dir}/system"/>
+        <arg value="-Didea.config.path=${work.dir}/config"/>
+        <arg value="-Didea.log.path=${work.dir}/log"/>
+        <arg value="-Didea.plugins.path=${mps.home}/plugins"/>
+      </jvmargs>
+      <project path="${project.dir}"/>
+      <!-- TestModules exposes only a generic add(), i.e. an Ant resource collection,
+           so the module descriptor is named by a fileset rather than a <module> element. -->
+      <testmodules>
+        <fileset file="${project.dir}/tests/nltps.modeltests/nltps.modeltests.msd"/>
+      </testmodules>
+    </launchtests>
   </target>
 
 </project>
