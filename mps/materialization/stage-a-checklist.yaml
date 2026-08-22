@@ -2512,6 +2512,45 @@ acceptance_items:
                   maintained everywhere it matters. The declared test families and their
                   states are the ledger below; it is not uniformly green, and the reviewer
                   should read the states there rather than any count restated in prose.
+              red_state_artifacts_retained:
+                defect_found_at_handoff: >-
+                  The evidence file preserved only the passing state. The two controls that do
+                  the most epistemic work in the package -- failure sensitivity and
+                  foreign-rule discrimination -- existed only as prose in this checklist, and
+                  build/work is not committed, so on a fresh clone a reviewer had nothing to
+                  audit for either. That is the one source an independent reviewer is told not
+                  to rely on, and for those two claims there was no artifact to disagree with.
+                why_preservation_was_not_enough: >-
+                  The surviving logs carry BUILD FAILED and the AssertionError naming the
+                  node, but no counts and no per-test outcomes, so they cannot establish
+                  tests=2 with H1 passing and S1 not. The JUnit reports of the original runs
+                  did not survive at all: the test target deletes the reports directory on
+                  every run and later runs overwrote them. The controls were therefore
+                  re-executed on the frozen tree to produce artifacts. These are new runs of
+                  the same controls, not the outputs of the historical ones, and the evidence
+                  file says so.
+                retained:
+                - mps/materialization/evidence/control-failure-sensitivity.junit.xml
+                - mps/materialization/evidence/control-foreign-rule-discrimination.junit.xml
+                restoration_is_now_machine_checkable: >-
+                  A red-state artifact is by definition taken on a different tree, so each
+                  control records the tree it perturbed from, the tree it ran on, and the tree
+                  it restored to. base == restored is the restoration proof and the gate
+                  enforces it; perturbed != base establishes that the perturbation changed
+                  something. This is stronger than the git-diff check that found the residual
+                  import at e66039e, because it is recorded in the artifact rather than
+                  performed by hand.
+                enforced: >-
+                  check_headless_build_currency.py now fails if the controls are absent, if
+                  either did not restore, if either perturbed nothing, if the harness witness
+                  H1 is not among the passing tests, if S1 is not among the tests that failed
+                  to pass, if the assertion text is missing, or if a retained report does not
+                  match its recorded hash. Six negative controls, all exercised.
+                what_this_does_not_change: >-
+                  No model change. The controlled model tree hash is identical before and
+                  after, MPS-MAT-008 remains PASS on the same evidence, and the metric remains
+                  76 / 2,144. This adds artifacts for claims already made; it does not add
+                  claims.
               test_family_reconciliation:
                 why: >-
                   Two populations of test families exist in the controlled artifacts:

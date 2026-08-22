@@ -178,6 +178,53 @@ def check() -> int:
         if not tests.get("identities"):
             problems.append("no test identities recorded; a count is not a population")
 
+    # The red states. Without these the two controls that do the most epistemic work in the
+    # package -- failure sensitivity and foreign-rule discrimination -- exist only as prose,
+    # which is precisely the source an independent reviewer is told not to rely on. A green
+    # verdict cannot establish either: both are claims about what happens when the assertion
+    # SHOULD fail, and the green run is silent about that by construction.
+    controls = evidence.get("controls")
+    if not isinstance(controls, dict):
+        problems.append("no red-state controls recorded. Failure sensitivity and "
+                        "foreign-rule discrimination would then rest on narrative alone, "
+                        "and a green run cannot establish either.")
+    else:
+        for name in ("failure_sensitivity", "foreign_rule_discrimination"):
+            control = controls.get(name)
+            if not isinstance(control, dict):
+                problems.append("the " + name + " control is absent")
+                continue
+            base = control.get("base_model_tree_sha256")
+            if base != control.get("restored_model_tree_sha256"):
+                problems.append("the " + name + " control did not restore to the tree it "
+                                "perturbed from, so the package contains a state nobody ran")
+            if control.get("perturbed_model_tree_sha256") == base:
+                problems.append("the " + name + " control records a perturbed tree "
+                                "identical to its base, so it perturbed nothing")
+            if control.get("verdict") != "red-as-required":
+                problems.append("the " + name + " control verdict is "
+                                + repr(control.get("verdict")))
+            passing = control.get("passing") or []
+            not_passing = control.get("not_passing") or []
+            if not any("testAssessedClaimWithoutEvidenceIsRejected" in n for n in passing):
+                problems.append("in the " + name + " control the harness witness H1 is not "
+                                "among the passing tests, which makes the run a harness "
+                                "result rather than a semantic one")
+            if not any(n.startswith("test_S1") for n in not_passing):
+                problems.append("in the " + name + " control S1 is not among the tests that "
+                                "failed to pass, so the control does not demonstrate what "
+                                "it claims")
+            if not str(control.get("assertion", "")).strip():
+                problems.append("the " + name + " control records no assertion text, so the "
+                                "reason S1 did not pass is not attributable")
+            report = control.get("report")
+            path = REPO_ROOT / report if report else None
+            if path is None or not path.is_file():
+                problems.append("the " + name + " control names no retained report")
+            elif sha256(path) != control.get("report_sha256"):
+                problems.append("the " + name + " control report does not match its "
+                                "recorded hash")
+
     if problems:
         print("FAIL: headless acceptance evidence is not current\n", file=sys.stderr)
         for problem in problems:
@@ -191,6 +238,10 @@ def check() -> int:
           + " with " + str(tests["executed"]) + " executed, " + str(tests["failures"])
           + " failures, " + str(tests["errors"]) + " errors; identities "
           + str(tests["identities"]))
+    for name, control in sorted((evidence.get("controls") or {}).items()):
+        print("      control " + name + ": " + control["verdict"]
+              + "; H1 passed, S1 did not; restored to base tree; report retained at "
+              + control["report"])
     return 0
 
 

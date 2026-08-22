@@ -92,6 +92,67 @@ class CurrencyGateTest(unittest.TestCase):
                             for i in identities), identities)
 
 
+class RedStateControlTest(CurrencyGateTest):
+    """The red states must be auditable to the same standard as the green one.
+
+    Failure sensitivity and foreign-rule discrimination are the two controls that do the
+    most epistemic work in the package, and a green run is silent about both by
+    construction: each is a claim about what happens when the assertion should fail. Without
+    retained artifacts they would rest on implementer narrative, which is the one source an
+    independent reviewer is told not to rely on.
+    """
+
+    def test_controls_are_present(self):
+        with io.open(EVIDENCE, encoding="utf-8") as handle:
+            controls = json.load(handle)["controls"]
+        self.assertEqual({"failure_sensitivity", "foreign_rule_discrimination"},
+                         set(controls))
+
+    def test_retained_reports_exist_and_match_their_hashes(self):
+        import hashlib
+
+        with io.open(EVIDENCE, encoding="utf-8") as handle:
+            controls = json.load(handle)["controls"]
+        for name, control in controls.items():
+            path = REPO_ROOT / control["report"]
+            self.assertTrue(path.is_file(), name)
+            self.assertEqual(control["report_sha256"],
+                             hashlib.sha256(path.read_bytes()).hexdigest(), name)
+
+    def test_missing_controls_are_rejected(self):
+        self._damaged(lambda e: e.pop("controls"), "rest on narrative alone")
+
+    def test_a_control_that_did_not_restore_is_rejected(self):
+        self._damaged(
+            lambda e: e["controls"]["failure_sensitivity"].update(
+                {"restored_model_tree_sha256": "0" * 64}),
+            "did not restore to the tree it perturbed from")
+
+    def test_a_control_that_perturbed_nothing_is_rejected(self):
+        self._damaged(
+            lambda e: e["controls"]["failure_sensitivity"].update(
+                {"perturbed_model_tree_sha256": e["model_tree_sha256"]}),
+            "perturbed nothing")
+
+    def test_a_control_where_the_harness_witness_failed_is_rejected(self):
+        """H1 failing makes the run a harness result, whatever S1 did."""
+        self._damaged(
+            lambda e: e["controls"]["foreign_rule_discrimination"].update({"passing": []}),
+            "harness result rather than a semantic one")
+
+    def test_a_control_where_s1_passed_is_rejected(self):
+        self._damaged(
+            lambda e: e["controls"]["foreign_rule_discrimination"].update(
+                {"not_passing": []}),
+            "does not demonstrate what it claims")
+
+    def test_a_tampered_report_is_rejected(self):
+        self._damaged(
+            lambda e: e["controls"]["failure_sensitivity"].update(
+                {"report_sha256": "0" * 64}),
+            "does not match its recorded hash")
+
+
 class TestFamilyLedgerTest(unittest.TestCase):
     """No declared family may disappear by nobody populating its status."""
 
