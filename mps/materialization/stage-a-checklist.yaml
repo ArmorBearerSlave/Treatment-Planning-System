@@ -1944,6 +1944,62 @@ acceptance_items:
                   and --check re-derives and fails on drift. It fired on its first run,
                   catching a re-indentation of the copy, which is exactly the class of silent
                   divergence the three earlier probe designs each contained.
+              stage_two_result:
+                verdict: >-
+                  Localised, with the whole causal chain observed rather than inferred. No
+                  repair attempted, and none is authorized in this unit.
+                chain: >-
+                  nltps.modeltests declares exactly one dependency,
+                  4745dc6f-8462-405d-b92b-cf0ea82dac23(nltps.proof), and it does not resolve:
+                  DEPENDENCIES_DECLARED=1 UNRESOLVED=1. ClassLoaderManager.getStatus then
+                  reports NOT_IN_REPO for nltps.modeltests itself, whose documented meaning is
+                  "the module does not belong to any repository (or depends on such module)" --
+                  the parenthetical, since the module resolved out of the repository fine.
+                  ClassLoaderManager.getClassLoader has an early return on that status and
+                  hands back DEFAULT_DELEGATING_TO_SYSTEM_CL instead of a ModuleClassLoader:
+                  observed as CLASSLOADER_CLASS=jetbrains.mps.classloading.ClassLoaderManager$1,
+                  toString "MPS Module CL Delegate to System CL",
+                  CLASSLOADER_IS_MODULE_CLASSLOADER=false. The system classloader has no
+                  classes_gen on it, so loadClass and loadOwnClass both fail with
+                  ClassNotFoundException, TestDiscoveryContributor.visitTestRoot reports it
+                  through WorkerCallback as "error building test suite", myErrors reaches 1,
+                  and WorkerBase.failBuild throws BuildFailureException with exit code -13.
+                the_test_module_is_not_at_fault: >-
+                  MODULE_FACETS=java, tests; JAVA_FACET_COMPILE=MPS;
+                  JAVA_FACET_LOAD_CLASSES=ManagedByMPS with classesAvailable=true;
+                  JAVA_FACET_CLASSES_GEN resolves to the module's classes_gen; and
+                  COMPILED_CLASS exists=true bytes=1916. The class was generated, compiled and
+                  is on disk where the facet says it should be. Nothing about the sentinel, its
+                  facets or its output is wrong, which is why every earlier reading that looked
+                  at those found nothing.
+                why_the_dependency_does_not_resolve: >-
+                  <testmodules> registers only nltps.modeltests.msd. nltps.proof is a project
+                  module and is never registered into the repository that discovery reads. This
+                  is the ordering already recorded above: ScriptJUnit5Launcher.collectTestClasses
+                  runs before launchTestsWithSession opens the TestSession, so at discovery time
+                  the only modules present are the ones testmodules brought in. Read back
+                  against the descriptor: it declares exactly one dependency, on nltps.proof,
+                  and the build descriptor names only nltps.modeltests.msd under testmodules.
+                the_dependency_is_load_bearing_not_incidental: >-
+                  The sentinel VerificationClaim holds three references into nltps.proof.cases,
+                  so the dependency exists because the frozen test content requires it.
+                  Removing the dependency is therefore not a candidate repair; it would change
+                  the frozen test.
+                accessor_error_of_mine_recorded: >-
+                  Two readings in the first measurement pass are uninformative and must not be
+                  read as findings. MODULE_OUTPUT_PATH returns AbstractModule.getOutputPath,
+                  which is the generator output (source_gen), not the class output; the
+                  PHYSICAL_CLASS line derived from it reports exists=false for a path where no
+                  .class was ever meant to be. The compiled class is reached through
+                  JavaModuleFacet.getClassesGen, and COMPILED_CLASS exists=true is the reading
+                  that answers the question. Picking the plausible accessor over the production
+                  one is the same defect as picking the plausible environment, one level down.
+                candidate_repairs_named_not_chosen: >-
+                  Registering nltps.proof so discovery can resolve it -- as a second
+                  <testmodules> entry, as a <library>, or by some other route -- is the shape of
+                  the fix, but which route is correct is a separate decision with its own
+                  consequences. A second testmodules entry would also submit nltps.proof to test
+                  auto-discovery, which is not what it is for. Nothing was changed.
               instrumented_execution_not_reconstruction: >-
                 The probe calls super.work() first and lets production LaunchTestWorker.work()
                 reproduce the failure, rather than re-attempting loadClass itself. Re-attempting

@@ -158,6 +158,8 @@
         <pathelement location="${mps.home}/lib/ant/lib/ant-mps.jar"/>
         <pathelement location="${mps.home}/lib/mpsant/mps-tool.jar"/>
         <pathelement location="${mps.home}/lib/mps-environment.jar"/>
+        <pathelement location="${mps.home}/lib/mps-core.jar"/>
+        <pathelement location="${mps.home}/lib/mps-openapi.jar"/>
         <pathelement location="${mps.home}/plugins/mps-testing/languages/launcher/jetbrains.mps.lang.test.launcher.jar"/>
       </classpath>
     </javac>
