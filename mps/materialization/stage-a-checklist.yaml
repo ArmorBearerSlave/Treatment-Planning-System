@@ -1886,6 +1886,30 @@ acceptance_items:
                 once that passes are the real readings collected. A probe that never enters
                 the intended worker and merely exits successfully has worthless readings, for
                 the same reason every other control in this item exists.
+              probe_jar_placement: >-
+                The same lever already proven in this build. ant-mps.jar needed org.jdom from
+                lib/util-8.jar on the taskdef classpath rather than Ant's own, and the forked
+                classpath derives from the Ant JVM's java.class.path plus calculateClassPath.
+                The probe jar is that same class of dependency: required to launch the worker,
+                not to populate the environment after it launches. Which is also why library
+                cannot serve -- it is an MPS-environment input, and the worker class must
+                resolve before any of that environment exists.
+              reading_order_inverted: >-
+                An earlier wording put the readings in the order descriptor, facet, filesystem,
+                resource, own load, delegated load. That runs the reproduction control last:
+                six readings taken before knowing whether the runtime reproduces the failure at
+                all, and if it does not, all six are void but sitting in a log that reads like
+                findings. The delegated load runs first, and on a non-reproducing run the probe
+                emits the mismatch and stops, printing no readings whatever. A reading that
+                exists can be cited; one never printed cannot. This is the mechanical form of
+                the discipline applied by hand across five corrections in this item.
+              the_sketch_that_would_have_passed: >-
+                Worth keeping as the clearest specimen of the fourth disguise. A worker
+                declared as extends CoreWorker with an overridden work() and no main would
+                have launched, never reached the subclass, emitted nothing and returned zero.
+                Every column green, no symptom, and a wrong conclusion about the runtime --
+                the defect built into the fix proposed for it. It is caught only by the second
+                acceptance edge, not by any count.
               acceptance_second_edge: >-
                 A probe that localises something without first reproducing the failure has
                 also failed. A clean set of readings from a repository-loaded module would
