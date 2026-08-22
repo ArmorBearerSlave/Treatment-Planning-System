@@ -1895,6 +1895,31 @@ acceptance_items:
                 the test class, where a clobbered attribute would have produced the ordinary
                 run. One attribute, and a clobbered value would have cost only the run already
                 in hand.
+              instrumented_execution_not_reconstruction: >-
+                The probe calls super.work() first and lets production LaunchTestWorker.work()
+                reproduce the failure, rather than re-attempting loadClass itself. Re-attempting
+                would still have been a reconstruction of the call, one level below the
+                reconstruction of the environment and of the population path already removed.
+                Calling super makes the probe an instrumented execution of the failing path
+                instead of an imitation of it: same Script, project, testmodules, plugins,
+                LaunchTestWorker, IdeaEnvironment with test mode, LibraryInitializer and
+                ModulesMiner registration, TestDiscoveryContributor, and the same failing
+                loadClass.
+              emission_gate: >-
+                myErrors is protected in WorkerBase, so the subclass can require that the exact
+                fully-qualified class-loading failure was actually recorded before printing a
+                single diagnostic value. On any other outcome it prints PROBE_REPRODUCED=false
+                and emits nothing else. The probe must also rethrow: LaunchTestWorker.fatal
+                forces build failure for this condition, and a probe that converted the
+                reproduced defect into a successful run would be the fourth disguise once
+                more, this time manufactured by the instrument.
+              why_testmodules_registration_is_the_part_that_matters: >-
+                The failure occurs inside ScriptJUnit5Launcher.collectTestClasses, which runs
+                before launchTestsWithSession opens the TestSession and applies the project-path
+                system property. So the registration path that testmodules takes is nearer to
+                this failure than anything the session sets up later, which is the concrete
+                reason a repository-populated probe would have been answering a different
+                question rather than merely a differently-configured one.
               what_the_simplification_removes: >-
                 The probe runs through the production launchtests task with only the worker
                 swapped, so the project is opened and testmodules registered through
