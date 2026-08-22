@@ -11,6 +11,7 @@ classification comes from the controlled alias table or fails.
 
 from __future__ import annotations
 
+import json
 import sys
 import tempfile
 import unittest
@@ -145,6 +146,162 @@ class ClassificationValidationTests(unittest.TestCase):
         with self.assertRaises(ValueError) as caught:
             hlr.validate_classification(recs, mapping)
         self.assertIn("absent from", str(caught.exception))
+
+
+class HazardAllocationParsingTests(unittest.TestCase):
+    """Only a well-formed H-nn in the source row is a hazard allocation."""
+
+    def test_a_single_hazard_is_read(self) -> None:
+        self.assertEqual(hlr.parse_source_hazards("PRN; AUTH; H-04")[0], ["H-04"])
+
+    def test_comma_separated_hazards_in_one_entry_are_read(self) -> None:
+        self.assertEqual(hlr.parse_source_hazards("ARCH; H-05,H-15")[0], ["H-05", "H-15"])
+
+    def test_section_markers_are_not_hazards(self) -> None:
+        ids, malformed = hlr.parse_source_hazards("SCP; PRN; AUTH")
+        self.assertEqual(ids, [])
+        self.assertEqual(malformed, [])
+
+    def test_a_malformed_hazard_token_is_reported_not_discarded(self) -> None:
+        # H-4 and H-123 would vanish silently under a strict match alone, which is how a
+        # real allocation goes missing without anything noticing.
+        for token in ("H-4", "H-123", "h-01", "H01"):
+            ids, malformed = hlr.parse_source_hazards(f"WF; {token}")
+            self.assertEqual(ids, [], token)
+            self.assertEqual(malformed, [token], token)
+
+    def test_source_order_is_preserved(self) -> None:
+        self.assertEqual(hlr.parse_source_hazards("H-12,H-01")[0], ["H-12", "H-01"])
+
+
+class HazardAllocationValidationTests(unittest.TestCase):
+    """Drive validate_hazard_allocation with each way the allocation could be wrong."""
+
+    def setUp(self) -> None:
+        self._spec = hlr.HAZARD_SPEC
+        self._expected = dict(hlr.EXPECTED_HAZARD_ALLOCATION)
+        self._tmp = tempfile.TemporaryDirectory()
+        path = Path(self._tmp.name) / "hazards.yaml"
+        path.write_text(
+            "hazards:\n" + "".join(f"  - id: H-{i:02d}\n" for i in range(1, 19)),
+            encoding="utf-8")
+        hlr.HAZARD_SPEC = path
+
+    def tearDown(self) -> None:
+        hlr.HAZARD_SPEC = self._spec
+        hlr.EXPECTED_HAZARD_ALLOCATION.clear()
+        hlr.EXPECTED_HAZARD_ALLOCATION.update(self._expected)
+        self._tmp.cleanup()
+
+    def corpus(self, allocations):
+        """One record per allocation, plus enough empty ones to reach the expectation."""
+        records = []
+        for index, ids in enumerate(allocations, start=1):
+            records.append({
+                "id": f"GOV-{index:03d}",
+                "source_hazard_plain": "; ".join(["WF"] + ids),
+                "source_hazard_ids": [i for i in ids if hlr.HAZARD_STRICT_RE.match(i)],
+            })
+        return records
+
+    def expect(self, with_hazards, without, distinct, links):
+        hlr.EXPECTED_HAZARD_ALLOCATION.clear()
+        hlr.EXPECTED_HAZARD_ALLOCATION.update({
+            "records_with_hazards": with_hazards, "records_without_hazards": without,
+            "distinct_hazards": distinct, "total_links": links})
+
+    def test_a_matching_allocation_is_accepted(self) -> None:
+        records = self.corpus([["H-01"], ["H-02", "H-03"], []])
+        self.expect(2, 1, 3, 3)
+        hlr.validate_hazard_allocation(records)  # must not raise
+
+    def test_a_malformed_token_is_rejected(self) -> None:
+        records = self.corpus([["H-1"], []])
+        self.expect(0, 2, 0, 0)
+        with self.assertRaises(ValueError) as caught:
+            hlr.validate_hazard_allocation(records)
+        self.assertIn("malformed hazard token", str(caught.exception))
+
+    def test_a_repeated_hazard_in_one_row_is_rejected(self) -> None:
+        records = self.corpus([["H-01"]])
+        records[0]["source_hazard_ids"] = ["H-01", "H-01"]
+        self.expect(1, 0, 1, 2)
+        with self.assertRaises(ValueError) as caught:
+            hlr.validate_hazard_allocation(records)
+        self.assertIn("repeats a hazard token", str(caught.exception))
+
+    def test_a_hazard_the_register_does_not_declare_is_rejected(self) -> None:
+        records = self.corpus([["H-99"]])
+        self.expect(1, 0, 1, 1)
+        with self.assertRaises(ValueError) as caught:
+            hlr.validate_hazard_allocation(records)
+        self.assertIn("does not declare", str(caught.exception))
+
+    def test_a_changed_allocation_shape_is_rejected(self) -> None:
+        records = self.corpus([["H-01"], ["H-02"]])
+        self.expect(1, 1, 1, 1)          # the corpus actually has 2 / 0 / 2 / 2
+        with self.assertRaises(ValueError) as caught:
+            hlr.validate_hazard_allocation(records)
+        self.assertIn("allocation differs", str(caught.exception))
+
+
+class MirrorIsNotCuratedAnalysisTests(unittest.TestCase):
+    """The mirror carries what the source row says, not what later analysis concluded.
+
+    spec/allocations.yaml and mps/import/traceability.json hold curated hazard analysis.
+    For seven requirements it says more than the source does, and for three of those the
+    source names no hazard at all. Importing it would make Stage B equivalence compare the
+    model against an analysis instead of against the document it claims to mirror.
+    """
+
+    def setUp(self) -> None:
+        self.bundle = hlr.build_bundle(hlr.DEFAULT_SOURCE, hlr.DEFAULT_CLASSIFICATION)
+        self.records = {r["id"]: r for r in self.bundle["records"]}
+        self.curated = {
+            r["id"]: sorted(r.get("hazards") or [])
+            for r in json.loads(
+                (REPO_ROOT / "mps" / "import" / "traceability.json").read_text(
+                    encoding="utf-8"))["records"]
+            if r["entity_type"] == "HLR"
+        }
+
+    def test_saf_001_takes_only_the_source_hazard(self) -> None:
+        self.assertEqual(self.records["SAF-001"]["source_hazard_ids"], ["H-04"])
+        self.assertEqual(self.curated["SAF-001"], ["H-04", "H-13", "H-18"])
+
+    def test_saf_005_takes_only_the_source_hazard(self) -> None:
+        self.assertEqual(self.records["SAF-005"]["source_hazard_ids"], ["H-16"])
+        self.assertEqual(self.curated["SAF-005"], ["H-05", "H-06", "H-08", "H-16"])
+
+    def test_a_requirement_the_source_leaves_unallocated_stays_unallocated(self) -> None:
+        # Curated analysis gives GOV-001 two hazards; its source row names none.
+        self.assertEqual(self.records["GOV-001"]["source_hazard_ids"], [])
+        self.assertEqual(self.curated["GOV-001"], ["H-13", "H-18"])
+
+    def test_every_imported_hazard_appears_in_that_requirement_source_row(self) -> None:
+        for record in self.bundle["records"]:
+            text = record["source_hazard_plain"]
+            for hazard in record["source_hazard_ids"]:
+                self.assertIn(hazard, text, record["id"])
+
+    def test_the_mirror_is_a_strict_subset_of_the_curated_analysis(self) -> None:
+        """Not required by the rule, but true today, and a useful tripwire.
+
+        If the mirror ever allocated a hazard the curated analysis does not, one of the two
+        is wrong and it is worth finding out which.
+        """
+        for record in self.bundle["records"]:
+            self.assertLessEqual(
+                set(record["source_hazard_ids"]), set(self.curated[record["id"]]),
+                record["id"])
+
+    def test_the_two_populations_are_not_the_same_size(self) -> None:
+        """The distinction is real, not theoretical: 73 versus 76."""
+        mirror = sum(1 for r in self.bundle["records"] if r["source_hazard_ids"])
+        curated = sum(1 for v in self.curated.values() if v)
+        self.assertEqual(mirror, 73)
+        self.assertEqual(curated, 119)
+        self.assertNotEqual(mirror, curated)
 
 
 class LiveCorpusTests(unittest.TestCase):

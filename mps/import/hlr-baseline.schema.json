@@ -14,6 +14,8 @@
     "classification_source",
     "expected_domain_counts",
     "expected_category_counts",
+    "expected_hazard_allocation",
+    "hazard_source",
     "record_count",
     "records"
   ],
@@ -176,7 +178,8 @@
           "source_line",
           "record_sha256",
           "category",
-          "category_id"
+          "category_id",
+          "source_hazard_ids"
         ],
         "properties": {
           "id": {
@@ -249,6 +252,14 @@
           "category_id": {
             "type": "string",
             "pattern": "^(HFR|HNFR|HOR)-[A-Z]{3}-[0-9]{3}$"
+          },
+          "source_hazard_ids": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^H-[0-9]{2}$"
+            }
           }
         }
       }
@@ -288,6 +299,48 @@
         },
         "operational": {
           "const": 25
+        }
+      }
+    },
+    "expected_hazard_allocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "records_with_hazards",
+        "records_without_hazards",
+        "distinct_hazards",
+        "total_links"
+      ],
+      "properties": {
+        "records_with_hazards": {
+          "const": 73
+        },
+        "records_without_hazards": {
+          "const": 46
+        },
+        "distinct_hazards": {
+          "const": 18
+        },
+        "total_links": {
+          "const": 94
+        }
+      }
+    },
+    "hazard_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "authority"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
         }
       }
     }

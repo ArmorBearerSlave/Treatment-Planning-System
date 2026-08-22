@@ -819,6 +819,7 @@ import_contract:
     - {source: category, destination: category}
     - {source: category_id, destination: an Alias child, scheme F/SA/O category ID}
     - {source: verification_methods, destination: verificationMethods entries}
+    - {source: source_hazard_ids, destination: hazards HazardRef children}
     - {source: source_line, destination: recordProvenance sourceLine}
     - {source: record_sha256, destination: recordProvenance sha256}
     - {source: source.sha256, destination: sourceArtifactProvenance sha256}
@@ -829,12 +830,43 @@ import_contract:
     It is a review projection of the exact LaTeX, not a second authority. Importing both
     would create two texts that could drift, and the exact text is the one equivalence
     compares.
-  source_hazard_is_not_imported_as_hazard_references: >-
-    source_hazard values are free text such as SCP; PRN; AUTH. Requirement.hazards
-    references Hazard nodes whose hazardId matches ^H-[0-9]{2}$, so these tokens have no
-    typed destination. They are retained in the bundle as source content and are not
-    manufactured into Hazard nodes. Establishing an authoritative token-to-hazard mapping
-    is separate work and is not assumed here.
+  hazard_allocation:
+    authority: >-
+      The Stage A mirror allocates exactly the H-nn identifiers the controlled source row
+      states. The source/hazard column mixes section markers such as SCP, PRN and AUTH with
+      explicit hazard identifiers; only a well-formed H-nn is an allocation.
+    result:
+      roots_with_typed_hazards: 73
+      roots_without_typed_hazards: 46
+      distinct_hazards_referenced: 18
+      total_links: 94
+    not_imported_from: >-
+      spec/allocations.yaml and mps/import/traceability.json. Those hold curated downstream
+      hazard analysis, and for seven requirements they say more than the source does,
+      including three -- GOV-001, SAF-006 and SAF-008 -- whose source row names no hazard at
+      all. Importing them would stop this being a mirror and would make Stage B equivalence
+      compare the model against an analysis rather than against the document.
+    worked_examples:
+      - {id: SAF-001, source_hazard: H-04, curated: [H-04, H-13, H-18], imported: [H-04]}
+      - {id: SAF-005, source_hazard: H-16, curated: [H-05, H-06, H-08, H-16], imported: [H-16]}
+      - {id: GOV-001, source_hazard: none, curated: [H-13, H-18], imported: []}
+    two_parallel_trace_layers: >-
+      ImportedHLR.hazards carries the source-explicit typed links. The exact source_hazard
+      text is preserved as provenance evidence regardless. spec/allocations.yaml remains a
+      separate authority answering a different question: what the broader safety analysis
+      associates with a requirement, rather than what the source document states.
+    metric_note: >-
+      This is not the 76 / 2,144 numerator. That metric counts entities whose
+      hazard_specificity is source_explicit in traceability.json, which is an
+      allocations-derived label covering 76 HLRs; the source document names a hazard on 73.
+      The two populations overlap but are not the same, and importing the mirror moves
+      neither.
+    fail_closed_on:
+      - a malformed hazard-like token such as H-4, H-123, h-01 or H01
+      - a hazard identifier repeated within one source row
+      - a hazard identifier that spec/hazards.yaml does not declare
+      - an allocation shape differing from 73 / 46 / 18 / 94
+      - an imported hazard absent from that requirement's own source row
   identifier_preservation: >-
     The stable id is the source id, unchanged. The category id is preserved as a parallel
     Alias rather than replacing it, which is what the classification migration promised.
@@ -909,6 +941,8 @@ neutral_export_contract:
     - category_id
     - statement_latex
     - verification_methods
+    - hazards
+    - source_hazard_text
     - record_provenance: {source_path, source_line, sha256}
     - source_artifact_provenance: {source_path, sha256}
     - lifecycle_state
@@ -941,8 +975,10 @@ equivalence_contract:
     - record_provenance.sha256
     - source_artifact_provenance.sha256
     - record_provenance.source_line
+    - source_hazard_text
   set_equality:
     - verification_methods
+    - hazards
   order_insensitive:
     - the two provenance entries, matched by role rather than by position
   normalized_equality:
@@ -961,6 +997,9 @@ equivalence_contract:
     text_mismatch: statement_latex differs from normative_text_latex
     feature_mismatch: domain, category, category_id or verification_methods differ
     trace_mismatch: an alias or allocation link that does not correspond
+    hazard_mismatch: >-
+      a typed hazard link absent from, or additional to, the source row; or a
+      source_hazard_text that differs from the controlled source
     provenance_mismatch: a hash or source line that differs, or a role that cannot be matched
     lifecycle_mismatch: a root not referencing the StageAMirrorLifecycle state
   forbidden_evidence:

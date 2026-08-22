@@ -8,6 +8,12 @@ never a judgement. A classifier that read the requirement text would be deciding
 governance classification at import time, which is precisely what a non-authoritative
 mirror must not do.
 
+Hazard allocation follows the same rule. Each record carries source_hazard_ids: the H-nn
+identifiers the controlled source row states, and nothing else. spec/allocations.yaml and
+mps/import/traceability.json hold curated hazard analysis that for seven requirements says
+more than the source does, including three the source does not associate with any hazard
+at all. Reading them here would stop this being a mirror.
+
 Every classification failure is fatal. A partially classified corpus would let MPS-4
 materialize requirement roots whose mandatory category came from somewhere nobody can
 point at, and the mandatory-ness of that field means the gap would surface as a modelling
@@ -41,6 +47,7 @@ DEFAULT_SCHEMA = REPO_ROOT / "mps" / "import" / "hlr-baseline.schema.json"
 ARCHITECTURE_SPEC = REPO_ROOT / "spec" / "architecture.yaml"
 TERMINOLOGY_SPEC = REPO_ROOT / "spec" / "terminology.yaml"
 QUALITY_SPEC = REPO_ROOT / "spec" / "quality_attributes.yaml"
+HAZARD_SPEC = REPO_ROOT / "spec" / "hazards.yaml"
 
 EXPECTED_DOMAIN_COUNTS = {
     "GOV": 7,
@@ -80,6 +87,20 @@ META_RE = re.compile(r"\\NLMeta\{([^{}]+)\}\{([^{}]+)\}")
 CATEGORY_ROW_RE = re.compile(
     r"\\mbox\{(HFR|HNFR|HOR)-([A-Z]{3})-(\d{3})\}\s*&\s*\\mbox\{([A-Z]{3}-\d{3})\}"
 )
+# The source/hazard column mixes section markers such as SCP, PRN and AUTH with explicit
+# hazard identifiers. STRICT is what counts as a hazard allocation; LOOSE exists only to
+# catch a token that was meant to be one and is malformed, which STRICT would silently
+# discard as just another marker.
+HAZARD_STRICT_RE = re.compile(r"^H-\d{2}$")
+HAZARD_LOOSE_RE = re.compile(r"^[Hh]-?\d+$")
+# What the controlled source actually allocates today. Frozen so a change in the source
+# document shows up as a reviewable difference rather than as a quietly different mirror.
+EXPECTED_HAZARD_ALLOCATION = {
+    "records_with_hazards": 73,
+    "records_without_hazards": 46,
+    "distinct_hazards": 18,
+    "total_links": 94,
+}
 
 
 def sha256_bytes(value: bytes) -> str:
@@ -156,11 +177,86 @@ def parse_records(source_text: str) -> list[dict[str, object]]:
                 "source_hazard_latex": source_hazard_latex,
                 "source_hazard_plain": to_plain(source_hazard_latex),
                 "verification_methods": methods,
+                "source_hazard_ids": parse_source_hazards(to_plain(source_hazard_latex))[0],
                 "source_line": line_number,
                 "record_sha256": sha256_bytes(record_hash_input),
             }
         )
     return records
+
+
+def parse_source_hazards(source_hazard_plain: str) -> tuple[list[str], list[str]]:
+    """Split one source/hazard cell into explicit hazard ids and everything else.
+
+    The cell is semicolon-separated and a single entry may carry several hazards
+    comma-separated, as in "H-05,H-15". Only a well-formed H-nn is a hazard allocation.
+    Returns (hazard ids in source order, hazard-like tokens that are malformed).
+    """
+    ids: list[str] = []
+    malformed: list[str] = []
+    for part in source_hazard_plain.split(";"):
+        for token in part.split(","):
+            token = token.strip()
+            if not token:
+                continue
+            if HAZARD_STRICT_RE.match(token):
+                ids.append(token)
+            elif HAZARD_LOOSE_RE.match(token):
+                malformed.append(token)
+    return ids, malformed
+
+
+def validate_hazard_allocation(records: list[dict[str, object]]) -> None:
+    """Fail closed on anything that would misstate what the source allocates.
+
+    The Stage A mirror carries only the hazards the controlled source row names. It
+    deliberately does not consult spec/allocations.yaml or mps/import/traceability.json:
+    those hold curated downstream hazard analysis, and for seven requirements they say
+    more than the source does. Absorbing them would stop this being a mirror, and Stage B
+    equivalence would then be comparing the model against an analysis rather than against
+    the document.
+    """
+    errors: list[str] = []
+    hazard_spec = yaml.safe_load(HAZARD_SPEC.read_text(encoding="utf-8"))
+    known = {str(entry["id"]) for entry in hazard_spec["hazards"]}
+    if len(known) != len(hazard_spec["hazards"]):
+        errors.append("spec/hazards.yaml declares a duplicate hazard id")
+
+    with_hazards = 0
+    total_links = 0
+    referenced: set[str] = set()
+    for record in records:
+        rid = str(record["id"])
+        ids = list(record["source_hazard_ids"])  # type: ignore[arg-type]
+        _, malformed = parse_source_hazards(str(record["source_hazard_plain"]))
+        if malformed:
+            errors.append(f"{rid} carries a malformed hazard token: {malformed}")
+        if len(ids) != len(set(ids)):
+            errors.append(f"{rid} repeats a hazard token: {ids}")
+        unknown = [h for h in ids if h not in known]
+        if unknown:
+            errors.append(
+                f"{rid} allocates {unknown}, which spec/hazards.yaml does not declare"
+            )
+        if ids:
+            with_hazards += 1
+        total_links += len(ids)
+        referenced.update(ids)
+
+    observed = {
+        "records_with_hazards": with_hazards,
+        "records_without_hazards": len(records) - with_hazards,
+        "distinct_hazards": len(referenced),
+        "total_links": total_links,
+    }
+    if observed != EXPECTED_HAZARD_ALLOCATION:
+        errors.append(
+            f"source hazard allocation differs: expected {EXPECTED_HAZARD_ALLOCATION}, "
+            f"found {observed}"
+        )
+
+    if errors:
+        raise ValueError("HLR hazard allocation validation failed:\n- " + "\n- ".join(errors))
 
 
 def parse_classification(text: str) -> dict[str, dict[str, str]]:
@@ -288,6 +384,7 @@ def build_bundle(source: Path, classification: Path | None = None) -> dict[str, 
     source_metadata = parse_source_metadata(source_text)
     records = parse_records(source_text)
     validate_records(records)
+    validate_hazard_allocation(records)
 
     classification_bytes = classification.read_bytes()
     mapping = parse_classification(classification_bytes.decode("utf-8"))
@@ -325,6 +422,14 @@ def build_bundle(source: Path, classification: Path | None = None) -> dict[str, 
         "classification_source": classification_source,
         "expected_domain_counts": EXPECTED_DOMAIN_COUNTS,
         "expected_category_counts": EXPECTED_CATEGORY_COUNTS,
+        "expected_hazard_allocation": EXPECTED_HAZARD_ALLOCATION,
+        "hazard_source": {
+            "path": "spec/hazards.yaml",
+            "authority": "Stage A mirror hazard authority is the H-nn tokens explicitly "
+                         "present in the controlled source_hazard field. "
+                         "spec/allocations.yaml and mps/import/traceability.json hold "
+                         "curated downstream analysis and are deliberately not consulted.",
+        },
         "record_count": len(records),
         "records": records,
     }
