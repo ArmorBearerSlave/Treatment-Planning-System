@@ -1465,8 +1465,58 @@ acceptance_items:
   - id: MPS-MAT-008
     checkpoint: MPS-4
     item: Headless build and model tests pass without the experimental agent toolkit.
-    status: pending
-    blocked_reason: >-
+    status: complete
+    completion_qualifier: COMPLETE
+    closure_authority: >-
+      Recorded on the reviewer's ruling, not on the implementer's own assessment. The
+      evidence and its limits are below; the decision that the evidence warrants closure was
+      made by the reviewer who set the acceptance contract, which is why the disposition
+      block continued to say authority was handed off until that ruling arrived.
+    completion_basis: >-
+      Both clauses of the acceptance wording are discharged independently, and their
+      independence is enforced mechanically rather than asserted. Generation is not checking:
+      a build completing over a model the checker rejects has occurred in this project, so a
+      green build is not permitted to stand in for a semantic result.
+    evidence:
+    - 'Cold headless build outside the IDE on the closure candidate: every source_gen,
+      source_gen.caches, classes_gen, test_gen and test_gen.caches directory deleted -- 34 in
+      total -- then exit 0 in 1m00s over all nine languages plus nltps.modeltests, with git
+      status over mps/NLTPSGovernance empty afterwards.'
+    - 'Idempotence: a second independent build over the first build own output, exit 0 in 27s,
+      drift still clean. This is the property whose absence produced the non-idempotence
+      finding, where a first build consumed an IDE-left source_gen tree and every later build
+      failed.'
+    - 'Headless model tests via the native launchtests task, cold: authored = discovered =
+      executed = 2, both identities present --
+      test_testAssessedClaimWithoutEvidenceIsRejected and
+      test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845 -- with 0
+      failures, 0 errors, haltOnFailure true, a freshly created report directory and exit 0.'
+    - 'Rule specificity, not merely error presence: the generated test constructs
+      CheckExpectedRuleMessageRunnable rather than CheckAnyMessageRunnable, carrying
+      SNodePointer to nltps.realization.typesystem/1365532761391450283, and the runtime
+      compares the reporting rule node pointer for identity. REA-C-002 and REA-C-003 report
+      under distinct nodes.'
+    - 'Failure sensitivity: binding a ManualEvidenceRef to the claim under test makes REA-C-002
+      inapplicable and S1 stops passing with its own AssertionError naming the sentinel, while
+      H1 still passes; unbinding restores a byte-identical tree and a cold pass.'
+    - 'Foreign-rule discrimination: retargeting S1 to GOV-C-001, applicable to Requirement and
+      therefore unable to report on a VerificationClaim, leaves the sentinel carrying its two
+      real errors while S1 refuses to pass. An error from the wrong rule cannot satisfy the
+      assertion, which refutes the any-error hypothesis behaviourally rather than by
+      inspection.'
+    - 'tools/mps/check_headless_build_currency.py binds the build verdict and the model-test
+      verdict independently to a hash of the controlled model tree and fails if either is
+      absent, stale or missing its evidence, with eight negative controls including one that
+      requires a green build offered without a model-test verdict to be rejected.'
+    limits_recorded_rather_than_resolved:
+    - 'Three of the six operational test families are not materialized, and three blueprint
+      families remain undecided pending an engineering decision. See test_family_status and
+      test_family_reconciliation.'
+    - 'This item claims verification, not validation. Passing establishes that the system
+      demonstrably enforces REA-C-002 and that the evidence for that is current and
+      reproducible. It establishes nothing about whether REA-C-002 is the right condition for
+      clinical use.'
+    historical_blocked_reason: >-
       Not for want of a mechanism any more. The native headless mechanism is identified,
       implemented and runs: MPS 2026.1 ships Apache Ant, a JDK and the MPS Ant task library,
       and build/nltps-headless-build.xml drives <mps.make>, which forks
@@ -2459,8 +2509,84 @@ acceptance_items:
                   demonstrated rather than inferred, whether the perturbation was restored to a
                   byte-identical tree, how the stale-cache confound was disposed of, and whether
                   the distinction between generation success and semantic-test success is
-                  maintained everywhere it matters. Four of six declared test families are not
-                  materialized and this item claims only the two that are.
+                  maintained everywhere it matters. The declared test families and their
+                  states are the ledger below; it is not uniformly green, and the reviewer
+                  should read the states there rather than any count restated in prose.
+              test_family_reconciliation:
+                why: >-
+                  Two populations of test families exist in the controlled artifacts:
+                  initial_test_families in mps/bootstrap/language-skeleton.json, declared at
+                  MPS-0, and the operational ledger above, enumerated at closure from what MPS
+                  actually provides. They are different objects with different bases, and until
+                  they are reconciled a reviewer can reasonably ask whether a family disappeared
+                  between declaration and closure. Discovered during closure of MPS-MAT-008; it
+                  does not reopen that item, because it is a defect in artifact reconciliation
+                  rather than in the evidence the item rests on.
+                invariant: >-
+                  Every entry in initial_test_families has exactly one explicit disposition --
+                  carried, renamed, retired with rationale, or undecided pending an engineering
+                  decision. Every ledger family absent from the blueprint declares itself newly
+                  introduced and states its basis. Nothing may pass from one population to the
+                  other by silence.
+                dispositions:
+                - blueprint: node-and-constraint-tests
+                  disposition: carried
+                  ledger: node-and-constraint-tests
+                - blueprint: migration-tests
+                  disposition: carried
+                  ledger: migration-tests
+                - blueprint: generated-source-drift-test
+                  disposition: renamed
+                  ledger: generated-source-drift
+                  note: name only; the property is unchanged
+                - blueprint: generator-golden-tests
+                  disposition: renamed
+                  ledger: generator-tests
+                  note: >-
+                    Name and scope both narrowed. The blueprint said golden, which is a
+                    comparison against retained expected output; the ledger entry names the
+                    mechanism (the antlib gentest task) without committing to that comparison
+                    style. Recorded as a rename with a noted scope difference rather than as a
+                    clean carry.
+                - blueprint: typesystem-and-unit-tests
+                  disposition: undecided
+                  awaiting: >-
+                    An engineering decision. Not inferred here. The nine languages carry
+                    typesystem rules that the model checker evaluates, but whether that
+                    constitutes this family, or whether the family intended executable
+                    typesystem tests distinct from node-and-constraint tests, is a question
+                    about intent that the implementer should not answer alone.
+                - blueprint: trace-relation-negative-tests
+                  disposition: undecided
+                  awaiting: >-
+                    An engineering decision. GOV-C-002 governs trace-link relation validity and
+                    negative examples exist for it in the controlled record, but whether those
+                    discharge this family or whether it intended executable negative tests is
+                    not settled here.
+                - blueprint: ARCH-INVARIANT-001-no-language-equivalence
+                  disposition: undecided
+                  awaiting: >-
+                    An engineering decision, and this one needs the most care. Excluding an
+                    architectural invariant from a test-case taxonomy may be entirely correct;
+                    disappearing from controlled scope is not. If it ceases to be a test family
+                    its disposition must name the architectural control that supersedes it. No
+                    such control is currently identified, and that absence is recorded here
+                    rather than settled by labelling the entry retired.
+                newly_introduced:
+                - ledger: editor-tests
+                  basis: >-
+                    Derived from the mechanisms MPS actually provides. EditorTestCase is a
+                    rootable test-case kind in jetbrains.mps.lang.test, and eighteen editors
+                    exist in the project, so the family is available and unpopulated rather
+                    than inapplicable.
+                - ledger: build-idempotence
+                  basis: >-
+                    Derived from an observed requirement rather than from a mechanism. The
+                    non-idempotence finding showed that a first build could consume an
+                    IDE-left source_gen tree it does not itself produce and that every later
+                    build then failed, so a second independent build became a property worth
+                    naming.
+                enforced_by: tools/mps/check_test_family_reconciliation.py
               test_family_status:
                 purpose: >-
                   An explicit population ledger, not a place to mark every family green. A
@@ -2530,8 +2656,12 @@ acceptance_items:
                     generated output being correct.
                 invariant: >-
                   Every family above carries an explicit state. None is green by default and
-                  none is absent by omission. Four of six are not materialized, and this item
-                  claims only the two that are.
+                  none is absent by omission. Counts are deliberately not restated here: the
+                  ledger is the population, and a number repeated in prose beside it is a
+                  second declaration that can drift from the first. It did -- an earlier
+                  version of this line said four of six were not materialized when the ledger
+                  said three, which is the same defect as a gate comparing two declarations
+                  with each other.
               instrumented_execution_not_reconstruction: >-
                 The probe calls super.work() first and lets production LaunchTestWorker.work()
                 reproduce the failure, rather than re-attempting loadClass itself. Re-attempting

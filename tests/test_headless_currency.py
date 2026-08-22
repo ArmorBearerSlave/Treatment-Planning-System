@@ -151,5 +151,64 @@ class TestFamilyLedgerTest(unittest.TestCase):
         self.assertIn("not-yet-materialized", states)
 
 
+class TestFamilyReconciliationTest(unittest.TestCase):
+    """Nothing may cross between the two populations by silence, in either direction."""
+
+    TOOL = REPO_ROOT / "tools" / "mps" / "check_test_family_reconciliation.py"
+    BLUEPRINT = REPO_ROOT / "mps" / "bootstrap" / "language-skeleton.json"
+
+    def _run(self):
+        return subprocess.run([sys.executable, str(self.TOOL)], capture_output=True,
+                              text=True, cwd=str(REPO_ROOT))
+
+    def test_passes_as_committed(self):
+        result = self._run()
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+
+    def test_reports_undecided_families_every_run(self):
+        """An undecided disposition must stay visible, not merely pass.
+
+        The whole reason undecided is allowed is that inferring a disposition would be
+        worse. That only holds while the gate keeps saying which ones are open.
+        """
+        result = self._run()
+        self.assertIn("OPEN:", result.stdout)
+        self.assertIn("ARCH-INVARIANT-001-no-language-equivalence", result.stdout)
+
+    def test_a_blueprint_family_without_a_disposition_fails(self):
+        original = self.BLUEPRINT.read_text(encoding="utf-8")
+        try:
+            data = json.loads(original)
+            data["initial_test_families"].append("injected-control-family")
+            self.BLUEPRINT.write_text(json.dumps(data, indent=2) + "\n",
+                                      encoding="utf-8", newline="")
+            result = self._run()
+            self.assertEqual(1, result.returncode,
+                             "a declared family with no disposition was accepted")
+            self.assertIn("has no disposition", result.stderr)
+        finally:
+            self.BLUEPRINT.write_text(original, encoding="utf-8", newline="")
+        self.assertEqual(original, self.BLUEPRINT.read_text(encoding="utf-8"))
+
+    def test_a_ledger_family_without_a_stated_basis_fails(self):
+        original = PLAN.read_text(encoding="utf-8")
+        anchor = "                - family: node-and-constraint-tests\n"
+        self.assertIn(anchor, original)
+        injected = ("                - family: injected-ledger-family\n"
+                    "                  mechanism: none\n"
+                    "                  state: not-yet-materialized\n"
+                    "                  rationale: negative control\n")
+        try:
+            PLAN.write_text(original.replace(anchor, injected + anchor, 1),
+                            encoding="utf-8", newline="")
+            result = self._run()
+            self.assertEqual(1, result.returncode,
+                             "an operational family with no stated basis was accepted")
+            self.assertIn("without a stated basis", result.stderr)
+        finally:
+            PLAN.write_text(original, encoding="utf-8", newline="")
+        self.assertEqual(original, PLAN.read_text(encoding="utf-8"))
+
+
 if __name__ == "__main__":
     unittest.main()

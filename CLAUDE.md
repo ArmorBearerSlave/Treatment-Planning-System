@@ -40,21 +40,34 @@ whether the migration is correct.
     MPS-1  foundation + governance                        closed
     MPS-2  clinical intent + roles.common                closed
     MPS-3  the four professional role projections        closed
-    MPS-4  realization + the 119-HLR import               materialized; two items open
+    MPS-4  realization + the 119-HLR import               materialized; one item open
 
 **Stage A is materially complete but not formally closed.** The metamodel, the four
 professional projections, the corpus mirror, its provenance, the source-explicit hazard
 links and Stage-B equivalence are all present; no metamodel or corpus-content gap remains.
-The three open acceptance items are closure evidence of three different kinds, and none of
-them is domain modelling:
+One acceptance item remains, and it is not domain modelling:
 
-    MPS-MAT-008   a real command-line MPS build entry point, executed    build system
-                  outside the IDE process
     MPS-MAT-009   independent review of the completed Stage A evidence   assurance
 
-`MPS-MAT-008` still needs build-system engineering; neither is a matter of writing more
-model, and `MPS-MAT-009` is not the implementer's to record at all. `MPS-MAT-004B` closed
-once the corpus was converted and the layout observed.
+`MPS-MAT-008` closed at 15/16 on a cold headless build, an independent repeat build with
+zero drift, and native `launchtests` model tests with `authored = discovered = executed = 2`
+carrying both exact identities. `MPS-MAT-009` is not the implementer's to record at all, and
+that is the point of it: the closure record names what a reviewer should challenge --
+population completeness, whether the cold runs were genuinely cold, specificity versus
+inference, byte-identical restoration, disposal of the stale-state confound, and the
+enforced separation of generation success from semantic-test success. Re-running the gates
+green establishes currency, not warrant. `MPS-MAT-004B` closed once the corpus was converted
+and the layout observed.
+
+Two test-family populations exist and their correspondence is now controlled:
+`initial_test_families` in the blueprint, declared at MPS-0, and the operational ledger
+enumerated at closure from the mechanisms MPS provides. Every blueprint family carries
+exactly one disposition and every operational family is either a disposition target or
+declared newly introduced, so nothing crosses by silence. Three dispositions are
+deliberately `undecided` pending an engineering decision and are named on every run --
+`ARCH-INVARIANT-001-no-language-equivalence` most of all, because dropping an architectural
+invariant from a *test taxonomy* may be correct while dropping it from *controlled scope* is
+not.
 
 ## The headless build, and what it proved about the ones before it
 
@@ -358,6 +371,7 @@ python tools/mps/check_model_persistence.py
 python tools/mps/headless_build.py --validate-only
 python tools/mps/check_headless_coverage.py
 python tools/mps/check_headless_build_currency.py
+python tools/mps/check_test_family_reconciliation.py
 python tools/mps/derive_probe_target.py --check
 python tools/mps/export_hlr_corpus.py --check
 python tools/mps/check_stage_b_equivalence.py
