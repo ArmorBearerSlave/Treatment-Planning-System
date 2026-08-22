@@ -26,7 +26,7 @@ import yaml
 
 # Reachability is owned by the feature-spec gate; importing it keeps a single
 # definition of "can this concept hold an instance" rather than two that can drift.
-from check_concept_features import compute_reachability
+from check_concept_features import compute_reachability, load_features
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -39,6 +39,26 @@ PROHIBITED_FLAGS = (
     "clinical_credentials_permitted",
     "signing_keys_permitted",
 )
+
+
+def collect_declared_links() -> set[tuple[str, str]]:
+    """(owning concept, target concept) for every declared child and reference.
+
+    Read across every feature specification present, for the same reason
+    compute_reachability is: a link added at a later checkpoint has to be seen by a
+    deferral written at an earlier one.
+    """
+    links: set[tuple[str, str]] = set()
+    features = load_features()
+    for body in features.get("languages", {}).values():
+        for concept in body.get("concepts", []):
+            owner = concept["name"]
+            for kind in ("children", "references"):
+                for feature in concept.get(kind) or []:
+                    target = feature.get("target")
+                    if target:
+                        links.add((owner, target))
+    return links
 
 
 def check() -> list[str]:
@@ -150,6 +170,7 @@ def check() -> list[str]:
     # Every concept any specification declares, used to detect that a semantic dependency
     # has arrived even though nothing lapses automatically on it.
     declared_concepts = set(reach["concepts"])
+    declared_links = collect_declared_links()
 
     for item in items:
         for deferral in item.get("scoped_exclusions", []) or []:
@@ -198,7 +219,15 @@ def check() -> list[str]:
                 # unnoticed. The gate cannot make the transition, but it can refuse to stay
                 # quiet once the missing semantics have arrived.
                 needed = deferral.get("reactivation_concept")
+                watch = deferral.get("reactivation_reference")
                 reactivated = deferral.get("status", "").startswith("reactivated")
+                if not needed and not watch:
+                    errors.append(
+                        f"{item['id']}: deferral {label!r} names neither a "
+                        f"reactivation_concept nor a reactivation_reference. This class does "
+                        f"not lapse on reachability, so a deferral with nothing to watch "
+                        f"fails by never firing, which is indistinguishable from compliance"
+                    )
                 if needed and needed in declared_concepts and not reactivated:
                     errors.append(
                         f"{item['id']}: deferral {label!r} was justified by the absence of "
@@ -206,6 +235,22 @@ def check() -> list[str]:
                         f"automatically: reclassify it deliberately as an active obligation "
                         f"and name what realizes it"
                     )
+                if watch and not reactivated:
+                    # The missing semantics is a link, not a concept: some object has to
+                    # start carrying claims into a gating decision before the control has
+                    # anything to reject.
+                    target = watch.get("to")
+                    excluded = set(watch.get("excluding_owners") or [])
+                    arrived = sorted(owner for owner, to in declared_links
+                                     if to == target and owner not in excluded)
+                    if arrived:
+                        errors.append(
+                            f"{item['id']}: deferral {label!r} was justified by nothing "
+                            f"referencing {target} outside {sorted(excluded)}, but "
+                            f"{arrived} now does. This class does not lapse automatically: "
+                            f"reclassify it deliberately as an active obligation and name "
+                            f"what realizes it"
+                        )
                 if reactivated:
                     if not deferral.get("realized_by"):
                         errors.append(

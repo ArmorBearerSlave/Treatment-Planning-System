@@ -29,6 +29,9 @@
       <concept id="1068580123136" name="jetbrains.mps.baseLanguage.structure.StatementList" flags="sn" stub="5293379017992965193" index="3clFbS">
         <child id="1068581517665" name="statement" index="3cqZAp" />
       </concept>
+      <concept id="1081516740877" name="jetbrains.mps.baseLanguage.structure.NotExpression" flags="nn" index="3fqX7Q">
+        <child id="1081516765348" name="expression" index="3fr31v" />
+      </concept>
       <concept id="1204053956946" name="jetbrains.mps.baseLanguage.structure.IMethodCall" flags="ngI" index="1ndlxa">
         <reference id="1068499141037" name="baseMethodDeclaration" index="37wK5l" />
         <child id="1068499141038" name="actualArgument" index="37wK5m" />
@@ -84,38 +87,61 @@
       <property role="TrG5h" value="claim" />
       <ref role="1YaFvo" to="x4dh:1bNmcZ3F2Pz" resolve="VerificationClaim" />
     </node>
-    <node concept="3clFbS" id="1bNmcZ3JHXW" role="18ibNy">
-      <node concept="3clFbJ" id="1bNmcZ3JHXX" role="3cqZAp">
-        <node concept="1Wc70l" id="1bNmcZ3JHY0" role="3clFbw">
-          <node concept="2OqwBi" id="1bNmcZ3JHY3" role="3uHU7B">
-            <node concept="2OqwBi" id="1bNmcZ3JHY6" role="2Oq$k0">
-              <node concept="1YBJjd" id="1bNmcZ3JHY9" role="2Oq$k0">
-                <ref role="1YBMHb" node="1bNmcZ3JHXG" resolve="claim" />
-              </node>
-              <node concept="3Tsc0h" id="1bNmcZ3JHYa" role="2OqNvi">
-                <ref role="3TtcxE" to="x4dh:1bNmcZ3F2PH" resolve="executableSuites" />
+    <node concept="3clFbS" id="1bNmcZ3TkxY" role="18ibNy">
+      <node concept="3clFbJ" id="1bNmcZ3TkxZ" role="3cqZAp">
+        <node concept="1Wc70l" id="1bNmcZ3Tky2" role="3clFbw">
+          <node concept="1Wc70l" id="1bNmcZ3Tky5" role="3uHU7B">
+            <node concept="3fqX7Q" id="1bNmcZ3Tky8" role="3uHU7B">
+              <node concept="2OqwBi" id="1bNmcZ3Tkya" role="3fr31v">
+                <node concept="2OqwBi" id="1bNmcZ3Tkyd" role="2Oq$k0">
+                  <node concept="2OqwBi" id="1bNmcZ3Tkyg" role="2Oq$k0">
+                    <node concept="1YBJjd" id="1bNmcZ3Tkyj" role="2Oq$k0">
+                      <ref role="1YBMHb" node="1bNmcZ3JHXG" resolve="claim" />
+                    </node>
+                    <node concept="3TrcHB" id="1bNmcZ3Tkyk" role="2OqNvi">
+                      <ref role="3TsBF5" to="x4dh:1bNmcZ3F2PF" resolve="verdict" />
+                    </node>
+                  </node>
+                  <node concept="24Tkf9" id="1bNmcZ3Tkyl" role="2OqNvi" />
+                </node>
+                <node concept="liA8E" id="1bNmcZ3Tkym" role="2OqNvi">
+                  <ref role="37wK5l" to="wyt6:~String.equals(java.lang.Object)" resolve="equals" />
+                  <node concept="Xl_RD" id="1bNmcZ3Tkyn" role="37wK5m">
+                    <property role="Xl_RC" value="not_assessed" />
+                  </node>
+                </node>
               </node>
             </node>
-            <node concept="1v1jN8" id="1bNmcZ3JHYb" role="2OqNvi" />
+            <node concept="2OqwBi" id="1bNmcZ3Tkyo" role="3uHU7w">
+              <node concept="2OqwBi" id="1bNmcZ3Tkyr" role="2Oq$k0">
+                <node concept="1YBJjd" id="1bNmcZ3Tkyu" role="2Oq$k0">
+                  <ref role="1YBMHb" node="1bNmcZ3JHXG" resolve="claim" />
+                </node>
+                <node concept="3Tsc0h" id="1bNmcZ3Tkyv" role="2OqNvi">
+                  <ref role="3TtcxE" to="x4dh:1bNmcZ3F2PH" />
+                </node>
+              </node>
+              <node concept="1v1jN8" id="1bNmcZ3Tkyw" role="2OqNvi" />
+            </node>
           </node>
-          <node concept="2OqwBi" id="1bNmcZ3JHYc" role="3uHU7w">
-            <node concept="2OqwBi" id="1bNmcZ3JHYf" role="2Oq$k0">
-              <node concept="1YBJjd" id="1bNmcZ3JHYi" role="2Oq$k0">
+          <node concept="2OqwBi" id="1bNmcZ3Tkyx" role="3uHU7w">
+            <node concept="2OqwBi" id="1bNmcZ3Tky$" role="2Oq$k0">
+              <node concept="1YBJjd" id="1bNmcZ3TkyB" role="2Oq$k0">
                 <ref role="1YBMHb" node="1bNmcZ3JHXG" resolve="claim" />
               </node>
-              <node concept="3Tsc0h" id="1bNmcZ3JHYj" role="2OqNvi">
-                <ref role="3TtcxE" to="x4dh:1bNmcZ3F2PI" resolve="manualEvidence" />
+              <node concept="3Tsc0h" id="1bNmcZ3TkyC" role="2OqNvi">
+                <ref role="3TtcxE" to="x4dh:1bNmcZ3F2PI" />
               </node>
             </node>
-            <node concept="1v1jN8" id="1bNmcZ3JHYk" role="2OqNvi" />
+            <node concept="1v1jN8" id="1bNmcZ3TkyD" role="2OqNvi" />
           </node>
         </node>
-        <node concept="3clFbS" id="1bNmcZ3JHYl" role="3clFbx">
-          <node concept="2MkqsV" id="1bNmcZ3JHYm" role="3cqZAp">
-            <node concept="Xl_RD" id="1bNmcZ3JHYp" role="2MkJ7o">
-              <property role="Xl_RC" value="REA-C-002: a VerificationClaim must bind at least one ExecutableSuiteRef or at least one ManualEvidenceRef; a claim supported by neither asserts a result nothing can be traced to" />
+        <node concept="3clFbS" id="1bNmcZ3TkyE" role="3clFbx">
+          <node concept="2MkqsV" id="1bNmcZ3TkyF" role="3cqZAp">
+            <node concept="Xl_RD" id="1bNmcZ3TkyI" role="2MkJ7o">
+              <property role="Xl_RC" value="REA-C-002: a VerificationClaim whose verdict is an assessed result must bind at least one ExecutableSuiteRef or at least one ManualEvidenceRef; an assessed claim supported by neither asserts a result nothing can be traced to. A claim whose verdict is not_assessed may carry no evidence, but must not satisfy a verification, approval, promotion or release prerequisite." />
             </node>
-            <node concept="1YBJjd" id="1bNmcZ3JHYq" role="1urrMF">
+            <node concept="1YBJjd" id="1bNmcZ3TkyJ" role="1urrMF">
               <ref role="1YBMHb" node="1bNmcZ3JHXG" resolve="claim" />
             </node>
           </node>

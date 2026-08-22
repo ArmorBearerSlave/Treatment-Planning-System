@@ -40,12 +40,24 @@ whether the migration is correct.
     MPS-1  foundation + governance                        closed
     MPS-2  clinical intent + roles.common                closed
     MPS-3  the four professional role projections        closed
-    MPS-4  realization + the 119-HLR import               materialized; two items open
+    MPS-4  realization + the 119-HLR import               materialized; three items open
 
-MPS-4's two open acceptance items are recorded with their reasons in the checklist:
-`MPS-MAT-004B` (file-per-root persistence) is blocked on an integration deficiency,
-and `MPS-MAT-008` (headless build) has no headless build to run. `MPS-MAT-009` is an
-independent review and is not the implementer's to record.
+**Stage A is materially complete but not formally closed.** The metamodel, the four
+professional projections, the corpus mirror, its provenance, the source-explicit hazard
+links and Stage-B equivalence are all present; no metamodel or corpus-content gap remains.
+The three open acceptance items are closure evidence of three different kinds, and none of
+them is domain modelling:
+
+    MPS-MAT-004B  Convert to File-Per-Root Format on the corpus model,   integration
+                  then observe the layout MPS wrote
+    MPS-MAT-008   a real command-line MPS build entry point, executed    build system
+                  outside the IDE process
+    MPS-MAT-009   independent review of the completed Stage A evidence   assurance
+
+`MPS-MAT-008` still needs build-system engineering and `MPS-MAT-004B` needs an IDE
+capability the MCP surface does not expose; neither is a matter of writing more model.
+`MPS-MAT-009` is not the implementer's to record at all. Each carries its reason and, for
+`004B`, its closure procedure in the checklist.
 
 - Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
 - Concept design that MPS-1 transcribed: `mps/bootstrap/mps1-concept-features.yaml`
@@ -160,15 +172,19 @@ Three failures observed so far, each silent in every checker that ran before it:
 - `mps_mcp_scaffold_editor` leaves the inline display property of every reference cell
   unresolved. The model check reports nothing; the Java compiler reports `variable
   property might not have been initialized`. Point each one at a real property of the
-  concept it displays. **Do not use the compiler's error count to size the problem.**
-  At MPS-4 it named two, in one file, and stopped; the editor model actually held 45
-  across all eighteen editors. Count them by walking the model for a `CellModel_Property`
-  with no `relationDeclaration`.
+  concept it displays. **A diagnostic count is not a defect population.** A compiler
+  stops at the first failing unit, so when it reports N instances of a repeated defect,
+  enumerate the whole population rather than treating N as exhaustive. At MPS-4 it named
+  two, in one file, and stopped; the editor model actually held 45 across all eighteen
+  editors. Count them by walking the model for a `CellModel_Property` with no
+  `relationDeclaration`.
 - **A newly built checking rule is not live for instance models until modules are
   reloaded.** After REA-C-002 was built, `check_root_node_problems` reported "no problems
   found" on a model holding the rule's own negative example. `mps_mcp_reload_all` made it
   fire immediately. A clean check taken between building a rule and reloading is
-  meaningless and looks exactly like a passing one.
+  meaningless and looks exactly like a passing one. **Reload after creating or changing
+  any checking rule, before attempting behavioural proof** -- and re-run the negative
+  example after every later rebuild, because a rebuild can quietly leave it stale again.
 - **An enumeration property set to a member that does not belong to its enumeration is
   accepted silently.** The write returns `ok: true`, the value persists unresolvable with
   `null` where the member id belongs, and no checker or build reports it. A resolved
@@ -234,6 +250,15 @@ rewriting the layout on disk is prohibited outright. **A control the sanctioned 
 cannot reach is an integration deficiency to report, with the action that would fix it
 named — not a thing to reach around.**
 
+The durable fix is the gate, not the conversion. `tools/mps/check_model_persistence.py`
+observes what MPS wrote — a `.mps` file is single-file, a folder holding `.model` is
+file-per-root — reports every authored model, and fails on any model a controlled
+contract binds. It fails today, correctly: 47 of 47 authored models are single-file. It
+joins the CI workflow at the commit that closes `MPS-MAT-004B`;
+`tests/test_model_persistence.py` ties the gate's verdict to that item's recorded
+status, so neither can move without the other. **Whenever a control compares one
+declaration with another, it is verifying that someone wrote the same word twice.**
+
 ## Metric integrity
 
 `76 / 2,144` entities carry a source-explicit hazard set. **Materializing an entity in
@@ -258,6 +283,7 @@ python tools/mps/check_concept_features.py
 python tools/mps/check_role_ontology.py
 python tools/mps/check_materialization_plan.py
 python tools/mps/check_hlr_root_placement.py
+python tools/mps/check_model_persistence.py --report
 python tools/mps/export_hlr_corpus.py --check
 python tools/mps/check_stage_b_equivalence.py
 python tools/spec/build_trace_graph.py --check

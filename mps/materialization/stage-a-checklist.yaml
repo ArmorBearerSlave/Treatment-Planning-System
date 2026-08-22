@@ -510,9 +510,28 @@ acceptance_items:
       used it. check_language_skeleton compares the two declarations with each other and never
       observes the layout on disk, so MPS-0 through MPS-3 closed green on a constraint that
       was never in force. This is not something MPS-4 introduced.
+    control_amendment: >-
+      tools/mps/check_model_persistence.py now observes the persistence MPS actually wrote,
+      rather than comparing one declaration with another. It reports every authored model and
+      fails on any model a controlled contract binds -- currently the designated import model
+      named by file_per_root_contract. It presently fails, correctly: 47 authored models, all
+      single-file, against a declaration of file-per-root. The gate is deliberately not yet in
+      the CI workflow, because adding a step that is known to fail would make the suite red
+      for a reason the suite cannot fix; it joins CI at the same commit that closes this item.
+    closure_procedure:
+    - In the running IDE, on the nltps.corpus.hlr model, invoke Convert to File-Per-Root
+      Format.
+    - Read the resulting layout back and confirm 119 root files plus the model marker, with
+      the roots still classified by check_hlr_root_placement and the export still byte-equal.
+    - Run tools/mps/check_model_persistence.py; it must pass.
+    - 'Add that command to .github/workflows/controlled-spec-gates.yml and set this item
+      complete. tests/test_model_persistence.py couples the two: while this item is open the
+      gate must fail, and once it is complete the gate must pass, so neither can move alone.'
     evidence:
     - 'Ready when unblocked: 119 roots, each independently addressable, in a solution model
       outside every language, with the placement gate already enforcing where they may live.'
+    - 'Observed state, recorded rather than assumed: declared file-per-root, 47 of 47 authored
+      models persisted single-file.'
   - id: MPS-MAT-005A
     checkpoint: MPS-1
     item: >-
@@ -1142,10 +1161,12 @@ acceptance_items:
     item: Realization constraints, typesystems, editors, and negative model tests pass,
       including demonstrated rejection of deliberately invalid nodes.
     status: complete
-    completion_qualifier: COMPLETE_WITH_A_REPORTED_CONFLICT
+    completion_qualifier: COMPLETE_WITH_ONE_DEFERRED_CONTROL
     completion_basis: Each of REA-C-001 through REA-C-007 was proven by the mechanism its
-      frozen enforcement class names, negative example first and positive control after. One
-      frozen positive example cannot hold, and that is reported rather than quietly dropped.
+      frozen enforcement class names, negative example first and positive control after. The
+      conflict found during materialization is resolved in the controlled specification, not
+      absorbed, and the one control that has nothing to fire against is deferred by class
+      rather than skipped.
     controlled_constraint_inventory:
       declared: 7
       identifiers: REA-C-001 through REA-C-007
@@ -1160,14 +1181,25 @@ acceptance_items:
       reference in the obligatory role ''owningTeam''" on the reference descriptor, exactly
       where the freeze predicted; the node-level problems array stays silent. Positive: the
       same component bound to a Team reports no problems.'
-    - 'REA-C-002 PROVEN by an MPS checking rule. Negative: a VerificationClaim with neither
-      executableSuites nor manualEvidence reports the rule. Positive, one arm at a time: a
-      claim with one ManualEvidenceRef and no executable suite is accepted, and a claim with
-      one ExecutableSuiteRef and no manual evidence is accepted. Both directions were run,
-      because a rule demanding both children would pass a single-sided positive control.'
-    - 'REA-C-003 PROVEN by an MPS checking rule. Negative: a claim with verdict passed and no
-      evidence reports REA-C-003 and REA-C-002, each naming itself. Positive: the same claim
-      with verdict passed and bound evidence reports nothing.'
+    - 'REA-C-002 PROVEN by an MPS checking rule, as narrowed. Negative, twice: a claim with
+      verdict passed and no evidence reports REA-C-002 and REA-C-003, each naming itself, and
+      a claim with verdict failed and no evidence reports REA-C-002 alone. The second case is
+      what shows the rule covers assessed dispositions beyond passed; a rule keyed on passed
+      alone would have let failed and blocked through while still passing its own negative
+      example. Positive, one arm at a time: a claim assessed on one ManualEvidenceRef and no
+      executable suite is accepted, and a claim assessed on one ExecutableSuiteRef and no
+      manual evidence is accepted. Both directions were run, because a rule demanding both
+      children would pass a single-sided positive control.'
+    - 'REA-C-003 PROVEN by an MPS checking rule, with its original frozen positive example
+      restored. Negative: a claim with verdict passed and no evidence reports REA-C-003.
+      Positive: a claim with verdict not_assessed and no evidence is accepted, exactly as the
+      freeze wrote it. That example was unreachable while REA-C-002 required evidence of every
+      claim; narrowing REA-C-002 to assessed verdicts made it provable as written, and it was
+      run rather than assumed.'
+    - 'The exemption is keyed on not_assessed, the single unassessed member of
+      VerificationVerdictEnum, rather than on a list of assessed members. A member added to
+      that enumeration later is therefore assessed by default and inherits the evidence
+      obligation instead of escaping it silently.'
     - 'REA-C-004 PROVEN. Negative: an AdapterCapability whose direction is set to a
       TrustZoneEnum member is accepted by MPS, reports nothing at node, child or reference
       level, and survives a native rebuild; check_enum_persistence is what rejects it --
@@ -1190,22 +1222,59 @@ acceptance_items:
       than counted. The classifier reads concept and model, never identifier text.'
     - 'Editors: eighteen ConceptEditorDeclarations, one per realization concept, and the
       language rebuilds cleanly.'
-    reported_conflict:
+    resolved_conflict:
       between: REA-C-002 and REA-C-003
-      statement: >-
-        REA-C-002 requires every VerificationClaim to bind evidence. REA-C-003's frozen
-        positive example is "a claim with verdict not_assessed and no evidence is accepted".
-        Both cannot hold: under REA-C-002 a claim with no evidence is invalid whatever its
-        verdict.
-      disposition: >-
-        Both rules are implemented exactly as their statements read, which is the conservative
-        direction -- it rejects strictly more and never silently permits what a constraint
-        forbids. REA-C-003's positive control was therefore run as "verdict passed with bound
-        evidence is accepted" rather than the frozen wording, and that substitution is
-        recorded here rather than absorbed. Resolving the conflict is a controlled decision:
-        either REA-C-002 is narrowed so that an unassessed claim may carry no evidence, or
-        REA-C-003's positive example is corrected. Both constraints trace to source
-        constraints, so neither can be dropped by an implementer.
+      was: >-
+        REA-C-002 as frozen required every VerificationClaim to bind evidence. REA-C-003's
+        frozen positive example was a claim with verdict not_assessed and no evidence being
+        accepted. Both cannot hold, and both trace to source constraints, so neither could be
+        dropped by an implementer.
+      resolution: >-
+        REA-C-002 was narrowed rather than REA-C-003 corrected. The controlled source treats
+        missing evidence as something that blocks a profile, a promotion or a release, not as
+        something that makes an unassessed verification object illegal: ACC-003-02 requires
+        untested and unevidenced links to block incomplete profile publication, VAL-007
+        prevents release progression until required evidence is complete and approved, and the
+        V&V baseline prohibits PASS with unresolved blockers while requiring retained evidence
+        for acceptance. Representing incomplete work and letting incomplete work satisfy a gate
+        are different things, and only the second is forbidden. The V&V corpus makes this
+        concrete: 2,144 claims may legitimately exist planned and unexecuted before execution.
+      decided_by: the controlled-source reading recorded in mps4-concept-features.yaml,
+        REA-C-002 amendment_reason
+      interim_state_corrected: >-
+        Materialization first implemented both constraints as written, which was the
+        conservative direction but left REA-C-003's positive control substituted. The
+        substitution is withdrawn: the original example is now proven as frozen.
+    scoped_exclusions:
+      - constraint: REA-C-002-GATE
+        deferral_class: semantic_model_absence
+        status: deferred, not implementable
+        affected_concept: VerificationClaim
+        carried_to: MPS-MAT-005D
+        statement: >-
+          A claim whose verdict is not_assessed must not satisfy a verification, approval,
+          promotion or release prerequisite, and neither may an assessed claim lacking its
+          required evidence.
+        reason: >-
+          There is no state in which this control could fire. Nothing in the metamodel makes a
+          claim satisfy a prerequisite: ReleaseProfile reaches EvidenceProfile and
+          CommissionedUseEnvelope, EvidenceProfile reaches ExternalReference through citations,
+          and no release, approval or promotion concept references a VerificationClaim.
+          VerificationClaim is reachable only as a child of VerificationBaseline. Writing the
+          rule now would produce a control that passes because it never runs, which is
+          indistinguishable from compliance.
+        reactivation_reference:
+          to: VerificationClaim
+          excluding_owners: [VerificationBaseline]
+        reactivation_condition: >-
+          Reactivates when any concept other than VerificationBaseline declares a child or
+          reference targeting VerificationClaim -- that is, when some object starts carrying
+          claims into a gating decision. This is a semantic-model dependency, not a
+          containment-reachability one, so the non-instantiability lapse rule deliberately does
+          not apply. check_materialization_plan now watches the reference rather than a concept
+          name, because both concepts involved already exist and a concept-shaped watch would
+          either fire immediately for the wrong reason or never fire at all.
+        traceability_retained: true
   - id: MPS-MAT-006
     checkpoint: MPS-4
     item: The HLR importer accepts the schema-valid bundle and creates exactly 119 roots.

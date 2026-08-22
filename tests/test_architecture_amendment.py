@@ -888,6 +888,76 @@ class DeferralTransitionTests(unittest.TestCase):
             unreachable=[], concepts=["Thing"])
         self.assertEqual(errors, [])
 
+    def run_with_links(self, deferrals: list[dict], links: set) -> list[str]:
+        """As run_with, but also controls what the specifications are seen to declare.
+
+        REA-C-002-GATE is deferred on a missing *reference*, not a missing concept: both
+        VerificationClaim and every release concept already exist, so a concept-shaped
+        watch would either fire immediately for the wrong reason or never fire at all.
+        """
+        plan = self.gate()
+        original_links = plan.collect_declared_links
+        plan.collect_declared_links = lambda: links
+        try:
+            return self.run_with(deferrals, unreachable=[], concepts=["VerificationClaim"])
+        finally:
+            plan.collect_declared_links = original_links
+
+    def test_reference_watch_stays_quiet_while_only_the_excluded_owner_points_at_it(self) -> None:
+        errors = self.run_with_links(
+            [{"constraint": "X-9", "deferral_class": "semantic_model_absence",
+              "status": "deferred",
+              "reactivation_reference": {"to": "VerificationClaim",
+                                         "excluding_owners": ["VerificationBaseline"]}}],
+            {("VerificationBaseline", "VerificationClaim")})
+        self.assertEqual(errors, [])
+
+    def test_reference_watch_fires_when_something_else_starts_pointing_at_it(self) -> None:
+        # A release object carrying claims into a gating decision is exactly the semantics
+        # whose absence justified the deferral.
+        errors = self.run_with_links(
+            [{"constraint": "X-9", "deferral_class": "semantic_model_absence",
+              "status": "deferred",
+              "reactivation_reference": {"to": "VerificationClaim",
+                                         "excluding_owners": ["VerificationBaseline"]}}],
+            {("VerificationBaseline", "VerificationClaim"),
+             ("ReleaseProfile", "VerificationClaim")})
+        self.assertTrue(any("now does" in e for e in errors), errors)
+        self.assertTrue(any("ReleaseProfile" in e for e in errors), errors)
+
+    def test_reference_watch_is_silent_once_the_deferral_is_reactivated(self) -> None:
+        errors = self.run_with_links(
+            [{"constraint": "X-9", "deferral_class": "semantic_model_absence",
+              "status": "reactivated at MPS-5, active proof obligation",
+              "realized_by": "X-9-RULE", "carried_to": "MPS-MAT-005D",
+              "reactivation_reference": {"to": "VerificationClaim",
+                                         "excluding_owners": ["VerificationBaseline"]}}],
+            {("ReleaseProfile", "VerificationClaim")})
+        self.assertEqual(errors, [])
+
+    def test_a_semantic_deferral_watching_nothing_is_rejected(self) -> None:
+        # The rot this class is prone to. A deferral with neither a concept nor a reference
+        # to watch passes forever, which is indistinguishable from compliance.
+        errors = self.run_with_links(
+            [{"constraint": "X-9", "deferral_class": "semantic_model_absence",
+              "status": "deferred"}],
+            set())
+        self.assertTrue(any("fails by never firing" in e for e in errors), errors)
+
+    def test_the_live_gate_deferral_names_something_to_watch(self) -> None:
+        import yaml as _yaml
+
+        plan = self.gate()
+        document = _yaml.safe_load(plan.PLAN_PATH.read_text(encoding="utf-8"))
+        found = [d for item in document["acceptance_items"]
+                 for d in item.get("scoped_exclusions", []) or []
+                 if d.get("deferral_class") == "semantic_model_absence"]
+        self.assertTrue(found)
+        for deferral in found:
+            self.assertTrue(
+                deferral.get("reactivation_concept") or deferral.get("reactivation_reference"),
+                deferral.get("constraint"))
+
     def test_semantic_deferral_rots_loudly_once_its_concept_arrives(self) -> None:
         # The failure mode CLAUDE.md warns about: this class never lapses on reachability,
         # so without a detector it stays green forever.

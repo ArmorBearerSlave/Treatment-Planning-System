@@ -185,6 +185,7 @@
         <property id="1365532761387707754" name="claimName" index="3hnRm_" />
         <reference id="1365532761387707761" name="owningTeam" index="3hnRmY" />
         <reference id="1365532761387707760" name="verifies" index="3hnRmZ" />
+        <child id="1365532761387707758" name="manualEvidence" index="3hnRmx" />
         <child id="1365532761387707757" name="executableSuites" index="3hnRmy" />
       </concept>
       <concept id="1365532761387707746" name="nltps.realization.structure.ExternalSystem" flags="ng" index="3hnRmH">
@@ -196,6 +197,11 @@
         <property id="1365532761387707749" name="responsibility" index="3hnRmE" />
         <property id="1365532761387707748" name="componentName" index="3hnRmF" />
         <reference id="1365532761387707750" name="owningTeam" index="3hnRmD" />
+      </concept>
+      <concept id="1365532761387707710" name="nltps.realization.structure.ManualEvidenceRef" flags="ng" index="3hnRnL">
+        <property id="1365532761387707724" name="recordedByRole" index="3hnRm3" />
+        <property id="1365532761387707723" name="recordLocation" index="3hnRm4" />
+        <property id="1365532761387707722" name="evidenceId" index="3hnRm5" />
       </concept>
       <concept id="1365532761387707709" name="nltps.realization.structure.ExecutableSuiteRef" flags="ng" index="3hnRnM">
         <property id="1365532761387707721" name="toolchain" index="3hnRm6" />
@@ -863,6 +869,44 @@
           <property role="3gIvZX" value="SUITEAPPROVAL001" />
         </node>
         <node concept="3gIvZH" id="1bNmcZ3JJVG" role="3gIvZy">
+          <property role="3gIvZS" value="0.2" />
+        </node>
+      </node>
+    </node>
+    <node concept="3hnRmG" id="1bNmcZ3UXTb" role="3hnRlH">
+      <property role="3hnRm_" value="UnassessedWithoutEvidencePositiveControl" />
+      <property role="3hnRm$" value="1RV1HIhZ_9S/not_assessed" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <ref role="3hnRmZ" node="1bNmcZ2uzoK" />
+      <ref role="3hnRmY" node="1bNmcZ3JGzo" />
+      <node concept="3gIvZJ" id="1bNmcZ3UXTe" role="3gIvZz">
+        <property role="3gIvZX" value="REAC003POSUNASSESSED" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3UXTf" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
+    <node concept="3hnRmG" id="1bNmcZ3UXTg" role="3hnRlH">
+      <property role="3hnRm_" value="AssessedOnManualEvidenceOnlyPositiveControl" />
+      <property role="3hnRm$" value="1HxEvIlveq9/passed" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <ref role="3hnRmZ" node="1bNmcZ2uzoK" />
+      <ref role="3hnRmY" node="1bNmcZ3JGzo" />
+      <node concept="3gIvZJ" id="1bNmcZ3UXTj" role="3gIvZz">
+        <property role="3gIvZX" value="REAC002POSMANUAL" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3UXTk" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+      <node concept="3hnRnL" id="1bNmcZ3UXTl" role="3hnRmx">
+        <property role="3hnRm5" value="EV-MANUAL-002" />
+        <property role="3hnRm4" value="QMS record store, inspection log" />
+        <property role="3hnRm3" value="quality reviewer" />
+        <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+        <node concept="3gIvZJ" id="1bNmcZ3UXTo" role="3gIvZz">
+          <property role="3gIvZX" value="EVMANUAL002" />
+        </node>
+        <node concept="3gIvZH" id="1bNmcZ3UXTp" role="3gIvZy">
           <property role="3gIvZS" value="0.2" />
         </node>
       </node>

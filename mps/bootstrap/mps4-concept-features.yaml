@@ -666,8 +666,11 @@ languages:
         read-back has to inspect feature descriptors to see it.
       positive_example: The same Component bound to a Team, accepted.
     - id: REA-C-002
-      statement: Every VerificationClaim binds at least one ExecutableSuiteRef or at least one ManualEvidenceRef.
-        A claim supported by neither asserts a result nothing can be traced to.
+      statement: 'A VerificationClaim whose verdict represents an assessed verification result binds
+        the evidence supporting that result: at least one ExecutableSuiteRef or at least one
+        ManualEvidenceRef. An assessed claim supported by neither asserts a result nothing can be
+        traced to. A claim whose verdict is not_assessed may exist without evidence, but must not
+        satisfy a verification, approval, promotion or release prerequisite.'
       source_constraint: every VerificationClaim binds an executable suite or explicit manual evidence
         record
       applies_to:
@@ -675,12 +678,46 @@ languages:
       traceability: realization evidence
       enforcement: MPS checking rule. Neither child can carry cardinality 1..n on its own, because
         either one satisfies the obligation; the disjunction is not expressible in the metamodel and
-        needs a rule.
+        needs a rule. The exemption is keyed on the single unassessed member of
+        VerificationVerdictEnum, not on a list of assessed ones, so a member added later is assessed
+        by default and inherits the obligation rather than escaping it.
+      amended_at: MPS-4 materialization
+      amendment_reason: >-
+        As frozen, this constraint made a claim without evidence invalid whatever its verdict, which
+        contradicted REA-C-003's frozen positive example of an unassessed claim carrying none. Both
+        trace to source constraints, so neither could be dropped by an implementer. The controlled
+        source resolves it: ACC-003-02 requires untested and unevidenced links to block incomplete
+        profile publication, VAL-007 prevents release progression until required evidence is complete
+        and approved, and the V&V baseline prohibits PASS with unresolved blockers and requires
+        retained evidence for acceptance. Each of them blocks a gate, and none makes an unassessed
+        verification object illegal. Requiring evidence on an object whose own state says it has not
+        been assessed would have made the model unable to represent work in progress.
       proof_status: active at MPS-4
-      negative_example: A VerificationClaim with no executableSuites and no manualEvidence children.
+      negative_example: A VerificationClaim with an assessed verdict -- passed, failed or blocked --
+        and neither an executableSuites nor a manualEvidence child. Two are run, passed and failed,
+        because a rule keyed on passed alone would let every other assessed disposition through
+        while still passing its own negative example.
       positive_example: A claim with one ManualEvidenceRef and no executable suite must be accepted,
         and so must the reverse. A rule demanding both would be wrong, and only the positive control
-        catches that.
+        catches that. A claim with verdict not_assessed and no evidence must also be accepted.
+      deferred_control:
+        id: REA-C-002-GATE
+        statement: A claim whose verdict is not_assessed must not satisfy a verification, approval,
+          promotion or release prerequisite.
+        deferral_class: semantic_model_absence
+        affected_concept: VerificationClaim
+        reason: >-
+          There is nothing in the metamodel that makes a claim satisfy a prerequisite, so there is
+          no state in which this control could fire. ReleaseProfile reaches EvidenceProfile and
+          CommissionedUseEnvelope, and EvidenceProfile reaches ExternalReference through citations;
+          no release, approval or promotion concept references a VerificationClaim, and
+          VerificationClaim is reachable only as a child of VerificationBaseline. Writing the rule
+          now would produce a control that passes because it never runs, which is
+          indistinguishable from compliance.
+        expires_when: A release, approval or promotion concept gains a reference to a
+          VerificationClaim, a VerificationBaseline, or any other object that carries claims into a
+          gating decision. The checkpoint that introduces that reference must reclassify this
+          deliberately; nothing will notice on its own.
     - id: REA-C-003
       statement: A verdict is stated, never inferred. A VerificationClaim whose verdict is passed
         must bind evidence, and no verdict is computed from the records beneath it.
@@ -695,8 +732,11 @@ languages:
       proof_status: active at MPS-4
       negative_example: A VerificationClaim with verdict passed and neither an ExecutableSuiteRef
         nor a ManualEvidenceRef child.
-      positive_example: A claim with verdict not_assessed and no evidence is accepted. Absence of
-        evidence is a legitimate state; it is only a passing verdict that requires support.
+      positive_example: 'A claim with verdict not_assessed and no evidence is accepted. Absence of
+        evidence is a legitimate state; it is only a passing verdict that requires support. This is
+        the original frozen wording, restored: it was substituted during materialization only
+        because REA-C-002 as frozen made it unreachable, and narrowing REA-C-002 to assessed
+        verdicts makes it provable as written.'
     - id: REA-C-004
       statement: Every AdapterCapability declares direction, trust zone, destination and commissioned
         profile. All four are mandatory.
