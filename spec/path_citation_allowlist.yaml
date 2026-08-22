@@ -1,0 +1,24 @@
+# Paths cited in controlled artifacts that deliberately do not exist.
+#
+# Absent-because-deferred and absent-by-design are legitimate; absent-because-nobody-noticed
+# is not, and only a written status tells them apart. tools/spec/check_path_citations.py
+# fails on any cited path that is neither present nor listed here, and equally on any entry
+# here that has since come into existence -- a declaration must not outlive its reason.
+absent_by_declaration:
+- path: mps/bootstrap/does-not-exist.yaml
+  status: negative_control_fixture
+  reason: >-
+    Cited by tests/test_construction_gates.py to prove the construction gate rejects a
+    missing input. It must not exist; creating it would silently disarm that control.
+- path: tools/mps/check_nonexistent_thing.py
+  status: negative_control_fixture
+  reason: >-
+    Cited by tests/test_construction_gates.py to prove the gate rejects a command naming a
+    tool that is not present. It must not exist for the same reason.
+- path: tools/mps/check_headless_build_currency.py
+  status: declared_future_work
+  reason: >-
+    Named in mps/materialization/stage-a-checklist.yaml as the currency gate to be written
+    once the headless build and test evidence are both closed, keyed on a hash of the
+    controlled model tree. Deferred deliberately as a lock fitted before the door; it
+    becomes required when the MPS-MAT-008 evidence closes.

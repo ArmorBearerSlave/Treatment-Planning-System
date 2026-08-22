@@ -2080,6 +2080,65 @@ acceptance_items:
                   project-local dependency on a test module recreates it under a different name
                   with the same misleading symptom, a ClassNotFoundException naming the test
                   class. Both checks have negative controls in tests/test_headless_build.py.
+              pre_red_evidence_freeze:
+                recorded_at: 90e0fee, working tree clean
+                executable_population_N: 1
+                nodes_test_case: >-
+                  concept 1lH9Xt, node 1bNmcZ3WSdB, name
+                  REA_C_002_evidence_required_for_assessed_verdict, accessMode command
+                test_node: concept 1qefOq, node 1bNmcZ3WSdC, role 1SKRRt (nodesToCheck)
+                sentinel_verification_claim: >-
+                  concept 3hnRmG, node 1bNmcZ3WSdE, role 1qenE9 (nodeToCheck),
+                  claimName headlessSentinelClaim, verdict 1HxEvIlveq9/passed, three
+                  references into nltps.proof.cases (1bNmcZ2uzo_, 1bNmcZ2uzoK, 1bNmcZ3JGzo),
+                  Version child 1bNmcZ3WSdH value HEADLESSSENTINEL, StableId child
+                  1bNmcZ3WSdI value 0.2, and no evidence child of any kind
+                simple_node_test: >-
+                  concept 1LZb2c, node 1bNmcZ3WSdO, role 1SL9yI (testMethods), name
+                  testAssessedClaimWithoutEvidenceIsRejected, returnType VoidType
+                  1bNmcZ3WSdR, body StatementList 1bNmcZ3WSdS containing no statements
+                generated_body_today: >-
+                  test_testAssessedClaimWithoutEvidenceIsRejected() calls initTestNodes() and
+                  nothing else, which is why it passes. The empty body is not asserting
+                  anything and has never claimed to.
+                testmodules_population: nltps.modeltests only
+                support_repository: nltps.proof, via <repository>
+                report_directory: deleted and recreated by the target on every run
+              red_contract_blocked_on_a_conflict:
+                the_sentinel_violates_two_rules_not_one: >-
+                  Confirmed from the rule text on disk, not assumed. REA-C-002 requires an
+                  assessed verdict to bind at least one ExecutableSuiteRef or ManualEvidenceRef.
+                  REA-C-003 requires a verdict of passed to bind evidence. The sentinel is
+                  verdict=passed with no evidence and therefore trips both. An assertion of the
+                  form "this node has an error" would be satisfied by REA-C-003 alone, which is
+                  exactly the accidental satisfaction the RED contract forbids.
+                what_the_test_language_offers: >-
+                  jetbrains.mps.lang.test.NodeErrorCheckOperation carries
+                  errorRef : IRuleReference 0..1 and expectedMessage : ExpectedMessageContainer
+                  0..1, so it can name the REA-C-002 rule specifically. That is the only
+                  rule-specific assertion the language provides.
+                why_it_conflicts_with_the_frozen_tuple: >-
+                  NodesTestCase.testMethods is typed NodesTestMethod, and NodeErrorCheckOperation
+                  is not one -- its superconcept chain reaches BaseConcept and it implements
+                  INodesTestMethod instead. It attaches as an annotation on the node under test.
+                  Implementing INodesTestMethod is how a check operation becomes an executable
+                  test, so attaching one alongside the existing SimpleNodeTest is expected to
+                  make N=2, which the frozen tuple forbids. Deleting the SimpleNodeTest to keep
+                  N=1 would change the test name and node identity, which the frozen tuple also
+                  forbids.
+                the_body_route_and_its_cost: >-
+                  BaseTestBody offers getNodeById, getRealNodeById, getAnnotatedNode,
+                  runWithinRead and runWithinCommand, and nothing rule-specific. A body-level
+                  REA-C-002 assertion would have to call MPS's checker API directly from
+                  baseLanguage, which means giving nltps.modeltests new module dependencies --
+                  the same class of change that produced the NOT_IN_REPO defect. It would now be
+                  caught by check_headless_coverage.py rather than silent, but it is still a
+                  change to the frozen module configuration.
+                status: >-
+                  Not resolved here. Three frozen constraints -- N=1, unchanged test identity,
+                  and a rule-specific assertion -- cannot all hold with the mechanism the test
+                  language provides, and choosing which to relax is not the implementer's call.
+                  No model change was made.
               instrumented_execution_not_reconstruction: >-
                 The probe calls super.work() first and lets production LaunchTestWorker.work()
                 reproduce the failure, rather than re-attempting loadClass itself. Re-attempting

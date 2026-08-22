@@ -341,6 +341,7 @@ python tools/mps/derive_probe_target.py --check
 python tools/mps/export_hlr_corpus.py --check
 python tools/mps/check_stage_b_equivalence.py
 python tools/spec/build_trace_graph.py --check
+python tools/spec/check_path_citations.py
 ```
 
 The full suite is `.github/workflows/controlled-spec-gates.yml`; run every step listed
