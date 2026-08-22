@@ -226,12 +226,21 @@ def main() -> int:
 
 
 def module_list() -> list[str]:
-    """The modules the build descriptor names, in the order it names them."""
+    """The modules the make target names, in the order it names them.
+
+    Scoped to that one target on purpose. <module file="..."/> is also the shape of an
+    entry inside the <repository> element the test target uses to supply support modules,
+    and harvesting the whole document once silently reported nltps.proof three times --
+    a provenance record that would have looked deliberate.
+    """
     from xml.etree import ElementTree
 
     root = ElementTree.parse(BUILD_FILE).getroot()
+    make = [t for t in root.iter("target") if t.get("name") == "make"]
+    if len(make) != 1:
+        raise ToolchainError(f"expected exactly one make target, found {len(make)}")
     names = []
-    for element in root.iter("module"):
+    for element in make[0].iter("module"):
         value = element.get("file")
         if value:
             names.append(Path(value).name)

@@ -123,6 +123,27 @@
       <plugin id="jetbrains.mps.core" path="${mps.home}/plugins/mps-core"/>
       <plugin id="jetbrains.mps.junit5" path="${mps.home}/plugins/mps-junit5"/>
       <plugin id="jetbrains.mps.testing" path="${mps.home}/plugins/mps-testing"/>
+      <!--
+        nltps.proof is a support module, not a test module, and the distinction is the whole
+        point of putting it here rather than in <testmodules>. addConfiguredRepository places
+        it in the repository the worker starts with; <testmodules> would additionally register
+        it for test auto-discovery, and a test added to the proof sandbox later would then
+        silently change the frozen population N.
+
+        It is required because nltps.modeltests declares a dependency on it, that dependency
+        did not resolve at discovery time, and ClassLoaderManager consequently reported
+        NOT_IN_REPO for nltps.modeltests itself and handed test discovery a system-delegating
+        classloader that cannot see classes_gen. Discovery runs inside
+        ScriptJUnit5Launcher.collectTestClasses, before launchTestsWithSession opens the
+        project, so <project> alone does not put it there in time.
+
+        Exactly one module is named. Pointing this at the project directory would fix
+        membership by saturation and destroy the evidence about which closure is actually
+        required.
+      -->
+      <repository>
+        <module file="${project.dir}/sandbox/nltps.proof/nltps.proof.msd"/>
+      </repository>
       <project path="${project.dir}"/>
       <!-- TestModules exposes only a generic add(), i.e. an Ant resource collection,
            so the module descriptor is named by a fileset rather than a <module> element. -->
@@ -206,6 +227,27 @@
       <plugin id="jetbrains.mps.core" path="${mps.home}/plugins/mps-core"/>
       <plugin id="jetbrains.mps.junit5" path="${mps.home}/plugins/mps-junit5"/>
       <plugin id="jetbrains.mps.testing" path="${mps.home}/plugins/mps-testing"/>
+      <!--
+        nltps.proof is a support module, not a test module, and the distinction is the whole
+        point of putting it here rather than in <testmodules>. addConfiguredRepository places
+        it in the repository the worker starts with; <testmodules> would additionally register
+        it for test auto-discovery, and a test added to the proof sandbox later would then
+        silently change the frozen population N.
+
+        It is required because nltps.modeltests declares a dependency on it, that dependency
+        did not resolve at discovery time, and ClassLoaderManager consequently reported
+        NOT_IN_REPO for nltps.modeltests itself and handed test discovery a system-delegating
+        classloader that cannot see classes_gen. Discovery runs inside
+        ScriptJUnit5Launcher.collectTestClasses, before launchTestsWithSession opens the
+        project, so <project> alone does not put it there in time.
+
+        Exactly one module is named. Pointing this at the project directory would fix
+        membership by saturation and destroy the evidence about which closure is actually
+        required.
+      -->
+      <repository>
+        <module file="${project.dir}/sandbox/nltps.proof/nltps.proof.msd"/>
+      </repository>
       <project path="${project.dir}"/>
       <!-- TestModules exposes only a generic add(), i.e. an Ant resource collection,
            so the module descriptor is named by a fileset rather than a <module> element. -->

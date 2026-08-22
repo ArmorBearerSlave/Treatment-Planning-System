@@ -2000,6 +2000,86 @@ acceptance_items:
                   the fix, but which route is correct is a separate decision with its own
                   consequences. A second testmodules entry would also submit nltps.proof to test
                   auto-discovery, which is not what it is for. Nothing was changed.
+              repair_result:
+                branch: >-
+                  A. nltps.proof was supplied through the inherited <repository> element of
+                  <launchtests> and <testmodules> was left holding nltps.modeltests alone.
+                  Exactly one module was named; the project directory was not used, so the
+                  evidence about which closure is required survives.
+                ledger:
+                  authored_executable_tests: 1
+                  mps_test_root_recognized: 1
+                  module_dependency_closure_valid: 1
+                  generated_class_loadable: 1
+                  junit_selector_constructed: 1
+                  executed: 1
+                  failures: 0
+                  exact_test_name: >-
+                    test_testAssessedClaimWithoutEvidenceIsRejected() in
+                    nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test
+                  fresh_report: >-
+                    yes; the target deletes and recreates the reports directory, and the suite
+                    timestamp is the run's own
+                  halt_on_failure: true
+                  outer_process: success, exit code 0
+                the_separation_held: >-
+                  The run logs "Registered module nltps.modeltests for test auto-discovery" and
+                  names no other. nltps.proof entered the repository the worker starts with,
+                  not the auto-discovery set, so a test added to the proof sandbox later cannot
+                  silently change the frozen population N.
+                one_line_is_inferred_not_observed: >-
+                  "MPS ModuleClassLoader obtained" was not read directly after the repair,
+                  because the probe's gate correctly declined to measure a run it had not
+                  reproduced. It follows from two measurements rather than one: the
+                  system-delegating fallback was measured to fail loadClass for this exact
+                  FQN, and the class now loads. Sound, but an inference, and recorded as one.
+                control_the_probe_no_longer_reproduces: >-
+                  Re-run after the repair: SUPER_WORK_THREW=false, ERRORS_RECORDED=0,
+                  PROBE_REPRODUCED=false, NO_READINGS_EMITTED. The instrument that reproduced
+                  the defect declines to emit readings about a run that is not the run under
+                  study. That is the gate working in the opposite direction, and it is a
+                  control on the repair rather than on the instrument.
+                halt_on_failure_earned_itself_twice: >-
+                  haltOnFailure=true was frozen units earlier against an imagined failure mode:
+                  a semantic failure degrading into a successful Ant invocation. It turned out
+                  to be the only reason this defect was observable at all, and not for that
+                  reason. The class-not-found arrives through WorkerCallback.error rather than
+                  fatal, so myForceFailOnError stays false and WorkerBase.failBuild throws only
+                  because myErrors is non-empty AND failOnError is set. With haltOnFailure
+                  false the run would have reported exit 0 with zero tests. A contract written
+                  against a failure nobody had seen caught one nobody had conceived of, which
+                  is the argument for writing contracts before results.
+                packaging_wrong_as_diagnosis_and_not_needed_as_remedy: >-
+                  Recorded so the withdrawal is not later read as "packaging is irrelevant".
+                  Packaging was withdrawn as a cause and the withdrawal was correct: the class
+                  was compiled, present and blameless. It was also not needed as the remedy --
+                  <repository> takes module descriptors directly, so no module was packaged.
+                  What remains true is the topology observation: the canonical arrangement
+                  supplies dependency modules as packaged jars through <library> and reserves
+                  <testmodules> for test modules, which is plausibly why this configuration is
+                  not commonly hit.
+              two_controls_that_did_not_exist:
+                found_while_applying_the_repair: >-
+                  Adding <repository> introduced <module file="..."/> elements outside the make
+                  target, and headless_build.module_list harvested the whole document by tag
+                  name. It began reporting nltps.proof three times -- once real, twice from the
+                  two repository elements -- which would have gone into the provenance record's
+                  modules_built field looking deliberate. Scoped to the make target, with a
+                  test asserting no duplicates and equality with the project registry.
+                a_control_asserted_in_prose_and_never_written: >-
+                  The build descriptor's own comment stated that tests/test_headless_build.py
+                  holds the make list equal to the project's modules.xml. No such file existed.
+                  A control described in a comment and never written is worse than no control,
+                  because a reader cannot tell the difference and will assume coverage is
+                  enforced. Written now, with a negative control.
+                dependency_closure_gate: >-
+                  tools/mps/check_headless_coverage.py additionally requires that the
+                  project-local dependency closure of every module offered for test discovery
+                  is supplied to the worker through <repository> or <testmodules>. Nothing
+                  about the NOT_IN_REPO defect was specific to nltps.proof: any later
+                  project-local dependency on a test module recreates it under a different name
+                  with the same misleading symptom, a ClassNotFoundException naming the test
+                  class. Both checks have negative controls in tests/test_headless_build.py.
               instrumented_execution_not_reconstruction: >-
                 The probe calls super.work() first and lets production LaunchTestWorker.work()
                 reproduce the failure, rather than re-attempting loadClass itself. Re-attempting

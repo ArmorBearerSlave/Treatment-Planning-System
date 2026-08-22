@@ -75,6 +75,8 @@ def main() -> int:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--check", action="store_true",
                         help="verify the probe element is the derived one; change nothing")
+    parser.add_argument("--write", action="store_true",
+                        help="regenerate the probe element from the production one")
     args = parser.parse_args()
 
     with io.open(BUILD_FILE, encoding="utf-8") as handle:
@@ -85,6 +87,14 @@ def main() -> int:
 
     if actual is None:
         print("SKIP: no probe target present; nothing to check", file=sys.stderr)
+        return 0
+    if args.write:
+        if actual == expected:
+            print("PASS: probe element already derived; nothing to write")
+            return 0
+        with io.open(BUILD_FILE, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(text.replace(actual, expected))
+        print("WROTE: probe element regenerated from the production element")
         return 0
     if actual != expected:
         print("FAIL: the probe element is not the production element with the three "
