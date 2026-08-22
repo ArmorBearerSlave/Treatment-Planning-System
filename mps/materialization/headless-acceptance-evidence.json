@@ -1,0 +1,44 @@
+{
+  "build": {
+    "cold": true,
+    "drift": "clean",
+    "exit_code": 0,
+    "log": "build/work/closure-make.log",
+    "log_sha256": "bae15b9f80e4238552f7895672b9696cb67445feb32719264d6259e9ca8dc7c4",
+    "model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
+    "modules": [
+      "nltps.foundation.mpl",
+      "nltps.governance.mpl",
+      "nltps.clinicalintent.mpl",
+      "nltps.roles.common.mpl",
+      "nltps.roles.radonc.mpl",
+      "nltps.roles.physics.mpl",
+      "nltps.roles.dosimetry.mpl",
+      "nltps.roles.therapy.mpl",
+      "nltps.realization.mpl",
+      "nltps.corpus.msd",
+      "nltps.proof.msd",
+      "nltps.modeltests.msd"
+    ],
+    "verdict": "pass"
+  },
+  "head": "e66039e1e4949dd1e8e4737c91436c62c16e0e19",
+  "model_tests": {
+    "authored": 2,
+    "discovered": 2,
+    "errors": 0,
+    "executed": 2,
+    "failures": 0,
+    "halt_on_failure": true,
+    "identities": [
+      "test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()",
+      "test_testAssessedClaimWithoutEvidenceIsRejected()"
+    ],
+    "model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
+    "report": "build/work/reports/TEST-junit-jupiter.xml",
+    "report_sha256": "ad672e2044c7f461689fc808b5cebc3c1755a9b3534f7a342c73883c7420d0cc",
+    "verdict": "pass"
+  },
+  "model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
+  "mps_build": "MPS-261.25134.779"
+}

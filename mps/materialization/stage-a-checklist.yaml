@@ -545,7 +545,15 @@ acceptance_items:
       both directions, so a future regression cannot be closed by editing either one alone.
   - id: MPS-MAT-005A
     build_clause_status:
-      state: unreproduced
+      state: reproduced
+      reproduced_on: >-
+        The MPS-MAT-008 closure candidate, by a contemporaneous cold build rather than by
+        inference from the earlier one. Every source_gen, source_gen.caches, classes_gen,
+        test_gen and test_gen.caches directory in the project was deleted -- 34 directories --
+        and the headless build then completed all nine languages plus nltps.modeltests with
+        exit 0, leaving git status over mps/NLTPSGovernance empty. A second independent build
+        over that output also completed with exit 0 and no drift.
+      superseded_state: unreproduced
       applies_to: the native rebuild cited in this item's evidence
       reason: >-
         Every build in MPS-0 through MPS-4 was incremental on generated output that already
@@ -836,7 +844,15 @@ acceptance_items:
         must parse the string-backed value numerically first.
   - id: MPS-MAT-005B
     build_clause_status:
-      state: unreproduced
+      state: reproduced
+      reproduced_on: >-
+        The MPS-MAT-008 closure candidate, by a contemporaneous cold build rather than by
+        inference from the earlier one. Every source_gen, source_gen.caches, classes_gen,
+        test_gen and test_gen.caches directory in the project was deleted -- 34 directories --
+        and the headless build then completed all nine languages plus nltps.modeltests with
+        exit 0, leaving git status over mps/NLTPSGovernance empty. A second independent build
+        over that output also completed with exit 0 and no drift.
+      superseded_state: unreproduced
       applies_to: the native rebuild cited in this item's evidence
       reason: >-
         Every build in MPS-0 through MPS-4 was incremental on generated output that already
@@ -1074,7 +1090,15 @@ acceptance_items:
           shape prohibitions are enforced at gate level in the meantime.
   - id: MPS-MAT-005C
     build_clause_status:
-      state: unreproduced
+      state: reproduced
+      reproduced_on: >-
+        The MPS-MAT-008 closure candidate, by a contemporaneous cold build rather than by
+        inference from the earlier one. Every source_gen, source_gen.caches, classes_gen,
+        test_gen and test_gen.caches directory in the project was deleted -- 34 directories --
+        and the headless build then completed all nine languages plus nltps.modeltests with
+        exit 0, leaving git status over mps/NLTPSGovernance empty. A second independent build
+        over that output also completed with exit 0 and no drift.
+      superseded_state: unreproduced
       applies_to: the native rebuild cited in this item's evidence
       reason: >-
         Every build in MPS-0 through MPS-4 was incremental on generated output that already
@@ -1241,7 +1265,15 @@ acceptance_items:
       level. Batch-call success and a clean model check are not evidence.
   - id: MPS-MAT-005D
     build_clause_status:
-      state: unreproduced
+      state: reproduced
+      reproduced_on: >-
+        The MPS-MAT-008 closure candidate, by a contemporaneous cold build rather than by
+        inference from the earlier one. Every source_gen, source_gen.caches, classes_gen,
+        test_gen and test_gen.caches directory in the project was deleted -- 34 directories --
+        and the headless build then completed all nine languages plus nltps.modeltests with
+        exit 0, leaving git status over mps/NLTPSGovernance empty. A second independent build
+        over that output also completed with exit 0 and no drift.
+      superseded_state: unreproduced
       applies_to: the native rebuild cited in this item's evidence
       reason: >-
         Every build in MPS-0 through MPS-4 was incremental on generated output that already
@@ -1584,10 +1616,16 @@ acceptance_items:
         concealed, because a build whose success cannot be distinguished from "nothing was
         checked" must not be presented as validation coverage.
       consequence_for_this_item: >-
-        The acceptance wording asks for a headless build AND model tests. The project declares
-        no jetbrains.mps.lang.test model, so the second clause currently has nothing to run.
-        Closing on it would be a pass over an empty population -- the failure mode this
-        programme has now caught four times -- so it is not claimed.
+        The acceptance wording asks for a headless build AND model tests, and the two clauses
+        are independent. When this was written the project declared no jetbrains.mps.lang.test
+        model and the second clause had nothing to run, so it was not claimed; closing on it
+        would have been a pass over an empty population. That is no longer the state: the
+        model-test clause is now discharged by two executed NodesTestCase tests, and the
+        independence of the clauses is enforced mechanically by
+        tools/mps/check_headless_build_currency.py, which refuses to report the acceptance
+        evidence current unless both verdicts are present and both were taken on the current
+        model tree. The reading above stands unchanged -- generation is still not checking --
+        which is exactly why the gate keeps the two verdicts apart.
     non_idempotence_finding: >-
       The first headless build succeeded and every later one failed. The first ran against a
       source_gen tree left behind by the IDE and consumed artifacts it does not itself
@@ -2392,6 +2430,108 @@ acceptance_items:
                 cold_reproducibility: direct
                 identity_preservation: direct
                 restoration: byte-identical, verified by empty git diff
+              closure_disposition:
+                evidence_complete: yes
+                technically_ready_for_closure: yes
+                acceptance_status_changed: >-
+                  no. This item remains pending and Stage A remains 14/16. Closure authority is
+                  handed off rather than exercised here: an implementer recording that their own
+                  evidence suffices is the claim MPS-MAT-009 exists to test, and making it here
+                  would consume the independence that item depends on.
+                closure_baseline:
+                  taken_on: HEAD e66039e, working tree clean, MPS-261.25134.779, JBR 25.0.3
+                  cold_build: >-
+                    34 derived directories deleted, then exit 0 in 1m00s over all nine
+                    languages plus nltps.modeltests
+                  idempotence: second independent build over that output, exit 0 in 27s
+                  drift: git status over mps/NLTPSGovernance empty after both builds
+                  model_tests: >-
+                    authored = discovered = executed = 2, both identities present, 0 failures,
+                    0 errors, haltOnFailure true, fresh report, exit 0
+                  gates: >-
+                    280 implementation and gate tests, and thirteen controlled gates including
+                    the new two-verdict currency gate, all green
+                  metric: 76 / 2,144 unchanged
+                what_the_reviewer_should_challenge_rather_than_re_run: >-
+                  Re-running these commands green establishes currency, not warrant. The
+                  questions that decide this item are whether the population is complete, whether
+                  the cold-state controls were actually cold, whether rule specificity was
+                  demonstrated rather than inferred, whether the perturbation was restored to a
+                  byte-identical tree, how the stale-cache confound was disposed of, and whether
+                  the distinction between generation success and semantic-test success is
+                  maintained everywhere it matters. Four of six declared test families are not
+                  materialized and this item claims only the two that are.
+              test_family_status:
+                purpose: >-
+                  An explicit population ledger, not a place to mark every family green. A
+                  declared family that nobody populates must not be able to disappear by
+                  silence -- that is the same epistemic hole as a task passing over zero
+                  selected tests, moved up to the allocation level.
+                basis: >-
+                  The families are the concrete rootable test-case kinds jetbrains.mps.lang.test
+                  actually provides -- NodesTestCase, EditorTestCase, MigrationTestCase -- plus
+                  the generator-test mechanism the MPS antlib exposes as gentest, plus the two
+                  build-side properties this item's acceptance wording depends on. Enumerated
+                  from the language and the antlib rather than invented, so the population is
+                  checkable against MPS rather than against this document.
+                families:
+                - family: node-and-constraint-tests
+                  mechanism: jetbrains.mps.lang.test NodesTestCase, executed by launchtests
+                  state: materialized
+                  population: >-
+                    2. H1 test_testAssessedClaimWithoutEvidenceIsRejected, mechanism witness
+                    only; S1 test_S1_assessed_claim_without_evidence_violates_REA_C_002...845,
+                    the sole REA-C-002 semantic verdict.
+                  evidence: >-
+                    Cold build and cold launchtests on the closure candidate: authored =
+                    discovered = executed = 2, both identities present, 0 failures, 0 errors,
+                    haltOnFailure true, exit 0. Sensitivity and rule discrimination are
+                    evidenced separately by the perturbation and foreign-rule controls.
+                - family: generated-source-drift
+                  mechanism: cold headless build followed by git status over the MPS project
+                  state: materialized
+                  evidence: >-
+                    Every source_gen, source_gen.caches, classes_gen, test_gen and
+                    test_gen.caches directory deleted -- 34 in total -- then a cold build to
+                    exit 0, after which git status over mps/NLTPSGovernance is empty. The build
+                    reproduces its committed output rather than merely succeeding.
+                - family: build-idempotence
+                  mechanism: a second independent build over the first build's own output
+                  state: materialized
+                  evidence: >-
+                    Second make on the closure candidate, exit 0 in 27s, drift still clean.
+                    This is the property whose absence produced the non-idempotence finding:
+                    the first build once consumed an IDE-left source_gen tree it does not
+                    itself produce, and every later build failed.
+                - family: editor-tests
+                  mechanism: jetbrains.mps.lang.test EditorTestCase
+                  state: not-yet-materialized
+                  rationale: >-
+                    The project declares no EditorTestCase root. Eighteen editors exist and
+                    their cells were repaired at MPS-4, but that repair was evidenced by
+                    compilation and by walking the model for unresolved property cells, not by
+                    executable editor tests. Recorded as absent rather than as covered.
+                - family: migration-tests
+                  mechanism: jetbrains.mps.lang.test MigrationTestCase
+                  state: not-yet-materialized
+                  rationale: >-
+                    The project declares no MigrationTestCase root. A .mps/migration.xml exists
+                    as project migration state, which is not the same as a declared language
+                    migration with a test; whether any migration warrants one has not been
+                    assessed. Not claimed as not-applicable, because that would be a judgement
+                    nobody has made.
+                - family: generator-tests
+                  mechanism: the MPS antlib gentest task
+                  state: not-yet-materialized
+                  rationale: >-
+                    The gentest task was enumerated when the antlib was surveyed and is
+                    available. No generator test model is declared. The nine languages generate
+                    and compile, which is evidence about generation succeeding and not about
+                    generated output being correct.
+                invariant: >-
+                  Every family above carries an explicit state. None is green by default and
+                  none is absent by omission. Four of six are not materialized, and this item
+                  claims only the two that are.
               instrumented_execution_not_reconstruction: >-
                 The probe calls super.work() first and lets production LaunchTestWorker.work()
                 reproduce the failure, rather than re-attempting loadClass itself. Re-attempting

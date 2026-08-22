@@ -82,8 +82,7 @@ class PathCitationTest(unittest.TestCase):
             declared = yaml.safe_load(handle.read())["absent_by_declaration"]
         self.assertEqual(
             {"mps/bootstrap/does-not-exist.yaml",
-             "tools/mps/check_nonexistent_thing.py",
-             "tools/mps/check_headless_build_currency.py"},
+             "tools/mps/check_nonexistent_thing.py"},
             {entry["path"] for entry in declared})
         for entry in declared:
             self.assertFalse((REPO_ROOT / entry["path"]).exists(), entry["path"])

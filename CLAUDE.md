@@ -357,6 +357,7 @@ python tools/mps/check_hlr_root_placement.py
 python tools/mps/check_model_persistence.py
 python tools/mps/headless_build.py --validate-only
 python tools/mps/check_headless_coverage.py
+python tools/mps/check_headless_build_currency.py
 python tools/mps/derive_probe_target.py --check
 python tools/mps/export_hlr_corpus.py --check
 python tools/mps/check_stage_b_equivalence.py

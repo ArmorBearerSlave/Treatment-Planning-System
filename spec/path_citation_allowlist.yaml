@@ -15,10 +15,3 @@ absent_by_declaration:
   reason: >-
     Cited by tests/test_construction_gates.py to prove the gate rejects a command naming a
     tool that is not present. It must not exist for the same reason.
-- path: tools/mps/check_headless_build_currency.py
-  status: declared_future_work
-  reason: >-
-    Named in mps/materialization/stage-a-checklist.yaml as the currency gate to be written
-    once the headless build and test evidence are both closed, keyed on a hash of the
-    controlled model tree. Deferred deliberately as a lock fitted before the door; it
-    becomes required when the MPS-MAT-008 evidence closes.
