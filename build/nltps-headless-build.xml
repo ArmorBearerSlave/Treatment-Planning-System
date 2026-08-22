@@ -34,6 +34,8 @@
   <property name="work.dir" location="${basedir}/build/work"/>
   <property name="build.heap" value="4g"/>
   <property name="reports.dir" location="${work.dir}/reports"/>
+  <property name="probe.jar" location="${work.dir}/probe/nltps-probe.jar"/>
+  <property name="probe.classes" location="${work.dir}/probe/classes"/>
 
   <path id="mps.ant.path">
     <pathelement location="${mps.home}/lib/ant/lib/ant-mps.jar"/>
@@ -128,6 +130,87 @@
         <fileset file="${project.dir}/tests/nltps.modeltests/nltps.modeltests.msd"/>
       </testmodules>
     </launchtests>
+  </target>
+
+  <!--
+    Diagnostic scaffolding for MPS-MAT-008. Not part of the controlled build: `make` and
+    `test` do not depend on these targets and do not reference the probe.
+
+    The problem being diagnosed is that launchtests registers nltps.modeltests, walks its
+    test roots, and then fails to load the generated test class:
+
+      ClassNotFoundException: nltps.modeltests.headless.REA_C_002_..._Test
+        at TestDiscoveryContributor$1.visitTestRoot(TestDiscoveryContributor.java:57)
+        ... ScriptJUnit5Launcher.collectTestClasses(128)
+
+    Three earlier designs for this probe each reconstructed part of the system under
+    observation. This one substitutes exactly one class. The element below is not written
+    by hand; tools/mps/derive_probe_target.py derives it from the `test` element and
+    tests/test_probe_derivation.py fails if the two drift apart.
+  -->
+  <target name="probe-compile">
+    <mkdir dir="${probe.classes}"/>
+    <mkdir dir="${work.dir}/probe"/>
+    <javac srcdir="${basedir}/build/probe/src" destdir="${probe.classes}"
+           includeantruntime="false" debug="true" encoding="UTF-8">
+      <classpath>
+        <pathelement location="${mps.home}/lib/ant/lib/ant.jar"/>
+        <pathelement location="${mps.home}/lib/ant/lib/ant-mps.jar"/>
+        <pathelement location="${mps.home}/lib/mpsant/mps-tool.jar"/>
+        <pathelement location="${mps.home}/lib/mps-environment.jar"/>
+        <pathelement location="${mps.home}/plugins/mps-testing/languages/launcher/jetbrains.mps.lang.test.launcher.jar"/>
+      </classpath>
+    </javac>
+    <jar destfile="${probe.jar}" basedir="${probe.classes}"/>
+  </target>
+
+  <target name="probe" depends="probe-compile">
+    <mkdir dir="${work.dir}"/>
+    <delete dir="${reports.dir}" quiet="true"/>
+    <mkdir dir="${reports.dir}"/>
+    <!--
+      The probe class must reach the *forked* JVM, and Ant's -lib cannot put it there.
+      MpsLoadTask builds the fork classpath from calculateClassPath() plus the Ant JVM's
+      java.class.path; -lib adds to Ant's classloader, which is neither. ProbeLaunchTestTask
+      overrides calculateClassPath to add exactly this jar and nothing else.
+    -->
+    <taskdef name="probelaunchtests" classname="nltps.probe.ProbeLaunchTestTask">
+      <classpath>
+        <pathelement location="${mps.home}/lib/ant/lib/ant-mps.jar"/>
+        <pathelement location="${mps.home}/lib/util-8.jar"/>
+        <pathelement location="${probe.jar}"/>
+      </classpath>
+    </taskdef>
+<probelaunchtests worker="nltps.probe.ModuleClasspathProbe" probeJar="${probe.jar}"
+                      mpsHome="${mps.home}" haltOnFailure="true" failOnError="true"
+                 reports="${reports.dir}" fork="true"
+                 jnaLibraryPath="${mps.home}/lib/jna">
+      <jvmargs>
+        <arg value="-ea"/>
+        <arg value="-Xmx${build.heap}"/>
+        <arg value="-Didea.system.path=${work.dir}/system"/>
+        <arg value="-Didea.config.path=${work.dir}/config"/>
+        <arg value="-Didea.log.path=${work.dir}/log"/>
+        <arg value="-Didea.plugins.path=${mps.home}/plugins"/>
+      </jvmargs>
+      <!--
+        The three plugins JetBrains' own generated 2026.1 test builds load before
+        <project> and <testmodules>. LaunchTestTask does put the mps-testing launcher
+        support jar on the forked classpath by itself, but that is not the same as loading
+        these plugins into the MPS runtime: without them the language-test discovery
+        extension is unavailable, and a module can resolve, its model load and its test
+        class compile while nothing is ever discovered.
+      -->
+      <plugin id="jetbrains.mps.core" path="${mps.home}/plugins/mps-core"/>
+      <plugin id="jetbrains.mps.junit5" path="${mps.home}/plugins/mps-junit5"/>
+      <plugin id="jetbrains.mps.testing" path="${mps.home}/plugins/mps-testing"/>
+      <project path="${project.dir}"/>
+      <!-- TestModules exposes only a generic add(), i.e. an Ant resource collection,
+           so the module descriptor is named by a fileset rather than a <module> element. -->
+      <testmodules>
+        <fileset file="${project.dir}/tests/nltps.modeltests/nltps.modeltests.msd"/>
+      </testmodules>
+    </probelaunchtests>
   </target>
 
 </project>

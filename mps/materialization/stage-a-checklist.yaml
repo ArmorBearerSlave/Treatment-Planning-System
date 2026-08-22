@@ -1895,6 +1895,55 @@ acceptance_items:
                 the test class, where a clobbered attribute would have produced the ordinary
                 run. One attribute, and a clobbered value would have cost only the run already
                 in hand.
+              stage_one_result:
+                verdict: >-
+                  The instrument is proven and it reproduced the defect without emitting a
+                  single reading. Both acceptance edges are satisfied: it did not run cleanly
+                  and localise nothing, and it did not localise anything before reproducing.
+                bootstrap_control: >-
+                  BOOTSTRAP_ENTERED=true, WORKER_CLASS=nltps.probe.ModuleClasspathProbe,
+                  WORKER_SUPERCLASS=jetbrains.mps.lang.test.launcher.LaunchTestWorker,
+                  ENVIRONMENT_CLASS=jetbrains.mps.tool.environment.IdeaEnvironment,
+                  TEST_MODULE_COUNT=1 resolving to nltps.modeltests.msd with exists=true.
+                  The environment class is the reading that matters: it shows the probe
+                  inherited the real IdeaEnvironment with test mode rather than a lighter one
+                  it constructed for itself.
+                reproduction: >-
+                  SUPER_WORK_THREW=true, ERRORS_RECORDED=1, PROBE_REPRODUCED=true, and the
+                  Ant-level outcome is "1 errors during launchtests" with the fork exiting
+                  -13 -- the same error count, the same recorded text and the same exit code
+                  as the production failing run. READINGS=0 was printed explicitly.
+                what_the_source_settled_that_bytecode_could_not: >-
+                  MPS ships lib/MPS-src.zip and per-plugin -src jars, so WorkerBase,
+                  MpsLoadTask, LaunchTestTask, LaunchTestWorker, TestDiscoveryContributor and
+                  TestDiscovery were read rather than inferred. Four things that had been
+                  assumptions became facts, and one of them was wrong.
+                failure_does_not_go_through_fatal: >-
+                  The recorded error text is "error building test suite", not "unexpected
+                  error". TestDiscoveryContributor catches the ClassNotFoundException itself
+                  and reports it through WorkerCallback.fatal, which LaunchTestWorker
+                  overrides -- so myForceFailOnError is set by the contributor, not by the
+                  worker's own catch. The gate reads myErrors and is unaffected either way,
+                  but a gate keyed on the text "unexpected error" would never have fired.
+                why_haltonfailure_is_load_bearing: >-
+                  WorkerBase.failBuild throws only when myErrors is non-empty AND
+                  Script.getFailOnError is set. haltOnFailure=false would have left this run
+                  with a class-not-found, zero tests discovered, and exit code 0. The frozen
+                  contract already required haltOnFailure=true; this establishes what it is
+                  actually holding shut rather than that it is conventional.
+                ant_lib_would_not_have_worked: >-
+                  MpsLoadTask builds the fork classpath from calculateClassPath() plus the Ant
+                  JVM's java.class.path minus JDK and filtered entries. Ant's -lib adds to
+                  Ant's classloader, which is neither, so a probe placed that way would have
+                  failed to load for a reason unrelated to the defect -- and that failure
+                  would have had the same shape as the defect. ProbeLaunchTestTask overrides
+                  calculateClassPath and refuses to run if the jar is absent.
+                the_probe_element_is_derived_not_copied: >-
+                  tools/mps/derive_probe_target.py generates the probe's Ant element from the
+                  production element by three substitutions -- task name, worker, probe jar --
+                  and --check re-derives and fails on drift. It fired on its first run,
+                  catching a re-indentation of the copy, which is exactly the class of silent
+                  divergence the three earlier probe designs each contained.
               instrumented_execution_not_reconstruction: >-
                 The probe calls super.work() first and lets production LaunchTestWorker.work()
                 reproduce the failure, rather than re-attempting loadClass itself. Re-attempting
