@@ -1687,6 +1687,50 @@ acceptance_items:
             This is the third instance of one pattern: the headless worker must be told
             where its own dependencies live, after org.jdom on the taskdef classpath and
             idea.system.path for the worker's writable directories.
+          read_only_probes:
+            executable_test_methods: >-
+              ZERO. The generated sentinel class carries a @RegisterExtension, a constructor
+              and a TestBody.initTestNodes, and no @Test method at all. The model holds only
+              NodesTestCase and TestNode; no test-method concept was ever authored. MPS's
+              discovery participant returns no descriptor when a NodesTestCase has an empty
+              test-method set, so discovery = 0 is correct behaviour here, not a runner
+              defect. A compiled _Test.class proves generation and compilation and says
+              nothing about whether the root contributes a test.
+            dependency_derivation: >-
+              CORRECT ALREADY. source_gen.caches/deps.cp for nltps.modeltests contains
+              org.junit.junit5, jetbrains.mps.lang.test.runtime and
+              jetbrains.mps.baseLanguage.unitTest. MPS derives these through the test-language
+              dependency machinery, and JetBrains' own NodesTestCase solutions carry no
+              dependencies block at all. Adding org.junit.junit5 to the .msd by hand would
+              have been a noncanonical change with no diagnostic value: it would have produced
+              a green or not without identifying anything.
+            launcher_plugin_wiring: >-
+              MISSING. The launchtests invocation declares zero plugin elements. JetBrains'
+              own generated 2026.1 configuration loads jetbrains.mps.core, jetbrains.mps.junit5
+              and jetbrains.mps.testing before project and testmodules. A missing plugin leaves
+              the module and the generated class perfectly intact while the language-test
+              discovery extension is unavailable to the headless runtime, which fits
+              generated - compiled - registered - zero discovered better than any dependency
+              explanation.
+          two_independent_gaps: >-
+            Both are confirmed and neither alone yields discovery = 1. The fixture has no
+            executable test operation, and the launcher lacks the canonical plugin wiring.
+            Fixing either in isolation would leave discovery at zero and invite the wrong
+            conclusion about the other.
+          fixture_completion_attempt: >-
+            A NodesTestMethod with name, VoidType return and an empty body was added and
+            immediately reverted: generation fails with "NodesTestMethod is not a subconcept
+            of jetbrains.mps.baseLanguage.structure.ClassifierMember", raised from
+            BehaviorChecker during textgen. Structural placement under testMethods is accepted
+            by the metamodel, so the authoring needs more than name, return type and body.
+            That is the next thing to establish, and it is fixture completion, not the
+            semantic repair.
+          retired_hypotheses: >-
+            mps.test.project.path needs no explicit -D: addConfiguredProject records the path
+            and the launcher converts it to SystemProperties.PROJECT_PATH internally, which
+            the 286-module graph already demonstrates. REQUIRES_MPS_PLATFORM is set by the
+            discovery participant from ITestable.isMpsStartRequired, which NodesTestCase
+            answers true. Both removed from the hypothesis tree.
           still_open: >-
             Discovery remains 0 after the JNA fix. The crash is gone and the module is
             registered, so what remains is why TestDiscovery.surveyModule finds no test root
