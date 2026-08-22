@@ -1591,6 +1591,26 @@ acceptance_items:
         headless model-test mechanism therefore exists, so the model-tests clause of this
         item should be satisfied rather than amended. Trying to make mps.make evaluate
         checking rules would be the weaker answer to a question MPS already answers.
+      test_concept_surface: >-
+        jetbrains.mps.lang.test resolves in this project. NodesTestCase is rootable and
+        declares nodesToCheck of type TestNode with cardinality 0..n, alongside testMethods,
+        beforeTests and afterTests. A node placed under nodesToCheck is checked by the test
+        harness, so an error reported on it by a checking rule becomes a test failure. That
+        is the mechanism the teeth case needs, and it is why launchtests can assert what
+        mps.make cannot.
+      teeth_case_design: >-
+        A NodesTestCase whose nodesToCheck holds a VerificationClaim with verdict passed and
+        no bound evidence. REA-C-002 and REA-C-003 both reject that node, and the E2
+        experiment already established that mps.make completes over it with exit code 0. The
+        same fixture therefore demonstrates both halves of the pipeline at once: mps.make
+        BUILD SUCCESSFUL, launchtests TEST FAILURE.
+      evidence_required_beyond_verdict: >-
+        A green task that discovered nothing is not a pass. Record the test module and model
+        selected, the number of tests discovered, the names of the tests executed, passed
+        and failed counts, the report location and the process exit code. Then run the teeth
+        sequence: fail first and identify the intended test by name, repair only that
+        failure, rerun and require the same test population discovered with all passing, and
+        run once more from a fresh process for repeatability.
     remaining_to_close:
     - 'DONE: POST-MPS4-01 corrected; cold build completes all nine languages, and a second
       independent build succeeds on the first build''s own output.'
