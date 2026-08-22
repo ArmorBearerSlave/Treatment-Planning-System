@@ -48,7 +48,7 @@ jobs:
         run: python tools/mps/check_concept_features.py
 
       - name: Check MPS module graph against the blueprint
-        run: python tools/mps/check_module_graph.py --checkpoint MPS-3
+        run: python tools/mps/check_module_graph.py --checkpoint MPS-4
 
       - name: Check persisted enumeration values resolve to their own enumeration
         run: python tools/mps/check_enum_persistence.py

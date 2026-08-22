@@ -290,8 +290,9 @@ def main() -> int:
     )
     print(
         f"PASS: {len(enums_by_ref)} enumeration declarations resolved across "
-        f"{len(models)} models; every persisted enumeration value names a declared member "
-        f"of its own enumeration and member ids are stable repository-wide"
+        f"{len(models)} models; {values} persisted enumeration values examined, and every "
+        f"one names a declared member of its own enumeration, with member ids stable "
+        f"repository-wide"
     )
     return 0
 

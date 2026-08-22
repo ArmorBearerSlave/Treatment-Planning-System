@@ -953,18 +953,43 @@ class DatedDependencyAmendmentTests(unittest.TestCase):
         self.assertEqual(dependency["effective_at"], "MPS-4")
         self.assertEqual(dependency["prior_kind"], "DEFAULT")
 
-    def test_before_the_amendment_the_prior_kind_is_expected(self) -> None:
-        errors, _ = graph.check(None, "MPS-3")
+    def test_before_the_amendment_either_kind_is_tolerated(self) -> None:
+        """The amendment may or may not have been performed yet, and both are correct.
+
+        An earlier checkpoint must not call the raised dependency a defect once MPS-4 has
+        performed it, and must not call the unraised one a defect before. Asserting a
+        single kind would make one of those two legitimate states wrong.
+        """
+        for checkpoint in ("MPS-1", "MPS-2", "MPS-3"):
+            errors, _ = graph.check(None, checkpoint)
+            offending = [e for e in errors
+                         if "nltps.realization" in e and ("EXTENDS" in e or "DEFAULT" in e)]
+            self.assertEqual(offending, [], f"{checkpoint}: {offending}")
+
+    def test_at_the_amendment_checkpoint_the_new_kind_is_live(self) -> None:
+        errors, _ = graph.check(None, "MPS-4")
         self.assertEqual([e for e in errors if "nltps.realization" in e], [], errors)
 
-    def test_at_the_amendment_checkpoint_the_new_kind_is_required(self) -> None:
-        # The descriptor still carries DEFAULT because this is a design freeze; the MPS-4
-        # session performs the mutation. The gate must say so rather than pass quietly.
-        errors, _ = graph.check(None, "MPS-4")
-        self.assertTrue(
-            any("nltps.realization" in e and "EXTENDS" in e for e in errors),
-            f"MPS-4 must require the raised dependency, got {errors}",
-        )
+    def test_the_descriptor_now_carries_the_raised_dependency(self) -> None:
+        modules = graph.read_modules()
+        realization = modules["nltps.realization"]
+        self.assertIn("nltps.governance", realization["extends"])
+        self.assertNotIn("nltps.governance", realization["depends"])
+
+    def test_a_pending_amendment_is_excluded_from_both_kind_sets(self) -> None:
+        """The mechanism, driven directly rather than through the live model."""
+        blueprint = {
+            "languages": [
+                language("base"),
+                language("later", dependencies=[{"module": "base", "kind": "EXTENDS",
+                                                 "effective_at": "MPS-4",
+                                                 "prior_kind": "DEFAULT"}]),
+            ]
+        }
+        for entry in blueprint["languages"]:
+            entry["concepts_materialized_at"] = "MPS-1"
+        early = graph.languages_at(blueprint, "MPS-2")
+        self.assertEqual([e["name"] for e in early], ["base", "later"])
 
     def test_an_undated_dependency_is_expected_at_every_checkpoint(self) -> None:
         """Only a dated amendment gets the grace period."""

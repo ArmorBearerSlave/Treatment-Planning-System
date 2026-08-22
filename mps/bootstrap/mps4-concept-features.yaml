@@ -584,6 +584,17 @@ languages:
         default: false
         note: 'False for every Stage A root. MPS booleans default to false, so the safe value is also
           the default: a root that somehow escapes the importer still reads as non-authoritative.'
+      - name: sourceHazardText
+        type: string
+        cardinality: '1'
+        note: 'The source hazard column verbatim, in its LaTeX form, including the section markers
+          such as SCP, PRN and AUTH that are not hazard allocations. Added at materialization: the
+          hazard amendment made source_hazard_text a canonical export field and an exact-equality
+          field, and required the text to be preserved regardless of typed allocation, but no
+          inherited feature carries it. Without it the exporter would have to read the text back
+          out of the bundle, which would compare the source against itself and could never fail.
+          It is the LaTeX form for the same reason statement is: the plain form is a review
+          projection, and the two differ for ACC-004, ACC-006, ACC-007 and ACC-008.'
       children: []
       references: []
       editor: imported HLR <identifier> [<bundleId>] { <statement> }
@@ -820,6 +831,7 @@ import_contract:
     - {source: category_id, destination: an Alias child, scheme F/SA/O category ID}
     - {source: verification_methods, destination: verificationMethods entries}
     - {source: source_hazard_ids, destination: hazards HazardRef children}
+    - {source: source_hazard_latex, destination: sourceHazardText}
     - {source: source_line, destination: recordProvenance sourceLine}
     - {source: record_sha256, destination: recordProvenance sha256}
     - {source: source.sha256, destination: sourceArtifactProvenance sha256}
@@ -852,9 +864,11 @@ import_contract:
       - {id: GOV-001, source_hazard: none, curated: [H-13, H-18], imported: []}
     two_parallel_trace_layers: >-
       ImportedHLR.hazards carries the source-explicit typed links. The exact source_hazard
-      text is preserved as provenance evidence regardless. spec/allocations.yaml remains a
-      separate authority answering a different question: what the broader safety analysis
-      associates with a requirement, rather than what the source document states.
+      text is preserved as provenance evidence regardless, in ImportedHLR.sourceHazardText,
+      so a reader can see what the row said and not only what was typed from it.
+      spec/allocations.yaml remains a separate authority answering a different question: what
+      the broader safety analysis associates with a requirement, rather than what the source
+      document states.
     metric_note: >-
       This is not the 76 / 2,144 numerator. That metric counts entities whose
       hazard_specificity is source_explicit in traceability.json, which is an

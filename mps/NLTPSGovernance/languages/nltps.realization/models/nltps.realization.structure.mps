@@ -2,12 +2,13 @@
 <model ref="r:6aeac6c0-4966-4224-b0f1-a0cd5adc504c(nltps.realization.structure)">
   <persistence version="9" />
   <languages>
+    <use id="c72da2b9-7cce-4447-8389-f407dc1158b7" name="jetbrains.mps.lang.structure" version="9" />
     <devkit ref="78434eb8-b0e5-444b-850d-e7c4ad2da9ab(jetbrains.mps.devkit.aspect.structure)" />
   </languages>
   <imports>
     <import index="5q6" ref="r:07b10a47-b937-4aa9-ad53-c2e3280bb0f3(nltps.foundation.structure)" />
     <import index="ol33" ref="r:e3f43cc2-9854-4561-9b2a-13d5891c34c9(nltps.governance.structure)" />
-    <import index="tpck" ref="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" implicit="true" />
+    <import index="tpck" ref="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" />
   </imports>
   <registry>
     <language id="c72da2b9-7cce-4447-8389-f407dc1158b7" name="jetbrains.mps.lang.structure">
@@ -278,6 +279,11 @@
       <property role="IQ2nx" value="1365532761387707733" />
       <property role="TrG5h" value="authoritative" />
       <ref role="AX2Wp" to="tpck:fKAQMTB" resolve="boolean" />
+    </node>
+    <node concept="1TJgyi" id="1bNmcZ3JGXu" role="1TKVEl">
+      <property role="IQ2nx" value="1365532761388928862" />
+      <property role="TrG5h" value="sourceHazardText" />
+      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
     </node>
   </node>
   <node concept="1TIwiD" id="1bNmcZ3F2Px">

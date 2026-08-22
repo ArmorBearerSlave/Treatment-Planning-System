@@ -1,0 +1,3142 @@
+[
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-ACC-001",
+    "domain": "ACC",
+    "hazards": [],
+    "id": "ACC-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "346d18c8907212ff34ed189ab5c5c7bf5008f31592b0d768877c8b654ef4eb5b",
+      "source_line": 665,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "ACR; APEx; EVD; QMS",
+    "statement_latex": "The NL-TPS shall maintain separately versioned ACR ROPA, ASTRO APEx, technical-guidance, institutional, and modality-specific profiles with explicit authority, applicability, effective status, and supersession.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-ACC-001",
+    "domain": "ACC",
+    "hazards": [
+      "H-18"
+    ],
+    "id": "ACC-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "0b07c8e1e89739e6715320180e9eeebdc1bd275a1e766de3356a1126d5ab378d",
+      "source_line": 667,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "ACR; APEx; AUTH; H-18",
+    "statement_latex": "The NL-TPS shall require authorized human approval of every profile applicability decision, distinguish product-enforceable, workflow-supporting, evidence-only, organizational, and not-applicable controls, and shall not represent readiness status as accreditation or compliance.",
+    "verification_methods": [
+      "I",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-ACC-002",
+    "domain": "ACC",
+    "hazards": [],
+    "id": "ACC-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "1b3a31463a8e6b6f32352e3fef483f8cac65ce1c149626cc2b1644c7d78ae5f9",
+      "source_line": 669,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "ACR; APEx; TLR; QMS",
+    "statement_latex": "The NL-TPS shall maintain atomic bidirectional traceability from each applicable source element through requirements, risks, interfaces, components, tests, evidence, deficiencies, approvals, releases, and supersession.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-ACC-003",
+    "domain": "ACC",
+    "hazards": [
+      "H-01",
+      "H-04",
+      "H-12"
+    ],
+    "id": "ACC-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "23afb1acd06420ab5190a6df47a793d8638c8cf6ceffe8ff93efa820e3d937d9",
+      "source_line": 671,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "APEx 1--3,14; ROPA; H-01,H-04,H-12",
+    "statement_latex": "The NL-TPS shall validate the completeness, consistency, signature, effective time, and authoritative source of required patient-evaluation status, prior-treatment information, simulation directive, planning directive, prescription, consent status, planning documentation, and transfer verification before the associated clinical transition.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-ACC-004",
+    "domain": "ACC",
+    "hazards": [
+      "H-13",
+      "H-17"
+    ],
+    "id": "ACC-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "5a8c1384c8bee23489bcf6489dea9200dfdb85b0d5cdb46fbe876b40dca9b339",
+      "source_line": 673,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "APEx 3; ROPA QA; H-13,H-17",
+    "statement_latex": "The NL-TPS shall enforce institution-approved prerequisites and schedules for patient identity verification, timeout evidence, pretreatment and replan physics checks, independent dose or MU verification, patient-specific QA, periodic chart review, end-of-treatment review, and affected-approval invalidation.",
+    "verification_methods": [
+      "T",
+      "D"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-ACC-001",
+    "domain": "ACC",
+    "hazards": [
+      "H-08",
+      "H-15"
+    ],
+    "id": "ACC-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "e5cb9063049b1a05c94990e414b206fae41676ca3c00b01615d1649cf1a16d85",
+      "source_line": 675,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "APEx 11--12; ACR--AAPM TPS; H-08,H-15",
+    "statement_latex": "The NL-TPS shall require QMP-owned acceptance, commissioning, limitation documentation, periodic TPS QA, postservice and upgrade assessment, annual and change-triggered end-to-end testing, and return-to-service authorization for the TPS and all clinically used support software, scripts, models, and interfaces.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-ACC-002",
+    "domain": "ACC",
+    "hazards": [
+      "H-14"
+    ],
+    "id": "ACC-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "0e55ad6bfee12cc18beb0f4f3b4dc8fd4ea5fb78cc82a7ed30b8699565071fee",
+      "source_line": 677,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "APEx 4--10,13--14; ROPA; H-14",
+    "statement_latex": "The NL-TPS shall maintain attributable, time-ordered, privacy-controlled evidence for credentials, competency, SOPs, staffing plans, safety events, CQI, peer review, patient education and follow-up status, deficiencies, CAPA, and survey preparation without replacing the responsible professional or facility process.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-ACC-005",
+    "domain": "ACC",
+    "hazards": [
+      "H-09",
+      "H-13"
+    ],
+    "id": "ACC-008",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "038eece31171baf55715df6b61bca713cdcfe768479e72085685fe0f24ea0376",
+      "source_line": 679,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "ACR--AAPM PBT; PLN; VAL; H-09,H-13",
+    "statement_latex": "The NL-TPS shall apply proton-specific planning, dose, robustness, calibration, patient-specific QA, independent verification, beamline, readiness, and periodic-review controls only to the commissioned proton scope and delivery mode identified by the active release profile.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-AIM-001",
+    "domain": "AIM",
+    "hazards": [
+      "H-15"
+    ],
+    "id": "AIM-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "5d71dbb6e1dc20f83b2bd89769c69c918ba6969e9f422fcb360f45a3868bc5e0",
+      "source_line": 484,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODEL; TLR; H-15",
+    "statement_latex": "The NL-TPS shall invoke only institution-approved, locked model versions registered for the active task and clinical operating mode.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-AIM-002",
+    "domain": "AIM",
+    "hazards": [],
+    "id": "AIM-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "0cc0cc1ff63aad8322a2e1502fd96623fdd53f726afe8ff1a320088578ae182c",
+      "source_line": 486,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "ARCH; MODEL; TLR",
+    "statement_latex": "The model gateway shall verify that the active case satisfies the model's intended use, input contract, population, imaging or data conditions, required preprocessing, and resource limits before inference.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-AIM-003",
+    "domain": "AIM",
+    "hazards": [
+      "H-05",
+      "H-15"
+    ],
+    "id": "AIM-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "9f1abb516294017cde0bbff1f0aba88a23bb3eab37e9d3f5d0816541a95da533",
+      "source_line": 488,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODEL; TLR; H-05,H-15",
+    "statement_latex": "Each clinical model shall implement a defined abstention, rejection, or manual-review response for unsupported, anomalous, incomplete, or out-of-distribution input.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-AIM-004",
+    "domain": "AIM",
+    "hazards": [
+      "H-15"
+    ],
+    "id": "AIM-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "c9a90cb500de8c878819acf0819c224302a50f5e5b1321b7a5a1f25517d809a3",
+      "source_line": 490,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODEL; TLR; H-15",
+    "statement_latex": "The NL-TPS shall prohibit production model-weight updates and unapproved behavioral learning from routine patient cases, user edits, prompts, or outcomes.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-AIM-005",
+    "domain": "AIM",
+    "hazards": [],
+    "id": "AIM-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "366aa20c4a466477982199ece4112e25f8b1c12a6c502c203d7126a84dfc34e6",
+      "source_line": 492,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODEL; SEC; QMS",
+    "statement_latex": "The NL-TPS shall maintain a model and dependency registry containing version, intended use, owner, supplier, training and evaluation provenance, limitations, approved configuration, signed artifacts, and software bill of materials.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-AIM-006",
+    "domain": "AIM",
+    "hazards": [],
+    "id": "AIM-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "a4be18799e7722c6211a30aac6e08e7085b920c19d147062018f5e3fb0a1408b",
+      "source_line": 494,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODEL; VV",
+    "statement_latex": "Clinical model evaluation shall use separated development, tuning, internal test, external test, and site-acceptance data with documented overlap controls.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-AIM-007",
+    "domain": "AIM",
+    "hazards": [],
+    "id": "AIM-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "065f86423c78032f2cd4a70bb6f240382698bc4801ecab0908b3838ed8b99ee3",
+      "source_line": 496,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODEL; VV; MOE",
+    "statement_latex": "The NL-TPS shall evaluate and display clinically relevant overall and subgroup performance, calibration, failure detection, uncertainty, edit burden, and known limitations for each approved model use.",
+    "verification_methods": [
+      "A",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-AIM-008",
+    "domain": "AIM",
+    "hazards": [
+      "H-15"
+    ],
+    "id": "AIM-008",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "65392d9e13ec6504d1f6908c0d509c15e9d032471840aefc7659df54b0d9d515",
+      "source_line": 498,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODEL; QMS; ROAD; H-15",
+    "statement_latex": "Changes to model weights, prompts that alter clinical behavior, retrieval configuration, clinical rules, preprocessing, dependencies, or runtime infrastructure shall undergo impact assessment, regression testing, approval, versioning, and rollback planning.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-CLN-001",
+    "domain": "CLN",
+    "hazards": [],
+    "id": "CLN-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "778730f154d66d1c909f045245f32a7e2d883cb6f81f1ad42785eadd8ab7886a",
+      "source_line": 320,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; MODEL",
+    "statement_latex": "The NL-TPS disease-site assistant shall map verified case facts to candidate workflows or templates, identify missing material information, and require clinician confirmation without autonomously diagnosing or staging disease.",
+    "verification_methods": [
+      "T",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-CLN-002",
+    "domain": "CLN",
+    "hazards": [
+      "H-01"
+    ],
+    "id": "CLN-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "d3dff2f9ec1970fabd90365f6d6ca06303ca1530d47ee82323e4ab0df12934fb",
+      "source_line": 322,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "WF; INFO; H-01",
+    "statement_latex": "The NL-TPS shall acquire and bind the approved image studies, frame of reference, registrations, structure sets, prior-treatment information, and signed clinical intent required for the active planning task.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-CLN-003",
+    "domain": "CLN",
+    "hazards": [
+      "H-06"
+    ],
+    "id": "CLN-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "3e58eba4256b02ad0f417c9740aa8f90402a772990ab57e76a5c316f93fd9355",
+      "source_line": 324,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; VV; H-06",
+    "statement_latex": "The NL-TPS shall permit rigid or deformable registration and derived dose accumulation only through commissioned methods with registration-specific visualization, quality review, uncertainty documentation, and approval.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-CLN-004",
+    "domain": "CLN",
+    "hazards": [
+      "H-05"
+    ],
+    "id": "CLN-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "bab9346587081c4e0a71df9b98bd6e44c544e506bee0cf5002cbcfd113fd0c92",
+      "source_line": 326,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; MODEL; H-05",
+    "statement_latex": "The NL-TPS shall invoke contouring models only for approved anatomy, imaging conditions, structures, populations, and use cases and shall retain all model-generated contours as drafts pending review.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-CLN-005",
+    "domain": "CLN",
+    "hazards": [
+      "H-05",
+      "H-15"
+    ],
+    "id": "CLN-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "efc0e5fd5712c980c2d55b2c791fb2db1cff7ad51264d2980e3454f1d3496c49",
+      "source_line": 328,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODEL; VV; H-05,H-15",
+    "statement_latex": "The NL-TPS shall display contour-model uncertainty, input anomalies, and out-of-distribution status and shall abstain or route to manual contouring when the commissioned use envelope is not satisfied.",
+    "verification_methods": [
+      "T",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-CLN-006",
+    "domain": "CLN",
+    "hazards": [
+      "H-05"
+    ],
+    "id": "CLN-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "3f95f737d98b860799d12d1cc825d74a492b11ee6eba3383b0c785c4d3f1c483",
+      "source_line": 330,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; INFO; H-05",
+    "statement_latex": "The NL-TPS shall validate structure identity, nomenclature mapping, laterality, presence, completeness, topology, image coverage, and geometric plausibility before a contour set can become a clinical candidate.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-CLN-007",
+    "domain": "CLN",
+    "hazards": [
+      "H-05"
+    ],
+    "id": "CLN-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "332e18ef617aa5c3c492d354ec958b4b35069a31a03000524e6086a577cb6ef4",
+      "source_line": 332,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; TLR; H-05",
+    "statement_latex": "The NL-TPS shall preserve each contour's input study, frame of reference, model and version, configuration, naming map, confidence information, edits, reviewer, approval state, and lineage.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-CLN-008",
+    "domain": "CLN",
+    "hazards": [],
+    "id": "CLN-008",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "3abf796afc7d168d58ddfe190312cf42248d61b51ea30d4ce1fe2552e94792b6",
+      "source_line": 334,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; VV; HFE",
+    "statement_latex": "The NL-TPS shall provide slice, surface, difference, and clinically relevant error-review views and shall capture the location and extent of user edits.",
+    "verification_methods": [
+      "D",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-CLN-009",
+    "domain": "CLN",
+    "hazards": [
+      "H-05"
+    ],
+    "id": "CLN-009",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "07a264b4f21afb4f54116a14ded56f0e7e7cf8c5d55689cd54046e213343152e",
+      "source_line": 336,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "AUTH; UC; TLR; H-05",
+    "statement_latex": "The NL-TPS shall require radiation-oncologist approval for clinical target contours and shall enforce institution-approved approval roles for organs at risk and other derived structures.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-DAT-001",
+    "domain": "DAT",
+    "hazards": [],
+    "id": "DAT-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "60414507f7b24e74ad9ab1bf77704807db6b4319e1cbcb65f63db77edc6e7f2f",
+      "source_line": 443,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; ARCH",
+    "statement_latex": "The NL-TPS shall assign a unique identity, version, lifecycle state, owner, and source linkage to each clinical context, prescription intent, anatomy set, evidence package, planning strategy, candidate plan, review decision, QA record, and transfer record.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-DAT-002",
+    "domain": "DAT",
+    "hazards": [
+      "H-17"
+    ],
+    "id": "DAT-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "8e21c2a3efe011a0a4479d47d9a75d77d34f296a61a7789b25be1d1376e23ed6",
+      "source_line": 445,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; TLR; H-17",
+    "statement_latex": "The NL-TPS shall maintain a dependency and provenance graph that traces every derived object to its inputs, transformations, software, model, evidence, configuration, user actions, and approvals.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-DAT-003",
+    "domain": "DAT",
+    "hazards": [
+      "H-07",
+      "H-12"
+    ],
+    "id": "DAT-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "432649d76f0ad38cfb2cc9192a85b52f4fb8af7d7f14df287683edee0fb0cc2f",
+      "source_line": 447,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; H-07,H-12",
+    "statement_latex": "The NL-TPS shall validate and preserve explicit units, coordinate systems, dose quantity and basis, structure definitions, and rounding behavior at storage, calculation, display, and interface boundaries.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-DAT-004",
+    "domain": "DAT",
+    "hazards": [
+      "H-01",
+      "H-12"
+    ],
+    "id": "DAT-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "c3df10b346af872e7694416275ab5afa0c028f28b3c36a58b304465023acd9b6",
+      "source_line": 449,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "ARCH; TLR; H-01,H-12",
+    "statement_latex": "The NL-TPS shall validate DICOM patient and study identities, SOP Instance UIDs, references, frame-of-reference UIDs, required attributes, coordinate transformations, units, and destination fidelity for every clinical transfer.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-DAT-005",
+    "domain": "DAT",
+    "hazards": [],
+    "id": "DAT-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "74c5b2450e0a5b8ae16b176afa5fe5eec3d7a678dfed38c64410139aa00ec5b8",
+      "source_line": 451,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "ARCH; QMS",
+    "statement_latex": "The NL-TPS shall support the approved DICOM objects and transactions required for images, registrations, segmentations or structures, RT Plan, RT Ion Plan, RT Dose, treatment records, and related provenance in the active deployment.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-DAT-006",
+    "domain": "DAT",
+    "hazards": [],
+    "id": "DAT-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "37a5de282ed9e17b674f9c2747f10613bdd0eecacaab4d880455b47434d4e43f",
+      "source_line": 453,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "ARCH; QMS",
+    "statement_latex": "The NL-TPS shall use approved IHE-RO profiles and FHIR or CodeX radiation-therapy exchanges where implemented and shall document conformance and known limitations.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-DAT-007",
+    "domain": "DAT",
+    "hazards": [
+      "H-12",
+      "H-16"
+    ],
+    "id": "DAT-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "6bb35b11a4d2e8e069540196187a51e5ec351dd885d2aca177e75e51e347e05c",
+      "source_line": 455,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; H-12,H-16",
+    "statement_latex": "The NL-TPS shall reject incomplete, ambiguous, inconsistent, orphaned, or partially transferred clinical data rather than promoting it to a valid state.",
+    "verification_methods": [
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-DAT-008",
+    "domain": "DAT",
+    "hazards": [
+      "H-14"
+    ],
+    "id": "DAT-008",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "c3ad17309d63eb4a34f3a3deba30d6896158247915c27a74fe4de55965aacde2",
+      "source_line": 457,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; TLR; H-14",
+    "statement_latex": "The NL-TPS shall maintain a tamper-evident, time-synchronized audit ledger of commands, context, inputs, versions, evidence, outputs, warnings, edits, approvals, QA, exports, failures, overrides, and reconciliation events.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-DAT-009",
+    "domain": "DAT",
+    "hazards": [
+      "H-12",
+      "H-14"
+    ],
+    "id": "DAT-009",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "0897bfa788eb1423eab9bb6de8aa3f7d24d748dde817db43db5d1b2c5f117c81",
+      "source_line": 459,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; SEC; H-12,H-14",
+    "statement_latex": "The NL-TPS shall use integrity hashes or equivalent controls to detect unauthorized modification of clinical objects, evidence packages, software artifacts, model artifacts, audit records, and transferred data.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-DAT-010",
+    "domain": "DAT",
+    "hazards": [],
+    "id": "DAT-010",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "904709ac27de185c6717e53fd60d12cb37ff005a3d81a27f8129c625580d2a74",
+      "source_line": 461,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; DEC",
+    "statement_latex": "The NL-TPS shall identify the authoritative system of record and retention, legal-record, export, archival, and reconciliation policy for each clinical object type.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-EVD-001",
+    "domain": "EVD",
+    "hazards": [
+      "H-03"
+    ],
+    "id": "EVD-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "19899074e3f5bf19a6a231eb6ca1e9bd99d0b5f21bb70161e4ae598713b5f1e1",
+      "source_line": 283,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "EVD; ARCH; TLR; H-03",
+    "statement_latex": "The NL-TPS shall use only an institution-approved, closed evidence service for patient-specific clinical rules and shall not derive such rules from unrestricted internet retrieval in clinical mode.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-EVD-002",
+    "domain": "EVD",
+    "hazards": [
+      "H-03"
+    ],
+    "id": "EVD-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "df0afc00cfa87a7351ccb860eef5caa741e1a122a62401abcb7493b6263d9407",
+      "source_line": 285,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "EVD; TLR; H-03",
+    "statement_latex": "The NL-TPS shall attach the source title, version or date, exact location, population, applicability, limitations, institutional approval status, effective date, and review date to each active evidence-derived rule.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-EVD-003",
+    "domain": "EVD",
+    "hazards": [
+      "H-03",
+      "H-04"
+    ],
+    "id": "EVD-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "082911eac6ccee0f8fa68627ed518ece49452187978ba423173139108bc60ec1",
+      "source_line": 287,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "EVD; H-03,H-04",
+    "statement_latex": "The NL-TPS shall apply the approved authority order of patient-specific signed intent, applicable trial protocol, institutional standard, professional guidance, and supporting peer-reviewed evidence.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-EVD-004",
+    "domain": "EVD",
+    "hazards": [
+      "H-04"
+    ],
+    "id": "EVD-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "2ace6125bc098c95fcd32a4de625163a2cd3e74d5917b6fcba684210c699b948",
+      "source_line": 289,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "EVD; H-04",
+    "statement_latex": "The NL-TPS shall treat the signed prescription and physician-approved case intent as the highest patient-specific authority and shall stop when a lower-tier rule conflicts with that authority.",
+    "verification_methods": [
+      "T",
+      "D"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-EVD-005",
+    "domain": "EVD",
+    "hazards": [
+      "H-03"
+    ],
+    "id": "EVD-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "a2bd66cf144a5a99d0af93c52d9252295eebd41c374d92f322ae6b987beddf4f",
+      "source_line": 291,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "EVD; TLR; H-03",
+    "statement_latex": "The NL-TPS shall block or escalate conflicting, expired, retired, superseded, or inapplicable evidence rather than silently selecting or blending a clinical rule.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-EVD-006",
+    "domain": "EVD",
+    "hazards": [
+      "H-07"
+    ],
+    "id": "EVD-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "b5b3ca4a685c5e776de637992ad6a745d4a7bcd28d91a60c76496645e9b6c833",
+      "source_line": 293,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "EVD; INFO; H-07",
+    "statement_latex": "The evidence service shall represent each computable rule with explicit structure definition, units, comparator, dose quantity and basis, population, exclusions, rule type, tolerance, and conflict policy.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-EVD-007",
+    "domain": "EVD",
+    "hazards": [
+      "H-15"
+    ],
+    "id": "EVD-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "dbc499da48dd119ad65229762fa9fd159f36620b158e43d3cec5a79867650c54",
+      "source_line": 295,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "EVD; QMS; OPS; H-15",
+    "statement_latex": "The NL-TPS shall support controlled evidence proposal, independent clinical review, approval, publication, periodic review, retirement, emergency suspension, and rollback.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-EVD-008",
+    "domain": "EVD",
+    "hazards": [
+      "H-03"
+    ],
+    "id": "EVD-008",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "ba0064bf8ce608c7d2ec3bf3e743bb986557aa3601e9da431607ed0350a0b28e",
+      "source_line": 297,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "EVD; PRN; H-03",
+    "statement_latex": "The NL-TPS shall provide a no-source or no-applicable-rule response and require human resolution when a verified clinical rule cannot be produced.",
+    "verification_methods": [
+      "T",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-GOV-001",
+    "domain": "GOV",
+    "hazards": [],
+    "id": "GOV-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "913189cef6c9b17d7b8c8bbd78d200a8605fd082041fa5d2206f2f8d0ba78448",
+      "source_line": 170,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SCP; PRN; AUTH",
+    "statement_latex": "The NL-TPS shall operate as a human-supervised treatment-planning support system and shall not be represented as a substitute for the professional judgment of radiation oncologists, medical dosimetrists, qualified medical physicists, or other authorized clinical staff.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-GOV-002",
+    "domain": "GOV",
+    "hazards": [],
+    "id": "GOV-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "1ada340cdacdb2250ccf2c90a9732f26db5208b820eca71f58c82e287481e957",
+      "source_line": 172,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SCP; MODE; ROAD",
+    "statement_latex": "The NL-TPS shall restrict clinical operation to the institution-approved intended use, patient population, disease sites, modalities, machines, techniques, and tasks defined in the active release authorization.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-GOV-003",
+    "domain": "GOV",
+    "hazards": [],
+    "id": "GOV-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "a025e846d1d072d9243a88d7681bdcee7334aa2a262a340e944e05417b635a5b",
+      "source_line": 174,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SCP; HAZ; ROAD",
+    "statement_latex": "The NL-TPS shall block clinical execution for an unsupported or out-of-scope workflow until that workflow has completed separate risk assessment, commissioning, validation, and governance approval.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-GOV-004",
+    "domain": "GOV",
+    "hazards": [],
+    "id": "GOV-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "b4bd0b68d001c290e883378557ae1446c217dccff936a68eda4a4c290450a901",
+      "source_line": 176,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODE; ARCH",
+    "statement_latex": "The NL-TPS shall provide segregated training\\slash\\allowbreak{}research, commissioning, shadow, clinical-draft, clinical-approved, and degraded\\slash\\allowbreak{}read-only operating modes with mode-specific permissions and destinations.",
+    "verification_methods": [
+      "T",
+      "D"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-GOV-005",
+    "domain": "GOV",
+    "hazards": [],
+    "id": "GOV-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "c64d996558b5189ca1f7748b325529a578225546d729f2a9eb98e3718e6a8ad3",
+      "source_line": 178,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "AUTH; MODE; QMS",
+    "statement_latex": "The NL-TPS shall enforce institution-approved role authority and separation-of-duties rules for radiation oncologists, dosimetrists, medical physicists, therapists, informatics staff, quality staff, and system developers.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-GOV-006",
+    "domain": "GOV",
+    "hazards": [],
+    "id": "GOV-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "55e508ba514dc8ad0fafddbce8f889c9237e46cacb1fa3ce9a3532c886f54f5e",
+      "source_line": 180,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SCP; QMS; ROAD",
+    "statement_latex": "The NL-TPS shall maintain the intended-use statement, approved scope, risk controls, release status, configuration baseline, and applicable regulatory and quality-system records as controlled artifacts.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-GOV-007",
+    "domain": "GOV",
+    "hazards": [],
+    "id": "GOV-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "92f9ddbb00e5c7bac2ff4519122d9c2ec87e2abfed8a0e296ae9ac46f7fd211c",
+      "source_line": 182,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "AUTH; QMS; ROAD",
+    "statement_latex": "The NL-TPS shall require clinical-governance approval for changes to deployment scope, accepted residual risk, evidence policy, model release, monitoring thresholds, or clinical workflow authority.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-HFE-001",
+    "domain": "HFE",
+    "hazards": [
+      "H-01",
+      "H-17"
+    ],
+    "id": "HFE-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "23a6f29cb9cec1dc50da1ba44f5804200d92e1c670266f5d534ac52e17cab42a",
+      "source_line": 521,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "HFE; H-01,H-17",
+    "statement_latex": "The NL-TPS shall continuously display the active patient, course, study, plan, operating mode, approval state, and unsaved or unverified changes during clinical work.",
+    "verification_methods": [
+      "HFE",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-HFE-002",
+    "domain": "HFE",
+    "hazards": [
+      "H-18"
+    ],
+    "id": "HFE-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "3de2a15ea85daf96af7d997e09d8b655cd20358c12fa3a8723c3ceea2f1b5167",
+      "source_line": 523,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "NLI; HFE; H-18",
+    "statement_latex": "The user interface shall visually distinguish verified patient facts, signed intent, approved evidence, model suggestions, user preferences, assumptions, warnings, and unresolved questions.",
+    "verification_methods": [
+      "HFE",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-HFE-003",
+    "domain": "HFE",
+    "hazards": [
+      "H-18"
+    ],
+    "id": "HFE-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "f9c10f4982bb4c3bd0ae73f8afe18ec618f0dc29d48e5840b74268cc038eb40a",
+      "source_line": 525,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "HFE; H-18",
+    "statement_latex": "Warnings shall identify the hazard, affected object, required action, and escalation path and shall not rely on color alone.",
+    "verification_methods": [
+      "HFE",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-HFE-004",
+    "domain": "HFE",
+    "hazards": [
+      "H-18"
+    ],
+    "id": "HFE-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "437a69b208ff106393a5f4708684a68f22a77b163a9aa54dd959d633bfda3a0b",
+      "source_line": 527,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "WF; HFE; OPS; H-18",
+    "statement_latex": "Confirmation burden shall be proportional to clinical risk, and the NL-TPS shall monitor alert burden, overrides, workarounds, and critical-warning comprehension.",
+    "verification_methods": [
+      "HFE",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-HFE-005",
+    "domain": "HFE",
+    "hazards": [],
+    "id": "HFE-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "505ec841c6f17667c56e4e2f56b1076eee90b6c9a9291bcb1bb2ca65cb38e597",
+      "source_line": 529,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "VV; HFE; TLR",
+    "statement_latex": "The NL-TPS shall complete formative and summative human-factors validation with representative intended users, critical tasks, environments, interruptions, handoffs, and recovery scenarios before clinical release.",
+    "verification_methods": [
+      "HFE",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-HFE-006",
+    "domain": "HFE",
+    "hazards": [],
+    "id": "HFE-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "fb5335600acdd6fe2eb3fc25fc95ac6365297b16e5d5b09c2707f4fb8d55a980",
+      "source_line": 531,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "AUTH; HFE; ROAD",
+    "statement_latex": "The NL-TPS shall require role-specific training, demonstrated competency, and current authorization before a user can perform clinical functions assigned to that role.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-NLI-001",
+    "domain": "NLI",
+    "hazards": [
+      "H-02"
+    ],
+    "id": "NLI-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "773830b8d221331600ccf8dd8468c9628ce3e1fb9b92cd826b422c0b0217178a",
+      "source_line": 246,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "WF; NLI; H-02",
+    "statement_latex": "The NL-TPS shall accept typed text and user-initiated push-to-talk speech while prohibiting background listening and voice-only clinical signatures.",
+    "verification_methods": [
+      "T",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-NLI-002",
+    "domain": "NLI",
+    "hazards": [
+      "H-02"
+    ],
+    "id": "NLI-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "f19a645b7d698901bf30c83bad0352291c9cbe9cb707dde0ae11f0003f86af7a",
+      "source_line": 248,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "WF; NLI; TLR; H-02",
+    "statement_latex": "The NL-TPS shall compile each actionable natural-language request into a versioned, inspectable, typed intent before executing a state-changing action.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-NLI-003",
+    "domain": "NLI",
+    "hazards": [],
+    "id": "NLI-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "3f6de2f33a858152bb5ec9f487a8603402d6bb0fc8bcddd8d61f4c94ad167f42",
+      "source_line": 250,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "WF; NLI; ARCH",
+    "statement_latex": "The typed intent shall identify the clinical objects, requested action, parameters, units, priorities, evidence references, preconditions, expected outputs, and affected approval state.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-NLI-004",
+    "domain": "NLI",
+    "hazards": [],
+    "id": "NLI-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "01f0210a67053f309b50d29a88e06671fa86ed4588b76c2c5d042d75661bf482",
+      "source_line": 252,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "ARCH; INFO; HFE",
+    "statement_latex": "The NL-TPS shall distinguish verified patient facts, signed clinical intent, user preferences, evidence-derived rules, system assumptions, and unresolved questions in the compiled intent and user interface.",
+    "verification_methods": [
+      "T",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-NLI-005",
+    "domain": "NLI",
+    "hazards": [
+      "H-02",
+      "H-07"
+    ],
+    "id": "NLI-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "15d1605ab5d8e6815367281f26828fc0a59ed8e0b6c711a7ed03eff1848ab77e",
+      "source_line": 254,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "NLI; HAZ; H-02,H-07",
+    "statement_latex": "The NL-TPS shall use deterministic validation for safety-critical numbers, units, dose basis, fractionation, negation, laterality, structure identity, and clinical-object references.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-NLI-006",
+    "domain": "NLI",
+    "hazards": [],
+    "id": "NLI-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "e35a9edb06d372a849875b862f48ea897dc4df3eed212311ec427aee0587c992",
+      "source_line": 256,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "WF; NLI; TLR",
+    "statement_latex": "The NL-TPS shall display a structured read-back of what will change, the affected patient and object, assumptions, evidence, expected effect, expected runtime, and cancellation or rollback method before consequential execution.",
+    "verification_methods": [
+      "T",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-NLI-007",
+    "domain": "NLI",
+    "hazards": [
+      "H-02"
+    ],
+    "id": "NLI-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "d9af174bcc8e902bf7cd8c9e750923a91419e8b01ea878812e6dedac985b82cc",
+      "source_line": 258,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "NLI; TLR; H-02",
+    "statement_latex": "The NL-TPS shall require explicit confirmation of speech transcripts containing safety-critical numbers, units, negation, laterality, prescription elements, or clinical-object names.",
+    "verification_methods": [
+      "T",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-NLI-008",
+    "domain": "NLI",
+    "hazards": [],
+    "id": "NLI-008",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "dbbf19e787a9a20faa103b78a9e9493e11ab84d4c87b24b6bb7721450dd708bf",
+      "source_line": 260,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "WF; INFO; TLR",
+    "statement_latex": "The NL-TPS shall record the original user input or confirmed transcript, compiled intent, clarifications, assumptions, preview, confirmations, execution result, and user corrections in the audit ledger.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-OPS-001",
+    "domain": "OPS",
+    "hazards": [
+      "H-15"
+    ],
+    "id": "OPS-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "51fb342684e37b0cfe7b19cde6bb1b03c38146c686dd7d9587efa7a31ca796f9",
+      "source_line": 591,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "OPS; MOE; TLR; H-15",
+    "statement_latex": "The NL-TPS shall monitor predefined safety, model, evidence, workflow, technical, subgroup, reliability, and security signals against approved action thresholds.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-OPS-002",
+    "domain": "OPS",
+    "hazards": [
+      "H-16"
+    ],
+    "id": "OPS-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "866511645cfe2a3adb112c2d2b6a140c1f3596b93159c25cc47d5f5c401ca9c2",
+      "source_line": 593,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "OPS; H-16",
+    "statement_latex": "The NL-TPS shall use atomic job states and shall prevent a timed-out, failed, canceled, partial, or unreconciled result from appearing complete or eligible for promotion.",
+    "verification_methods": [
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-OPS-003",
+    "domain": "OPS",
+    "hazards": [
+      "H-15",
+      "H-16"
+    ],
+    "id": "OPS-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "55fbdc8af590eee434d66747469ea5e3e66e06f80c298874dba67c321cec35b1",
+      "source_line": 595,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "OPS; TLR; H-15,H-16",
+    "statement_latex": "The NL-TPS shall support rapid suspension of a model, evidence rule, connector, workflow, disease site, or complete clinical service and rollback to an approved known-good configuration.",
+    "verification_methods": [
+      "D",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-OPS-004",
+    "domain": "OPS",
+    "hazards": [],
+    "id": "OPS-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "1544eb9481ceef13e73be9198351561298ca9667d170cb02dd45cdde2c3174b0",
+      "source_line": 597,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODE; OPS; TLR",
+    "statement_latex": "The NL-TPS shall provide an explicit degraded or read-only mode and an institution-approved downtime procedure that prohibits new clinical execution while preserving access to completed work and audit records as authorized.",
+    "verification_methods": [
+      "D",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-OPS-005",
+    "domain": "OPS",
+    "hazards": [],
+    "id": "OPS-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "0827d161739a7a960aade8b3bc9be09aa890d7bf79882b8040a6c4bfa61b1d92",
+      "source_line": 599,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SEC; OPS",
+    "statement_latex": "The NL-TPS shall maintain validated backups and shall perform staged restoration, object and destination reconciliation, approval-state verification, regression testing, and documented recovery exercises.",
+    "verification_methods": [
+      "D",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-OPS-006",
+    "domain": "OPS",
+    "hazards": [],
+    "id": "OPS-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "6e71b6d1d8351b2283b6d6e75b3ae97e0b1d37068afc1daa97b3ab7dc3839f5d",
+      "source_line": 601,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "OPS; QMS",
+    "statement_latex": "The NL-TPS shall support reporting, triage, investigation, patient-impact assessment, evidence preservation, trend analysis, and corrective and preventive action for incidents, near misses, unsafe workarounds, and QA discrepancies.",
+    "verification_methods": [
+      "I",
+      "D"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-OPS-007",
+    "domain": "OPS",
+    "hazards": [],
+    "id": "OPS-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "ebab08d0a519acdb60679aedb9f2ac4e0e1c99ce12a60e9f5e2e7213f029394a",
+      "source_line": 603,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "OPS; MOE; DEC",
+    "statement_latex": "The NL-TPS shall define, approve, monitor, and periodically review clinical service levels and action thresholds for availability, latency, recovery, data retention, reliability, safety, model performance, evidence currency, and security.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-001",
+    "domain": "PLN",
+    "hazards": [],
+    "id": "PLN-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "d6be3b7d57fd4db9960a08d2b4ec3164c4f02b13b10a9e10d73e11275a634ffc",
+      "source_line": 359,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "WF; UC; INFO",
+    "statement_latex": "The NL-TPS shall create a versioned structured planning intent from the signed prescription, approved anatomy, patient-specific instructions, applicable protocol, institutional planning standard, and confirmed user priorities.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-002",
+    "domain": "PLN",
+    "hazards": [
+      "H-08"
+    ],
+    "id": "PLN-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "8fd76ca7b54dd137854ceeb35700430607af722f01916758c23ea39e3195982b",
+      "source_line": 361,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; ARCH; TLR; H-08",
+    "statement_latex": "The NL-TPS shall generate or modify candidate plans only through commissioned planning, optimization, robustness, and dose-calculation services operating within the validated machine, technique, and algorithm envelope.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-003",
+    "domain": "PLN",
+    "hazards": [
+      "H-08"
+    ],
+    "id": "PLN-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "12ac967713cbfd47e3a6c8b7ea398957f2f0b05813e14e9c997610f7b8169432",
+      "source_line": 363,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "PRN; MODEL; H-08",
+    "statement_latex": "The NL-TPS shall prevent language, speech, disease-site, or generative models from directly calculating clinical dose or substituting for a commissioned dose engine.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-004",
+    "domain": "PLN",
+    "hazards": [
+      "H-11"
+    ],
+    "id": "PLN-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "cd0f6c8b96f60705e6bc4e2bd68361a5b8cd691b8315309f9b23df6439f5d135",
+      "source_line": 365,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; EVD; TLR; H-11",
+    "statement_latex": "The structured planning intent shall distinguish hard constraints, planning goals, optimization objectives, preferences, and reporting-only metrics.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-005",
+    "domain": "PLN",
+    "hazards": [
+      "H-11"
+    ],
+    "id": "PLN-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "475a5bed3613667c95fdfdf2ac087629db68eacd64eafcd3be900cba6156ca5d",
+      "source_line": 367,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; TLR; H-11",
+    "statement_latex": "The NL-TPS shall prevent silent relaxation of a hard constraint and shall require an authorized explicit action, documented rationale, and pre\\slash\\allowbreak{}post difference review for any permitted relaxation.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-006",
+    "domain": "PLN",
+    "hazards": [],
+    "id": "PLN-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "21711cc0dbf205bfe86445b67b1e5c4f8a2215d5e4adc186ec0506649847da62",
+      "source_line": 369,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; MOE",
+    "statement_latex": "The NL-TPS shall generate the number of candidate plans requested by an authorized user when feasible and shall identify when the requested candidate set cannot be produced.",
+    "verification_methods": [
+      "T",
+      "D"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-007",
+    "domain": "PLN",
+    "hazards": [
+      "H-10"
+    ],
+    "id": "PLN-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "de463c551101cc6287af8af9a82db72d1e4bf5bd215a965da7bee75652970029",
+      "source_line": 371,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; TLR; H-10",
+    "statement_latex": "The NL-TPS shall document the planning strategy, parameter variation, objective tradeoff, beam or modality variation, or other method used to create meaningful candidate diversity.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-008",
+    "domain": "PLN",
+    "hazards": [
+      "H-10"
+    ],
+    "id": "PLN-008",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "c4e80f8b2e446d95afeaa7de20760cc874499230ad803debe66dbf02e2ed6d58",
+      "source_line": 373,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; TLR; H-10",
+    "statement_latex": "The NL-TPS shall identify infeasible candidates and candidates dominated by another candidate under the declared evaluation criteria.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-009",
+    "domain": "PLN",
+    "hazards": [
+      "H-08"
+    ],
+    "id": "PLN-009",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "6746cc109f8cf9205b99cc4d4c0385e167cec8f8f195cb6388bfe244d55dcb3b",
+      "source_line": 375,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; MODEL; H-08",
+    "statement_latex": "The NL-TPS shall attest at runtime to the active machine model, energy or beam type, technique, dose algorithm, grid, optimizer, biological model if used, and approved configuration before plan calculation.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-010",
+    "domain": "PLN",
+    "hazards": [
+      "H-07",
+      "H-09"
+    ],
+    "id": "PLN-010",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "49240366f357d64ad8598905223581ef88b19ccdf7013c43ef3e5df111cba475",
+      "source_line": 377,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "EVD; INFO; H-07,H-09",
+    "statement_latex": "The NL-TPS shall represent physical dose, RBE-weighted dose, fractionation, normalization, BED or EQD2 when approved, and proton-specific assumptions explicitly and without implicit conversion.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-011",
+    "domain": "PLN",
+    "hazards": [
+      "H-09"
+    ],
+    "id": "PLN-011",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "b745cf092b67d4a4797fe1265a22d1021648c78682ddc3fe311e51d5c8864e2c",
+      "source_line": 379,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; VV; H-09",
+    "statement_latex": "The NL-TPS shall apply and record the institution-approved setup, range, motion, interplay, and other robustness scenarios required for the active technique before candidate eligibility.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-PLN-012",
+    "domain": "PLN",
+    "hazards": [
+      "H-17"
+    ],
+    "id": "PLN-012",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "b3685c121928e3299676fb9c5daa4cfbf2afeace910e4e006352ca9b0faa3881",
+      "source_line": 381,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; ARCH; H-17",
+    "statement_latex": "The NL-TPS shall preserve candidate-plan identity, parent intent, parameters, calculation outputs, warnings, configuration, evaluation results, and lineage through iterative refinement.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-REV-001",
+    "domain": "REV",
+    "hazards": [],
+    "id": "REV-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "93e06c36b07c0e5a72165ddcc625f4fe31da2274f92b9d2707c25f3166c6f0a0",
+      "source_line": 404,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; HFE; MOE",
+    "statement_latex": "The NL-TPS shall present candidate plans in a consistent comparison workspace showing absolute values and differences without changing metric definitions or display scales between candidates.",
+    "verification_methods": [
+      "D",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-REV-002",
+    "domain": "REV",
+    "hazards": [
+      "H-10"
+    ],
+    "id": "REV-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "8c9b81f829b1fc75e450dc2d60ffd9cbf7fcafa55d5b24419b9ac0685f530f50",
+      "source_line": 406,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; TLR; H-10",
+    "statement_latex": "The comparison workspace shall display target coverage, organ-at-risk results, constraint status, spatial dose, hotspots and coldspots, robustness, uncertainty, complexity, deliverability, and provenance before plan selection.",
+    "verification_methods": [
+      "D",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-REV-003",
+    "domain": "REV",
+    "hazards": [
+      "H-10",
+      "H-18"
+    ],
+    "id": "REV-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "7de6d5c3dafd1e7fe68249cf260efbb5c08e61451f36b501dae60fb89342992d",
+      "source_line": 408,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "UC; PRN; H-10,H-18",
+    "statement_latex": "The NL-TPS shall expose the declared tradeoffs and shall not select or recommend a winning plan solely through an opaque composite score.",
+    "verification_methods": [
+      "I",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-REV-004",
+    "domain": "REV",
+    "hazards": [],
+    "id": "REV-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "21baac7a179f04d4fb2fbf673c325aa94a4ced803620636725439cc5d0881cea",
+      "source_line": 410,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; MOE",
+    "statement_latex": "The NL-TPS shall record the selected plan, rejected alternatives, review comments, deviations, tradeoff rationale, and role-specific decisions.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-REV-005",
+    "domain": "REV",
+    "hazards": [],
+    "id": "REV-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "86dacb6b6ee533fadfdf1c52d86cebf59b8af15c758eecbfb9066e4510799c8f",
+      "source_line": 412,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "AUTH; MODE; HAZ",
+    "statement_latex": "The NL-TPS shall enforce radiation-oncologist clinical plan approval and qualified-medical-physicist technical review before a candidate can enter the approved state.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-REV-006",
+    "domain": "REV",
+    "hazards": [
+      "H-13"
+    ],
+    "id": "REV-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "46510237e22e079d6d4f0d955688b211b2fe5841f97334829a42b97c22f0e738",
+      "source_line": 414,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "VV; TLR; H-13",
+    "statement_latex": "The NL-TPS shall route the approved candidate through the institutionally required independent dose or MU verification, patient-specific QA, transfer QA, and other technique-specific checks.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-REV-007",
+    "domain": "REV",
+    "hazards": [
+      "H-12",
+      "H-17"
+    ],
+    "id": "REV-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "ff41879bc7a970afb05a9099c3f8fb6862a87a4c88b7db1e415ebb335aec61cf",
+      "source_line": 416,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "WF; INFO; H-12,H-17",
+    "statement_latex": "The NL-TPS shall authorize export only after all required approvals and QA states are current and shall verify source-to-destination identity, content, geometry, and status after transfer.",
+    "verification_methods": [
+      "T",
+      "D"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-REV-008",
+    "domain": "REV",
+    "hazards": [
+      "H-17"
+    ],
+    "id": "REV-008",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "13a1622a5e499d7389a4d1049c7271fd9211c59bb4675227363055a8834a0e61",
+      "source_line": 418,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODE; INFO; H-17",
+    "statement_latex": "The NL-TPS shall make approved clinical objects immutable or version-controlled and shall require re-review of every affected downstream object after a change.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "functional",
+    "category_id": "HFR-REV-009",
+    "domain": "REV",
+    "hazards": [
+      "H-13"
+    ],
+    "id": "REV-009",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "d535d79b03411e32d47d73790a525af1efca93c7c21cc64075d7609c1ccd5766",
+      "source_line": 420,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "PRN; VV; TLR; H-13",
+    "statement_latex": "The NL-TPS shall document the independence assumptions, shared inputs, shared dependencies, ownership boundaries, and common-cause failure risks of each automated verification path.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SAF-001",
+    "domain": "SAF",
+    "hazards": [
+      "H-04"
+    ],
+    "id": "SAF-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "d1f84cda12d28778e7f99f46fdf01d645588134f48f7470c0435b894fe66a134",
+      "source_line": 205,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "PRN; AUTH; MODE; TLR; H-04",
+    "statement_latex": "The NL-TPS shall prevent any AI or automated service from prescribing treatment, signing or approving a prescription or plan, waiving required QA, releasing a plan for treatment, or commanding treatment delivery.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SAF-002",
+    "domain": "SAF",
+    "hazards": [
+      "H-01"
+    ],
+    "id": "SAF-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "73b6cf8c4eafca38b76466783317e6fe3971c15969b75ca73e801eef68f84323",
+      "source_line": 207,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "WF; ARCH; TLR; H-01",
+    "statement_latex": "The NL-TPS shall bind every clinical action to an authenticated user and role and to a confirmed patient, course, study, frame of reference, plan version, operating mode, and destination.",
+    "verification_methods": [
+      "T",
+      "D"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SAF-003",
+    "domain": "SAF",
+    "hazards": [
+      "H-01"
+    ],
+    "id": "SAF-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "4c4d4c2be103c952c2090b4c965f0f2b26f565921d30814d3afc1971418701e0",
+      "source_line": 209,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "HAZ; H-01",
+    "statement_latex": "The NL-TPS shall require confirmation of at least two patient identifiers before a state-changing clinical action is executed.",
+    "verification_methods": [
+      "T",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SAF-004",
+    "domain": "SAF",
+    "hazards": [
+      "H-01",
+      "H-03",
+      "H-08"
+    ],
+    "id": "SAF-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "34cbaabd3f7915a26ae041e0b7ac9a823476709a1636dbbfd2a7899c38e8aedb",
+      "source_line": 211,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "PRN; WF; TLR; H-01,H-03,H-08",
+    "statement_latex": "The NL-TPS shall fail closed when a safety-critical field, permission, dependency, context assertion, evidence rule, or commissioned-use condition is missing, ambiguous, inconsistent, expired, or unsupported.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SAF-005",
+    "domain": "SAF",
+    "hazards": [
+      "H-16"
+    ],
+    "id": "SAF-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "d2b28eaf72c0a7071f5e469eba7d76bba8f1b1f3ecf7b637355b7b59196026b1",
+      "source_line": 213,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODE; WF; TLR; H-16",
+    "statement_latex": "The NL-TPS shall keep automated contours, objectives, transformations, calculations, and candidate plans in a visibly unsigned draft or sandbox state until all required reviews and approvals are complete.",
+    "verification_methods": [
+      "T",
+      "D"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SAF-006",
+    "domain": "SAF",
+    "hazards": [],
+    "id": "SAF-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "909cf5636be79a996b6197995e802a06f4fc23f12a9aa609c093bd410928f22a",
+      "source_line": 215,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODE; WF; PRN",
+    "statement_latex": "The NL-TPS shall provide a structured preview, explicit confirmation, cancellation, and rollback for reversible state-changing actions before those actions can affect a clinical candidate.",
+    "verification_methods": [
+      "T",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SAF-007",
+    "domain": "SAF",
+    "hazards": [
+      "H-17"
+    ],
+    "id": "SAF-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "000e35b63d9ed28ec812349d778144234bf7cc29619a7682162e2060c9ab05d3",
+      "source_line": 217,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "INFO; TLR; H-17",
+    "statement_latex": "The NL-TPS shall invalidate affected downstream approvals, QA evidence, and transfer status whenever an approved dependency changes.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SAF-008",
+    "domain": "SAF",
+    "hazards": [],
+    "id": "SAF-008",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "47ed6b039fa029d54ffe2bab97fcf46b227d899d0ecc95dba6c468d15845ad48",
+      "source_line": 219,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "ARCH; PRN; HAZ",
+    "statement_latex": "The NL-TPS shall implement role authorization, state transitions, context assertions, hard stops, approval invalidation, and export policy in a deterministic safety kernel that is independently testable from generative models.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SAF-009",
+    "domain": "SAF",
+    "hazards": [
+      "H-13"
+    ],
+    "id": "SAF-009",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "adc2105c57031c015fb1b1e872a0b9cd72c252da297027e2c5c1747631856537",
+      "source_line": 221,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "PRN; AUTH; VV; TLR; H-13",
+    "statement_latex": "The NL-TPS shall preserve institutionally required independent review, dose or MU verification, data-transfer verification, patient-specific QA, and physics checks without allowing AI output to satisfy incompatible approval roles.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SAF-010",
+    "domain": "SAF",
+    "hazards": [
+      "H-16"
+    ],
+    "id": "SAF-010",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "3319ee4b9364afabca5277a23acf2ea89a40f212f074bdda963a7aa0263fb1d7",
+      "source_line": 223,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "PRN; OPS; H-16",
+    "statement_latex": "The NL-TPS shall identify degraded operation and failed dependencies explicitly and shall not use an unannounced fallback that changes clinical behavior, calculation, evidence, model, or destination.",
+    "verification_methods": [
+      "T",
+      "D"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SEC-001",
+    "domain": "SEC",
+    "hazards": [
+      "H-14"
+    ],
+    "id": "SEC-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "18e8c8af2ce266c846cc9ea46b75641e680f7f914bf4eb9362d6d4389904488e",
+      "source_line": 554,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SEC; TLR; H-14",
+    "statement_latex": "The NL-TPS shall enforce unique user identity, multi-factor authentication, least privilege, role and context authorization, session controls, and periodic access review.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SEC-002",
+    "domain": "SEC",
+    "hazards": [
+      "H-14"
+    ],
+    "id": "SEC-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "5981136029329a5efe3509486c544c2a9dc0afcf16f5dc72c0f6c8c132713d4b",
+      "source_line": 556,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SEC; TLR; H-14",
+    "statement_latex": "The NL-TPS shall protect data and services through approved encryption, network segmentation, managed secrets, secure configuration, endpoint controls, and least-privilege service identities.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SEC-003",
+    "domain": "SEC",
+    "hazards": [
+      "H-14"
+    ],
+    "id": "SEC-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "c3bf904598037b8dd1f8297b29a383f802615a14b7bc136d367393e6bbd46cec",
+      "source_line": 558,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SEC; H-14",
+    "statement_latex": "The NL-TPS shall prevent protected health information, images, prompts, transcripts, or outputs from being sent to an unapproved connector, model service, tenant, destination, or external tool.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SEC-004",
+    "domain": "SEC",
+    "hazards": [
+      "H-14"
+    ],
+    "id": "SEC-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "11f8fdc59553893e81bb48cf850d39bd45ca9be47993fc08f6d61c5129983701",
+      "source_line": 560,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SEC; H-14",
+    "statement_latex": "The NL-TPS shall treat retrieved text, uploaded documents, DICOM metadata, user content, and model output as untrusted input and shall isolate instructions embedded in that content from system authority.",
+    "verification_methods": [
+      "T",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SEC-005",
+    "domain": "SEC",
+    "hazards": [
+      "H-14",
+      "H-15"
+    ],
+    "id": "SEC-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "9b82fc1b145b3f6af80f1b9058a77823ff8df4360dfe7f88506ca3961b1a5033",
+      "source_line": 562,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODEL; SEC; H-14,H-15",
+    "statement_latex": "The NL-TPS shall verify the identity, integrity, signature, provenance, and approved status of software, model, evidence, configuration, and dependency artifacts before clinical use.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SEC-006",
+    "domain": "SEC",
+    "hazards": [],
+    "id": "SEC-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "887753aa50e5ffbcefca18abb168d33eb4e67b1d8a4f969ed70233d2d6e5c251",
+      "source_line": 564,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SEC; QMS",
+    "statement_latex": "The NL-TPS development and maintenance process shall include threat modeling, secure coding, code review, software bill of materials, vulnerability scanning, penetration testing, patch governance, and supplier-risk controls.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SEC-007",
+    "domain": "SEC",
+    "hazards": [
+      "H-14"
+    ],
+    "id": "SEC-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "c174d2ac0aea9090ede5490307e7118f472c9f979d6788f9b90a48d20de40c8e",
+      "source_line": 566,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SEC; OPS; H-14",
+    "statement_latex": "The NL-TPS shall centrally record and detect unauthorized access, anomalous export, integrity failure, malicious input, model or evidence compromise, secrets exposure, and suspected PHI leakage.",
+    "verification_methods": [
+      "T",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "cross_cutting_safety_and_assurance_constraint",
+    "category_id": "HNFR-SEC-008",
+    "domain": "SEC",
+    "hazards": [
+      "H-14"
+    ],
+    "id": "SEC-008",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "a5b7d1285c7ff2bdd18ff33579968fe9a97aa998150a897f39fa6c10825eb8c6",
+      "source_line": 568,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "SEC; OPS; H-14",
+    "statement_latex": "The NL-TPS shall support tested clinical and cybersecurity incident containment, evidence preservation, patient-impact assessment, communication, reporting, recovery, and corrective and preventive action.",
+    "verification_methods": [
+      "D",
+      "I"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-VAL-001",
+    "domain": "VAL",
+    "hazards": [],
+    "id": "VAL-001",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "a6226bc236cb1b6a05415acd2592dea31e9eaf00ae8887677549e89c8abf4ce8",
+      "source_line": 626,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "HAZ; VV; QMS",
+    "statement_latex": "The program shall trace each stakeholder need, hazard, risk control, and high-level requirement to allocated design, implementation, verification method, test result, anomaly disposition, and release decision.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-VAL-002",
+    "domain": "VAL",
+    "hazards": [],
+    "id": "VAL-002",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "614095cf550f86364dcb83f8095af61015667732d9e37243a44ff9d9322696ad",
+      "source_line": 628,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "VV; ROAD; TLR",
+    "statement_latex": "The integrated NL-TPS shall pass site-specific acceptance, commissioning, end-to-end, regression, shadow-mode, and governance release criteria before clinical use.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-VAL-003",
+    "domain": "VAL",
+    "hazards": [],
+    "id": "VAL-003",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "bc96baa23c2ae297e515039c7978744c754380130a9499d29f33ac91b5a9b3c9",
+      "source_line": 630,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "VV; HAZ",
+    "statement_latex": "Verification shall include locked reference cases and challenge cases for language and voice, evidence computation, segmentation, registration, planning, dose, robustness, interoperability, security, recovery, and audit integrity.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-VAL-004",
+    "domain": "VAL",
+    "hazards": [],
+    "id": "VAL-004",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "14a11cc686e5321cf21bb711bef3735258ab7339afcf50d8d8fb2231c8dd3112",
+      "source_line": 632,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "HAZ; VV; OPS",
+    "statement_latex": "End-to-end verification shall exercise normal, boundary, rare but foreseeable, wrong-context, partial-failure, timeout, rollback, post-approval change, and recovery scenarios through the official clinical interfaces.",
+    "verification_methods": [
+      "T",
+      "D"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-VAL-005",
+    "domain": "VAL",
+    "hazards": [],
+    "id": "VAL-005",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "812e6c072856c800181957ef622ab7ae7cb849a3ed1ce69c6f80111730abc03c",
+      "source_line": 634,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "MODEL; VV; MOE",
+    "statement_latex": "Clinical model validation shall include task-specific technical performance, clinically significant error, dose impact where relevant, edit burden, failure detection, subgroup performance, and human-team effect.",
+    "verification_methods": [
+      "A",
+      "HFE"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-VAL-006",
+    "domain": "VAL",
+    "hazards": [],
+    "id": "VAL-006",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "73ffbf120359c0a25b39fdc39bd845a0af2623e56fd84574257c6fe11b55feab",
+      "source_line": 636,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "VV; ROAD; DEC",
+    "statement_latex": "Clinical evaluation shall progress through retrospective, shadow, and controlled limited-clinical stages with predefined endpoints, independent adjudication, and applicable research, ethics, quality, and regulatory authorization.",
+    "verification_methods": [
+      "I",
+      "A"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-VAL-007",
+    "domain": "VAL",
+    "hazards": [],
+    "id": "VAL-007",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "8d36ef15579e5c38c8a531b72175f4f917df522a223bc44d3ad5ba231c369153",
+      "source_line": 638,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "ROAD; MOE",
+    "statement_latex": "The NL-TPS shall prevent progression through each release gate until its predefined safety, quality, subgroup, usability, reliability, cybersecurity, and governance evidence is complete and approved.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-VAL-008",
+    "domain": "VAL",
+    "hazards": [],
+    "id": "VAL-008",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "619ba4631443ba496cc12d35849b61be5460fee813d0b9437bdd249bc88b28e6",
+      "source_line": 640,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "QMS; ROAD",
+    "statement_latex": "Each expansion to a new disease site, model, modality, machine, technique, institution, adaptive workflow, interface, or evidence package shall receive documented change-impact assessment, commissioning, human-factors assessment, regression testing, and monitoring approval.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  },
+  {
+    "authoritative": false,
+    "bundle_id": "NLTPS-HLR-MIRROR-0.2",
+    "category": "operational",
+    "category_id": "HOR-VAL-009",
+    "domain": "VAL",
+    "hazards": [],
+    "id": "VAL-009",
+    "lifecycle_state": "proposed",
+    "record_provenance": {
+      "sha256": "0b2d5d265ba777686c62b8b7a68127ac2b07deb0d845284da88c090466f52624",
+      "source_line": 642,
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_artifact_provenance": {
+      "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4",
+      "source_path": "overleaf/NL_TPS_High_Level_Requirements.tex"
+    },
+    "source_hazard_text": "HAZ; VV; QMS; ROAD",
+    "statement_latex": "The NL-TPS shall not enter or remain in clinical service with an unresolved critical anomaly, unacceptable residual risk, failed release threshold, unverified risk control, or unreconciled safety-critical change.",
+    "verification_methods": [
+      "I",
+      "T"
+    ]
+  }
+]

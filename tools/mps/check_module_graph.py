@@ -261,11 +261,19 @@ def check(
             # at MPS-4 so ImportedHLR can inherit Requirement, and the MPS-4 session is what
             # mutates the descriptor.
             effective = dependency.get("effective_at")
-            if (effective is not None and checkpoint is not None
-                    and checkpoint_ordinal(checkpoint) < checkpoint_ordinal(effective)):
-                kind = dependency.get("prior_kind", kind)
+            pending = (effective is not None and checkpoint is not None
+                       and checkpoint_ordinal(checkpoint) < checkpoint_ordinal(effective))
+            if pending:
+                # Before the amendment lands, either kind is legitimate and neither is a
+                # defect. The module may not have been mutated yet, or the programme may
+                # already have advanced past this checkpoint and be re-running an earlier
+                # one; asserting a single kind would call one of those two states wrong,
+                # and both are correct.
+                by_kind.setdefault("tolerated", set()).add(dependency["module"])
+                continue
             key = "extends" if kind == "EXTENDS" else "depends"
             by_kind[key].add(dependency["module"])
+        by_kind.setdefault("tolerated", set())
         by_kind["external"] = set(entry.get("external_explicit", []))
         expected[entry["name"]] = by_kind
 
@@ -303,9 +311,10 @@ def check(
         combined[name] = relations["extends"] | relations["depends"]
         if name not in expected:
             continue
+        tolerated = expected[name].get("tolerated", set())
         for kind, label in (("extends", "EXTENDS"), ("depends", "DEFAULT")):
-            actual = relations[kind]
-            wanted = expected[name][kind]
+            actual = relations[kind] - tolerated
+            wanted = expected[name][kind] - tolerated
             if actual == wanted:
                 continue
             promoted = sorted(actual - wanted)

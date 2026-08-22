@@ -8,6 +8,7 @@
     <use id="12705dba-f436-4675-8d88-79a0f43738a5" name="nltps.roles.radonc" version="0" />
     <use id="5b19e2ff-ed83-482c-ba24-1b8dca166673" name="nltps.roles.physics" version="0" />
     <use id="32a5fe33-a49d-4203-b3e1-5054d68a5daf" name="nltps.roles.common" version="0" />
+    <use id="08070d1a-4999-4bfd-a38c-2b1b3ffd9ef4" name="nltps.realization" version="0" />
   </languages>
   <imports />
   <registry>
@@ -156,6 +157,26 @@
       <concept id="1365532761382949451" name="nltps.roles.physics.structure.PhysicsView" flags="ng" index="3h$cE4">
         <property id="1365532761382949454" name="viewName" index="3h$cE1" />
         <child id="1365532761382949455" name="subjects" index="3h$cE0" />
+      </concept>
+    </language>
+    <language id="08070d1a-4999-4bfd-a38c-2b1b3ffd9ef4" name="nltps.realization">
+      <concept id="1365532761387707800" name="nltps.realization.structure.VerificationBaseline" flags="ng" index="3hnRln">
+        <property id="1365532761387707809" name="name" index="3hnRlI" />
+        <child id="1365532761387707810" name="claims" index="3hnRlH" />
+      </concept>
+      <concept id="1365532761387707798" name="nltps.realization.structure.ArchitectureRealization" flags="ng" index="3hnRlp">
+        <property id="1365532761387707802" name="name" index="3hnRll" />
+        <child id="1365532761387707804" name="teams" index="3hnRlj" />
+      </concept>
+      <concept id="1365532761387707747" name="nltps.realization.structure.VerificationClaim" flags="ng" index="3hnRmG">
+        <property id="1365532761387707755" name="verdict" index="3hnRm$" />
+        <property id="1365532761387707754" name="claimName" index="3hnRm_" />
+        <reference id="1365532761387707761" name="owningTeam" index="3hnRmY" />
+        <reference id="1365532761387707760" name="verifies" index="3hnRmZ" />
+      </concept>
+      <concept id="1365532761387707706" name="nltps.realization.structure.Team" flags="ng" index="3hnRnP">
+        <property id="1365532761387707715" name="accountableRole" index="3hnRmc" />
+        <property id="1365532761387707714" name="teamName" index="3hnRmd" />
       </concept>
     </language>
     <language id="32a5fe33-a49d-4203-b3e1-5054d68a5daf" name="nltps.roles.common">
@@ -751,6 +772,58 @@
       <node concept="3g1f4p" id="1bNmcZ3xMT$" role="3g1f4G">
         <ref role="3g1f4k" node="1bNmcZ3ewzd" />
       </node>
+    </node>
+  </node>
+  <node concept="3hnRlp" id="1bNmcZ3JGzj">
+    <property role="3hnRll" value="RealizationProof" />
+    <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+    <node concept="3gIvZJ" id="1bNmcZ3JGzm" role="3gIvZz">
+      <property role="3gIvZX" value="ARC-001" />
+    </node>
+    <node concept="3gIvZH" id="1bNmcZ3JGzn" role="3gIvZy">
+      <property role="3gIvZS" value="1.0" />
+    </node>
+    <node concept="3hnRnP" id="1bNmcZ3JGzo" role="3hnRlj">
+      <property role="3hnRmd" value="Verification and Validation" />
+      <property role="3hnRmc" value="Qualified Medical Physicist" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3JGzr" role="3gIvZz">
+        <property role="3gIvZX" value="TEAM-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JGzs" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+  </node>
+  <node concept="3hnRln" id="1bNmcZ3JGzA">
+    <property role="3hnRlI" value="VerificationProof" />
+    <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+    <node concept="3gIvZJ" id="1bNmcZ3JGzD" role="3gIvZz">
+      <property role="3gIvZX" value="VBL-001" />
+    </node>
+    <node concept="3gIvZH" id="1bNmcZ3JGzE" role="3gIvZy">
+      <property role="3gIvZS" value="1.0" />
+    </node>
+    <node concept="3hnRmG" id="1bNmcZ3JGzF" role="3hnRlH">
+      <property role="3hnRm_" value="approvalDecisionRecorded" />
+      <property role="3hnRm$" value="1RV1HIhZ_9S/not_assessed" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <ref role="3hnRmZ" node="1bNmcZ2uzoK" />
+      <ref role="3hnRmY" node="1bNmcZ3JGzo" />
+      <node concept="3gIvZJ" id="1bNmcZ3JGzI" role="3gIvZz">
+        <property role="3gIvZX" value="VCL-001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JGzJ" role="3gIvZy">
+        <property role="3gIvZS" value="1.0" />
+      </node>
+    </node>
+  </node>
+  <node concept="3gIvZ$" id="1bNmcZ3JG$g">
+    <property role="3gIvYt" value="StageAMirrorLifecycle" />
+    <node concept="3gIvZG" id="1bNmcZ3JG$h" role="3gIvYs">
+      <property role="3gIvZP" value="3szh2WtgW$O/proposed" />
+      <property role="3gIvZO" value="1" />
+      <property role="3gIvZN" value="false" />
     </node>
   </node>
 </model>
