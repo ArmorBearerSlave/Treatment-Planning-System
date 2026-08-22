@@ -2139,6 +2139,72 @@ acceptance_items:
                   and a rule-specific assertion -- cannot all hold with the mechanism the test
                   language provides, and choosing which to relax is not the implementer's call.
                   No model change was made.
+              population_supersession_N1_to_N2:
+                superseded: >-
+                  The N=1 contract is explicitly superseded, not drifted. N was never the
+                  integer; it was a count that cannot change unnoticed, excluding three false
+                  greens -- testmodules resolving to nothing, discovery changing silently, and
+                  a failing test disappearing rather than failing. All three remain excluded at
+                  N=2 re-frozen. The count changed once, by decision, and is re-frozen here
+                  before the run that relies on it.
+                H1_mechanism_witness:
+                  node: 1365532761392382836 (1bNmcZ3WSdO), unchanged
+                  name: testAssessedClaimWithoutEvidenceIsRejected, unchanged
+                  generated: test_testAssessedClaimWithoutEvidenceIsRejected
+                  body: still initTestNodes() and nothing else
+                  evidentiary_meaning: >-
+                    Only that the previously proven executable witness still runs. Its name
+                    sounds semantic and is not. H1 passing is NOT evidence that assessed claims
+                    without evidence are rejected, and must never be cited as such.
+                S1_semantic_verdict:
+                  container: NodeOperationsContainer 1365532761392382844 (1bNmcZ3WSdW), role lGtFl
+                  node: NodeErrorCheckOperation 1365532761392382845 (1bNmcZ3WSdX)
+                  name: S1_assessed_claim_without_evidence_violates_REA_C_002
+                  generated: >-
+                    test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845
+                  errorRef: >-
+                    ReportErrorStatementReference 1365532761392382846 (1bNmcZ3WSdY), declaration
+                    -> r:b5932721-da09-43aa-899b-0b0afcaf35de(nltps.realization.typesystem)/1365532761391450283
+                  evidentiary_meaning: sole REA-C-002 verdict
+                contract_for_every_subsequent_run:
+                  authored: 2
+                  discovered: 2
+                  executed: 2
+                  RED: failures=1 and the failing test is S1 BY NAME; H1 must still pass
+                  GREEN: failures=0 with both names present
+                  invalid: >-
+                    any run where H1 fails, whatever S1 does. That is a harness result, not a
+                    semantic one, and authorizes repair of the test mechanism only.
+              rule_specificity_verified_by_observation:
+                requirement: >-
+                  The entire reason for choosing NodeErrorCheckOperation over a plain
+                  "this node has an error" was that errorRef names REA-C-002 specifically. The
+                  sentinel trips REA-C-002 and REA-C-003 both, so an unspecific assertion would
+                  be satisfied by the wrong rule and the choice would have bought nothing.
+                observed_in_the_generated_artifact: >-
+                  The generated test constructs
+                  CheckExpectedMessageRunnable.CheckExpectedRuleMessageRunnable -- the
+                  rule-comparing variant -- and not CheckAnyMessageRunnable, which is the
+                  variant that omits the rule conjunct entirely. Its expected-rule argument is
+                  new SNodePointer("r:b5932721-...(nltps.realization.typesystem)",
+                  "1365532761391450283").
+                observed_in_the_runtime_source: >-
+                  CheckExpectedRuleMessageRunnable.isMessageExpected resolves the reporting
+                  rule from each error report via NodeCheckerUtil.getRuleNodeFromReporter and
+                  requires Objects.equals(SNodeOperations.getPointer(ruleNode), myExpectedRule).
+                  The match is by node identity, not by message text.
+                the_two_rules_are_distinguishable_by_that_identity: >-
+                  Taken from the generated rule classes, which is where the reporter id is
+                  actually recorded: REA-C-002 reports under node 1365532761391450283 and
+                  REA-C-003 under node 1365532761388933111, both in
+                  nltps.realization.typesystem. Distinct, so a REA-C-003 report cannot satisfy
+                  an expectation naming REA-C-002.
+                what_was_not_done: >-
+                  No behavioural discrimination run. Nothing was constructed that trips
+                  REA-C-003 alone in order to watch this assertion refuse it. The evidence above
+                  is three independent readings of mechanism and identity, which is strong, but
+                  it is not the same claim as having seen the assertion decline a foreign rule.
+                  Recorded as a gap rather than folded into the verification.
               instrumented_execution_not_reconstruction: >-
                 The probe calls super.work() first and lets production LaunchTestWorker.work()
                 reproduce the failure, rather than re-attempting loadClass itself. Re-attempting

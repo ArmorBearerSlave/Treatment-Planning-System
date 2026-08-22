@@ -215,6 +215,29 @@ public final class ModuleClasspathProbe extends LaunchTestWorker {
       say("USED_LANGUAGE=" + language);
     }
 
+    // Every project module and its status, in one run. Iterating the repository beats
+    // adding one module per fifty-second run and guessing which comes next: the closure is
+    // whatever MPS says it is, and a status of NOT_IN_REPO on any of them is the thing that
+    // propagates. Printed for all of them because the propagation rule is not yet understood
+    // -- nltps.proof reports DEPLOYED while a module it depends on does not.
+    for (SModule candidate : repository.getModules()) {
+      String candidateName = candidate.getModuleName();
+      if (candidateName == null || !candidateName.startsWith("nltps.")) {
+        continue;
+      }
+      StringBuilder deps = new StringBuilder();
+      for (SDependency dependency : candidate.getDeclaredDependencies()) {
+        if (deps.length() > 0) {
+          deps.append(" ");
+        }
+        SModule target = dependency.getTarget();
+        deps.append(String.valueOf(dependency.getTargetModule()))
+            .append(target == null ? "=UNRESOLVED" : "=" + clm.getStatus(target));
+      }
+      say("PROJECT_MODULE=" + candidateName + " status=" + clm.getStatus(candidate)
+          + " deps[" + deps + "]");
+    }
+
     MPSModuleClassLoader loader = clm.getClassLoader(module);
     say("CLASSLOADER_CLASS=" + loader.getClass().getName());
     say("CLASSLOADER_IS_MODULE_CLASSLOADER=" + (loader instanceof ModuleClassLoader));

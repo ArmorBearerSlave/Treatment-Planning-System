@@ -143,6 +143,17 @@
       -->
       <repository>
         <module file="${project.dir}/sandbox/nltps.proof/nltps.proof.msd"/>
+        <!--
+          Added when the REA-C-002 assertion gained a node reference into
+          nltps.realization.typesystem, which made MPS add nltps.realization as a module
+          dependency of nltps.modeltests. Before that the language was used, not depended on,
+          and no module dependency existed. check_headless_coverage.py caught the omission on
+          the first run and named both the module and the symptom.
+        -->
+        <module file="${project.dir}/languages/nltps.foundation/nltps.foundation.mpl"/>
+        <module file="${project.dir}/languages/nltps.governance/nltps.governance.mpl"/>
+        <module file="${project.dir}/languages/nltps.clinicalintent/nltps.clinicalintent.mpl"/>
+        <module file="${project.dir}/languages/nltps.realization/nltps.realization.mpl"/>
       </repository>
       <project path="${project.dir}"/>
       <!-- TestModules exposes only a generic add(), i.e. an Ant resource collection,
@@ -247,6 +258,17 @@
       -->
       <repository>
         <module file="${project.dir}/sandbox/nltps.proof/nltps.proof.msd"/>
+        <!--
+          Added when the REA-C-002 assertion gained a node reference into
+          nltps.realization.typesystem, which made MPS add nltps.realization as a module
+          dependency of nltps.modeltests. Before that the language was used, not depended on,
+          and no module dependency existed. check_headless_coverage.py caught the omission on
+          the first run and named both the module and the symptom.
+        -->
+        <module file="${project.dir}/languages/nltps.foundation/nltps.foundation.mpl"/>
+        <module file="${project.dir}/languages/nltps.governance/nltps.governance.mpl"/>
+        <module file="${project.dir}/languages/nltps.clinicalintent/nltps.clinicalintent.mpl"/>
+        <module file="${project.dir}/languages/nltps.realization/nltps.realization.mpl"/>
       </repository>
       <project path="${project.dir}"/>
       <!-- TestModules exposes only a generic add(), i.e. an Ant resource collection,

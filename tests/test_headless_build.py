@@ -43,9 +43,8 @@ class HeadlessCoverageTest(unittest.TestCase):
 
     def test_unsupplied_dependency_is_detected(self):
         self._damaged(
-            '<module file="${project.dir}/sandbox/nltps.proof/nltps.proof.msd"/>\n'
-            '      </repository>',
-            '</repository>',
+            '        <module file="${project.dir}/sandbox/nltps.proof/nltps.proof.msd"/>\n',
+            '',
             "dependency on nltps.proof")
 
     def test_uncovered_make_module_is_detected(self):

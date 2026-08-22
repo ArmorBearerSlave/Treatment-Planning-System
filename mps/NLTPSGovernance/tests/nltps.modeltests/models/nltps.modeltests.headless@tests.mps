@@ -9,9 +9,20 @@
   </languages>
   <imports>
     <import index="pb3e" ref="r:098128cc-3125-4d66-a424-2542a6566f82(nltps.proof.cases)" />
+    <import index="icm7" ref="r:b5932721-da09-43aa-899b-0b0afcaf35de(nltps.realization.typesystem)" />
   </imports>
   <registry>
     <language id="8585453e-6bfb-4d80-98de-b16074f1d86c" name="jetbrains.mps.lang.test">
+      <concept id="1215507671101" name="jetbrains.mps.lang.test.structure.NodeErrorCheckOperation" flags="ng" index="1TM$A">
+        <child id="8489045168660938517" name="errorRef" index="3lydEf" />
+      </concept>
+      <concept id="1215603922101" name="jetbrains.mps.lang.test.structure.NodeOperationsContainer" flags="ng" index="7CXmI">
+        <child id="1215604436604" name="nodeOperations" index="7EUXB" />
+      </concept>
+      <concept id="7691029917083872157" name="jetbrains.mps.lang.test.structure.IRuleReference" flags="ngI" index="2u4UPC">
+        <reference id="8333855927540250453" name="declaration" index="39XzEq" />
+      </concept>
+      <concept id="4531408400484511853" name="jetbrains.mps.lang.test.structure.ReportErrorStatementReference" flags="ng" index="2PYRI3" />
       <concept id="1216913645126" name="jetbrains.mps.lang.test.structure.NodesTestCase" flags="lg" index="1lH9Xt">
         <property id="2616911529524314943" name="accessMode" index="3DII0k" />
         <child id="1217501822150" name="nodesToCheck" index="1SKRRt" />
@@ -52,6 +63,9 @@
       </concept>
     </language>
     <language id="ceab5195-25ea-4f22-9b92-103b95ca8c0c" name="jetbrains.mps.lang.core">
+      <concept id="1133920641626" name="jetbrains.mps.lang.core.structure.BaseConcept" flags="ng" index="2VYdi">
+        <child id="5169995583184591170" name="smodelAttribute" index="lGtFl" />
+      </concept>
       <concept id="1169194658468" name="jetbrains.mps.lang.core.structure.INamedConcept" flags="ngI" index="TrEIO">
         <property id="1169194664001" name="name" index="TrG5h" />
       </concept>
@@ -72,6 +86,14 @@
         </node>
         <node concept="3gIvZH" id="1bNmcZ3WSdI" role="3gIvZy">
           <property role="3gIvZS" value="0.2" />
+        </node>
+        <node concept="7CXmI" id="1bNmcZ3WSdW" role="lGtFl">
+          <node concept="1TM$A" id="1bNmcZ3WSdX" role="7EUXB">
+            <property role="TrG5h" value="S1_assessed_claim_without_evidence_violates_REA_C_002" />
+            <node concept="2PYRI3" id="1bNmcZ3WSdY" role="3lydEf">
+              <ref role="39XzEq" to="icm7:1bNmcZ3TkyF" />
+            </node>
+          </node>
         </node>
       </node>
     </node>
