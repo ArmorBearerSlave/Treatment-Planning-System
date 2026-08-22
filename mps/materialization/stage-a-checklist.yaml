@@ -1766,22 +1766,47 @@ acceptance_items:
               at ${module}/classes_gen, plus a bare tests facet. ext="no" is canonical, not
               an anomaly, and the earlier pairing of it with addLibraryJar as two equally
               plausible candidates was wrong.
-            actual_cause: >-
-              The canonical pipeline does not point testmodules at a source .msd. JetBrains
-              assembles a runtime module jar holding the compiled classes and a
-              META-INF/module.xml whose classpath contains an entry path=".", associates it
-              with an adjacent -src.jar carrying the descriptor and models, and puts the
-              runtime jar in the tests path. Feeding the raw .msd was enough for MPS to walk
-              the model and derive the generated class name, and not enough to make the
-              compiled class reachable through that module's runtime classloader.
+            packaging_is_a_hypothesis_not_a_cause: >-
+              An earlier wording of this entry called the artifact shape the actual cause.
+              That is the same overstatement this entry was written to correct, made once
+              more one paragraph later, and it is withdrawn. What is observed is a failed
+              class load. Everything about jars is inference from how JetBrains builds its
+              own distribution tests.
+              MPS 2026.1 argues against the inference: for an unpackaged source module the
+              module classloader derives its classpath from the JavaModuleFacet, and
+              JavaModuleFacetImpl.getClassPath adds the configured classes_gen directory when
+              it exists. This module's facet already declares
+              classes generated="true" path="${module}/classes_gen". So a raw .msd is not
+              intrinsically incapable of supplying compiled classes, and that JetBrains
+              packages test solutions for CI shows a canonical deployment shape, not a
+              limitation of launchtests.
+            proven_state: >-
+              authored executable test 1, MPS test root recognized 1, module classloader
+              obtained 1, own test class load FAILED, JUnit selector constructed 0, executed
+              0. ModuleClassLoader searches its own classpath item, then dependencies, then
+              parent; a failure naming the exact generated FQN means the class was not found
+              anywhere along that chain. A missing JDK dependency is a weak explanation
+              because MPS routes java.* through the system classloader directly.
             next_unit: >-
-              Artifact and classloader repair only. Leave the SimpleNodeTest with its node id
-              and name, its trivial body, the three plugin declarations, the JNA fix and the
-              java facet untouched. Assemble nltps.modeltests as a runtime module jar plus a
-              matching source jar, preferring the MPS build machinery over a hand-maintained
-              module.xml, and make that jar the testmodules input. Do not substitute the
-              library element for the test module itself: in the canonical build, library
-              carries supporting module jars and the test solution belongs in testmodules.
+              Runtime classloader introspection, before any artifact is built. Establish what
+              the worker thinks nltps.modeltests is: its descriptor file, isPackaged,
+              JavaModuleFacet.getClassesGen, JavaModuleFacet.getClassPath, the absolute path
+              the compiled class is expected at, whether it exists there, and whether
+              moduleCL.getOwnResource returns
+              nltps/modeltests/headless/REA_C_002_evidence_required_for_assessed_verdict_Test.class
+            decisive_fork: >-
+              If the resolved classpath does not contain the real compiled location, that is
+              the source-module classpath defect and it is fixed directly. If the classpath is
+              right and the class is there but getOwnResource returns null, investigate how
+              the IClassPathItem was built or whether a duplicate module instance is being
+              resolved. If getOwnResource finds the class and loadClass still fails, capture
+              the nested exception: that is linkage, not packaging. Only if the source-module
+              path is demonstrably unsuitable does the packaged jar topology become the
+              answer.
+            frozen_meanwhile: >-
+              No JDK or JUnit dependency additions, no change to ext, no change to the
+              sentinel or its trivial body, and no packaging, until the probe says which
+              boundary is broken.
           still_open: >-
             Discovery remains 0 after the JNA fix. The crash is gone and the module is
             registered, so what remains is why TestDiscovery.surveyModule finds no test root
