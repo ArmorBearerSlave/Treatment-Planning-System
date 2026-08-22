@@ -16,6 +16,10 @@
     "source_date": "2026-08-19",
     "sha256": "c3e7697f1e5bf3f9ec6298666b1a9db8655fd85c23569a6106c5747b6cc00bb4"
   },
+  "classification_source": {
+    "path": "overleaf/NL_TPS_High_Level_Functional_Non_Functional_Operational_Requirements.tex",
+    "sha256": "74d7c210cd0c37abf6e5ce82b8bb8e0707f9b9870dadb10ea097458906c3494a"
+  },
   "expected_domain_counts": {
     "GOV": 7,
     "SAF": 10,
@@ -32,6 +36,11 @@
     "VAL": 9,
     "ACC": 8
   },
+  "expected_category_counts": {
+    "functional": 69,
+    "cross_cutting_safety_and_assurance_constraint": 25,
+    "operational": 25
+  },
   "record_count": 119,
   "records": [
     {
@@ -46,7 +55,9 @@
         "A"
       ],
       "source_line": 170,
-      "record_sha256": "913189cef6c9b17d7b8c8bbd78d200a8605fd082041fa5d2206f2f8d0ba78448"
+      "record_sha256": "913189cef6c9b17d7b8c8bbd78d200a8605fd082041fa5d2206f2f8d0ba78448",
+      "category": "operational",
+      "category_id": "HOR-GOV-001"
     },
     {
       "id": "GOV-002",
@@ -60,7 +71,9 @@
         "T"
       ],
       "source_line": 172,
-      "record_sha256": "1ada340cdacdb2250ccf2c90a9732f26db5208b820eca71f58c82e287481e957"
+      "record_sha256": "1ada340cdacdb2250ccf2c90a9732f26db5208b820eca71f58c82e287481e957",
+      "category": "operational",
+      "category_id": "HOR-GOV-002"
     },
     {
       "id": "GOV-003",
@@ -74,7 +87,9 @@
         "I"
       ],
       "source_line": 174,
-      "record_sha256": "a025e846d1d072d9243a88d7681bdcee7334aa2a262a340e944e05417b635a5b"
+      "record_sha256": "a025e846d1d072d9243a88d7681bdcee7334aa2a262a340e944e05417b635a5b",
+      "category": "operational",
+      "category_id": "HOR-GOV-003"
     },
     {
       "id": "GOV-004",
@@ -88,7 +103,9 @@
         "D"
       ],
       "source_line": 176,
-      "record_sha256": "b4bd0b68d001c290e883378557ae1446c217dccff936a68eda4a4c290450a901"
+      "record_sha256": "b4bd0b68d001c290e883378557ae1446c217dccff936a68eda4a4c290450a901",
+      "category": "operational",
+      "category_id": "HOR-GOV-004"
     },
     {
       "id": "GOV-005",
@@ -102,7 +119,9 @@
         "I"
       ],
       "source_line": 178,
-      "record_sha256": "c64d996558b5189ca1f7748b325529a578225546d729f2a9eb98e3718e6a8ad3"
+      "record_sha256": "c64d996558b5189ca1f7748b325529a578225546d729f2a9eb98e3718e6a8ad3",
+      "category": "operational",
+      "category_id": "HOR-GOV-005"
     },
     {
       "id": "GOV-006",
@@ -116,7 +135,9 @@
         "A"
       ],
       "source_line": 180,
-      "record_sha256": "55e508ba514dc8ad0fafddbce8f889c9237e46cacb1fa3ce9a3532c886f54f5e"
+      "record_sha256": "55e508ba514dc8ad0fafddbce8f889c9237e46cacb1fa3ce9a3532c886f54f5e",
+      "category": "operational",
+      "category_id": "HOR-GOV-006"
     },
     {
       "id": "GOV-007",
@@ -130,7 +151,9 @@
         "A"
       ],
       "source_line": 182,
-      "record_sha256": "92f9ddbb00e5c7bac2ff4519122d9c2ec87e2abfed8a0e296ae9ac46f7fd211c"
+      "record_sha256": "92f9ddbb00e5c7bac2ff4519122d9c2ec87e2abfed8a0e296ae9ac46f7fd211c",
+      "category": "operational",
+      "category_id": "HOR-GOV-007"
     },
     {
       "id": "SAF-001",
@@ -144,7 +167,9 @@
         "I"
       ],
       "source_line": 205,
-      "record_sha256": "d1f84cda12d28778e7f99f46fdf01d645588134f48f7470c0435b894fe66a134"
+      "record_sha256": "d1f84cda12d28778e7f99f46fdf01d645588134f48f7470c0435b894fe66a134",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SAF-001"
     },
     {
       "id": "SAF-002",
@@ -158,7 +183,9 @@
         "D"
       ],
       "source_line": 207,
-      "record_sha256": "73b6cf8c4eafca38b76466783317e6fe3971c15969b75ca73e801eef68f84323"
+      "record_sha256": "73b6cf8c4eafca38b76466783317e6fe3971c15969b75ca73e801eef68f84323",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SAF-002"
     },
     {
       "id": "SAF-003",
@@ -172,7 +199,9 @@
         "HFE"
       ],
       "source_line": 209,
-      "record_sha256": "4c4d4c2be103c952c2090b4c965f0f2b26f565921d30814d3afc1971418701e0"
+      "record_sha256": "4c4d4c2be103c952c2090b4c965f0f2b26f565921d30814d3afc1971418701e0",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SAF-003"
     },
     {
       "id": "SAF-004",
@@ -186,7 +215,9 @@
         "A"
       ],
       "source_line": 211,
-      "record_sha256": "34cbaabd3f7915a26ae041e0b7ac9a823476709a1636dbbfd2a7899c38e8aedb"
+      "record_sha256": "34cbaabd3f7915a26ae041e0b7ac9a823476709a1636dbbfd2a7899c38e8aedb",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SAF-004"
     },
     {
       "id": "SAF-005",
@@ -200,7 +231,9 @@
         "D"
       ],
       "source_line": 213,
-      "record_sha256": "d2b28eaf72c0a7071f5e469eba7d76bba8f1b1f3ecf7b637355b7b59196026b1"
+      "record_sha256": "d2b28eaf72c0a7071f5e469eba7d76bba8f1b1f3ecf7b637355b7b59196026b1",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SAF-005"
     },
     {
       "id": "SAF-006",
@@ -214,7 +247,9 @@
         "HFE"
       ],
       "source_line": 215,
-      "record_sha256": "909cf5636be79a996b6197995e802a06f4fc23f12a9aa609c093bd410928f22a"
+      "record_sha256": "909cf5636be79a996b6197995e802a06f4fc23f12a9aa609c093bd410928f22a",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SAF-006"
     },
     {
       "id": "SAF-007",
@@ -228,7 +263,9 @@
         "A"
       ],
       "source_line": 217,
-      "record_sha256": "000e35b63d9ed28ec812349d778144234bf7cc29619a7682162e2060c9ab05d3"
+      "record_sha256": "000e35b63d9ed28ec812349d778144234bf7cc29619a7682162e2060c9ab05d3",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SAF-007"
     },
     {
       "id": "SAF-008",
@@ -242,7 +279,9 @@
         "T"
       ],
       "source_line": 219,
-      "record_sha256": "47ed6b039fa029d54ffe2bab97fcf46b227d899d0ecc95dba6c468d15845ad48"
+      "record_sha256": "47ed6b039fa029d54ffe2bab97fcf46b227d899d0ecc95dba6c468d15845ad48",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SAF-008"
     },
     {
       "id": "SAF-009",
@@ -256,7 +295,9 @@
         "T"
       ],
       "source_line": 221,
-      "record_sha256": "adc2105c57031c015fb1b1e872a0b9cd72c252da297027e2c5c1747631856537"
+      "record_sha256": "adc2105c57031c015fb1b1e872a0b9cd72c252da297027e2c5c1747631856537",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SAF-009"
     },
     {
       "id": "SAF-010",
@@ -270,7 +311,9 @@
         "D"
       ],
       "source_line": 223,
-      "record_sha256": "3319ee4b9364afabca5277a23acf2ea89a40f212f074bdda963a7aa0263fb1d7"
+      "record_sha256": "3319ee4b9364afabca5277a23acf2ea89a40f212f074bdda963a7aa0263fb1d7",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SAF-010"
     },
     {
       "id": "NLI-001",
@@ -284,7 +327,9 @@
         "HFE"
       ],
       "source_line": 246,
-      "record_sha256": "773830b8d221331600ccf8dd8468c9628ce3e1fb9b92cd826b422c0b0217178a"
+      "record_sha256": "773830b8d221331600ccf8dd8468c9628ce3e1fb9b92cd826b422c0b0217178a",
+      "category": "functional",
+      "category_id": "HFR-NLI-001"
     },
     {
       "id": "NLI-002",
@@ -298,7 +343,9 @@
         "I"
       ],
       "source_line": 248,
-      "record_sha256": "f19a645b7d698901bf30c83bad0352291c9cbe9cb707dde0ae11f0003f86af7a"
+      "record_sha256": "f19a645b7d698901bf30c83bad0352291c9cbe9cb707dde0ae11f0003f86af7a",
+      "category": "functional",
+      "category_id": "HFR-NLI-002"
     },
     {
       "id": "NLI-003",
@@ -312,7 +359,9 @@
         "I"
       ],
       "source_line": 250,
-      "record_sha256": "3f6de2f33a858152bb5ec9f487a8603402d6bb0fc8bcddd8d61f4c94ad167f42"
+      "record_sha256": "3f6de2f33a858152bb5ec9f487a8603402d6bb0fc8bcddd8d61f4c94ad167f42",
+      "category": "functional",
+      "category_id": "HFR-NLI-003"
     },
     {
       "id": "NLI-004",
@@ -326,7 +375,9 @@
         "HFE"
       ],
       "source_line": 252,
-      "record_sha256": "01f0210a67053f309b50d29a88e06671fa86ed4588b76c2c5d042d75661bf482"
+      "record_sha256": "01f0210a67053f309b50d29a88e06671fa86ed4588b76c2c5d042d75661bf482",
+      "category": "functional",
+      "category_id": "HFR-NLI-004"
     },
     {
       "id": "NLI-005",
@@ -340,7 +391,9 @@
         "A"
       ],
       "source_line": 254,
-      "record_sha256": "15d1605ab5d8e6815367281f26828fc0a59ed8e0b6c711a7ed03eff1848ab77e"
+      "record_sha256": "15d1605ab5d8e6815367281f26828fc0a59ed8e0b6c711a7ed03eff1848ab77e",
+      "category": "functional",
+      "category_id": "HFR-NLI-005"
     },
     {
       "id": "NLI-006",
@@ -354,7 +407,9 @@
         "HFE"
       ],
       "source_line": 256,
-      "record_sha256": "e35a9edb06d372a849875b862f48ea897dc4df3eed212311ec427aee0587c992"
+      "record_sha256": "e35a9edb06d372a849875b862f48ea897dc4df3eed212311ec427aee0587c992",
+      "category": "functional",
+      "category_id": "HFR-NLI-006"
     },
     {
       "id": "NLI-007",
@@ -368,7 +423,9 @@
         "HFE"
       ],
       "source_line": 258,
-      "record_sha256": "d9af174bcc8e902bf7cd8c9e750923a91419e8b01ea878812e6dedac985b82cc"
+      "record_sha256": "d9af174bcc8e902bf7cd8c9e750923a91419e8b01ea878812e6dedac985b82cc",
+      "category": "functional",
+      "category_id": "HFR-NLI-007"
     },
     {
       "id": "NLI-008",
@@ -382,7 +439,9 @@
         "I"
       ],
       "source_line": 260,
-      "record_sha256": "dbbf19e787a9a20faa103b78a9e9493e11ab84d4c87b24b6bb7721450dd708bf"
+      "record_sha256": "dbbf19e787a9a20faa103b78a9e9493e11ab84d4c87b24b6bb7721450dd708bf",
+      "category": "functional",
+      "category_id": "HFR-NLI-008"
     },
     {
       "id": "EVD-001",
@@ -396,7 +455,9 @@
         "T"
       ],
       "source_line": 283,
-      "record_sha256": "19899074e3f5bf19a6a231eb6ca1e9bd99d0b5f21bb70161e4ae598713b5f1e1"
+      "record_sha256": "19899074e3f5bf19a6a231eb6ca1e9bd99d0b5f21bb70161e4ae598713b5f1e1",
+      "category": "functional",
+      "category_id": "HFR-EVD-001"
     },
     {
       "id": "EVD-002",
@@ -410,7 +471,9 @@
         "T"
       ],
       "source_line": 285,
-      "record_sha256": "df0afc00cfa87a7351ccb860eef5caa741e1a122a62401abcb7493b6263d9407"
+      "record_sha256": "df0afc00cfa87a7351ccb860eef5caa741e1a122a62401abcb7493b6263d9407",
+      "category": "functional",
+      "category_id": "HFR-EVD-002"
     },
     {
       "id": "EVD-003",
@@ -424,7 +487,9 @@
         "A"
       ],
       "source_line": 287,
-      "record_sha256": "082911eac6ccee0f8fa68627ed518ece49452187978ba423173139108bc60ec1"
+      "record_sha256": "082911eac6ccee0f8fa68627ed518ece49452187978ba423173139108bc60ec1",
+      "category": "functional",
+      "category_id": "HFR-EVD-003"
     },
     {
       "id": "EVD-004",
@@ -438,7 +503,9 @@
         "D"
       ],
       "source_line": 289,
-      "record_sha256": "2ace6125bc098c95fcd32a4de625163a2cd3e74d5917b6fcba684210c699b948"
+      "record_sha256": "2ace6125bc098c95fcd32a4de625163a2cd3e74d5917b6fcba684210c699b948",
+      "category": "functional",
+      "category_id": "HFR-EVD-004"
     },
     {
       "id": "EVD-005",
@@ -452,7 +519,9 @@
         "A"
       ],
       "source_line": 291,
-      "record_sha256": "a2bd66cf144a5a99d0af93c52d9252295eebd41c374d92f322ae6b987beddf4f"
+      "record_sha256": "a2bd66cf144a5a99d0af93c52d9252295eebd41c374d92f322ae6b987beddf4f",
+      "category": "functional",
+      "category_id": "HFR-EVD-005"
     },
     {
       "id": "EVD-006",
@@ -466,7 +535,9 @@
         "T"
       ],
       "source_line": 293,
-      "record_sha256": "b5b3ca4a685c5e776de637992ad6a745d4a7bcd28d91a60c76496645e9b6c833"
+      "record_sha256": "b5b3ca4a685c5e776de637992ad6a745d4a7bcd28d91a60c76496645e9b6c833",
+      "category": "functional",
+      "category_id": "HFR-EVD-006"
     },
     {
       "id": "EVD-007",
@@ -480,7 +551,9 @@
         "T"
       ],
       "source_line": 295,
-      "record_sha256": "dbc499da48dd119ad65229762fa9fd159f36620b158e43d3cec5a79867650c54"
+      "record_sha256": "dbc499da48dd119ad65229762fa9fd159f36620b158e43d3cec5a79867650c54",
+      "category": "functional",
+      "category_id": "HFR-EVD-007"
     },
     {
       "id": "EVD-008",
@@ -494,7 +567,9 @@
         "HFE"
       ],
       "source_line": 297,
-      "record_sha256": "ba0064bf8ce608c7d2ec3bf3e743bb986557aa3601e9da431607ed0350a0b28e"
+      "record_sha256": "ba0064bf8ce608c7d2ec3bf3e743bb986557aa3601e9da431607ed0350a0b28e",
+      "category": "functional",
+      "category_id": "HFR-EVD-008"
     },
     {
       "id": "CLN-001",
@@ -508,7 +583,9 @@
         "HFE"
       ],
       "source_line": 320,
-      "record_sha256": "778730f154d66d1c909f045245f32a7e2d883cb6f81f1ad42785eadd8ab7886a"
+      "record_sha256": "778730f154d66d1c909f045245f32a7e2d883cb6f81f1ad42785eadd8ab7886a",
+      "category": "functional",
+      "category_id": "HFR-CLN-001"
     },
     {
       "id": "CLN-002",
@@ -522,7 +599,9 @@
         "I"
       ],
       "source_line": 322,
-      "record_sha256": "d3dff2f9ec1970fabd90365f6d6ca06303ca1530d47ee82323e4ab0df12934fb"
+      "record_sha256": "d3dff2f9ec1970fabd90365f6d6ca06303ca1530d47ee82323e4ab0df12934fb",
+      "category": "functional",
+      "category_id": "HFR-CLN-002"
     },
     {
       "id": "CLN-003",
@@ -536,7 +615,9 @@
         "A"
       ],
       "source_line": 324,
-      "record_sha256": "3e58eba4256b02ad0f417c9740aa8f90402a772990ab57e76a5c316f93fd9355"
+      "record_sha256": "3e58eba4256b02ad0f417c9740aa8f90402a772990ab57e76a5c316f93fd9355",
+      "category": "functional",
+      "category_id": "HFR-CLN-003"
     },
     {
       "id": "CLN-004",
@@ -550,7 +631,9 @@
         "I"
       ],
       "source_line": 326,
-      "record_sha256": "bab9346587081c4e0a71df9b98bd6e44c544e506bee0cf5002cbcfd113fd0c92"
+      "record_sha256": "bab9346587081c4e0a71df9b98bd6e44c544e506bee0cf5002cbcfd113fd0c92",
+      "category": "functional",
+      "category_id": "HFR-CLN-004"
     },
     {
       "id": "CLN-005",
@@ -564,7 +647,9 @@
         "HFE"
       ],
       "source_line": 328,
-      "record_sha256": "efc0e5fd5712c980c2d55b2c791fb2db1cff7ad51264d2980e3454f1d3496c49"
+      "record_sha256": "efc0e5fd5712c980c2d55b2c791fb2db1cff7ad51264d2980e3454f1d3496c49",
+      "category": "functional",
+      "category_id": "HFR-CLN-005"
     },
     {
       "id": "CLN-006",
@@ -578,7 +663,9 @@
         "A"
       ],
       "source_line": 330,
-      "record_sha256": "3f95f737d98b860799d12d1cc825d74a492b11ee6eba3383b0c785c4d3f1c483"
+      "record_sha256": "3f95f737d98b860799d12d1cc825d74a492b11ee6eba3383b0c785c4d3f1c483",
+      "category": "functional",
+      "category_id": "HFR-CLN-006"
     },
     {
       "id": "CLN-007",
@@ -592,7 +679,9 @@
         "T"
       ],
       "source_line": 332,
-      "record_sha256": "332e18ef617aa5c3c492d354ec958b4b35069a31a03000524e6086a577cb6ef4"
+      "record_sha256": "332e18ef617aa5c3c492d354ec958b4b35069a31a03000524e6086a577cb6ef4",
+      "category": "functional",
+      "category_id": "HFR-CLN-007"
     },
     {
       "id": "CLN-008",
@@ -606,7 +695,9 @@
         "HFE"
       ],
       "source_line": 334,
-      "record_sha256": "3abf796afc7d168d58ddfe190312cf42248d61b51ea30d4ce1fe2552e94792b6"
+      "record_sha256": "3abf796afc7d168d58ddfe190312cf42248d61b51ea30d4ce1fe2552e94792b6",
+      "category": "functional",
+      "category_id": "HFR-CLN-008"
     },
     {
       "id": "CLN-009",
@@ -620,7 +711,9 @@
         "I"
       ],
       "source_line": 336,
-      "record_sha256": "07a264b4f21afb4f54116a14ded56f0e7e7cf8c5d55689cd54046e213343152e"
+      "record_sha256": "07a264b4f21afb4f54116a14ded56f0e7e7cf8c5d55689cd54046e213343152e",
+      "category": "functional",
+      "category_id": "HFR-CLN-009"
     },
     {
       "id": "PLN-001",
@@ -634,7 +727,9 @@
         "I"
       ],
       "source_line": 359,
-      "record_sha256": "d6be3b7d57fd4db9960a08d2b4ec3164c4f02b13b10a9e10d73e11275a634ffc"
+      "record_sha256": "d6be3b7d57fd4db9960a08d2b4ec3164c4f02b13b10a9e10d73e11275a634ffc",
+      "category": "functional",
+      "category_id": "HFR-PLN-001"
     },
     {
       "id": "PLN-002",
@@ -648,7 +743,9 @@
         "T"
       ],
       "source_line": 361,
-      "record_sha256": "8fd76ca7b54dd137854ceeb35700430607af722f01916758c23ea39e3195982b"
+      "record_sha256": "8fd76ca7b54dd137854ceeb35700430607af722f01916758c23ea39e3195982b",
+      "category": "functional",
+      "category_id": "HFR-PLN-002"
     },
     {
       "id": "PLN-003",
@@ -662,7 +759,9 @@
         "T"
       ],
       "source_line": 363,
-      "record_sha256": "12ac967713cbfd47e3a6c8b7ea398957f2f0b05813e14e9c997610f7b8169432"
+      "record_sha256": "12ac967713cbfd47e3a6c8b7ea398957f2f0b05813e14e9c997610f7b8169432",
+      "category": "functional",
+      "category_id": "HFR-PLN-003"
     },
     {
       "id": "PLN-004",
@@ -676,7 +775,9 @@
         "I"
       ],
       "source_line": 365,
-      "record_sha256": "cd0f6c8b96f60705e6bc4e2bd68361a5b8cd691b8315309f9b23df6439f5d135"
+      "record_sha256": "cd0f6c8b96f60705e6bc4e2bd68361a5b8cd691b8315309f9b23df6439f5d135",
+      "category": "functional",
+      "category_id": "HFR-PLN-004"
     },
     {
       "id": "PLN-005",
@@ -690,7 +791,9 @@
         "A"
       ],
       "source_line": 367,
-      "record_sha256": "475a5bed3613667c95fdfdf2ac087629db68eacd64eafcd3be900cba6156ca5d"
+      "record_sha256": "475a5bed3613667c95fdfdf2ac087629db68eacd64eafcd3be900cba6156ca5d",
+      "category": "functional",
+      "category_id": "HFR-PLN-005"
     },
     {
       "id": "PLN-006",
@@ -704,7 +807,9 @@
         "D"
       ],
       "source_line": 369,
-      "record_sha256": "21711cc0dbf205bfe86445b67b1e5c4f8a2215d5e4adc186ec0506649847da62"
+      "record_sha256": "21711cc0dbf205bfe86445b67b1e5c4f8a2215d5e4adc186ec0506649847da62",
+      "category": "functional",
+      "category_id": "HFR-PLN-006"
     },
     {
       "id": "PLN-007",
@@ -718,7 +823,9 @@
         "A"
       ],
       "source_line": 371,
-      "record_sha256": "de463c551101cc6287af8af9a82db72d1e4bf5bd215a965da7bee75652970029"
+      "record_sha256": "de463c551101cc6287af8af9a82db72d1e4bf5bd215a965da7bee75652970029",
+      "category": "functional",
+      "category_id": "HFR-PLN-007"
     },
     {
       "id": "PLN-008",
@@ -732,7 +839,9 @@
         "A"
       ],
       "source_line": 373,
-      "record_sha256": "c4e80f8b2e446d95afeaa7de20760cc874499230ad803debe66dbf02e2ed6d58"
+      "record_sha256": "c4e80f8b2e446d95afeaa7de20760cc874499230ad803debe66dbf02e2ed6d58",
+      "category": "functional",
+      "category_id": "HFR-PLN-008"
     },
     {
       "id": "PLN-009",
@@ -746,7 +855,9 @@
         "I"
       ],
       "source_line": 375,
-      "record_sha256": "6746cc109f8cf9205b99cc4d4c0385e167cec8f8f195cb6388bfe244d55dcb3b"
+      "record_sha256": "6746cc109f8cf9205b99cc4d4c0385e167cec8f8f195cb6388bfe244d55dcb3b",
+      "category": "functional",
+      "category_id": "HFR-PLN-009"
     },
     {
       "id": "PLN-010",
@@ -760,7 +871,9 @@
         "A"
       ],
       "source_line": 377,
-      "record_sha256": "49240366f357d64ad8598905223581ef88b19ccdf7013c43ef3e5df111cba475"
+      "record_sha256": "49240366f357d64ad8598905223581ef88b19ccdf7013c43ef3e5df111cba475",
+      "category": "functional",
+      "category_id": "HFR-PLN-010"
     },
     {
       "id": "PLN-011",
@@ -774,7 +887,9 @@
         "A"
       ],
       "source_line": 379,
-      "record_sha256": "b745cf092b67d4a4797fe1265a22d1021648c78682ddc3fe311e51d5c8864e2c"
+      "record_sha256": "b745cf092b67d4a4797fe1265a22d1021648c78682ddc3fe311e51d5c8864e2c",
+      "category": "functional",
+      "category_id": "HFR-PLN-011"
     },
     {
       "id": "PLN-012",
@@ -788,7 +903,9 @@
         "T"
       ],
       "source_line": 381,
-      "record_sha256": "b3685c121928e3299676fb9c5daa4cfbf2afeace910e4e006352ca9b0faa3881"
+      "record_sha256": "b3685c121928e3299676fb9c5daa4cfbf2afeace910e4e006352ca9b0faa3881",
+      "category": "functional",
+      "category_id": "HFR-PLN-012"
     },
     {
       "id": "REV-001",
@@ -802,7 +919,9 @@
         "HFE"
       ],
       "source_line": 404,
-      "record_sha256": "93e06c36b07c0e5a72165ddcc625f4fe31da2274f92b9d2707c25f3166c6f0a0"
+      "record_sha256": "93e06c36b07c0e5a72165ddcc625f4fe31da2274f92b9d2707c25f3166c6f0a0",
+      "category": "functional",
+      "category_id": "HFR-REV-001"
     },
     {
       "id": "REV-002",
@@ -816,7 +935,9 @@
         "T"
       ],
       "source_line": 406,
-      "record_sha256": "8c9b81f829b1fc75e450dc2d60ffd9cbf7fcafa55d5b24419b9ac0685f530f50"
+      "record_sha256": "8c9b81f829b1fc75e450dc2d60ffd9cbf7fcafa55d5b24419b9ac0685f530f50",
+      "category": "functional",
+      "category_id": "HFR-REV-002"
     },
     {
       "id": "REV-003",
@@ -830,7 +951,9 @@
         "HFE"
       ],
       "source_line": 408,
-      "record_sha256": "7de6d5c3dafd1e7fe68249cf260efbb5c08e61451f36b501dae60fb89342992d"
+      "record_sha256": "7de6d5c3dafd1e7fe68249cf260efbb5c08e61451f36b501dae60fb89342992d",
+      "category": "functional",
+      "category_id": "HFR-REV-003"
     },
     {
       "id": "REV-004",
@@ -844,7 +967,9 @@
         "T"
       ],
       "source_line": 410,
-      "record_sha256": "21baac7a179f04d4fb2fbf673c325aa94a4ced803620636725439cc5d0881cea"
+      "record_sha256": "21baac7a179f04d4fb2fbf673c325aa94a4ced803620636725439cc5d0881cea",
+      "category": "functional",
+      "category_id": "HFR-REV-004"
     },
     {
       "id": "REV-005",
@@ -858,7 +983,9 @@
         "I"
       ],
       "source_line": 412,
-      "record_sha256": "86dacb6b6ee533fadfdf1c52d86cebf59b8af15c758eecbfb9066e4510799c8f"
+      "record_sha256": "86dacb6b6ee533fadfdf1c52d86cebf59b8af15c758eecbfb9066e4510799c8f",
+      "category": "functional",
+      "category_id": "HFR-REV-005"
     },
     {
       "id": "REV-006",
@@ -872,7 +999,9 @@
         "I"
       ],
       "source_line": 414,
-      "record_sha256": "46510237e22e079d6d4f0d955688b211b2fe5841f97334829a42b97c22f0e738"
+      "record_sha256": "46510237e22e079d6d4f0d955688b211b2fe5841f97334829a42b97c22f0e738",
+      "category": "functional",
+      "category_id": "HFR-REV-006"
     },
     {
       "id": "REV-007",
@@ -886,7 +1015,9 @@
         "D"
       ],
       "source_line": 416,
-      "record_sha256": "ff41879bc7a970afb05a9099c3f8fb6862a87a4c88b7db1e415ebb335aec61cf"
+      "record_sha256": "ff41879bc7a970afb05a9099c3f8fb6862a87a4c88b7db1e415ebb335aec61cf",
+      "category": "functional",
+      "category_id": "HFR-REV-007"
     },
     {
       "id": "REV-008",
@@ -900,7 +1031,9 @@
         "A"
       ],
       "source_line": 418,
-      "record_sha256": "13a1622a5e499d7389a4d1049c7271fd9211c59bb4675227363055a8834a0e61"
+      "record_sha256": "13a1622a5e499d7389a4d1049c7271fd9211c59bb4675227363055a8834a0e61",
+      "category": "functional",
+      "category_id": "HFR-REV-008"
     },
     {
       "id": "REV-009",
@@ -914,7 +1047,9 @@
         "A"
       ],
       "source_line": 420,
-      "record_sha256": "d535d79b03411e32d47d73790a525af1efca93c7c21cc64075d7609c1ccd5766"
+      "record_sha256": "d535d79b03411e32d47d73790a525af1efca93c7c21cc64075d7609c1ccd5766",
+      "category": "functional",
+      "category_id": "HFR-REV-009"
     },
     {
       "id": "DAT-001",
@@ -928,7 +1063,9 @@
         "T"
       ],
       "source_line": 443,
-      "record_sha256": "60414507f7b24e74ad9ab1bf77704807db6b4319e1cbcb65f63db77edc6e7f2f"
+      "record_sha256": "60414507f7b24e74ad9ab1bf77704807db6b4319e1cbcb65f63db77edc6e7f2f",
+      "category": "functional",
+      "category_id": "HFR-DAT-001"
     },
     {
       "id": "DAT-002",
@@ -942,7 +1079,9 @@
         "T"
       ],
       "source_line": 445,
-      "record_sha256": "8e21c2a3efe011a0a4479d47d9a75d77d34f296a61a7789b25be1d1376e23ed6"
+      "record_sha256": "8e21c2a3efe011a0a4479d47d9a75d77d34f296a61a7789b25be1d1376e23ed6",
+      "category": "functional",
+      "category_id": "HFR-DAT-002"
     },
     {
       "id": "DAT-003",
@@ -956,7 +1095,9 @@
         "A"
       ],
       "source_line": 447,
-      "record_sha256": "432649d76f0ad38cfb2cc9192a85b52f4fb8af7d7f14df287683edee0fb0cc2f"
+      "record_sha256": "432649d76f0ad38cfb2cc9192a85b52f4fb8af7d7f14df287683edee0fb0cc2f",
+      "category": "functional",
+      "category_id": "HFR-DAT-003"
     },
     {
       "id": "DAT-004",
@@ -970,7 +1111,9 @@
         "A"
       ],
       "source_line": 449,
-      "record_sha256": "c3df10b346af872e7694416275ab5afa0c028f28b3c36a58b304465023acd9b6"
+      "record_sha256": "c3df10b346af872e7694416275ab5afa0c028f28b3c36a58b304465023acd9b6",
+      "category": "functional",
+      "category_id": "HFR-DAT-004"
     },
     {
       "id": "DAT-005",
@@ -984,7 +1127,9 @@
         "T"
       ],
       "source_line": 451,
-      "record_sha256": "74c5b2450e0a5b8ae16b176afa5fe5eec3d7a678dfed38c64410139aa00ec5b8"
+      "record_sha256": "74c5b2450e0a5b8ae16b176afa5fe5eec3d7a678dfed38c64410139aa00ec5b8",
+      "category": "functional",
+      "category_id": "HFR-DAT-005"
     },
     {
       "id": "DAT-006",
@@ -998,7 +1143,9 @@
         "T"
       ],
       "source_line": 453,
-      "record_sha256": "37a5de282ed9e17b674f9c2747f10613bdd0eecacaab4d880455b47434d4e43f"
+      "record_sha256": "37a5de282ed9e17b674f9c2747f10613bdd0eecacaab4d880455b47434d4e43f",
+      "category": "functional",
+      "category_id": "HFR-DAT-006"
     },
     {
       "id": "DAT-007",
@@ -1011,7 +1158,9 @@
         "T"
       ],
       "source_line": 455,
-      "record_sha256": "6bb35b11a4d2e8e069540196187a51e5ec351dd885d2aca177e75e51e347e05c"
+      "record_sha256": "6bb35b11a4d2e8e069540196187a51e5ec351dd885d2aca177e75e51e347e05c",
+      "category": "functional",
+      "category_id": "HFR-DAT-007"
     },
     {
       "id": "DAT-008",
@@ -1025,7 +1174,9 @@
         "T"
       ],
       "source_line": 457,
-      "record_sha256": "c3ad17309d63eb4a34f3a3deba30d6896158247915c27a74fe4de55965aacde2"
+      "record_sha256": "c3ad17309d63eb4a34f3a3deba30d6896158247915c27a74fe4de55965aacde2",
+      "category": "functional",
+      "category_id": "HFR-DAT-008"
     },
     {
       "id": "DAT-009",
@@ -1039,7 +1190,9 @@
         "I"
       ],
       "source_line": 459,
-      "record_sha256": "0897bfa788eb1423eab9bb6de8aa3f7d24d748dde817db43db5d1b2c5f117c81"
+      "record_sha256": "0897bfa788eb1423eab9bb6de8aa3f7d24d748dde817db43db5d1b2c5f117c81",
+      "category": "functional",
+      "category_id": "HFR-DAT-009"
     },
     {
       "id": "DAT-010",
@@ -1053,7 +1206,9 @@
         "A"
       ],
       "source_line": 461,
-      "record_sha256": "904709ac27de185c6717e53fd60d12cb37ff005a3d81a27f8129c625580d2a74"
+      "record_sha256": "904709ac27de185c6717e53fd60d12cb37ff005a3d81a27f8129c625580d2a74",
+      "category": "functional",
+      "category_id": "HFR-DAT-010"
     },
     {
       "id": "AIM-001",
@@ -1067,7 +1222,9 @@
         "T"
       ],
       "source_line": 484,
-      "record_sha256": "5d71dbb6e1dc20f83b2bd89769c69c918ba6969e9f422fcb360f45a3868bc5e0"
+      "record_sha256": "5d71dbb6e1dc20f83b2bd89769c69c918ba6969e9f422fcb360f45a3868bc5e0",
+      "category": "functional",
+      "category_id": "HFR-AIM-001"
     },
     {
       "id": "AIM-002",
@@ -1081,7 +1238,9 @@
         "A"
       ],
       "source_line": 486,
-      "record_sha256": "0cc0cc1ff63aad8322a2e1502fd96623fdd53f726afe8ff1a320088578ae182c"
+      "record_sha256": "0cc0cc1ff63aad8322a2e1502fd96623fdd53f726afe8ff1a320088578ae182c",
+      "category": "functional",
+      "category_id": "HFR-AIM-002"
     },
     {
       "id": "AIM-003",
@@ -1095,7 +1254,9 @@
         "A"
       ],
       "source_line": 488,
-      "record_sha256": "9f1abb516294017cde0bbff1f0aba88a23bb3eab37e9d3f5d0816541a95da533"
+      "record_sha256": "9f1abb516294017cde0bbff1f0aba88a23bb3eab37e9d3f5d0816541a95da533",
+      "category": "functional",
+      "category_id": "HFR-AIM-003"
     },
     {
       "id": "AIM-004",
@@ -1109,7 +1270,9 @@
         "T"
       ],
       "source_line": 490,
-      "record_sha256": "c9a90cb500de8c878819acf0819c224302a50f5e5b1321b7a5a1f25517d809a3"
+      "record_sha256": "c9a90cb500de8c878819acf0819c224302a50f5e5b1321b7a5a1f25517d809a3",
+      "category": "functional",
+      "category_id": "HFR-AIM-004"
     },
     {
       "id": "AIM-005",
@@ -1123,7 +1286,9 @@
         "T"
       ],
       "source_line": 492,
-      "record_sha256": "366aa20c4a466477982199ece4112e25f8b1c12a6c502c203d7126a84dfc34e6"
+      "record_sha256": "366aa20c4a466477982199ece4112e25f8b1c12a6c502c203d7126a84dfc34e6",
+      "category": "functional",
+      "category_id": "HFR-AIM-005"
     },
     {
       "id": "AIM-006",
@@ -1137,7 +1302,9 @@
         "A"
       ],
       "source_line": 494,
-      "record_sha256": "a4be18799e7722c6211a30aac6e08e7085b920c19d147062018f5e3fb0a1408b"
+      "record_sha256": "a4be18799e7722c6211a30aac6e08e7085b920c19d147062018f5e3fb0a1408b",
+      "category": "functional",
+      "category_id": "HFR-AIM-006"
     },
     {
       "id": "AIM-007",
@@ -1151,7 +1318,9 @@
         "HFE"
       ],
       "source_line": 496,
-      "record_sha256": "065f86423c78032f2cd4a70bb6f240382698bc4801ecab0908b3838ed8b99ee3"
+      "record_sha256": "065f86423c78032f2cd4a70bb6f240382698bc4801ecab0908b3838ed8b99ee3",
+      "category": "functional",
+      "category_id": "HFR-AIM-007"
     },
     {
       "id": "AIM-008",
@@ -1165,7 +1334,9 @@
         "T"
       ],
       "source_line": 498,
-      "record_sha256": "65392d9e13ec6504d1f6908c0d509c15e9d032471840aefc7659df54b0d9d515"
+      "record_sha256": "65392d9e13ec6504d1f6908c0d509c15e9d032471840aefc7659df54b0d9d515",
+      "category": "functional",
+      "category_id": "HFR-AIM-008"
     },
     {
       "id": "HFE-001",
@@ -1179,7 +1350,9 @@
         "T"
       ],
       "source_line": 521,
-      "record_sha256": "23a6f29cb9cec1dc50da1ba44f5804200d92e1c670266f5d534ac52e17cab42a"
+      "record_sha256": "23a6f29cb9cec1dc50da1ba44f5804200d92e1c670266f5d534ac52e17cab42a",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-HFE-001"
     },
     {
       "id": "HFE-002",
@@ -1193,7 +1366,9 @@
         "I"
       ],
       "source_line": 523,
-      "record_sha256": "3de2a15ea85daf96af7d997e09d8b655cd20358c12fa3a8723c3ceea2f1b5167"
+      "record_sha256": "3de2a15ea85daf96af7d997e09d8b655cd20358c12fa3a8723c3ceea2f1b5167",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-HFE-002"
     },
     {
       "id": "HFE-003",
@@ -1207,7 +1382,9 @@
         "I"
       ],
       "source_line": 525,
-      "record_sha256": "f9c10f4982bb4c3bd0ae73f8afe18ec618f0dc29d48e5840b74268cc038eb40a"
+      "record_sha256": "f9c10f4982bb4c3bd0ae73f8afe18ec618f0dc29d48e5840b74268cc038eb40a",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-HFE-003"
     },
     {
       "id": "HFE-004",
@@ -1221,7 +1398,9 @@
         "A"
       ],
       "source_line": 527,
-      "record_sha256": "437a69b208ff106393a5f4708684a68f22a77b163a9aa54dd959d633bfda3a0b"
+      "record_sha256": "437a69b208ff106393a5f4708684a68f22a77b163a9aa54dd959d633bfda3a0b",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-HFE-004"
     },
     {
       "id": "HFE-005",
@@ -1235,7 +1414,9 @@
         "I"
       ],
       "source_line": 529,
-      "record_sha256": "505ec841c6f17667c56e4e2f56b1076eee90b6c9a9291bcb1bb2ca65cb38e597"
+      "record_sha256": "505ec841c6f17667c56e4e2f56b1076eee90b6c9a9291bcb1bb2ca65cb38e597",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-HFE-005"
     },
     {
       "id": "HFE-006",
@@ -1249,7 +1430,9 @@
         "T"
       ],
       "source_line": 531,
-      "record_sha256": "fb5335600acdd6fe2eb3fc25fc95ac6365297b16e5d5b09c2707f4fb8d55a980"
+      "record_sha256": "fb5335600acdd6fe2eb3fc25fc95ac6365297b16e5d5b09c2707f4fb8d55a980",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-HFE-006"
     },
     {
       "id": "SEC-001",
@@ -1263,7 +1446,9 @@
         "T"
       ],
       "source_line": 554,
-      "record_sha256": "18e8c8af2ce266c846cc9ea46b75641e680f7f914bf4eb9362d6d4389904488e"
+      "record_sha256": "18e8c8af2ce266c846cc9ea46b75641e680f7f914bf4eb9362d6d4389904488e",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SEC-001"
     },
     {
       "id": "SEC-002",
@@ -1277,7 +1462,9 @@
         "T"
       ],
       "source_line": 556,
-      "record_sha256": "5981136029329a5efe3509486c544c2a9dc0afcf16f5dc72c0f6c8c132713d4b"
+      "record_sha256": "5981136029329a5efe3509486c544c2a9dc0afcf16f5dc72c0f6c8c132713d4b",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SEC-002"
     },
     {
       "id": "SEC-003",
@@ -1291,7 +1478,9 @@
         "I"
       ],
       "source_line": 558,
-      "record_sha256": "c3bf904598037b8dd1f8297b29a383f802615a14b7bc136d367393e6bbd46cec"
+      "record_sha256": "c3bf904598037b8dd1f8297b29a383f802615a14b7bc136d367393e6bbd46cec",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SEC-003"
     },
     {
       "id": "SEC-004",
@@ -1305,7 +1494,9 @@
         "A"
       ],
       "source_line": 560,
-      "record_sha256": "11f8fdc59553893e81bb48cf850d39bd45ca9be47993fc08f6d61c5129983701"
+      "record_sha256": "11f8fdc59553893e81bb48cf850d39bd45ca9be47993fc08f6d61c5129983701",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SEC-004"
     },
     {
       "id": "SEC-005",
@@ -1319,7 +1510,9 @@
         "I"
       ],
       "source_line": 562,
-      "record_sha256": "9b82fc1b145b3f6af80f1b9058a77823ff8df4360dfe7f88506ca3961b1a5033"
+      "record_sha256": "9b82fc1b145b3f6af80f1b9058a77823ff8df4360dfe7f88506ca3961b1a5033",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SEC-005"
     },
     {
       "id": "SEC-006",
@@ -1333,7 +1526,9 @@
         "A"
       ],
       "source_line": 564,
-      "record_sha256": "887753aa50e5ffbcefca18abb168d33eb4e67b1d8a4f969ed70233d2d6e5c251"
+      "record_sha256": "887753aa50e5ffbcefca18abb168d33eb4e67b1d8a4f969ed70233d2d6e5c251",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SEC-006"
     },
     {
       "id": "SEC-007",
@@ -1347,7 +1542,9 @@
         "I"
       ],
       "source_line": 566,
-      "record_sha256": "c174d2ac0aea9090ede5490307e7118f472c9f979d6788f9b90a48d20de40c8e"
+      "record_sha256": "c174d2ac0aea9090ede5490307e7118f472c9f979d6788f9b90a48d20de40c8e",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SEC-007"
     },
     {
       "id": "SEC-008",
@@ -1361,7 +1558,9 @@
         "I"
       ],
       "source_line": 568,
-      "record_sha256": "a5b7d1285c7ff2bdd18ff33579968fe9a97aa998150a897f39fa6c10825eb8c6"
+      "record_sha256": "a5b7d1285c7ff2bdd18ff33579968fe9a97aa998150a897f39fa6c10825eb8c6",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-SEC-008"
     },
     {
       "id": "OPS-001",
@@ -1375,7 +1574,9 @@
         "A"
       ],
       "source_line": 591,
-      "record_sha256": "51fb342684e37b0cfe7b19cde6bb1b03c38146c686dd7d9587efa7a31ca796f9"
+      "record_sha256": "51fb342684e37b0cfe7b19cde6bb1b03c38146c686dd7d9587efa7a31ca796f9",
+      "category": "operational",
+      "category_id": "HOR-OPS-001"
     },
     {
       "id": "OPS-002",
@@ -1388,7 +1589,9 @@
         "T"
       ],
       "source_line": 593,
-      "record_sha256": "866511645cfe2a3adb112c2d2b6a140c1f3596b93159c25cc47d5f5c401ca9c2"
+      "record_sha256": "866511645cfe2a3adb112c2d2b6a140c1f3596b93159c25cc47d5f5c401ca9c2",
+      "category": "operational",
+      "category_id": "HOR-OPS-002"
     },
     {
       "id": "OPS-003",
@@ -1402,7 +1605,9 @@
         "T"
       ],
       "source_line": 595,
-      "record_sha256": "55fbdc8af590eee434d66747469ea5e3e66e06f80c298874dba67c321cec35b1"
+      "record_sha256": "55fbdc8af590eee434d66747469ea5e3e66e06f80c298874dba67c321cec35b1",
+      "category": "operational",
+      "category_id": "HOR-OPS-003"
     },
     {
       "id": "OPS-004",
@@ -1416,7 +1621,9 @@
         "T"
       ],
       "source_line": 597,
-      "record_sha256": "1544eb9481ceef13e73be9198351561298ca9667d170cb02dd45cdde2c3174b0"
+      "record_sha256": "1544eb9481ceef13e73be9198351561298ca9667d170cb02dd45cdde2c3174b0",
+      "category": "operational",
+      "category_id": "HOR-OPS-004"
     },
     {
       "id": "OPS-005",
@@ -1430,7 +1637,9 @@
         "I"
       ],
       "source_line": 599,
-      "record_sha256": "0827d161739a7a960aade8b3bc9be09aa890d7bf79882b8040a6c4bfa61b1d92"
+      "record_sha256": "0827d161739a7a960aade8b3bc9be09aa890d7bf79882b8040a6c4bfa61b1d92",
+      "category": "operational",
+      "category_id": "HOR-OPS-005"
     },
     {
       "id": "OPS-006",
@@ -1444,7 +1653,9 @@
         "D"
       ],
       "source_line": 601,
-      "record_sha256": "6e71b6d1d8351b2283b6d6e75b3ae97e0b1d37068afc1daa97b3ab7dc3839f5d"
+      "record_sha256": "6e71b6d1d8351b2283b6d6e75b3ae97e0b1d37068afc1daa97b3ab7dc3839f5d",
+      "category": "operational",
+      "category_id": "HOR-OPS-006"
     },
     {
       "id": "OPS-007",
@@ -1458,7 +1669,9 @@
         "A"
       ],
       "source_line": 603,
-      "record_sha256": "ebab08d0a519acdb60679aedb9f2ac4e0e1c99ce12a60e9f5e2e7213f029394a"
+      "record_sha256": "ebab08d0a519acdb60679aedb9f2ac4e0e1c99ce12a60e9f5e2e7213f029394a",
+      "category": "operational",
+      "category_id": "HOR-OPS-007"
     },
     {
       "id": "VAL-001",
@@ -1472,7 +1685,9 @@
         "A"
       ],
       "source_line": 626,
-      "record_sha256": "a6226bc236cb1b6a05415acd2592dea31e9eaf00ae8887677549e89c8abf4ce8"
+      "record_sha256": "a6226bc236cb1b6a05415acd2592dea31e9eaf00ae8887677549e89c8abf4ce8",
+      "category": "operational",
+      "category_id": "HOR-VAL-001"
     },
     {
       "id": "VAL-002",
@@ -1486,7 +1701,9 @@
         "T"
       ],
       "source_line": 628,
-      "record_sha256": "614095cf550f86364dcb83f8095af61015667732d9e37243a44ff9d9322696ad"
+      "record_sha256": "614095cf550f86364dcb83f8095af61015667732d9e37243a44ff9d9322696ad",
+      "category": "operational",
+      "category_id": "HOR-VAL-002"
     },
     {
       "id": "VAL-003",
@@ -1500,7 +1717,9 @@
         "T"
       ],
       "source_line": 630,
-      "record_sha256": "bc96baa23c2ae297e515039c7978744c754380130a9499d29f33ac91b5a9b3c9"
+      "record_sha256": "bc96baa23c2ae297e515039c7978744c754380130a9499d29f33ac91b5a9b3c9",
+      "category": "operational",
+      "category_id": "HOR-VAL-003"
     },
     {
       "id": "VAL-004",
@@ -1514,7 +1733,9 @@
         "D"
       ],
       "source_line": 632,
-      "record_sha256": "14a11cc686e5321cf21bb711bef3735258ab7339afcf50d8d8fb2231c8dd3112"
+      "record_sha256": "14a11cc686e5321cf21bb711bef3735258ab7339afcf50d8d8fb2231c8dd3112",
+      "category": "operational",
+      "category_id": "HOR-VAL-004"
     },
     {
       "id": "VAL-005",
@@ -1528,7 +1749,9 @@
         "HFE"
       ],
       "source_line": 634,
-      "record_sha256": "812e6c072856c800181957ef622ab7ae7cb849a3ed1ce69c6f80111730abc03c"
+      "record_sha256": "812e6c072856c800181957ef622ab7ae7cb849a3ed1ce69c6f80111730abc03c",
+      "category": "operational",
+      "category_id": "HOR-VAL-005"
     },
     {
       "id": "VAL-006",
@@ -1542,7 +1765,9 @@
         "A"
       ],
       "source_line": 636,
-      "record_sha256": "73ffbf120359c0a25b39fdc39bd845a0af2623e56fd84574257c6fe11b55feab"
+      "record_sha256": "73ffbf120359c0a25b39fdc39bd845a0af2623e56fd84574257c6fe11b55feab",
+      "category": "operational",
+      "category_id": "HOR-VAL-006"
     },
     {
       "id": "VAL-007",
@@ -1556,7 +1781,9 @@
         "T"
       ],
       "source_line": 638,
-      "record_sha256": "8d36ef15579e5c38c8a531b72175f4f917df522a223bc44d3ad5ba231c369153"
+      "record_sha256": "8d36ef15579e5c38c8a531b72175f4f917df522a223bc44d3ad5ba231c369153",
+      "category": "operational",
+      "category_id": "HOR-VAL-007"
     },
     {
       "id": "VAL-008",
@@ -1570,7 +1797,9 @@
         "T"
       ],
       "source_line": 640,
-      "record_sha256": "619ba4631443ba496cc12d35849b61be5460fee813d0b9437bdd249bc88b28e6"
+      "record_sha256": "619ba4631443ba496cc12d35849b61be5460fee813d0b9437bdd249bc88b28e6",
+      "category": "operational",
+      "category_id": "HOR-VAL-008"
     },
     {
       "id": "VAL-009",
@@ -1584,7 +1813,9 @@
         "T"
       ],
       "source_line": 642,
-      "record_sha256": "0b2d5d265ba777686c62b8b7a68127ac2b07deb0d845284da88c090466f52624"
+      "record_sha256": "0b2d5d265ba777686c62b8b7a68127ac2b07deb0d845284da88c090466f52624",
+      "category": "operational",
+      "category_id": "HOR-VAL-009"
     },
     {
       "id": "ACC-001",
@@ -1598,7 +1829,9 @@
         "T"
       ],
       "source_line": 665,
-      "record_sha256": "346d18c8907212ff34ed189ab5c5c7bf5008f31592b0d768877c8b654ef4eb5b"
+      "record_sha256": "346d18c8907212ff34ed189ab5c5c7bf5008f31592b0d768877c8b654ef4eb5b",
+      "category": "functional",
+      "category_id": "HFR-ACC-001"
     },
     {
       "id": "ACC-002",
@@ -1612,7 +1845,9 @@
         "HFE"
       ],
       "source_line": 667,
-      "record_sha256": "0b07c8e1e89739e6715320180e9eeebdc1bd275a1e766de3356a1126d5ab378d"
+      "record_sha256": "0b07c8e1e89739e6715320180e9eeebdc1bd275a1e766de3356a1126d5ab378d",
+      "category": "cross_cutting_safety_and_assurance_constraint",
+      "category_id": "HNFR-ACC-001"
     },
     {
       "id": "ACC-003",
@@ -1626,7 +1861,9 @@
         "A"
       ],
       "source_line": 669,
-      "record_sha256": "1b3a31463a8e6b6f32352e3fef483f8cac65ce1c149626cc2b1644c7d78ae5f9"
+      "record_sha256": "1b3a31463a8e6b6f32352e3fef483f8cac65ce1c149626cc2b1644c7d78ae5f9",
+      "category": "functional",
+      "category_id": "HFR-ACC-002"
     },
     {
       "id": "ACC-004",
@@ -1640,7 +1877,9 @@
         "I"
       ],
       "source_line": 671,
-      "record_sha256": "23afb1acd06420ab5190a6df47a793d8638c8cf6ceffe8ff93efa820e3d937d9"
+      "record_sha256": "23afb1acd06420ab5190a6df47a793d8638c8cf6ceffe8ff93efa820e3d937d9",
+      "category": "functional",
+      "category_id": "HFR-ACC-003"
     },
     {
       "id": "ACC-005",
@@ -1654,7 +1893,9 @@
         "D"
       ],
       "source_line": 673,
-      "record_sha256": "5a8c1384c8bee23489bcf6489dea9200dfdb85b0d5cdb46fbe876b40dca9b339"
+      "record_sha256": "5a8c1384c8bee23489bcf6489dea9200dfdb85b0d5cdb46fbe876b40dca9b339",
+      "category": "functional",
+      "category_id": "HFR-ACC-004"
     },
     {
       "id": "ACC-006",
@@ -1668,7 +1909,9 @@
         "T"
       ],
       "source_line": 675,
-      "record_sha256": "e5cb9063049b1a05c94990e414b206fae41676ca3c00b01615d1649cf1a16d85"
+      "record_sha256": "e5cb9063049b1a05c94990e414b206fae41676ca3c00b01615d1649cf1a16d85",
+      "category": "operational",
+      "category_id": "HOR-ACC-001"
     },
     {
       "id": "ACC-007",
@@ -1682,7 +1925,9 @@
         "T"
       ],
       "source_line": 677,
-      "record_sha256": "0e55ad6bfee12cc18beb0f4f3b4dc8fd4ea5fb78cc82a7ed30b8699565071fee"
+      "record_sha256": "0e55ad6bfee12cc18beb0f4f3b4dc8fd4ea5fb78cc82a7ed30b8699565071fee",
+      "category": "operational",
+      "category_id": "HOR-ACC-002"
     },
     {
       "id": "ACC-008",
@@ -1696,7 +1941,9 @@
         "T"
       ],
       "source_line": 679,
-      "record_sha256": "038eece31171baf55715df6b61bca713cdcfe768479e72085685fe0f24ea0376"
+      "record_sha256": "038eece31171baf55715df6b61bca713cdcfe768479e72085685fe0f24ea0376",
+      "category": "functional",
+      "category_id": "HFR-ACC-005"
     }
   ]
 }

@@ -1,5 +1,18 @@
 #!/usr/bin/env python3
-"""Build or check the deterministic NL-TPS 119-HLR Stage A mirror bundle."""
+"""Build or check the deterministic NL-TPS 119-HLR Stage A mirror bundle.
+
+Each record also carries the controlled F/SA/O category, read from the categorized
+requirements document rather than inferred from requirement wording. That document states
+a Category ID and the Source ID it aliases on every row, so the mapping is a lookup and
+never a judgement. A classifier that read the requirement text would be deciding
+governance classification at import time, which is precisely what a non-authoritative
+mirror must not do.
+
+Every classification failure is fatal. A partially classified corpus would let MPS-4
+materialize requirement roots whose mandatory category came from somewhere nobody can
+point at, and the mandatory-ness of that field means the gap would surface as a modelling
+error long after the decision that caused it.
+"""
 
 from __future__ import annotations
 
@@ -19,10 +32,15 @@ from schema_subset import validate_json_schema
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SOURCE = REPO_ROOT / "overleaf" / "NL_TPS_High_Level_Requirements.tex"
+DEFAULT_CLASSIFICATION = (
+    REPO_ROOT / "overleaf"
+    / "NL_TPS_High_Level_Functional_Non_Functional_Operational_Requirements.tex"
+)
 DEFAULT_OUTPUT = REPO_ROOT / "mps" / "import" / "hlr-baseline.json"
 DEFAULT_SCHEMA = REPO_ROOT / "mps" / "import" / "hlr-baseline.schema.json"
 ARCHITECTURE_SPEC = REPO_ROOT / "spec" / "architecture.yaml"
 TERMINOLOGY_SPEC = REPO_ROOT / "spec" / "terminology.yaml"
+QUALITY_SPEC = REPO_ROOT / "spec" / "quality_attributes.yaml"
 
 EXPECTED_DOMAIN_COUNTS = {
     "GOV": 7,
@@ -41,10 +59,27 @@ EXPECTED_DOMAIN_COUNTS = {
     "ACC": 8,
 }
 ALLOWED_METHODS = {"I", "A", "T", "D", "HFE"}
+# The categorized document's identifier prefixes and the RequirementCategoryEnum member
+# each denotes. HNFR is the safety-and-assurance class: the F/SA/O migration changed the
+# display label and deliberately preserved the identifier, so the prefix still reads NF.
+CATEGORY_BY_PREFIX = {
+    "HFR": "functional",
+    "HNFR": "cross_cutting_safety_and_assurance_constraint",
+    "HOR": "operational",
+}
+EXPECTED_CATEGORY_COUNTS = {
+    "functional": 69,
+    "cross_cutting_safety_and_assurance_constraint": 25,
+    "operational": 25,
+}
 ROW_RE = re.compile(
     r"^([A-Z]{3}-\d{3})\s*(?<!\\)&\s*(.*?)\s*(?<!\\)&\s*(.*?)\s*(?<!\\)&\s*(.*?)\s*\\\\\s*$"
 )
 META_RE = re.compile(r"\\NLMeta\{([^{}]+)\}\{([^{}]+)\}")
+# Category ID and the Source ID it aliases, both in \mbox{}, on one categorized row.
+CATEGORY_ROW_RE = re.compile(
+    r"\\mbox\{(HFR|HNFR|HOR)-([A-Z]{3})-(\d{3})\}\s*&\s*\\mbox\{([A-Z]{3}-\d{3})\}"
+)
 
 
 def sha256_bytes(value: bytes) -> str:
@@ -128,6 +163,85 @@ def parse_records(source_text: str) -> list[dict[str, object]]:
     return records
 
 
+def parse_classification(text: str) -> dict[str, dict[str, str]]:
+    """Read Category ID to Source ID from the categorized requirements document.
+
+    Returns source id -> {category_id, category}. A repeated source id is reported rather
+    than silently collapsed by the dict, because the collapse would look like success.
+    """
+    mapping: dict[str, dict[str, str]] = {}
+    duplicates: list[str] = []
+    for prefix, domain, number, source_id in CATEGORY_ROW_RE.findall(text):
+        if source_id in mapping:
+            duplicates.append(source_id)
+        mapping[source_id] = {
+            "category_id": f"{prefix}-{domain}-{number}",
+            "category": CATEGORY_BY_PREFIX[prefix],
+        }
+    if duplicates:
+        raise ValueError(
+            f"categorized source lists a source ID more than once: {sorted(set(duplicates))}"
+        )
+    return mapping
+
+
+def validate_classification(
+    records: list[dict[str, object]], mapping: dict[str, dict[str, str]]
+) -> None:
+    """Fail closed on anything that would leave a category unattributable."""
+    errors: list[str] = []
+    record_ids = [str(record["id"]) for record in records]
+
+    unclassified = [rid for rid in record_ids if rid not in mapping]
+    if unclassified:
+        errors.append(f"HLRs with no category alias: {unclassified}")
+    orphan = sorted(set(mapping) - set(record_ids))
+    if orphan:
+        errors.append(f"category aliases naming an HLR that does not exist: {orphan}")
+
+    repeated = sorted(
+        item
+        for item, count in Counter(e["category_id"] for e in mapping.values()).items()
+        if count > 1
+    )
+    if repeated:
+        errors.append(f"duplicate category IDs: {repeated}")
+
+    # The alias carries the domain it classifies. If the two disagree the alias points at
+    # the wrong requirement, which no count or total would reveal.
+    for rid in record_ids:
+        entry = mapping.get(rid)
+        if entry is not None and entry["category_id"].split("-")[1] != rid.split("-")[0]:
+            errors.append(
+                f"{entry['category_id']} is aliased to {rid}, but their domains differ"
+            )
+
+    counts = Counter(mapping[rid]["category"] for rid in record_ids if rid in mapping)
+    if dict(counts) != EXPECTED_CATEGORY_COUNTS:
+        errors.append(
+            f"category counts differ: expected {EXPECTED_CATEGORY_COUNTS}, found {dict(counts)}"
+        )
+    if sum(counts.values()) != 119:
+        errors.append(f"expected 119 categorized HLRs, found {sum(counts.values())}")
+
+    # Independent corroboration. Every safety-and-assurance HLR is named by the controlled
+    # quality-attribute register; if the two artifacts disagree, one of them is wrong and
+    # the import must not proceed on the strength of either.
+    quality_text = QUALITY_SPEC.read_text(encoding="utf-8")
+    absent = [
+        rid
+        for rid in sorted(record_ids)
+        if mapping.get(rid, {}).get("category")
+        == "cross_cutting_safety_and_assurance_constraint"
+        and rid not in quality_text
+    ]
+    if absent:
+        errors.append(f"safety-and-assurance HLRs absent from {QUALITY_SPEC.name}: {absent}")
+
+    if errors:
+        raise ValueError("HLR classification validation failed:\n- " + "\n- ".join(errors))
+
+
 def validate_records(records: list[dict[str, object]]) -> None:
     errors: list[str] = []
     ids = [str(record["id"]) for record in records]
@@ -167,16 +281,36 @@ def validate_records(records: list[dict[str, object]]) -> None:
         raise ValueError("HLR import validation failed:\n- " + "\n- ".join(errors))
 
 
-def build_bundle(source: Path) -> dict[str, object]:
+def build_bundle(source: Path, classification: Path | None = None) -> dict[str, object]:
+    classification = classification or DEFAULT_CLASSIFICATION
     source_bytes = source.read_bytes()
     source_text = source_bytes.decode("utf-8")
     source_metadata = parse_source_metadata(source_text)
     records = parse_records(source_text)
     validate_records(records)
-    try:
-        source_path = source.resolve().relative_to(REPO_ROOT.resolve()).as_posix()
-    except ValueError:
-        source_path = str(source.resolve())
+
+    classification_bytes = classification.read_bytes()
+    mapping = parse_classification(classification_bytes.decode("utf-8"))
+    validate_classification(records, mapping)
+    for record in records:
+        entry = mapping[str(record["id"])]
+        # The category is controlled content with its own provenance, so it is not folded
+        # into record_sha256: that hash is the fingerprint of the HLR source row and has
+        # to keep meaning exactly that for Stage B equivalence.
+        record["category"] = entry["category"]
+        record["category_id"] = entry["category_id"]
+
+    def relative(path: Path) -> str:
+        try:
+            return path.resolve().relative_to(REPO_ROOT.resolve()).as_posix()
+        except ValueError:
+            return str(path.resolve())
+
+    source_path = relative(source)
+    classification_source = {
+        "path": relative(classification),
+        "sha256": sha256_bytes(classification_bytes),
+    }
     return {
         "schema_version": "0.1",
         "bundle_id": f"NLTPS-HLR-MIRROR-{source_metadata['requirements_version']}",
@@ -188,7 +322,9 @@ def build_bundle(source: Path) -> dict[str, object]:
             **source_metadata,
             "sha256": sha256_bytes(source_bytes),
         },
+        "classification_source": classification_source,
         "expected_domain_counts": EXPECTED_DOMAIN_COUNTS,
+        "expected_category_counts": EXPECTED_CATEGORY_COUNTS,
         "record_count": len(records),
         "records": records,
     }
@@ -206,6 +342,7 @@ def validate_bundle_schema(bundle: dict[str, object], schema_path: Path) -> None
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
+    parser.add_argument("--classification", type=Path, default=DEFAULT_CLASSIFICATION)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
     parser.add_argument(
@@ -215,7 +352,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    bundle = build_bundle(args.source)
+    bundle = build_bundle(args.source, args.classification)
     validate_bundle_schema(bundle, args.schema)
     rendered = serialize(bundle)
 
