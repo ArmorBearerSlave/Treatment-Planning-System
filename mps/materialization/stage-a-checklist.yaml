@@ -2273,6 +2273,62 @@ acceptance_items:
                   The repository inventory is therefore emitted unconditionally under a CONFIG_
                   prefix and is configuration state, not a diagnosis -- true or false
                   independently of any failure. The gated readings still require reproduction.
+              failure_sensitivity_negative_control:
+                what_it_answers: >-
+                  Whether S1 discriminates the presence of the REA-C-002 violation, or passes
+                  vacuously. The immediate GREEN alone could not tell those apart, and a green
+                  never seen to go red is the same family as a pass over an empty population.
+                method: >-
+                  The fixture was perturbed, never the rule. Disabling or editing REA-C-002 to
+                  manufacture a failure would test a synthetic implementation defect and would
+                  spend governed semantics carrying hazard traceability to buy a test property.
+                  A ManualEvidenceRef was bound to the VerificationClaim under test, making the
+                  claim valid for REA-C-002 so the rule stops reporting.
+                identities_held: >-
+                  H1 1bNmcZ3WSdO, the check operation 1bNmcZ3WSdX, its reference 1bNmcZ3WSdY and
+                  the rule pointer to icm7:1bNmcZ3TkyF were each verified present exactly once
+                  before the perturbed run. Only the node under test changed. N stayed 2.
+                cycle:
+                  baseline: tests=2 failures=0 errors=0 exit 0, S1 pass, H1 pass
+                  perturbed: >-
+                    tests=2 exit 1. S1 does not pass; H1 passes. The message is
+                    java.lang.AssertionError: node <VerificationClaim [1365532761392382826]>
+                    does not have the expected 'error' message -- the check operation's own
+                    assertion, naming the exact node under test.
+                  restored: tests=2 failures=0 errors=0 exit 0, S1 pass, H1 pass
+                restoration_verified_by_empty_diff: >-
+                  git diff against 991d17c is empty for the test module, both immediately after
+                  the unbind and again after the cold make and test. Verified that way rather
+                  than by reading back the field that changed: MPS can reorder or reformat on
+                  save, and a fixture that is restored in content but not byte-identical is a
+                  fourth state nobody has run.
+                the_contract_wording_would_have_mis_scored_this: >-
+                  The frozen criterion said failures=1 errors=0. The observed run is failures=0
+                  errors=1, and it is a correct control. The check operation's AssertionError
+                  crosses ThreadUtils.runInUIThreadAndWait and arrives wrapped in a
+                  RuntimeException, which JUnit files under errors rather than failures. The
+                  substantive criterion -- S1 does not pass, H1 does, and the reason is the
+                  check operation's own assertion naming the node under test -- is met. A
+                  criterion keyed on the JUnit column rather than on which test failed and why
+                  would have rejected a valid control, which is the same defect as a criterion
+                  keyed on a count rather than on the member.
+                what_the_case_now_has: >-
+                  Execution, rule specificity by node identity, positive detection, failure
+                  sensitivity and cold reproducibility, each with direct evidence. The remaining
+                  gap named earlier still stands: no run has shown this assertion decline a
+                  foreign rule's report. Sensitivity to the rule's absence is now evidenced;
+                  discrimination against a different rule's presence is still inferred from
+                  mechanism.
+              cold_state_protocol:
+                rule: >-
+                  Every dependency-necessity and semantic-control claim in this item is made
+                  only from a deleted build/work/system, config and log. A warm worker state
+                  produces both false defects and false repairs, and the MPS.OpenAPI episode
+                  produced one of each within twenty minutes.
+                applies_to: >-
+                  Both directions of a controlled removal. Adding a thing and watching a symptom
+                  go cannot distinguish "the addition fixed it" from "the next run was clean for
+                  another reason"; only removing it and running cold can.
               instrumented_execution_not_reconstruction: >-
                 The probe calls super.work() first and lets production LaunchTestWorker.work()
                 reproduce the failure, rather than re-attempting loadClass itself. Re-attempting
