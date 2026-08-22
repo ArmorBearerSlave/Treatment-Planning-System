@@ -1782,11 +1782,29 @@ acceptance_items:
               limitation of launchtests.
             proven_state: >-
               authored executable test 1, MPS test root recognized 1, module classloader
-              obtained 1, own test class load FAILED, JUnit selector constructed 0, executed
-              0. ModuleClassLoader searches its own classpath item, then dependencies, then
-              parent; a failure naming the exact generated FQN means the class was not found
-              anywhere along that chain. A missing JDK dependency is a weak explanation
-              because MPS routes java.* through the system classloader directly.
+              obtained 1, moduleClassLoader.loadClass(FQN) FAILED, own-class and resource
+              visibility UNKNOWN, JUnit selector constructed 0, executed 0.
+              An earlier wording said "own test class load FAILED". That is withdrawn:
+              TestDiscoveryContributor calls the ordinary loadClass path, which searches self
+              then dependency classloaders then parent, and neither getOwnResource nor
+              loadOwnClass has ever been exercised. Recording the self-classpath as failed
+              would have presupposed the answer the probe exists to find.
+              A missing JDK dependency remains a weak explanation, since MPS routes java.*
+              through the system classloader directly.
+            static_half_already_answered: >-
+              Two probe rows do not need the runtime. The java facet declares
+              classes generated="true" path="${module}/classes_gen", and the compiled class
+              exists on disk at
+              tests/nltps.modeltests/classes_gen/nltps/modeltests/headless/REA_C_002_evidence_required_for_assessed_verdict_Test.class
+              alongside its $TestBody class. What this does not settle is the case that
+              matters most: a duplicate or differently-originated module instance would make
+              every static file inspection look correct while the classloader is built from
+              another representation. Module identity has to come from the runtime, and until
+              it does these two rows constrain the answer without deciding it.
+            acceptance_for_the_probe: >-
+              Not a green. One uniquely identified boundary along descriptor, facet path,
+              physical class, own resource, own class, delegated class. If the probe ends
+              without locating that boundary, nothing is changed afterwards in the same unit.
             next_unit: >-
               Runtime classloader introspection, before any artifact is built. Establish what
               the worker thinks nltps.modeltests is: its descriptor file, isPackaged,
