@@ -53,6 +53,15 @@ jobs:
       - name: Check persisted enumeration values resolve to their own enumeration
         run: python tools/mps/check_enum_persistence.py
 
+      - name: Check imported HLR roots are counted only where they belong
+        run: python tools/mps/check_hlr_root_placement.py
+
+      - name: Check the neutral export still matches the MPS model
+        run: python tools/mps/export_hlr_corpus.py --check
+
+      - name: Check Stage B equivalence over the 119 imported requirements
+        run: python tools/mps/check_stage_b_equivalence.py
+
       - name: Check frozen MPS-2 role ontology
         run: python tools/mps/check_role_ontology.py
 

@@ -40,7 +40,12 @@ whether the migration is correct.
     MPS-1  foundation + governance                        closed
     MPS-2  clinical intent + roles.common                closed
     MPS-3  the four professional role projections        closed
-    MPS-4  realization + the 119-HLR import               feature freeze complete
+    MPS-4  realization + the 119-HLR import               materialized; two items open
+
+MPS-4's two open acceptance items are recorded with their reasons in the checklist:
+`MPS-MAT-004B` (file-per-root persistence) is blocked on an integration deficiency,
+and `MPS-MAT-008` (headless build) has no headless build to run. `MPS-MAT-009` is an
+independent review and is not the implementer's to record.
 
 - Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
 - Concept design that MPS-1 transcribed: `mps/bootstrap/mps1-concept-features.yaml`
@@ -69,7 +74,13 @@ Each language declares `materialized_at` (when the module exists) separately fro
 `concepts_materialized_at` (when its inventory lands), and `external_explicit`, the
 non-NL-TPS dependencies it may carry. MPS adds such dependencies on its own; every one
 observed so far was unnecessary and was removed through model-aware tooling, never by
-editing `.mpl`.
+editing `.mpl`. MPS-4 saw two more -- `jetbrains.mps.lang.core` when a property was
+added, and `JDK` when a checking rule called `String.equals`. Both were removed and the
+language still builds; `nltps.clinicalintent` has used `String.equals` since MPS-2 with
+no module-level JDK dependency, which is what made the second one recognisable as
+unnecessary rather than required. MPS also re-adds a `DEFAULT` companion to every
+`EXTENDS` edge on rebuild; `DELETE` removes both, so re-add `EXTENDS` afterwards and
+re-check the module graph.
 
 A concept may take a superconcept only from its own language or from a language declared
 `EXTENDS`. A concept may *contain* only what its own language or a transitive `EXTENDS`
@@ -128,6 +139,12 @@ A passing `check_root_node_problems` is not sufficient acceptance evidence by it
 Acceptance requires read-back, plus the applicable node-scope and model-scope checks,
 plus a native build or check result. No single checker is sufficient.
 
+The converse also holds: a property absent from the persisted form is not evidence the
+write was dropped. MPS omits any property equal to its declared default, so a boolean
+false never appears. Distinguish the two by writing the non-default value and reading it
+back -- at MPS-4, setting `authoritative` true on one root made it appear in both the
+runtime and the file, which is what proved the other 118 absences meant false.
+
 Three failures observed so far, each silent in every checker that ran before it:
 
 - **A `cardinality` key on a link in `CREATE_CONCEPTS` is ignored.** 34 of 37 links at
@@ -143,7 +160,15 @@ Three failures observed so far, each silent in every checker that ran before it:
 - `mps_mcp_scaffold_editor` leaves the inline display property of every reference cell
   unresolved. The model check reports nothing; the Java compiler reports `variable
   property might not have been initialized`. Point each one at a real property of the
-  concept it displays.
+  concept it displays. **Do not use the compiler's error count to size the problem.**
+  At MPS-4 it named two, in one file, and stopped; the editor model actually held 45
+  across all eighteen editors. Count them by walking the model for a `CellModel_Property`
+  with no `relationDeclaration`.
+- **A newly built checking rule is not live for instance models until modules are
+  reloaded.** After REA-C-002 was built, `check_root_node_problems` reported "no problems
+  found" on a model holding the rule's own negative example. `mps_mcp_reload_all` made it
+  fire immediately. A clean check taken between building a rule and reloading is
+  meaningless and looks exactly like a passing one.
 - **An enumeration property set to a member that does not belong to its enumeration is
   accepted silently.** The write returns `ok: true`, the value persists unresolvable with
   `null` where the member id belongs, and no checker or build reports it. A resolved
@@ -193,6 +218,22 @@ Three deferral classes exist and **only the first lapses automatically**:
 The second and third fail by not firing, which is indistinguishable from compliance. A
 deferral that has outlived its justification leaves every gate green.
 
+## Reaching a control the toolkit does not expose
+
+`project.default_model_persistence` has been declared `file-per-root` since MPS-0, and
+no model in the project has ever used it. `check_language_skeleton` compares that
+declaration against `spec/architecture.yaml` and never observes the layout on disk, so
+four checkpoints closed green on a constraint that was never in force. **A gate that
+compares two declarations with each other verifies neither.**
+
+It cannot be fixed from here. `mps_mcp_update_model` supports only `RENAME` and
+`DELETE`, and `mps_mcp_create_model` takes no persistence argument; MPS does it in one
+IDE action, `Convert to File-Per-Root Format`. Reproducing that action's internal API
+through the MPS console on a controlled corpus would not be evidence-grade work, and
+rewriting the layout on disk is prohibited outright. **A control the sanctioned route
+cannot reach is an integration deficiency to report, with the action that would fix it
+named — not a thing to reach around.**
+
 ## Metric integrity
 
 `76 / 2,144` entities carry a source-explicit hazard set. **Materializing an entity in
@@ -216,6 +257,9 @@ python tools/mps/check_enum_persistence.py
 python tools/mps/check_concept_features.py
 python tools/mps/check_role_ontology.py
 python tools/mps/check_materialization_plan.py
+python tools/mps/check_hlr_root_placement.py
+python tools/mps/export_hlr_corpus.py --check
+python tools/mps/check_stage_b_equivalence.py
 python tools/spec/build_trace_graph.py --check
 ```
 

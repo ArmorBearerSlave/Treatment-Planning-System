@@ -160,6 +160,10 @@
       </concept>
     </language>
     <language id="08070d1a-4999-4bfd-a38c-2b1b3ffd9ef4" name="nltps.realization">
+      <concept id="1365532761387707801" name="nltps.realization.structure.AdapterCatalog" flags="ng" index="3hnRlm">
+        <property id="1365532761387707811" name="name" index="3hnRlG" />
+        <child id="1365532761387707812" name="systems" index="3hnRlF" />
+      </concept>
       <concept id="1365532761387707800" name="nltps.realization.structure.VerificationBaseline" flags="ng" index="3hnRln">
         <property id="1365532761387707809" name="name" index="3hnRlI" />
         <child id="1365532761387707810" name="claims" index="3hnRlH" />
@@ -167,12 +171,35 @@
       <concept id="1365532761387707798" name="nltps.realization.structure.ArchitectureRealization" flags="ng" index="3hnRlp">
         <property id="1365532761387707802" name="name" index="3hnRll" />
         <child id="1365532761387707804" name="teams" index="3hnRlj" />
+        <child id="1365532761387707803" name="components" index="3hnRlk" />
+      </concept>
+      <concept id="1365532761387707712" name="nltps.realization.structure.AdapterCapability" flags="ng" index="3hnRmf">
+        <property id="1365532761387707727" name="capabilityName" index="3hnRm0" />
+        <property id="1365532761387707731" name="commissionedProfile" index="3hnRms" />
+        <property id="1365532761387707730" name="destination" index="3hnRmt" />
+        <property id="1365532761387707729" name="trustZone" index="3hnRmu" />
+        <property id="1365532761387707728" name="direction" index="3hnRmv" />
       </concept>
       <concept id="1365532761387707747" name="nltps.realization.structure.VerificationClaim" flags="ng" index="3hnRmG">
         <property id="1365532761387707755" name="verdict" index="3hnRm$" />
         <property id="1365532761387707754" name="claimName" index="3hnRm_" />
         <reference id="1365532761387707761" name="owningTeam" index="3hnRmY" />
         <reference id="1365532761387707760" name="verifies" index="3hnRmZ" />
+        <child id="1365532761387707757" name="executableSuites" index="3hnRmy" />
+      </concept>
+      <concept id="1365532761387707746" name="nltps.realization.structure.ExternalSystem" flags="ng" index="3hnRmH">
+        <property id="1365532761387707752" name="vendor" index="3hnRmB" />
+        <property id="1365532761387707751" name="systemName" index="3hnRmC" />
+        <child id="1365532761387707753" name="capabilities" index="3hnRmA" />
+      </concept>
+      <concept id="1365532761387707745" name="nltps.realization.structure.Component" flags="ng" index="3hnRmI">
+        <property id="1365532761387707749" name="responsibility" index="3hnRmE" />
+        <property id="1365532761387707748" name="componentName" index="3hnRmF" />
+        <reference id="1365532761387707750" name="owningTeam" index="3hnRmD" />
+      </concept>
+      <concept id="1365532761387707709" name="nltps.realization.structure.ExecutableSuiteRef" flags="ng" index="3hnRnM">
+        <property id="1365532761387707721" name="toolchain" index="3hnRm6" />
+        <property id="1365532761387707720" name="suiteId" index="3hnRm7" />
       </concept>
       <concept id="1365532761387707706" name="nltps.realization.structure.Team" flags="ng" index="3hnRnP">
         <property id="1365532761387707715" name="accountableRole" index="3hnRmc" />
@@ -794,6 +821,18 @@
         <property role="3gIvZS" value="1.0" />
       </node>
     </node>
+    <node concept="3hnRmI" id="1bNmcZ3JJVH" role="3hnRlk">
+      <property role="3hnRmF" value="OwnedComponent" />
+      <property role="3hnRmE" value="REA-C-001 positive control: the same component, bound to an accountable team" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <ref role="3hnRmD" node="1bNmcZ3JGzo" />
+      <node concept="3gIvZJ" id="1bNmcZ3JJVK" role="3gIvZz">
+        <property role="3gIvZX" value="REAC001NEG" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JJVL" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+    </node>
   </node>
   <node concept="3hnRln" id="1bNmcZ3JGzA">
     <property role="3hnRlI" value="VerificationProof" />
@@ -806,7 +845,7 @@
     </node>
     <node concept="3hnRmG" id="1bNmcZ3JGzF" role="3hnRlH">
       <property role="3hnRm_" value="approvalDecisionRecorded" />
-      <property role="3hnRm$" value="1RV1HIhZ_9S/not_assessed" />
+      <property role="3hnRm$" value="1HxEvIlveq9/passed" />
       <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
       <ref role="3hnRmZ" node="1bNmcZ2uzoK" />
       <ref role="3hnRmY" node="1bNmcZ3JGzo" />
@@ -816,6 +855,17 @@
       <node concept="3gIvZH" id="1bNmcZ3JGzJ" role="3gIvZy">
         <property role="3gIvZS" value="1.0" />
       </node>
+      <node concept="3hnRnM" id="1bNmcZ3JJVC" role="3hnRmy">
+        <property role="3hnRm7" value="SUITE-APPROVAL-001" />
+        <property role="3hnRm6" value="controlled gate suite" />
+        <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+        <node concept="3gIvZJ" id="1bNmcZ3JJVF" role="3gIvZz">
+          <property role="3gIvZX" value="SUITEAPPROVAL001" />
+        </node>
+        <node concept="3gIvZH" id="1bNmcZ3JJVG" role="3gIvZy">
+          <property role="3gIvZS" value="0.2" />
+        </node>
+      </node>
     </node>
   </node>
   <node concept="3gIvZ$" id="1bNmcZ3JG$g">
@@ -824,6 +874,41 @@
       <property role="3gIvZP" value="3szh2WtgW$O/proposed" />
       <property role="3gIvZO" value="1" />
       <property role="3gIvZN" value="false" />
+    </node>
+  </node>
+  <node concept="3hnRlm" id="1bNmcZ3JJVM">
+    <property role="3hnRlG" value="AdapterProof" />
+    <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+    <node concept="3gIvZJ" id="1bNmcZ3JJVP" role="3gIvZz">
+      <property role="3gIvZX" value="ADAPTERPROOF" />
+    </node>
+    <node concept="3gIvZH" id="1bNmcZ3JJVQ" role="3gIvZy">
+      <property role="3gIvZS" value="0.2" />
+    </node>
+    <node concept="3hnRmH" id="1bNmcZ3JJVR" role="3hnRlF">
+      <property role="3hnRmC" value="Record and verify system" />
+      <property role="3hnRmB" value="proof vendor" />
+      <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+      <node concept="3gIvZJ" id="1bNmcZ3JJVU" role="3gIvZz">
+        <property role="3gIvZX" value="EXTSYS001" />
+      </node>
+      <node concept="3gIvZH" id="1bNmcZ3JJVV" role="3gIvZy">
+        <property role="3gIvZS" value="0.2" />
+      </node>
+      <node concept="3hnRmf" id="1bNmcZ3JJVW" role="3hnRmA">
+        <property role="3hnRm0" value="exportApprovedPlan" />
+        <property role="3hnRmv" value="41LEPs4o5g1/write" />
+        <property role="3hnRmu" value="4qRdN8JRBEO/clinical_network" />
+        <property role="3hnRmt" value="record and verify system, plan export endpoint" />
+        <property role="3hnRms" value="site commissioning profile 2026-A" />
+        <ref role="3gIvZZ" node="1bNmcZ2uzo_" />
+        <node concept="3gIvZJ" id="1bNmcZ3JJVZ" role="3gIvZz">
+          <property role="3gIvZX" value="CAP001" />
+        </node>
+        <node concept="3gIvZH" id="1bNmcZ3JJW0" role="3gIvZy">
+          <property role="3gIvZS" value="0.2" />
+        </node>
+      </node>
     </node>
   </node>
 </model>

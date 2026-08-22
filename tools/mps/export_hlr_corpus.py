@@ -52,6 +52,7 @@ class Model:
     def __init__(self, path: Path) -> None:
         self.path = path
         root = ElementTree.parse(path).getroot()
+        self.model_ref = root.get("ref", "")
         self.concept_by_index: dict[str, str] = {}
         self.feature_by_index: dict[str, str] = {}
         for concept in root.iter("concept"):

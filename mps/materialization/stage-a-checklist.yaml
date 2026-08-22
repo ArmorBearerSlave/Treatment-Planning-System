@@ -452,11 +452,25 @@ acceptance_items:
       move.
   - id: MPS-MAT-003D
     checkpoint: MPS-4
-    item: >-
-      Realization concepts are disjoint, exhaustive, and single-owner against the
-      blueprint inventory.
-    status: pending
-    evidence: []
+    item: Realization concepts are disjoint, exhaustive, and single-owner against the blueprint
+      inventory.
+    status: complete
+    completion_qualifier: COMPLETE
+    completion_basis: The eighteen realization concepts were read back from MPS feature by
+      feature against the frozen inventory, and the derived ceiling is unchanged by the
+      119-root import because the roots are instance data.
+    evidence:
+    - 'check_concept_features: mps4-concept-features.yaml, 18 concepts across 1 language,
+      superconcepts respect EXTENDS discipline, 7 constraints realize every blueprint
+      requirement, and every non-rootable concrete concept is reachable from some root.'
+    - 'check_module_graph --checkpoint MPS-4: expected 96, observed 96, across 527 structure
+      nodes. The count is derived from the blueprint, not asserted.'
+    - The import adds 119 roots and moves the concept count by zero. check_hlr_root_placement
+      counts them where they belong and rejects an ImportedHLR root anywhere else.
+    - 'One concept feature was added during materialization rather than at the freeze:
+      ImportedHLR.sourceHazardText. The hazard amendment required the source hazard column to
+      be preserved and made it an exact-equality export field, but no inherited feature
+      carried it. It is recorded in mps4-concept-features.yaml with that reasoning.'
   - id: MPS-MAT-004A
     checkpoint: MPS-0
     item: >-
@@ -471,14 +485,34 @@ acceptance_items:
       - "depends: clinicalintent -> governance; realization -> governance, clinicalintent"
   - id: MPS-MAT-004B
     checkpoint: MPS-4
-    item: >-
-      File-per-root persistence is demonstrated on normative instance models.
+    item: File-per-root persistence is demonstrated on normative instance models.
     status: pending
-    evidence: []
     blocked_reason: >-
-      MPS-0 contains no normative instance model, so the persistence mode cannot yet be
-      exercised. Split from MPS-MAT-004 because dependency direction is demonstrable at
-      MPS-0 and persistence is not; a single item would have had to be part-claimed.
+      Not blocked for want of a model any more. nltps.corpus.hlr now holds 119 normative
+      instance roots, so the persistence mode is finally exercisable. It is blocked because
+      the MPS Projectional Agent Toolkit exposes no operation that sets or converts a model's
+      persistence mode: mps_mcp_update_model supports only RENAME and DELETE, and
+      mps_mcp_create_model takes no persistence argument. The corpus model is therefore
+      single-file, like every other model in the project.
+    diagnosis: >-
+      MPS itself can do this in one action. jetbrains.mps.ide.actions
+      .ConvertToFilePerRootPersistence_Action, presented as "Convert to File-Per-Root Format",
+      switches a model to PreinstalledModelFactoryTypes.PER_ROOT_XML. It is an IDE action, not
+      an MCP operation, so it needs a person to invoke it on the model in the running IDE.
+      Replicating it through the MPS console would mean reproducing an internal API this
+      session cannot verify against documentation, on a controlled corpus, which is not
+      evidence-grade work. Editing the persistence layout on disk is prohibited outright by
+      ADR-001, and being unable to reach a control through the sanctioned route is an
+      integration deficiency to report, not a reason to reach around it.
+    additional_finding: >-
+      project.default_model_persistence has been declared file-per-root since MPS-0 in both
+      spec/architecture.yaml and language-skeleton.json, and no model in the project has ever
+      used it. check_language_skeleton compares the two declarations with each other and never
+      observes the layout on disk, so MPS-0 through MPS-3 closed green on a constraint that
+      was never in force. This is not something MPS-4 introduced.
+    evidence:
+    - 'Ready when unblocked: 119 roots, each independently addressable, in a solution model
+      outside every language, with the placement gate already enforcing where they may live.'
   - id: MPS-MAT-005A
     checkpoint: MPS-1
     item: >-
@@ -1105,33 +1139,153 @@ acceptance_items:
       level. Batch-call success and a clean model check are not evidence.
   - id: MPS-MAT-005D
     checkpoint: MPS-4
-    item: >-
-      Realization constraints, typesystems, editors, and negative model tests pass,
+    item: Realization constraints, typesystems, editors, and negative model tests pass,
       including demonstrated rejection of deliberately invalid nodes.
-    status: pending
-    evidence: []
+    status: complete
+    completion_qualifier: COMPLETE_WITH_A_REPORTED_CONFLICT
+    completion_basis: Each of REA-C-001 through REA-C-007 was proven by the mechanism its
+      frozen enforcement class names, negative example first and positive control after. One
+      frozen positive example cannot hold, and that is reported rather than quietly dropped.
+    controlled_constraint_inventory:
+      declared: 7
+      identifiers: REA-C-001 through REA-C-007
+      proven_at_gate_level: 2
+      proven_behaviourally: 5
+      mps_checking_rules_added: 2
+      note: REA-C-002 and REA-C-003 needed checking rules because neither is expressible in
+        the metamodel -- a disjunction over two child roles cannot be written as a cardinality
+        on either one. The project-wide checking-rule total moves from 15 to 17.
+    evidence:
+    - 'REA-C-001 PROVEN. Negative: a Component created without owningTeam reports "No
+      reference in the obligatory role ''owningTeam''" on the reference descriptor, exactly
+      where the freeze predicted; the node-level problems array stays silent. Positive: the
+      same component bound to a Team reports no problems.'
+    - 'REA-C-002 PROVEN by an MPS checking rule. Negative: a VerificationClaim with neither
+      executableSuites nor manualEvidence reports the rule. Positive, one arm at a time: a
+      claim with one ManualEvidenceRef and no executable suite is accepted, and a claim with
+      one ExecutableSuiteRef and no manual evidence is accepted. Both directions were run,
+      because a rule demanding both children would pass a single-sided positive control.'
+    - 'REA-C-003 PROVEN by an MPS checking rule. Negative: a claim with verdict passed and no
+      evidence reports REA-C-003 and REA-C-002, each naming itself. Positive: the same claim
+      with verdict passed and bound evidence reports nothing.'
+    - 'REA-C-004 PROVEN. Negative: an AdapterCapability whose direction is set to a
+      TrustZoneEnum member is accepted by MPS, reports nothing at node, child or reference
+      level, and survives a native rebuild; check_enum_persistence is what rejects it --
+      "persisted member ''clinical_network'' is not a member of the declared enumeration
+      ''DataDirectionEnum''". Positive: a capability stating all four features persists with
+      members of the right enumerations.'
+    - 'REA-C-005 PROVEN at gate level. check_concept_features refuses a realization concept
+      declaring a child whose target a semantic-core language owns, and accepts both
+      ImportedHLR extending Requirement and realization containing realization. Nine fixtures
+      in tests/test_architecture_amendment.py drive inheritance and containment separately.'
+    - 'REA-C-006 PROVEN end to end through MPS. Negative: giving ACC-001''s second
+      ProvenanceRef a sourceLine, so the two entries could no longer be told apart by role,
+      made the exporter refuse -- "node 1bNmcZ3JGVG provenance roles cannot be told apart".
+      The change was reverted and the export re-verified. A one-entry root is refused by the
+      same rule, driven by fixture.'
+    - 'REA-C-007 PROVEN at gate level by check_hlr_root_placement, with the five fixtures
+      hlr_root_classifier names: a proof-sandbox GOV-001 is not counted, a valid root is
+      counted, a root in the wrong model is invalid placement, a non-ImportedHLR node in the
+      import model is not counted, and a root under a *.structure.mps path is rejected rather
+      than counted. The classifier reads concept and model, never identifier text.'
+    - 'Editors: eighteen ConceptEditorDeclarations, one per realization concept, and the
+      language rebuilds cleanly.'
+    reported_conflict:
+      between: REA-C-002 and REA-C-003
+      statement: >-
+        REA-C-002 requires every VerificationClaim to bind evidence. REA-C-003's frozen
+        positive example is "a claim with verdict not_assessed and no evidence is accepted".
+        Both cannot hold: under REA-C-002 a claim with no evidence is invalid whatever its
+        verdict.
+      disposition: >-
+        Both rules are implemented exactly as their statements read, which is the conservative
+        direction -- it rejects strictly more and never silently permits what a constraint
+        forbids. REA-C-003's positive control was therefore run as "verdict passed with bound
+        evidence is accepted" rather than the frozen wording, and that substitution is
+        recorded here rather than absorbed. Resolving the conflict is a controlled decision:
+        either REA-C-002 is narrowed so that an unassessed claim may carry no evidence, or
+        REA-C-003's positive example is corrected. Both constraints trace to source
+        constraints, so neither can be dropped by an implementer.
   - id: MPS-MAT-006
     checkpoint: MPS-4
     item: The HLR importer accepts the schema-valid bundle and creates exactly 119 roots.
-    status: pending
-    evidence: []
+    status: complete
+    completion_qualifier: COMPLETE
+    completion_basis: Every root was read back from the MPS runtime and compared with the
+      controlled bundle feature by feature. No sampling was used, and the count alone was
+      never treated as evidence.
+    evidence:
+    - 121 roots in nltps.corpus.hlr -- 119 ImportedHLR plus the StageAMirrorLifecycle
+      vocabulary and the StageAMirrorHazards risk baseline, which are infrastructure and are
+      distinguished by concept, not by name.
+    - Twelve controlled field groups read back per root - identifier, statement, domain,
+      category, category id alias, bundle id, authoritative, version, lifecycle reference,
+      verification methods and their order, both provenance entries matched by role rather
+      than position, and the source hazard text - with zero violations across all 119.
+    - Every one of the 94 hazard links was resolved individually to a Hazard in the mirror
+      baseline. The profile reproduces the frozen 73 with hazards / 46 without / 18 distinct
+      / 94 links exactly.
+    - 'authoritative reads false on all 119. Its absence from the persisted form is MPS
+      omitting a property equal to its default, not an ignored key: setting it true on GOV-001
+      made it appear in both the runtime read-back and the file, and it was set back.'
+    - 'check_enum_persistence examined 13,903 persisted enumeration values across 74 models,
+      2,118 of them in the corpus model, and every one resolves to a member of its own
+      enumeration. The gate now reports that count, so a pass over an empty population would
+      be visible.'
   - id: MPS-MAT-007
     checkpoint: MPS-4
     item: Neutral reverse export has zero unexplained discrepancy from controlled input.
-    status: pending
-    evidence: []
+    status: complete
+    completion_qualifier: COMPLETE
+    completion_basis: The export is derived from the persisted model and reads nothing from
+      the bundle, so the two sides of the comparison are independent. A field the model does
+      not carry is absent rather than filled in from the source.
+    evidence:
+    - 'tools/mps/export_hlr_corpus.py writes mps/import/hlr-corpus-export.json: 119 records,
+      thirteen canonical fields each, no MPS node id, model reference or filename, UTF-8 with
+      LF and a trailing newline, records ascending by id.'
+    - 'tools/mps/check_stage_b_equivalence.py writes mps/import/stage-b-equivalence.csv:
+      119 rows, one per requirement, each carrying the source id, the source artifact, that
+      record''s hash, the MPS root that represents it, the exported record and its own
+      verdict. All 119 read equivalent over 17 compared fields.'
+    - 'Shown to fail before it was trusted: a statement altered in the live model through MPS
+      produced "text_mismatch: ACC-001" and the --check mode rejected the stale export. The
+      model was restored and both re-verified.'
+    - 29 tests drive every named failure category, including the curated-analysis import the
+      mirror exists to refuse - adding H-13 and H-18 to SAF-001 is reported as a hazard
+      mismatch and as hazards not named in that requirement's own source row.
   - id: MPS-MAT-008
     checkpoint: MPS-4
     item: Headless build and model tests pass without the experimental agent toolkit.
     status: pending
-    evidence: []
+    blocked_reason: >-
+      The project has no headless MPS build. Every native build in this checkpoint was a
+      whole-project rebuild issued through the agent toolkit inside the running IDE, which is
+      the opposite of what this item asks for. A rebuild that succeeds under the toolkit is
+      not evidence that one succeeds without it.
+    evidence:
+    - 'What does hold: whole-project rebuild successful, model-scope checks clean on
+      nltps.realization.structure, nltps.realization.editor, nltps.realization.typesystem,
+      nltps.corpus.hlr and nltps.proof.cases, and 236 Python regression tests passing outside
+      MPS entirely.'
   - id: MPS-MAT-009
     checkpoint: MPS-4
-    item: >-
-      Independent Stage A review confirms no patient data, credentials, signing keys,
-      or authority cutover.
+    item: Independent Stage A review confirms no patient data, credentials, signing keys, or
+      authority cutover.
     status: pending
-    evidence: []
+    blocked_reason: >-
+      Independent review is not something the party that did the work can record for itself.
+      What is recorded here is the state offered for that review, not its outcome.
+    evidence:
+    - 'Offered for review: the imported corpus is the published high-level requirements
+      document and nothing else. No patient data, no credentials, no signing keys.'
+    - Every imported root carries authoritative false and references the one Stage A mirror
+      lifecycle state, whose value is proposed. That is the document-control baseline of the
+      source, not a claim about any requirement's clinical maturity, and it asserts no
+      approval and no authority cutover.
+    - The source-explicit hazard metric is unchanged at 76 / 2,144. Materializing an entity in
+      MPS is structural representation; only a named reviewer replacing a derived hazard set
+      with one determined for that entity moves the numerator.
 
 post_mps1_actions:
   - id: POST-MPS1-01
