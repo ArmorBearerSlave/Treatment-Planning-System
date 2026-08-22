@@ -90,6 +90,17 @@ moving the utility into `nltps.foundation.typesystem` where its three callers li
 behaviour aspect is left present and empty, which is sufficient — its existence does not
 trigger the reference, its having content does.
 
+**A warm `idea.system` can make a working configuration look broken, and the false repair
+will appear to succeed.** A stale worker system directory produced
+`NoClassDefFoundError: org.jetbrains.mps.openapi.model.SNodeReference`, which reads exactly
+like a missing module dependency; a later run over the same tree passed with no
+configuration change. Adding the dependency "worked" only because the next run had a fresh
+cache, and controlled removal later showed it was never needed. The `source_gen` lesson
+inverted: a warm tree keeps a broken project green, a warm system directory makes a green
+one look broken. **Delete `build/work/system`, `config` and `log` before diagnosing any
+class-loading failure, and prove a dependency is load-bearing by removing it and running
+cold -- not by adding it and seeing the symptom go.**
+
 **Node identity, reference integrity and semantic behaviour are three separate
 properties, and preserving one proves nothing about the other two.** The `CalendarDates`
 move demonstrated all three at once: `MOVE_NODE_TO_PARENT` with a `modelReference` kept the

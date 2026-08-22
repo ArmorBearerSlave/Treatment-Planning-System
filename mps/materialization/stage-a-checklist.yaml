@@ -2205,6 +2205,74 @@ acceptance_items:
                   is three independent readings of mechanism and identity, which is strong, but
                   it is not the same claim as having seen the assertion decline a foreign rule.
                   Recorded as a gap rather than folded into the verification.
+              outcome_immediate_semantic_green_not_red:
+                classification: >-
+                  Branch two of the three authorized outcomes. S1 executes and passes, so the
+                  existing implementation already enforces REA-C-002 for this case. There is no
+                  RED here and none was manufactured. Nothing about the implementation was
+                  changed, and the sentinel's verdict was not altered to force a failure.
+                evidence:
+                  authored: 2
+                  discovered: 2
+                  executed: 2
+                  failures: 0
+                  errors: 0
+                  identities: >-
+                    test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()
+                    and test_testAssessedClaimWithoutEvidenceIsRejected(), both under classname
+                    nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test
+                  reproducibility: >-
+                    Two independent runs, each from a deleted idea.system/config/log and a fresh
+                    process, both exit 0 with the same two names.
+                what_this_establishes: >-
+                  REA-C-002 reports on the sentinel node, and a rule-specific assertion naming
+                  that rule by node identity observes it. H1 passing establishes only that the
+                  previously proven executable witness still runs; its name sounds semantic and
+                  its body is still initTestNodes().
+                what_this_does_not_establish: >-
+                  Failure sensitivity. S1 passing shows REA-C-002 fires; it does not show that
+                  S1 would fail if REA-C-002 stopped firing. Those are different claims and only
+                  the first is evidenced. A separate negative or boundary case is needed, and
+                  until it exists S1 is a green that has never been seen to go red.
+              two_repairs_of_mine_that_repaired_nothing:
+                the_stale_system_directory: >-
+                  Both tests errored with NoClassDefFoundError on
+                  org.jetbrains.mps.openapi.model.SNodeReference, which reads exactly like a
+                  missing module dependency. It was not one. The failure was an artifact of a
+                  warm build/work/system directory: a later run over the same tree passed with
+                  no configuration change at all. Deleting idea.system/config/log and re-running
+                  is what separated the two.
+                mps_openapi_dependency_was_unnecessary: >-
+                  Added as a Default dependency to make SNodeReference loadable, and withdrawn
+                  after testing it: with the dependency deleted and the system directory cleared,
+                  the cold run is tests=2 failures=0 errors=0 exit 0. It was never the lever.
+                  This is the same finding CLAUDE.md records for every MPS-added module
+                  dependency observed so far, arrived at this time by controlled removal rather
+                  than by inspection.
+                the_near_miss_worth_recording: >-
+                  Before that control, the next steps under consideration were supplying MPS
+                  platform modules through <repository> or giving the test solution a devkit --
+                  two increasingly broad changes to fix something that was not broken. The
+                  repository inventory is what stopped it: 314 modules present, 296 DEPLOYED,
+                  and the only 18 that were not are devkits plus main-feedback. MPS.OpenAPI was
+                  DEPLOYED the entire time, as were MPS.Core, JDK, Annotations and
+                  jetbrains.mps.lang.test. The inference under repair -- "likely absent from the
+                  repository" -- was simply false.
+                what_was_actually_necessary: >-
+                  The four language modules in <repository>. Proven by controlled removal: with
+                  the repository reduced to nltps.proof alone and the system directory cleared,
+                  the cold run returns tests=0 with the original ClassNotFoundException. They
+                  are the measured closure of nltps.modeltests -> nltps.realization ->
+                  {governance, clinicalintent, foundation}, derived from the probe's inventory
+                  rather than guessed. Individual necessity of each of the four was not tested
+                  separately; the set was.
+                instrument_note: >-
+                  The probe's diagnostic gate cannot fire on this class of failure. A test that
+                  errors during execution is reported through JUnit and never reaches
+                  WorkerBase.myErrors, so ERRORS_RECORDED stays 0 and PROBE_REPRODUCED is false.
+                  The repository inventory is therefore emitted unconditionally under a CONFIG_
+                  prefix and is configuration state, not a diagnosis -- true or false
+                  independently of any failure. The gated readings still require reproduction.
               instrumented_execution_not_reconstruction: >-
                 The probe calls super.work() first and lets production LaunchTestWorker.work()
                 reproduce the failure, rather than re-attempting loadClass itself. Re-attempting

@@ -16,6 +16,10 @@ import org.jetbrains.mps.openapi.module.SModuleFacet;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * An instrumented execution of the failing launchtests path -- not a reconstruction of it.
@@ -88,6 +92,15 @@ public final class ModuleClasspathProbe extends LaunchTestWorker {
     say("SUPER_WORK_THREW=" + (thrown != null));
     say("ERRORS_RECORDED=" + myErrors.size());
 
+    // Configuration state, emitted unconditionally and labelled CONFIG_ so it cannot be
+    // read as a diagnosis. The gate below governs claims about the failure under study;
+    // this is an inventory of what the worker's repository actually contains, which is
+    // true or false independently of any failure. It is emitted here because the gate
+    // cannot fire on a failure that surfaces through the JUnit report rather than through
+    // myErrors -- and a probe that stays silent about a question it can answer is the
+    // first acceptance edge, not the second.
+    inventory();
+
     if (!reproducedExactTargetFailure()) {
       say("PROBE_REPRODUCED=false");
       say("NO_READINGS_EMITTED=the observed run is not the run under study");
@@ -103,6 +116,52 @@ public final class ModuleClasspathProbe extends LaunchTestWorker {
     if (thrown != null) {
       throw thrown;
     }
+  }
+
+  /**
+   * Every module the worker's repository holds, by deployment status.
+   *
+   * <p>Enumerating the whole repository rather than resolving the one module currently
+   * wanted. The repair sequence foundation, governance, clinicalintent, realization,
+   * MPS.OpenAPI has the shape of a wrong lever: each fix reveals the next absence. If the
+   * platform modules are missing as a class that is one finding, not five, and supplying
+   * them one at a time would be treating a population mechanism as a list.
+   */
+  private void inventory() {
+    MPSModuleRepository repository = getPlatform().findComponent(MPSModuleRepository.class);
+    ClassLoaderManager clm = getPlatform().findComponent(ClassLoaderManager.class);
+    if (repository == null || clm == null) {
+      say("CONFIG_UNAVAILABLE repository=" + repository + " classLoaderManager=" + clm);
+      return;
+    }
+    repository.getModelAccess().runReadAction(() -> {
+      Map<String, Integer> byStatus = new TreeMap<String, Integer>();
+      List<String> notDeployed = new ArrayList<String>();
+      List<String> watched = new ArrayList<String>();
+      int total = 0;
+      for (SModule candidate : repository.getModules()) {
+        total++;
+        String candidateName = String.valueOf(candidate.getModuleName());
+        String status = String.valueOf(clm.getStatus(candidate));
+        Integer seen = byStatus.get(status);
+        byStatus.put(status, seen == null ? 1 : seen + 1);
+        if (!("DEPLOYED".equals(status))) {
+          notDeployed.add(candidateName + "=" + status);
+        }
+        if (candidateName.startsWith("nltps.") || candidateName.startsWith("MPS.")
+            || candidateName.startsWith("jetbrains.mps.lang.test")
+            || "JDK".equals(candidateName) || "Annotations".equals(candidateName)) {
+          watched.add(candidateName + "=" + status);
+        }
+      }
+      say("CONFIG_REPOSITORY_MODULE_COUNT=" + total);
+      say("CONFIG_STATUS_HISTOGRAM=" + byStatus);
+      say("CONFIG_WATCHED=" + watched);
+      say("CONFIG_NOT_DEPLOYED_COUNT=" + notDeployed.size());
+      for (String entry : notDeployed) {
+        say("CONFIG_NOT_DEPLOYED=" + entry);
+      }
+    });
   }
 
   /**
@@ -213,29 +272,6 @@ public final class ModuleClasspathProbe extends LaunchTestWorker {
 
     for (SLanguage language : module.getUsedLanguages()) {
       say("USED_LANGUAGE=" + language);
-    }
-
-    // Every project module and its status, in one run. Iterating the repository beats
-    // adding one module per fifty-second run and guessing which comes next: the closure is
-    // whatever MPS says it is, and a status of NOT_IN_REPO on any of them is the thing that
-    // propagates. Printed for all of them because the propagation rule is not yet understood
-    // -- nltps.proof reports DEPLOYED while a module it depends on does not.
-    for (SModule candidate : repository.getModules()) {
-      String candidateName = candidate.getModuleName();
-      if (candidateName == null || !candidateName.startsWith("nltps.")) {
-        continue;
-      }
-      StringBuilder deps = new StringBuilder();
-      for (SDependency dependency : candidate.getDeclaredDependencies()) {
-        if (deps.length() > 0) {
-          deps.append(" ");
-        }
-        SModule target = dependency.getTarget();
-        deps.append(String.valueOf(dependency.getTargetModule()))
-            .append(target == null ? "=UNRESOLVED" : "=" + clm.getStatus(target));
-      }
-      say("PROJECT_MODULE=" + candidateName + " status=" + clm.getStatus(candidate)
-          + " deps[" + deps + "]");
     }
 
     MPSModuleClassLoader loader = clm.getClassLoader(module);
