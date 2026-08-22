@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<testsuite name="JUnit Jupiter" tests="2" skipped="0" failures="0" errors="1" time="5.113" hostname="HUPCI-LAP-11" timestamp="2026-08-22T15:44:53">
+<testsuite name="JUnit Jupiter" tests="2" skipped="0" failures="0" errors="1" time="5.47" hostname="HUPCI-LAP-11" timestamp="2026-08-22T16:05:24">
 <properties>
 <property name="NO_FS_ROOTS_ACCESS_CHECK" value="true"/>
 <property name="apple.awt.UIElement" value="true"/>
@@ -70,7 +70,7 @@
 <property name="sun.cpu.endian" value="little"/>
 <property name="sun.cpu.isalist" value="amd64"/>
 <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
-<property name="sun.java.command" value="jetbrains.mps.lang.test.launcher.LaunchTestWorker C:\Users\ERIC~1.BRA\AppData\Local\Temp\mpstemp8897577168155183218"/>
+<property name="sun.java.command" value="jetbrains.mps.lang.test.launcher.LaunchTestWorker C:\Users\ERIC~1.BRA\AppData\Local\Temp\mpstemp15507350966234882432"/>
 <property name="sun.java.launcher" value="SUN_STANDARD"/>
 <property name="sun.jnu.encoding" value="Cp1252"/>
 <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
@@ -85,7 +85,7 @@
 <property name="user.timezone" value="America/New_York"/>
 <property name="user.variant" value=""/>
 </properties>
-<testcase name="test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()" classname="nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test" time="2.421">
+<testcase name="test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()" classname="nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test" time="2.937">
 <error message="java.lang.AssertionError: node &lt;VerificationClaim [1365532761392382826]> does not have the expected &apos;error&apos; message &apos;&apos;" type="java.lang.RuntimeException"><![CDATA[java.lang.RuntimeException: java.lang.AssertionError: node <VerificationClaim [1365532761392382826]> does not have the expected 'error' message ''
 	at com.intellij.openapi.application.impl.LaterInvocator.invokeAndWait(LaterInvocator.java:165)
 	at com.intellij.openapi.application.impl.ApplicationImpl.doInvokeAndWait(ApplicationImpl.java:618)
@@ -185,7 +185,7 @@ unique-id: [engine:junit-jupiter]/[class:nltps.modeltests.headless.REA_C_002_evi
 display-name: test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()
 ]]></system-out>
 </testcase>
-<testcase name="test_testAssessedClaimWithoutEvidenceIsRejected()" classname="nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test" time="0.111">
+<testcase name="test_testAssessedClaimWithoutEvidenceIsRejected()" classname="nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test" time="0.092">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test]/[method:test_testAssessedClaimWithoutEvidenceIsRejected()]
 display-name: test_testAssessedClaimWithoutEvidenceIsRejected()

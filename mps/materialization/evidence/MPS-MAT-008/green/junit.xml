@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<testsuite name="JUnit Jupiter" tests="2" skipped="0" failures="0" errors="1" time="5.569" hostname="HUPCI-LAP-11" timestamp="2026-08-22T15:46:44">
+<testsuite name="JUnit Jupiter" tests="2" skipped="0" failures="0" errors="0" time="40.399" hostname="HUPCI-LAP-11" timestamp="2026-08-22T16:03:54">
 <properties>
 <property name="NO_FS_ROOTS_ACCESS_CHECK" value="true"/>
 <property name="apple.awt.UIElement" value="true"/>
@@ -70,7 +70,7 @@
 <property name="sun.cpu.endian" value="little"/>
 <property name="sun.cpu.isalist" value="amd64"/>
 <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
-<property name="sun.java.command" value="jetbrains.mps.lang.test.launcher.LaunchTestWorker C:\Users\ERIC~1.BRA\AppData\Local\Temp\mpstemp2961286878683237280"/>
+<property name="sun.java.command" value="jetbrains.mps.lang.test.launcher.LaunchTestWorker C:\Users\ERIC~1.BRA\AppData\Local\Temp\mpstemp10022534878098088262"/>
 <property name="sun.java.launcher" value="SUN_STANDARD"/>
 <property name="sun.jnu.encoding" value="Cp1252"/>
 <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
@@ -85,107 +85,13 @@
 <property name="user.timezone" value="America/New_York"/>
 <property name="user.variant" value=""/>
 </properties>
-<testcase name="test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()" classname="nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test" time="1.609">
-<error message="java.lang.AssertionError: node &lt;VerificationClaim [1365532761392382826]> does not have the expected &apos;error&apos; message &apos;&apos;" type="java.lang.RuntimeException"><![CDATA[java.lang.RuntimeException: java.lang.AssertionError: node <VerificationClaim [1365532761392382826]> does not have the expected 'error' message ''
-	at com.intellij.openapi.application.impl.LaterInvocator.invokeAndWait(LaterInvocator.java:165)
-	at com.intellij.openapi.application.impl.ApplicationImpl.doInvokeAndWait(ApplicationImpl.java:618)
-	at com.intellij.openapi.application.impl.ApplicationImpl.invokeAndWait(ApplicationImpl.java:593)
-	at jetbrains.mps.ide.ThreadUtils.runInUIThreadAndWait(ThreadUtils.java:44)
-	at j.m.l.test.runtime//jetbrains.mps.lang.test.runtime.BaseTestBody.runWithinCommand(BaseTestBody.java:157)
-	at nltps.modeltests//nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test$TestBody.test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845(REA_C_002_evidence_required_for_assessed_verdict_Test.java:52)
-	at nltps.modeltests//nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test.test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845(REA_C_002_evidence_required_for_assessed_verdict_Test.java:33)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-Caused by: java.lang.AssertionError: node <VerificationClaim [1365532761392382826]> does not have the expected 'error' message ''
-	at j.m.l.test.runtime//jetbrains.mps.lang.test.runtime.CheckExpectedMessageRunnable.run(CheckExpectedMessageRunnable.java:56)
-	at nltps.modeltests//nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test$TestBody.lambda$test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845$0(REA_C_002_evidence_required_for_assessed_verdict_Test.java:54)
-	at j.m.l.test.runtime//jetbrains.mps.lang.test.runtime.BaseTestBody.lambda$runWithinCommand$1(BaseTestBody.java:161)
-	at jetbrains.mps.smodel.ProjectModelAccess2$UndoContextSetup.run(ProjectModelAccess2.java:189)
-	at jetbrains.mps.smodel.ActionDispatcher.dispatch(ActionDispatcher.java:91)
-	at jetbrains.mps.smodel.ActionDispatcher.lambda$wrap$0(ActionDispatcher.java:131)
-	at jetbrains.mps.smodel.ActionDispatcher.dispatch(ActionDispatcher.java:91)
-	at jetbrains.mps.smodel.LockRunnable.run(LockRunnable.java:64)
-	at jetbrains.mps.smodel.PlatformCancelBlock.run(PlatformCancelBlock.java:22)
-	at com.intellij.openapi.application.impl.AppImplKt$runnableUnitFunction$1.invoke(appImpl.kt:124)
-	at com.intellij.openapi.application.impl.AppImplKt$runnableUnitFunction$1.invoke(appImpl.kt:124)
-	at com.intellij.platform.locking.impl.NestedLocksThreadingSupport.runWriteActionBlocking(NestedLocksThreadingSupport.kt:997)
-	at com.intellij.openapi.application.impl.ApplicationImpl.runWriteAction(ApplicationImpl.java:1161)
-	at jetbrains.mps.smodel.TryRunPlatformWriteHelper.runWrite(TryRunPlatformWriteHelper.java:125)
-	at jetbrains.mps.smodel.TryRunPlatformWriteHelper.lambda$withPlatformWrite$0(TryRunPlatformWriteHelper.java:118)
-	at com.intellij.openapi.command.impl.CoreCommandProcessor.lambda$executeCommand$1(CoreCommandProcessor.java:143)
-	at com.intellij.openapi.command.impl.CoreCommandProcessor.runCommandTask(CoreCommandProcessor.java:409)
-	at com.intellij.openapi.command.impl.CoreCommandProcessor.executeCommand(CoreCommandProcessor.java:158)
-	at com.intellij.openapi.command.impl.CoreCommandProcessor.executeCommand(CoreCommandProcessor.java:81)
-	at com.intellij.openapi.command.impl.CoreCommandProcessor.executeCommand(CoreCommandProcessor.java:69)
-	at jetbrains.mps.smodel.WorkbenchModelAccess.executeCommand_(WorkbenchModelAccess.java:288)
-	at jetbrains.mps.smodel.ProjectModelAccess2.executeCommand(ProjectModelAccess2.java:101)
-	at j.m.l.test.runtime//jetbrains.mps.lang.test.runtime.BaseTestBody.lambda$runWithinCommand$0(BaseTestBody.java:159)
-	at jetbrains.mps.ide.ThreadUtils$LogExceptionsRunnable.run(ThreadUtils.java:86)
-	at com.intellij.openapi.application.TransactionGuardImpl.runWithWritingAllowed(TransactionGuardImpl.java:236)
-	at com.intellij.openapi.application.TransactionGuardImpl.access$100(TransactionGuardImpl.java:22)
-	at com.intellij.openapi.application.TransactionGuardImpl$1.run(TransactionGuardImpl.java:198)
-	at com.intellij.openapi.application.impl.ApplicationImpl$7.lambda$run$0(ApplicationImpl.java:651)
-	at com.intellij.concurrency.ThreadContext.installThreadContext(threadContext.kt:305)
-	at com.intellij.openapi.application.impl.ApplicationImpl$7.run(ApplicationImpl.java:646)
-	at com.intellij.openapi.application.impl.AppImplKt.rethrowExceptions$lambda$1(appImpl.kt:83)
-	at com.intellij.util.concurrency.ChildContext$runInChildContext$1.invoke(propagation.kt:192)
-	at com.intellij.util.concurrency.ChildContext$runInChildContext$1.invoke(propagation.kt:192)
-	at com.intellij.util.concurrency.ChildContext.runInChildContext(propagation.kt:198)
-	at com.intellij.util.concurrency.ChildContext.runInChildContext(propagation.kt:192)
-	at com.intellij.util.concurrency.ContextRunnable.lambda$run$0(ContextRunnable.java:26)
-	at com.intellij.concurrency.ThreadContext.resetThreadContext(threadContext.kt:294)
-	at com.intellij.util.concurrency.ContextRunnable.run(ContextRunnable.java:25)
-	at com.intellij.openapi.application.impl.AppImplKt.rethrowExceptions$lambda$2(appImpl.kt:94)
-	at com.intellij.openapi.application.impl.LaterInvocator$1.run(LaterInvocator.java:134)
-	at com.intellij.openapi.application.impl.NonBlockingFlushQueue.runNextEvent$lambda$1$1$0(NonBlockingFlushQueue.kt:334)
-	at com.intellij.openapi.progress.impl.CoreProgressManager.computePrioritized(CoreProgressManager.java:928)
-	at com.intellij.openapi.application.impl.NonBlockingFlushQueue.runNextEvent$lambda$1$1(NonBlockingFlushQueue.kt:333)
-	at com.intellij.concurrency.ThreadContext.resetThreadContext(threadContext.kt:294)
-	at com.intellij.openapi.application.impl.NonBlockingFlushQueue.runNextEvent$lambda$1(NonBlockingFlushQueue.kt:330)
-	at com.intellij.platform.locking.impl.NestedLocksThreadingSupport.tryRunWriteIntentReadAction(NestedLocksThreadingSupport.kt:747)
-	at com.intellij.openapi.application.impl.NonBlockingFlushQueue.runNextEvent(NonBlockingFlushQueue.kt:326)
-	at com.intellij.openapi.application.impl.NonBlockingFlushQueue.flushNow(NonBlockingFlushQueue.kt:305)
-	at com.intellij.openapi.application.impl.NonBlockingFlushQueue.FLUSH_NOW$lambda$0(NonBlockingFlushQueue.kt:167)
-	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:323)
-	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:732)
-	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:711)
-	at com.intellij.ide.IdeEventQueue.defaultDispatchEvent(IdeEventQueue.kt:721)
-	at com.intellij.ide.IdeEventQueue._dispatchEvent(IdeEventQueue.kt:574)
-	at com.intellij.ide.IdeEventQueue.dispatchEvent$lambda$0$0$0(IdeEventQueue.kt:378)
-	at com.intellij.ide.IdeEventQueueKt.performActivity$lambda$0(IdeEventQueue.kt:1111)
-	at com.intellij.openapi.application.TransactionGuardImpl.performActivity(TransactionGuardImpl.java:106)
-	at com.intellij.ide.IdeEventQueueKt.performActivity(IdeEventQueue.kt:1111)
-	at com.intellij.ide.IdeEventQueue.dispatchEvent$lambda$0(IdeEventQueue.kt:376)
-	at com.intellij.ide.IdeEventQueue.dispatchEvent(IdeEventQueue.kt:416)
-	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:207)
-	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:128)
-	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:117)
-	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:113)
-	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:105)
-	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:92)
-	Suppressed: com.intellij.util.ExceptionUtilRt$RethrownStack: Rethrown at
-		at com.intellij.util.ExceptionUtilRt.addRethrownStackAsSuppressed(ExceptionUtilRt.java:43)
-		at com.intellij.util.ExceptionUtilRt.rethrowUnchecked(ExceptionUtilRt.java:16)
-		at com.intellij.util.ExceptionUtil.rethrowUnchecked(ExceptionUtil.java:142)
-		at com.intellij.openapi.command.impl.CommandProcessorImpl.finishCommand(CommandProcessorImpl.java:32)
-		at com.intellij.openapi.command.impl.CoreCommandProcessor.lambda$executeCommand$0(CoreCommandProcessor.java:151)
-		at com.intellij.openapi.progress.impl.CoreProgressManager.lambda$executeNonCancelableSection$3(CoreProgressManager.java:352)
-		at com.intellij.openapi.progress.impl.CoreProgressManager.registerIndicatorAndRun(CoreProgressManager.java:819)
-		at com.intellij.openapi.progress.impl.CoreProgressManager.computeUnderProgress(CoreProgressManager.java:775)
-		at com.intellij.openapi.progress.impl.CoreProgressManager.lambda$computeInNonCancelableSection$4(CoreProgressManager.java:360)
-		at com.intellij.openapi.progress.Cancellation.computeInNonCancelableSection(Cancellation.java:156)
-		at com.intellij.openapi.progress.impl.CoreProgressManager.computeInNonCancelableSection(CoreProgressManager.java:360)
-		at com.intellij.openapi.progress.impl.CoreProgressManager.executeNonCancelableSection(CoreProgressManager.java:351)
-		at com.intellij.openapi.command.impl.CoreCommandProcessor.lambda$executeCommand$1(CoreCommandProcessor.java:150)
-		... 50 more
-]]></error>
+<testcase name="test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()" classname="nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test" time="2.569">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test]/[method:test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()]
 display-name: test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()
 ]]></system-out>
 </testcase>
-<testcase name="test_testAssessedClaimWithoutEvidenceIsRejected()" classname="nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test" time="0.104">
+<testcase name="test_testAssessedClaimWithoutEvidenceIsRejected()" classname="nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test" time="0.083">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:nltps.modeltests.headless.REA_C_002_evidence_required_for_assessed_verdict_Test]/[method:test_testAssessedClaimWithoutEvidenceIsRejected()]
 display-name: test_testAssessedClaimWithoutEvidenceIsRejected()

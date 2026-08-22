@@ -1,0 +1,156 @@
+Buildfile: C:\src\gcpl\build\nltps-headless-build.xml
+Trying to override old definition of datatype module
+
+make:
+     [echo] mps.home    = C:/Program Files/JetBrains/MPS 2026.1
+     [echo] project.dir = C:/src/gcpl/mps/NLTPSGovernance
+     [echo] work.dir    = C:\src\gcpl\build\work
+ [mps.make] 2026-08-22 16:02:16,805 WARNING - jetbrains.mps.smodel.language.LanguageRegistry - Failed to load classes for some modules. Set log level to debug for more info.
+ [mps.make] Generating: strict mode is on, parallel generation is on (4 threads), in-place is on, child warnings are on, static references to replace dynamic is on, skip unmodified models is off
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.constraints has associated plan jetbrains.mps.lang.descriptor.constraintsAndMessages
+ [mps.make] Interpreted plan "ConstraintsAndMessagesRulesPlan"
+ [mps.make] Generation plan for model nltps.foundation.constraints defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.structure has associated plan jetbrains.mps.lang.descriptor.structure@genplan
+ [mps.make] Interpreted plan "LangStructurePlan"
+ [mps.make] Generation plan for model nltps.foundation.structure defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.typesystem has associated plan jetbrains.mps.lang.descriptor.typesystem@genplan
+ [mps.make] Interpreted plan "LangTypesystemPlan"
+ [mps.make] Generation plan for model nltps.foundation.typesystem defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.language-descriptor has associated plan jetbrains.mps.lang.descriptor.descriptor@genplan
+ [mps.make] Interpreted plan "LangDescriptorPlan"
+ [mps.make] Generation plan for model nltps.foundation@descriptor defined with an employed devkit
+ [mps.make] Cycle #1: [nltps.foundation]
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.constraints has associated plan jetbrains.mps.lang.descriptor.constraintsAndMessages
+ [mps.make] Interpreted plan "ConstraintsAndMessagesRulesPlan"
+ [mps.make] Generation plan for model nltps.governance.constraints defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.structure has associated plan jetbrains.mps.lang.descriptor.structure@genplan
+ [mps.make] Interpreted plan "LangStructurePlan"
+ [mps.make] Generation plan for model nltps.governance.structure defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.typesystem has associated plan jetbrains.mps.lang.descriptor.typesystem@genplan
+ [mps.make] Interpreted plan "LangTypesystemPlan"
+ [mps.make] Generation plan for model nltps.governance.typesystem defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.language-descriptor has associated plan jetbrains.mps.lang.descriptor.descriptor@genplan
+ [mps.make] Interpreted plan "LangDescriptorPlan"
+ [mps.make] Generation plan for model nltps.governance@descriptor defined with an employed devkit
+ [mps.make] Cycle #1: [nltps.governance]
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.constraints has associated plan jetbrains.mps.lang.descriptor.constraintsAndMessages
+ [mps.make] Interpreted plan "ConstraintsAndMessagesRulesPlan"
+ [mps.make] Generation plan for model nltps.clinicalintent.constraints defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.structure has associated plan jetbrains.mps.lang.descriptor.structure@genplan
+ [mps.make] Interpreted plan "LangStructurePlan"
+ [mps.make] Generation plan for model nltps.clinicalintent.structure defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.typesystem has associated plan jetbrains.mps.lang.descriptor.typesystem@genplan
+ [mps.make] Interpreted plan "LangTypesystemPlan"
+ [mps.make] Generation plan for model nltps.clinicalintent.typesystem defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.language-descriptor has associated plan jetbrains.mps.lang.descriptor.descriptor@genplan
+ [mps.make] Interpreted plan "LangDescriptorPlan"
+ [mps.make] Generation plan for model nltps.clinicalintent@descriptor defined with an employed devkit
+ [mps.make] Cycle #1: [nltps.clinicalintent]
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.constraints has associated plan jetbrains.mps.lang.descriptor.constraintsAndMessages
+ [mps.make] Interpreted plan "ConstraintsAndMessagesRulesPlan"
+ [mps.make] Generation plan for model nltps.roles.common.constraints defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.structure has associated plan jetbrains.mps.lang.descriptor.structure@genplan
+ [mps.make] Interpreted plan "LangStructurePlan"
+ [mps.make] Generation plan for model nltps.roles.common.structure defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.typesystem has associated plan jetbrains.mps.lang.descriptor.typesystem@genplan
+ [mps.make] Interpreted plan "LangTypesystemPlan"
+ [mps.make] Generation plan for model nltps.roles.common.typesystem defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.language-descriptor has associated plan jetbrains.mps.lang.descriptor.descriptor@genplan
+ [mps.make] Interpreted plan "LangDescriptorPlan"
+ [mps.make] Generation plan for model nltps.roles.common@descriptor defined with an employed devkit
+ [mps.make] Cycle #1: [nltps.roles.common]
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.constraints has associated plan jetbrains.mps.lang.descriptor.constraintsAndMessages
+ [mps.make] Interpreted plan "ConstraintsAndMessagesRulesPlan"
+ [mps.make] Generation plan for model nltps.roles.therapy.constraints defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.structure has associated plan jetbrains.mps.lang.descriptor.structure@genplan
+ [mps.make] Interpreted plan "LangStructurePlan"
+ [mps.make] Generation plan for model nltps.roles.therapy.structure defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.typesystem has associated plan jetbrains.mps.lang.descriptor.typesystem@genplan
+ [mps.make] Interpreted plan "LangTypesystemPlan"
+ [mps.make] Generation plan for model nltps.roles.therapy.typesystem defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.language-descriptor has associated plan jetbrains.mps.lang.descriptor.descriptor@genplan
+ [mps.make] Interpreted plan "LangDescriptorPlan"
+ [mps.make] Generation plan for model nltps.roles.therapy@descriptor defined with an employed devkit
+ [mps.make] Interpreted plan "ConstraintsAndMessagesRulesPlan"
+ [mps.make] Generation plan for model nltps.realization.constraints defined with an employed devkit
+ [mps.make] Interpreted plan "LangStructurePlan"
+ [mps.make] Generation plan for model nltps.realization.structure defined with an employed devkit
+ [mps.make] Interpreted plan "LangTypesystemPlan"
+ [mps.make] Generation plan for model nltps.realization.typesystem defined with an employed devkit
+ [mps.make] Interpreted plan "LangDescriptorPlan"
+ [mps.make] Generation plan for model nltps.realization@descriptor defined with an employed devkit
+ [mps.make] Interpreted plan "ConstraintsAndMessagesRulesPlan"
+ [mps.make] Generation plan for model nltps.roles.dosimetry.constraints defined with an employed devkit
+ [mps.make] Interpreted plan "LangStructurePlan"
+ [mps.make] Generation plan for model nltps.roles.dosimetry.structure defined with an employed devkit
+ [mps.make] Interpreted plan "LangTypesystemPlan"
+ [mps.make] Generation plan for model nltps.roles.dosimetry.typesystem defined with an employed devkit
+ [mps.make] Interpreted plan "LangDescriptorPlan"
+ [mps.make] Generation plan for model nltps.roles.dosimetry@descriptor defined with an employed devkit
+ [mps.make] Cycle #1: [nltps.roles.therapy]
+ [mps.make] Cycle #2: [nltps.roles.dosimetry]
+ [mps.make] Cycle #3: [nltps.realization]
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.constraints has associated plan jetbrains.mps.lang.descriptor.constraintsAndMessages
+ [mps.make] Interpreted plan "ConstraintsAndMessagesRulesPlan"
+ [mps.make] Generation plan for model nltps.roles.radonc.constraints defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.structure has associated plan jetbrains.mps.lang.descriptor.structure@genplan
+ [mps.make] Interpreted plan "LangStructurePlan"
+ [mps.make] Generation plan for model nltps.roles.radonc.structure defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.aspect.typesystem has associated plan jetbrains.mps.lang.descriptor.typesystem@genplan
+ [mps.make] Interpreted plan "LangTypesystemPlan"
+ [mps.make] Generation plan for model nltps.roles.radonc.typesystem defined with an employed devkit
+ [mps.make] Devkit jetbrains.mps.devkit.language-descriptor has associated plan jetbrains.mps.lang.descriptor.descriptor@genplan
+ [mps.make] Interpreted plan "LangDescriptorPlan"
+ [mps.make] Generation plan for model nltps.roles.radonc@descriptor defined with an employed devkit
+ [mps.make] Interpreted plan "ConstraintsAndMessagesRulesPlan"
+ [mps.make] Generation plan for model nltps.roles.physics.constraints defined with an employed devkit
+ [mps.make] Interpreted plan "LangStructurePlan"
+ [mps.make] Generation plan for model nltps.roles.physics.structure defined with an employed devkit
+ [mps.make] Interpreted plan "LangTypesystemPlan"
+ [mps.make] Generation plan for model nltps.roles.physics.typesystem defined with an employed devkit
+ [mps.make] Interpreted plan "LangDescriptorPlan"
+ [mps.make] Generation plan for model nltps.roles.physics@descriptor defined with an employed devkit
+ [mps.make] Cycle #1: [nltps.roles.physics]
+ [mps.make] Cycle #2: [nltps.roles.radonc]
+ [mps.make] Cycle #1: [nltps.modeltests]
+ [mps.make] "generate" target execution time: 20973 ms
+ [mps.make] "compile" target execution time: 16841 ms
+ [mps.make] "textGen" target execution time: 2213 ms
+ [mps.make] Other targets execution time: 1015 ms; reconcile: 643 ms, reloadClasses: 266 ms, preloadModels: 44 ms, configure: 38 ms, copyTraceInfo: 9 ms, cleanup: 8 ms, copyBinaries: 6 ms, auxCompile: 1 ms, configure: 0 ms, checkParameters: 0 ms, make: 0 ms
+ [mps.make] 2026-08-22 16:02:58,169 WARNING - jetbrains.mps.classloading.ModulesWatcher - 33 modules are marked as invalid roots for class loading out of 45 modules totally in the CL graph
+ [mps.make] 2026-08-22 16:02:58,170 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.baseLanguage.references.runtime: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,170 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.editorlang.runtime: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,170 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.lang.core: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,171 WARNING - jetbrains.mps.classloading.ModulesWatcher - closures.runtime: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,171 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.baseLanguage.tuples.runtime: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,171 WARNING - jetbrains.mps.classloading.ModulesWatcher - JDK: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,171 WARNING - jetbrains.mps.classloading.ModulesWatcher - MPS.Core: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,171 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.lang.constraints.rules.runtime: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,172 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.runtime: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,172 WARNING - jetbrains.mps.classloading.ModulesWatcher - MPS.Editor: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,172 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.baseLanguage.logging.runtime: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,172 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.lang.behavior.api: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,172 WARNING - jetbrains.mps.classloading.ModulesWatcher - collections.runtime: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,173 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.lang.behavior.runtime: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,173 WARNING - jetbrains.mps.classloading.ModulesWatcher - Annotations: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,173 WARNING - jetbrains.mps.classloading.ModulesWatcher - MPS.IDEA: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,173 WARNING - jetbrains.mps.classloading.ModulesWatcher - MPS.OpenAPI: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,173 WARNING - jetbrains.mps.classloading.ModulesWatcher - MPS.Platform: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,173 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.editor.runtime: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - JUnit: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.lang.test.matcher: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - org.junit.junit5: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.lang.test.runtime: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - Ant: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - Testbench: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.baseLanguage: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.baseLanguage.classifiers: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.baseLanguage.scopes: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.baseLanguage.unitTest: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.core.tool.environment: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,174 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.kernel: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,175 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.lang.test: not tracked for classloading (no respective module facet or absent in a repository)
+ [mps.make] 2026-08-22 16:02:58,175 WARNING - jetbrains.mps.classloading.ModulesWatcher - jetbrains.mps.lang.traceable: not tracked for classloading (no respective module facet or absent in a repository)
+
+BUILD SUCCESSFUL
+Total time: 48 seconds

@@ -69,6 +69,15 @@ def record(build_log: Path, report: Path) -> int:
         raise SystemExit("ERROR: build log not found: " + str(build_log))
     if not report.is_file():
         raise SystemExit("ERROR: test report not found: " + str(report))
+    for path in (build_log, report):
+        relative = str(path.resolve().relative_to(REPO_ROOT)).replace("\\", "/")
+        if not relative.startswith("mps/materialization/evidence/"):
+            raise SystemExit(
+                "ERROR: " + relative + " is not a retained artifact. Recording a hash for a "
+                "file under build/work/ produces a dangling reference: that tree is "
+                "gitignored and the test target deletes it on every run, so a reviewer "
+                "cannot obtain the file the hash describes. Copy the artifact under "
+                "mps/materialization/evidence/ with LF endings first.")
 
     with io.open(build_log, encoding="utf-8", errors="replace") as handle:
         log_text = handle.read()
@@ -123,6 +132,16 @@ def record(build_log: Path, report: Path) -> int:
             "report_sha256": sha256(report),
         },
     }
+    # Preserve everything this function does not itself derive. Rebuilding the record from
+    # scratch silently dropped the red-state controls the first time it ran, which would have
+    # left the gate reporting them absent while the two green verdicts still looked fine -- a
+    # partial write that reads as a complete one.
+    if EVIDENCE.is_file():
+        with io.open(EVIDENCE, encoding="utf-8") as handle:
+            existing = json.load(handle)
+        for key, value in existing.items():
+            evidence.setdefault(key, value)
+
     with io.open(EVIDENCE, "w", encoding="utf-8", newline="\n") as handle:
         handle.write(json.dumps(evidence, indent=2, sort_keys=True) + "\n")
     print("recorded " + str(EVIDENCE.relative_to(REPO_ROOT)).replace("\\", "/"))
@@ -159,6 +178,38 @@ def check() -> int:
             problems.append("the " + branch + " verdict was taken on model tree "
                             + str(recorded)[:16] + " but the tree is now " + current[:16]
                             + ". The model changed since that verdict, so it is stale.")
+
+    # Every referenced artifact must be one a reviewer can actually obtain and verify.
+    # An earlier version pointed the two primary hashes into build/work/, which is gitignored
+    # and which the test target deletes on every run: on a fresh clone those SHA-256s were
+    # dangling references to files that could not be fetched, while the two supporting
+    # controls verified -- and nothing marked which was which. Checking only the paths just
+    # changed is what let that stand; this checks every reference.
+    PORTABLE = "mps/materialization/evidence/"
+    for label, holder, key in (
+            ("build log", evidence.get("build") or {}, "log"),
+            ("model-test report", evidence.get("model_tests") or {}, "report"),
+    ) + tuple(
+            (name + " " + kind, control, kind)
+            for name, control in sorted((evidence.get("controls") or {}).items())
+            for kind in ("report", "patch")):
+        reference = holder.get(key)
+        if not reference:
+            problems.append("the " + label + " names no retained artifact")
+            continue
+        if not str(reference).startswith(PORTABLE):
+            problems.append("the " + label + " points at " + str(reference)
+                            + ", which is outside " + PORTABLE + ". A reviewer cannot obtain "
+                            "it from a clone, so its recorded hash is a dangling reference.")
+            continue
+        path = REPO_ROOT / reference
+        if not path.is_file():
+            problems.append("the " + label + " artifact is missing: " + str(reference))
+        elif sha256(path) != holder.get(key + "_sha256"):
+            problems.append("the " + label + " artifact does not match its recorded hash")
+        elif b"\r" in path.read_bytes():
+            problems.append("the " + label + " artifact contains CR bytes; git rewrites it "
+                            "on commit, so the recorded hash will not survive a clone")
 
     tests = evidence.get("model_tests") or {}
     if isinstance(tests, dict) and all(k in tests for k in
@@ -217,13 +268,10 @@ def check() -> int:
             if not str(control.get("assertion", "")).strip():
                 problems.append("the " + name + " control records no assertion text, so the "
                                 "reason S1 did not pass is not attributable")
-            report = control.get("report")
-            path = REPO_ROOT / report if report else None
-            if path is None or not path.is_file():
-                problems.append("the " + name + " control names no retained report")
-            elif sha256(path) != control.get("report_sha256"):
-                problems.append("the " + name + " control report does not match its "
-                                "recorded hash")
+            if not control.get("patch_reproduces_perturbed_tree"):
+                problems.append("the " + name + " control does not record that its retained "
+                                "patch reproduces the perturbed tree, so the intervention is "
+                                "not bound to the observation")
 
     if problems:
         print("FAIL: headless acceptance evidence is not current\n", file=sys.stderr)
@@ -251,10 +299,11 @@ def main() -> int:
     parser.add_argument("--record", action="store_true",
                         help="derive both verdicts from the artifacts on disk")
     parser.add_argument("--build-log", type=Path,
-                        default=REPO_ROOT / "build" / "work" / "closure-make.log")
+                        default=REPO_ROOT / "mps" / "materialization" / "evidence"
+                                / "MPS-MAT-008" / "green" / "cold-build.log")
     parser.add_argument("--report", type=Path,
-                        default=REPO_ROOT / "build" / "work" / "reports"
-                                / "TEST-junit-jupiter.xml")
+                        default=REPO_ROOT / "mps" / "materialization" / "evidence"
+                                / "MPS-MAT-008" / "green" / "junit.xml")
     args = parser.parse_args()
     return record(args.build_log, args.report) if args.record else check()
 

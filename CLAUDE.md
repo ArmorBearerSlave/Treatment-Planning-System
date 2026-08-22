@@ -112,6 +112,18 @@ empty `git diff`, never by re-reading the field you changed** -- a reformat, a r
 import or a reordered element is invisible to read-back and produces a fourth state nobody
 has run.
 
+**Evidence identity must be computed over the artifact as the consumer receives it, not
+over the producer's working copy.** MPS writes CRLF, `.gitattributes` declares `eol=lf`, and
+git compares normalised content -- so `git status` reads clean while 184 of 185 controlled
+files differ byte-for-byte from what a clone gets. Any hash taken over raw working-copy
+bytes verifies on the machine that computed it and nowhere else. `model_tree_hash`
+therefore normalises line endings before hashing; this is not a relaxed determinism gate,
+because the byte-exact corpus and trace gates are untouched and line endings are not part of
+model identity. The same defect recurred at three scales in one session: a retained report
+stored CRLF, two primary artifacts hashed inside gitignored `build/work/`, and the currency
+key itself. **Hash what a fresh clone would contain, and run that check over every
+referenced path rather than the ones just changed.**
+
 **A warm `idea.system` can make a working configuration look broken, and the false repair
 will appear to succeed.** A stale worker system directory produced
 `NoClassDefFoundError: org.jetbrains.mps.openapi.model.SNodeReference`, which reads exactly

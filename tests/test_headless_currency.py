@@ -170,6 +170,100 @@ class RedStateControlTest(CurrencyGateTest):
             "does not match its recorded hash")
 
 
+class ArtifactPortabilityTest(CurrencyGateTest):
+    """Evidence identity must be computed over the artifact as a reviewer receives it.
+
+    Two failures of this kind occurred. The retained reports were first stored CRLF, so the
+    committed bytes differed from the working copy and the hashes verified locally and
+    nowhere else. And the two primary hashes pointed into build/work/, which is gitignored
+    and which the test target deletes every run -- dangling references to files a reviewer
+    could not obtain, while the supporting controls verified, with nothing marking which was
+    which. Checking only the paths just changed is what let the second stand.
+    """
+
+    def _references(self):
+        with io.open(EVIDENCE, encoding="utf-8") as handle:
+            evidence = json.load(handle)
+        refs = [(evidence["build"], "log"), (evidence["model_tests"], "report")]
+        for control in evidence["controls"].values():
+            refs.append((control, "report"))
+            refs.append((control, "patch"))
+        return refs
+
+    def test_every_referenced_artifact_is_committed_and_verifies(self):
+        import hashlib
+        import subprocess
+
+        for holder, key in self._references():
+            reference = holder[key]
+            self.assertTrue(reference.startswith("mps/materialization/evidence/"), reference)
+            path = REPO_ROOT / reference
+            self.assertTrue(path.is_file(), reference)
+            self.assertEqual(holder[key + "_sha256"],
+                             hashlib.sha256(path.read_bytes()).hexdigest(), reference)
+            self.assertEqual(0, path.read_bytes().count(b"\r"), reference)
+            tracked = subprocess.run(["git", "ls-files", "--error-unmatch", reference],
+                                     capture_output=True, cwd=str(REPO_ROOT))
+            self.assertEqual(0, tracked.returncode,
+                             reference + " is not tracked, so a clone cannot obtain it")
+
+    def test_an_artifact_outside_the_evidence_tree_is_rejected(self):
+        self._damaged(
+            lambda e: e["build"].update({"log": "build/work/green-make.log"}),
+            "dangling reference")
+
+    def test_each_control_binds_its_patch_to_its_observation(self):
+        with io.open(EVIDENCE, encoding="utf-8") as handle:
+            controls = json.load(handle)["controls"]
+        for name, control in controls.items():
+            self.assertTrue(control["patch_reproduces_perturbed_tree"], name)
+            self.assertNotEqual(control["base_model_tree_sha256"],
+                                control["perturbed_model_tree_sha256"], name)
+
+    def test_an_unbound_intervention_is_rejected(self):
+        self._damaged(
+            lambda e: e["controls"]["failure_sensitivity"].update(
+                {"patch_reproduces_perturbed_tree": False}),
+            "not bound to the observation")
+
+
+class ModelTreeHashTest(unittest.TestCase):
+    """The currency key must not depend on how the checkout wrote line endings.
+
+    MPS writes CRLF; .gitattributes declares eol=lf so the repository stores LF; git
+    therefore reports a clean tree while 184 of 185 controlled files differ byte-for-byte
+    from what a clone receives. Hashing raw bytes produced a key that verified only on the
+    machine that computed it.
+    """
+
+    def test_hash_is_line_ending_invariant(self):
+        import shutil
+        import sys
+        import tempfile
+
+        sys.path.insert(0, str(REPO_ROOT / "tools" / "mps"))
+        import headless_build
+
+        source = REPO_ROOT / "mps" / "NLTPSGovernance"
+        base = headless_build.model_tree_hash(source)
+        holder = Path(tempfile.mkdtemp())
+        try:
+            copy = holder / "proj"
+            shutil.copytree(source, copy)
+            flipped = 0
+            for path in headless_build.controlled_files(copy):
+                raw = path.read_bytes()
+                other = (raw.replace(b"\r\n", b"\n") if b"\r" in raw
+                         else raw.replace(b"\n", b"\r\n"))
+                if other != raw:
+                    path.write_bytes(other)
+                    flipped += 1
+            self.assertGreater(flipped, 0, "nothing flipped; the control proves nothing")
+            self.assertEqual(base, headless_build.model_tree_hash(copy))
+        finally:
+            shutil.rmtree(holder, ignore_errors=True)
+
+
 class TestFamilyLedgerTest(unittest.TestCase):
     """No declared family may disappear by nobody populating its status."""
 

@@ -131,13 +131,27 @@ def model_tree_hash(project_dir: Path) -> str:
     covers the models, module descriptors and project module registry, and nothing that a
     build produces. A documentation commit elsewhere in the repository does not move it,
     which is why staleness is keyed on this rather than on a commit sha.
+
+    Line endings are normalised before hashing, and that is a correctness requirement
+    rather than a convenience. MPS writes CRLF; .gitattributes declares `* text=auto eol=lf`
+    so the repository stores LF; git therefore reports a clean tree while 184 of the 185
+    controlled files differ byte-for-byte from what a clone receives. Hashing raw bytes
+    produced a currency key that verified on the machine that computed it and on no other --
+    the same defect as a retained report stored CRLF, at the centre of the package instead of
+    at its edge.
+
+    This does not relax a determinism gate. The byte-exact corpus and trace gates are
+    unchanged; what changes is a key whose job is to answer "is this the same model", and
+    line endings are not part of model identity -- git itself treats the two forms as the
+    same content. Normalising makes the key equal to what the repository stores, which is
+    what a reviewer can actually reproduce.
     """
     digest = hashlib.sha256()
     for path in controlled_files(project_dir):
         digest.update(str(path.relative_to(project_dir)).replace("\\", "/").encode())
         digest.update(b"\0")
         with io.open(path, "rb") as handle:
-            digest.update(hashlib.sha256(handle.read()).digest())
+            digest.update(hashlib.sha256(handle.read().replace(b"\r\n", b"\n")).digest())
     return digest.hexdigest()
 
 

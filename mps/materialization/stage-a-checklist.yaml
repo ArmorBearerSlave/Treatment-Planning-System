@@ -2512,6 +2512,39 @@ acceptance_items:
                   maintained everywhere it matters. The declared test families and their
                   states are the ledger below; it is not uniformly green, and the reviewer
                   should read the states there rather than any count restated in prose.
+              currency_key_was_not_portable:
+                severity: >-
+                  The most consequential defect found in this sequence, and it sat at the
+                  centre of the package rather than at its edge.
+                what: >-
+                  model_tree_hash hashed raw working-copy bytes. MPS writes CRLF; .gitattributes
+                  declares * text=auto eol=lf so the repository stores LF; git therefore
+                  reported a clean tree while 184 of the 185 controlled files differed
+                  byte-for-byte from what a clone receives. Every model_tree_sha256 recorded in
+                  the acceptance evidence was taken over bytes no reviewer could ever reproduce,
+                  so the currency gate would have failed on a fresh clone -- the gate whose
+                  whole purpose is to tell a reviewer whether the evidence is current.
+                how_it_surfaced: >-
+                  Not by audit. Applying a retained perturbation patch to the base tree failed
+                  to reproduce the recorded perturbed hash, and reversing it failed to return
+                  to base. git apply writes LF into a CRLF tree, so the bytes moved while the
+                  content did not. The patch experiment was being built for a different reason
+                  and exposed this.
+                fix: >-
+                  model_tree_hash normalises line endings before hashing. This does not relax a
+                  determinism gate: the byte-exact corpus and trace gates are untouched. What
+                  changed is a key whose job is to answer "is this the same model", and line
+                  endings are not part of model identity -- git treats the two forms as the same
+                  content. Normalising makes the key equal to what the repository stores, which
+                  is what a reviewer can reproduce. Proven invariant by flipping the line
+                  endings of all 185 controlled files in a copy and observing the same hash.
+                the_general_form: >-
+                  Evidence identity must be computed over the artifact as delivered to the
+                  consumer, not over the producer's working copy. The same defect appeared three
+                  times in one session at three scales: a retained report stored CRLF whose hash
+                  verified locally and nowhere else; two primary artifacts hashed inside a
+                  gitignored directory the test target deletes; and the currency key itself
+                  taken over an off-policy working tree. Each verified where it was computed.
               red_state_artifacts_retained:
                 defect_found_at_handoff: >-
                   The evidence file preserved only the passing state. The two controls that do
@@ -2530,8 +2563,31 @@ acceptance_items:
                   the same controls, not the outputs of the historical ones, and the evidence
                   file says so.
                 retained:
-                - mps/materialization/evidence/control-failure-sensitivity.junit.xml
-                - mps/materialization/evidence/control-foreign-rule-discrimination.junit.xml
+                - mps/materialization/evidence/MPS-MAT-008/green/cold-build.log
+                - mps/materialization/evidence/MPS-MAT-008/green/junit.xml
+                - mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/perturbation.patch
+                - mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/junit.xml
+                - mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/perturbation.patch
+                - mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/junit.xml
+                intervention_is_retained_not_only_the_outcome: >-
+                  Each control retains its perturbation as a patch. Applying the patch to the
+                  base tree reproduces the recorded perturbed hash exactly and reversing it
+                  returns to base, both verified, so a reviewer can reproduce the intervention
+                  from a primary artifact instead of recreating model surgery from prose.
+                  Without it the package proved that S1 went red and left what caused it on
+                  self-report. Note the interventions are reproducible in effect but not in
+                  bytes when performed through MPS -- node ids are freshly allocated on every
+                  write, so repeating one yields a different tree hash. That is why the patch,
+                  not the procedure, is the artifact of record.
+                the_primary_artifacts_were_the_ones_missing: >-
+                  The first attempt retained the two supporting controls and left the two
+                  artifacts carrying the primary acceptance claim pointing into build/work/,
+                  which is gitignored and which the test target deletes on every run. On a
+                  fresh clone two hashes verified and two were dangling references, with
+                  nothing marking which was which. Found by running the clone simulation over
+                  every referenced path rather than over the two just changed -- the same move
+                  as enumerating the whole antlib instead of searching it for the task already
+                  wanted.
                 restoration_is_now_machine_checkable: >-
                   A red-state artifact is by definition taken on a different tree, so each
                   control records the tree it perturbed from, the tree it ran on, and the tree

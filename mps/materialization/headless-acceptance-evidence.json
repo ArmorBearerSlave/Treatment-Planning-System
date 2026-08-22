@@ -1,11 +1,12 @@
 {
+  "artifact_policy": "Every artifact this record references lives under mps/materialization/evidence/ and is committed, so its hash is verifiable from a fresh clone. An earlier version pointed the two primary hashes into build/work/, which is gitignored and which the test target deletes on every run: those hashes were dangling references to files a reviewer could not obtain, while the two supporting controls verified. All retained artifacts are stored with LF endings so git normalisation is a no-op and the bytes a reviewer clones are the bytes hashed.",
   "build": {
     "cold": true,
     "drift": "clean",
     "exit_code": 0,
-    "log": "build/work/closure-make.log",
-    "log_sha256": "bae15b9f80e4238552f7895672b9696cb67445feb32719264d6259e9ca8dc7c4",
-    "model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
+    "log": "mps/materialization/evidence/MPS-MAT-008/green/cold-build.log",
+    "log_sha256": "a709703c91a4b9969a2cca88ea7c094f640d412a364b459c9d91b6af64e872ce",
+    "model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
     "modules": [
       "nltps.foundation.mpl",
       "nltps.governance.mpl",
@@ -26,50 +27,56 @@
     "failure_sensitivity": {
       "answers": "Whether S1 detects the REA-C-002 violation or passes vacuously. A green never seen to go red is the same family as a pass over an empty population.",
       "assertion": "java.lang.AssertionError: node <VerificationClaim [1365532761392382826]> does not have the expected 'error' message ''",
-      "base_model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
+      "base_model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
       "errors": 1,
       "executed": 2,
       "exit_code": 1,
       "failures": 0,
+      "intervention": "Bind a ManualEvidenceRef to the VerificationClaim under test, making the claim valid for REA-C-002 so the rule stops reporting. The fixture is perturbed, never the rule.",
       "not_passing": [
         "test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()"
       ],
       "passing": [
         "test_testAssessedClaimWithoutEvidenceIsRejected()"
       ],
-      "perturbation": "A ManualEvidenceRef was bound to the VerificationClaim under test, making the claim valid for REA-C-002 so the rule stops reporting. The fixture was perturbed, never the rule: editing or disabling REA-C-002 would test a synthetic implementation defect and would spend governed semantics carrying hazard traceability to buy a test property.",
-      "perturbed_model_tree_sha256": "d76c8bcaee7e75bbbc3b152a7415617a61ced716598114fd70bea05f640a3362",
-      "report": "mps/materialization/evidence/control-failure-sensitivity.junit.xml",
-      "report_sha256": "dcebce98db2ab1f310d90053ea132ec1bf24ba5cc756f00d63960c4cd5d2a64b",
+      "patch": "mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/perturbation.patch",
+      "patch_reproduces_perturbed_tree": true,
+      "patch_sha256": "0ec43374d160831143b5517f028e9bdf72754b23a2cb3649255cef47c39aba75",
+      "perturbed_model_tree_sha256": "df52b5e1dc7b7b2b8ee19c62ab8ed25fae9bbc3d35b0e0aa76d8e3584ee8ffa7",
+      "report": "mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/junit.xml",
+      "report_sha256": "143aecd40c84cdea2d45e265b6f0f335fe7c02c595b42a559ff97e31bce22baf",
       "restoration_identical": true,
-      "restored_model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
+      "restored_model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
       "verdict": "red-as-required"
     },
     "foreign_rule_discrimination": {
-      "answers": "Whether S1 tracks REA-C-002 specifically or any error on the node. The two hypotheses make opposite predictions here and identical predictions under the failure-sensitivity control, because REA-C-003's trigger set is a strict subset of REA-C-002's -- passed is assessed -- so no perturbation of that fixture can separate them.",
+      "answers": "Whether S1 tracks REA-C-002 specifically or any error on the node. The two hypotheses predict oppositely here and identically under the failure-sensitivity control, because REA-C-003's trigger set is a strict subset of REA-C-002's.",
       "assertion": "java.lang.AssertionError: node <VerificationClaim [1365532761392382826]> does not have the expected 'error' message ''",
-      "base_model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
+      "base_model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
       "errors": 1,
       "executed": 2,
       "exit_code": 1,
       "failures": 0,
+      "intervention": "Retarget S1's errorRef from REA-C-002's ReportErrorStatement to GOV-C-001's, leaving the invalid sentinel unchanged. GOV-C-001 is applicable to Requirement and only REA-C-002 and REA-C-003 apply to VerificationClaim, so it cannot report on the sentinel; the node still carries two real errors while S1 expects a rule reporting none.",
       "not_passing": [
         "test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()"
       ],
       "passing": [
         "test_testAssessedClaimWithoutEvidenceIsRejected()"
       ],
-      "perturbation": "S1's errorRef was retargeted from REA-C-002's ReportErrorStatement to GOV-C-001's, leaving the invalid sentinel unchanged. GOV-C-001 is applicable to Requirement, and only REA-C-002 and REA-C-003 apply to VerificationClaim at all, so it structurally cannot report on the sentinel. The node therefore still carries two real errors while S1 expects a rule reporting none.",
-      "perturbed_model_tree_sha256": "482b9057ed1c00d71ab225e0e1ff95102acc5949a10487909fad849748d01cc0",
-      "report": "mps/materialization/evidence/control-foreign-rule-discrimination.junit.xml",
-      "report_sha256": "97e9a87ada899173ea04a016a3f804f139d33189957d8fb4a6642e51b00a7f56",
+      "patch": "mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/perturbation.patch",
+      "patch_reproduces_perturbed_tree": true,
+      "patch_sha256": "095404d9629e1fad219921638dc0a602e4ee7e3f58f0acdccf857c3af1f08fe0",
+      "perturbed_model_tree_sha256": "2308bbb60b40e54e5ceba4d7d874adfdd1b97a4065993efa53386748afafbf7a",
+      "report": "mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/junit.xml",
+      "report_sha256": "340a4850b7b27aa4efc6d8e3c021e8a8354c548db6ac91c2b9cdf2c4d7f720c0",
       "restoration_identical": true,
-      "restored_model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
+      "restored_model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
       "verdict": "red-as-required"
     }
   },
-  "controls_note": "These are red states. Each was produced by a perturbation of the fixture or of the assertion's rule pointer, never of a rule, and each records the tree it perturbed from, the tree it ran on, and the tree it restored to. base == restored is the restoration proof and is machine-checkable; perturbed != base establishes that the perturbation actually changed something. The runs were re-executed on the frozen tree so that artifacts exist: the JUnit reports of the original runs did not survive, because the test target deletes the reports directory on every run and a later run overwrote them. These reports are therefore new runs of the same controls, not the outputs of the historical ones. The retained reports are stored with LF endings so that git normalisation is a no-op and the bytes a reviewer clones are the bytes these hashes were taken over. The first attempt stored them CRLF, and the committed bytes differed from the working copy -- the gate would have failed on the fresh clone it exists to serve.",
-  "head": "e66039e1e4949dd1e8e4737c91436c62c16e0e19",
+  "controls_note": "Each control retains both halves of the experiment. The patch is the intervention: applying it to the base tree reproduces the perturbed hash exactly, and reversing it returns to base, both verified. The report is the observation. Without the patch a reviewer could see that S1 went red but would have to take the cause on the implementer's word, which is the one source an independent review is told not to rely on. Note that the interventions are reproducible in effect but not in bytes when performed through MPS: node ids are freshly allocated on each write, so a repeated perturbation yields a different tree hash. That is why the patch, not the procedure, is the artifact of record. These runs were re-executed on the frozen model state; they are reproducibility evidence, not archival evidence.",
+  "head": "61a335ea064badbc7e1257c18f7dfb8e4eea536b",
   "model_tests": {
     "authored": 2,
     "discovered": 2,
@@ -81,11 +88,12 @@
       "test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()",
       "test_testAssessedClaimWithoutEvidenceIsRejected()"
     ],
-    "model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
-    "report": "build/work/reports/TEST-junit-jupiter.xml",
-    "report_sha256": "ad672e2044c7f461689fc808b5cebc3c1755a9b3534f7a342c73883c7420d0cc",
+    "model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
+    "report": "mps/materialization/evidence/MPS-MAT-008/green/junit.xml",
+    "report_sha256": "96273d00f78e5348f5de57181b5a2a46a70f119b9f5efafb5e85e79e543801cb",
     "verdict": "pass"
   },
-  "model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
+  "model_tree_hash_normalises_line_endings": true,
+  "model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
   "mps_build": "MPS-261.25134.779"
 }
