@@ -79,15 +79,24 @@ evidence that the model is valid; the acceptance wording asks for model tests as
 separate clause precisely because they are a separate thing, and the project declares
 none.
 
-**The project has never built from a clean state.** `nltps.foundation.behavior` holds one
-root, a baseLanguage `ClassConcept`, and no `ConceptBehavior`; MPS still generates
-`Language.java` referencing a `BehaviorAspectDescriptor` that the aspect generator never
-emits. Delete every `source_gen` and `classes_gen` and the interactive IDE fails exactly
-as the headless build does. Four checkpoints stayed green on generated output produced
-before that aspect took its current shape. **A long-lived IDE with a warm output tree
-will keep a project green that cannot be built at all** — recorded as `POST-MPS4-01`,
-and not to be fixed by improvising a change to a language aspect at the end of a build
-session.
+**The project had never built from a clean state, and now does.** `nltps.foundation
+.behavior` held one root, a baseLanguage `ClassConcept`, and no `ConceptBehavior`; MPS
+still generated `Language.java` referencing a `BehaviorAspectDescriptor` the aspect
+generator never emits. Deleting every `source_gen` and `classes_gen` made the interactive
+IDE fail exactly as the headless build did — four checkpoints had stayed green on output
+generated before that aspect took its current shape. **A long-lived IDE with a warm output
+tree will keep a project green that cannot be built at all.** `POST-MPS4-01`, corrected by
+moving the utility into `nltps.foundation.typesystem` where its three callers live; the
+behaviour aspect is left present and empty, which is sufficient — its existence does not
+trigger the reference, its having content does.
+
+**Moving a root between models breaks incoming references silently.**
+`MOVE_NODE_TO_PARENT` with a `modelReference` preserves node identity but does not repoint
+what pointed at it: all three call sites still addressed the vacated model, printed as
+`null.null`, and `check_root_node_problems` reported no problems. `FIX_REFERENCES` per
+affected root repairs them. **Re-run `FIND_USAGES` after any cross-model move** — the
+checker will not tell you, and a fix count is a claim about what the tool did, not about
+what the model now says.
 
 - Scope, acceptance items, deferrals, and native check results: `mps/materialization/stage-a-checklist.yaml`
 - Concept design that MPS-1 transcribed: `mps/bootstrap/mps1-concept-features.yaml`

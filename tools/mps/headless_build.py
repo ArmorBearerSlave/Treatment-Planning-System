@@ -196,9 +196,13 @@ def main() -> int:
               file=sys.stderr)
         return 1
 
+    log_shown = args.log.resolve()
+    try:
+        log_shown = log_shown.relative_to(REPO_ROOT)
+    except ValueError:
+        pass
     print(f"PASS: headless build succeeded in {elapsed:.0f}s using MPS "
-          f"{toolchain['mps_build']} outside the IDE; log at "
-          f"{args.log.relative_to(REPO_ROOT)}")
+          f"{toolchain['mps_build']} outside the IDE; log at {log_shown}")
 
     if args.record:
         record = {

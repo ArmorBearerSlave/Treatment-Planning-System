@@ -1464,13 +1464,72 @@ acceptance_items:
         This is the class of finding a headless build exists to produce. An interactive IDE
         is a long-lived process with a warm output tree, and a project can remain green in it
         for four checkpoints while not being reproducible at all.
-      disposition: >-
-        Not fixed here. The remedy touches MPS-owned persistence in a language aspect, and
-        the two candidate remedies -- giving the behaviour aspect a ConceptBehavior root, or
-        moving the CalendarDates helper out of the behaviour aspect -- are controlled model
-        decisions, not build-system engineering. Improvising either at the end of a build
-        session would be exactly the "altering semantics to make a build pass" this item
-        forbids.
+      disposition: CORRECTED
+      correction:
+        decision: >-
+          CalendarDates is a static language utility, not concept behaviour. Its placement in
+          the behaviour aspect was semantically wrong and was what caused the clean-build
+          failure. It was moved unchanged into nltps.foundation.typesystem, where all three
+          controlled callers already live, leaving the behaviour aspect empty. No
+          ConceptBehavior was invented to make the descriptor generator fire; that would have
+          satisfied the compiler while leaving the language design dishonest.
+        mechanism: >-
+          mps_mcp_alter_nodes MOVE_NODE_TO_PARENT with a modelReference, which moves the root
+          between models rather than recreating it. Node identity 1365532761375215457 is
+          preserved across the move, which is what allowed the incoming references to be
+          repaired rather than rebuilt.
+        feasibility_checked_first: >-
+          nltps.foundation.typesystem declares jetbrains.mps.baseLanguage among its used
+          languages and already held six NonTypesystemRule roots whose bodies are baseLanguage,
+          so a ClassConcept root is metamodel-legal there. Whether the aspect generation plan
+          would emit it was left to the cold build, which it did.
+        empty_aspect_is_sufficient: >-
+          The behaviour model was left in place and empty rather than deleted, and the
+          generated Language.java now carries zero BehaviorAspectDescriptor references. The
+          model's existence is not what triggers the reference; its having content is. Three of
+          the eight empty behaviour models -- governance, clinicalintent and realization --
+          were created at MPS-0 before their languages had any concepts, so every generation
+          of their Language.java has occurred with an empty behaviour model already present.
+          foundation is the controlled differential: identical until CalendarDates arrived.
+        defect_population: >-
+          One. The cold build reaches and completes all nine languages, and no
+          BehaviorAspectDescriptor reference exists anywhere in generated output. The eight
+          empty behaviour aspects are unaffected, which the nine-language completion is what
+          establishes rather than the prediction that preceded it.
+      evidence:
+      - 'Call sites re-verified through MPS''s usage index, not grep: three StaticMethodCall
+        nodes resolving to CalendarDates.isValidCalendarDate(string):boolean -- two in
+        FND_REPR_version_dates, one in FND_REPR_externalreference_date, none in
+        FND_REPR_magnitude_numeric. Same three node identities as before the move.'
+      - 'Behavioural re-proof, run before trusting any build, because this utility once
+        returned false for every input and produced a false calendar PASS caught only by
+        read-back: 2026-8-1 rejected as lexical, 2026-02-31 rejected as calendar with a
+        distinct diagnostic, 2024-02-29 accepted with the whole proof model clean. A no-op
+        implementation would have passed the first two; the old false-success mode would have
+        failed the third.'
+      - 'Clean build: every source_gen, source_gen.caches and classes_gen directory deleted,
+        then the headless build completed all nine languages -- foundation, governance,
+        clinicalintent, the four roles languages, realization -- with BUILD SUCCESSFUL in 55s.'
+      - 'Second independent build on the output of the first: BUILD SUCCESSFUL in 32s. Before
+        the correction this was the run that failed, because the first build had consumed a
+        source_gen tree left behind by the IDE and then overwritten it.'
+      - 'Controlled drift: two model files, the behaviour aspect losing its root and the
+        typesystem aspect gaining it. 258 tests, 96/96 concepts, 119/119 corpus roots,
+        Stage-B 119/119, hazard profile 73/46/18/94, metric 76/2,144 all unchanged.'
+      silent_failure_found:
+        what: >-
+          MOVE_NODE_TO_PARENT across models does not repoint incoming references, and nothing
+          reports the result. Immediately after the move, all three call sites still pointed
+          into the vacated model, printed as "null.null", and
+          check_root_node_problems on the containing model returned "no problems found".
+        remedy: >-
+          mps_mcp_alter_nodes FIX_REFERENCES per affected root repaired all six references,
+          four in FND_REPR_version_dates and two in FND_REPR_externalreference_date. Verified
+          by re-running FIND_USAGES, not by trusting the fix count.
+        rule: >-
+          After moving a node between models, re-run FIND_USAGES on it. The model checker will
+          not tell you, and a fix count is a claim about what the tool did, not about what the
+          model now says.
     established:
     - 'Mechanism: bundled Apache Ant at MPS_HOME/lib/ant, driven by the bundled JDK at
       MPS_HOME/jbr, loading jetbrains/mps/build/ant/antlib.xml from lib/ant/lib/ant-mps.jar
@@ -1533,10 +1592,13 @@ acceptance_items:
         item should be satisfied rather than amended. Trying to make mps.make evaluate
         checking rules would be the weaker answer to a question MPS already answers.
     remaining_to_close:
-    - Resolve POST-MPS4-01 so the project generates from a clean state.
-    - Establish whether <mps.make> can be made to emit the behaviour aspect descriptor once
-      that model is well-formed, and confirm a cold build followed by a second independent
-      cold build.
+    - 'DONE: POST-MPS4-01 corrected; cold build completes all nine languages, and a second
+      independent build succeeds on the first build''s own output.'
+    - 'Re-verify the build clause in MPS-MAT-005A, 005B, 005C and 005D against the cold
+      build now that one exists, and clear their build_clause_status from unreproduced with
+      attributable evidence. The obligation is recorded on those four items; this line is
+      here so the session that closes MPS-MAT-008 cannot discharge the cold build without
+      seeing that four completed items were waiting on exactly that artifact.'
     - 'Decide what satisfies the model-tests clause: either author jetbrains.mps.lang.test
       models and run them through the launchtests task the same antlib registers, or amend
       the acceptance wording. Do not treat zero tests as tests passing.'
