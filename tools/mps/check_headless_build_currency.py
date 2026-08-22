@@ -157,7 +157,19 @@ def check() -> int:
 
     with io.open(EVIDENCE, encoding="utf-8") as handle:
         evidence = json.load(handle)
-    current = tree_hash()
+
+    # A measurement failure must not be reported as a finding about the model. If the corpus
+    # cannot be resolved the hash would be the digest of an empty population, which compares
+    # unequal to the recorded value and reads as staleness -- specific, confident and wrong.
+    try:
+        current = tree_hash()
+    except Exception as error:
+        print("MEASUREMENT INVALID: the controlled model tree could not be resolved, so no "
+              "verdict about the evidence is available. This is not a finding about the "
+              "model.", file=sys.stderr)
+        print("  " + str(error), file=sys.stderr)
+        return 2
+
     problems = []
 
     for branch, required in (("build", REQUIRED_BUILD), ("model_tests", REQUIRED_TESTS)):

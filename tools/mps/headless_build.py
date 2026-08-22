@@ -146,8 +146,28 @@ def model_tree_hash(project_dir: Path) -> str:
     same content. Normalising makes the key equal to what the repository stores, which is
     what a reviewer can actually reproduce.
     """
+    if not project_dir.is_dir():
+        raise ToolchainError(
+            f"cannot compute a model tree hash: {project_dir} is not a directory. This is a "
+            f"measurement failure, not a result. Returning a hash here would report the "
+            f"digest of an empty corpus -- e3b0c44298fc..., the SHA-256 of the empty string -- "
+            f"which a caller would compare against a recorded value and report as staleness: "
+            f"a specific, confident, wrong finding about the model.")
+    if not (project_dir / ".mps" / "modules.xml").is_file():
+        raise ToolchainError(
+            f"cannot compute a model tree hash: {project_dir} has no .mps/modules.xml, so it "
+            f"is not an MPS project root. A directory that merely contains files will hash "
+            f"successfully and produce a plausible answer to a question about a different "
+            f"corpus -- the failure mode is a confident result, not an error.")
+    files = controlled_files(project_dir)
+    if not files:
+        raise ToolchainError(
+            f"cannot compute a model tree hash: {project_dir} resolved to zero controlled "
+            f"files. An empty population must refuse rather than hash, for the same reason a "
+            f"test task over zero discovered tests is not a pass.")
+
     digest = hashlib.sha256()
-    for path in controlled_files(project_dir):
+    for path in files:
         digest.update(str(path.relative_to(project_dir)).replace("\\", "/").encode())
         digest.update(b"\0")
         with io.open(path, "rb") as handle:

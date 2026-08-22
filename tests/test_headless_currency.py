@@ -236,6 +236,49 @@ class ModelTreeHashTest(unittest.TestCase):
     machine that computed it.
     """
 
+    def test_the_instrument_refuses_rather_than_answering(self):
+        """An unresolvable corpus must be a measurement failure, not a finding.
+
+        A reviewer's first attempt at independent verification handed a Git Bash path to
+        Windows Python, which resolved it to nothing. The hash returned was
+        e3b0c44298fc... -- the SHA-256 of the empty string, mathematically correct for the
+        empty corpus the instrument actually saw. Compared against a recorded value it reads
+        as staleness: specific, confident and wrong. It was caught by recognising the
+        constant, which is luck, not design.
+
+        The same applies to a wrong-but-populated root, which would hash successfully and
+        answer a question about a different corpus.
+        """
+        import sys
+
+        sys.path.insert(0, str(REPO_ROOT / "tools" / "mps"))
+        import headless_build
+
+        for target in ("mps/NLTPSGovernance-does-not-exist", "build", "tools"):
+            with self.assertRaises(headless_build.ToolchainError, msg=target):
+                headless_build.model_tree_hash(REPO_ROOT / target)
+
+    def test_measurement_failure_is_reported_distinctly_from_a_verdict(self):
+        """Exit 2, not 1: cannot-measure must not look like the-evidence-is-stale."""
+        import subprocess
+        import sys
+
+        tool = REPO_ROOT / "tools" / "mps" / "check_headless_build_currency.py"
+        original = tool.read_text(encoding="utf-8")
+        try:
+            tool.write_text(
+                original.replace('PROJECT_DIR = REPO_ROOT / "mps" / "NLTPSGovernance"',
+                                 'PROJECT_DIR = REPO_ROOT / "mps" / "no-such-project"'),
+                encoding="utf-8", newline="")
+            result = subprocess.run([sys.executable, str(tool)], capture_output=True,
+                                    text=True, cwd=str(REPO_ROOT))
+            self.assertEqual(2, result.returncode, result.stdout + result.stderr)
+            self.assertIn("MEASUREMENT INVALID", result.stderr)
+            self.assertIn("not a finding about the model", result.stderr)
+        finally:
+            tool.write_text(original, encoding="utf-8", newline="")
+        self.assertEqual(original, tool.read_text(encoding="utf-8"))
+
     def test_hash_is_line_ending_invariant(self):
         import shutil
         import sys
