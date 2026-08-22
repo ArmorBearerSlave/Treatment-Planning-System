@@ -90,6 +90,15 @@ moving the utility into `nltps.foundation.typesystem` where its three callers li
 behaviour aspect is left present and empty, which is sufficient — its existence does not
 trigger the reference, its having content does.
 
+**Retargeting a cross-model reference does not withdraw the import the old target
+required.** Pointing a test's expected-rule reference at another language and back left
+`<import index="xv4b" ref="...(nltps.governance.typesystem)"/>` behind with nothing
+referencing it. The cold build passed 2/2 with it present and no gate mentioned it; only a
+byte-for-byte diff against the pre-change commit found it. **Verify a restoration by an
+empty `git diff`, never by re-reading the field you changed** -- a reformat, a residual
+import or a reordered element is invisible to read-back and produces a fourth state nobody
+has run.
+
 **A warm `idea.system` can make a working configuration look broken, and the false repair
 will appear to succeed.** A stale worker system directory produced
 `NoClassDefFoundError: org.jetbrains.mps.openapi.model.SNodeReference`, which reads exactly

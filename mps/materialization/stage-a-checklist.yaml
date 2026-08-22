@@ -2329,6 +2329,69 @@ acceptance_items:
                   Both directions of a controlled removal. Adding a thing and watching a symptom
                   go cannot distinguish "the addition fixed it" from "the next run was clean for
                   another reason"; only removing it and running cold can.
+              foreign_rule_discrimination_control:
+                why_the_previous_control_was_not_enough: >-
+                  The failure-sensitivity cycle could not separate two hypotheses. H_specific:
+                  S1 tracks REA-C-002's report. H_any: S1 tracks any error on the node. Binding
+                  evidence silences REA-C-002 and REA-C-003 together, so both hypotheses predict
+                  baseline pass, perturbed fail, restored pass -- identical predictions. And no
+                  perturbation of that fixture can separate them, because REA-C-003's trigger
+                  set is a strict subset of REA-C-002's: passed is assessed, so every node that
+                  trips REA-C-003 trips REA-C-002. The gap needed a different question, not a
+                  further perturbation.
+                why_it_mattered_beyond_rigour: >-
+                  If H_any held, a test named for REA-C-002 could be passing on REA-C-003's
+                  report -- a test named for one governed constraint witnessing another. In a
+                  programme whose deliverable is traceability that is a defect in the artifact,
+                  not a gap in the suite, and it is the exact risk that justified choosing
+                  NodeErrorCheckOperation over a plain error assertion.
+                design: >-
+                  S1's errorRef was retargeted from REA-C-002's ReportErrorStatement to
+                  GOV-C-001's, leaving the invalid sentinel completely unchanged. GOV-C-001 is
+                  applicable to Requirement, and only REA-C-002 and REA-C-003 are applicable to
+                  VerificationClaim at all, so GOV-C-001 structurally cannot report on the
+                  sentinel. The sentinel therefore still carries two real errors while S1 expects
+                  a rule that reports none: H_specific predicts fail, H_any predicts pass.
+                  Binary, one cold run, and no new node -- N stayed 2 and the fixture was not
+                  touched.
+                result: >-
+                  tests=2, exit 1. S1 does not pass, with
+                  java.lang.AssertionError: node <VerificationClaim [1365532761392382826]> does
+                  not have the expected 'error' message. H1 passes. An error from the wrong rule
+                  cannot satisfy the rule-specific assertion. H_any is refuted behaviourally,
+                  not by inspection of the mechanism.
+                restoration_needed_two_undos_and_the_diff_found_the_second: >-
+                  Retargeting made MPS add a nltps.governance module dependency, which was
+                  expected and removed. It also left a model import, xv4b pointing at
+                  nltps.governance.typesystem, behind after the reference moved away -- an import
+                  outliving its only referent, the same residue class recorded for the emptied
+                  behaviour model. Nothing referenced it, the cold run passed 2/2 with it
+                  present, and no gate mentioned it. Only the empty-diff requirement found it.
+                  Removed through mps_mcp_model_dependency; final git status is empty and the
+                  cold run is tests=2 failures=0 errors=0 exit 0.
+                the_lesson_that_generalises: >-
+                  Retargeting a cross-model reference does not withdraw the import the old
+                  target required. A restoration verified by re-reading the field that changed
+                  would have reported success here, and the tests would have agreed with it.
+              acceptance_criterion_restated_on_substance:
+                supersedes: failures=1 and errors=0
+                criterion: >-
+                  S1 does not pass, H1 passes, and the reason is the check operation's own
+                  assertion naming the node under test. The JUnit failures/errors column is
+                  recorded as observation and never used as the criterion: an AssertionError
+                  crossing ThreadUtils.runInUIThreadAndWait arrives wrapped in a RuntimeException
+                  and files under errors, which is a transport artifact of the mechanism rather
+                  than an outcome. A criterion keyed on the column rather than on which test
+                  failed and why is the same defect as one keyed on a count rather than a member.
+              rea_c_002_evidence_package:
+                execution: direct
+                rule_specificity: direct
+                positive_detection: direct
+                failure_sensitivity: direct
+                foreign_rule_discrimination: direct
+                cold_reproducibility: direct
+                identity_preservation: direct
+                restoration: byte-identical, verified by empty git diff
               instrumented_execution_not_reconstruction: >-
                 The probe calls super.work() first and lets production LaunchTestWorker.work()
                 reproduce the failure, rather than re-attempting loadClass itself. Re-attempting
