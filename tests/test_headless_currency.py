@@ -119,6 +119,23 @@ class RedStateControlTest(CurrencyGateTest):
             self.assertEqual(control["report_sha256"],
                              hashlib.sha256(path.read_bytes()).hexdigest(), name)
 
+    def test_retained_reports_are_stored_so_git_cannot_change_them(self):
+        """The bytes a reviewer clones must be the bytes the hashes were taken over.
+
+        The first attempt stored these reports with CRLF endings. Git normalises to LF on
+        commit, so the committed bytes differed from the working copy and the gate would
+        have failed on the fresh clone it exists to serve -- while passing locally. Same
+        shape as the restoration residue: the artifact verified here was not the artifact
+        delivered there.
+        """
+        with io.open(EVIDENCE, encoding="utf-8") as handle:
+            controls = json.load(handle)["controls"]
+        for name, control in controls.items():
+            raw = (REPO_ROOT / control["report"]).read_bytes()
+            self.assertEqual(0, raw.count(b"\r"),
+                             f"{name} report contains CR bytes; git will rewrite it and the "
+                             f"recorded hash will not survive a clone")
+
     def test_missing_controls_are_rejected(self):
         self._damaged(lambda e: e.pop("controls"), "rest on narrative alone")
 

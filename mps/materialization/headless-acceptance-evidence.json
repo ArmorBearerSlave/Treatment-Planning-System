@@ -40,7 +40,7 @@
       "perturbation": "A ManualEvidenceRef was bound to the VerificationClaim under test, making the claim valid for REA-C-002 so the rule stops reporting. The fixture was perturbed, never the rule: editing or disabling REA-C-002 would test a synthetic implementation defect and would spend governed semantics carrying hazard traceability to buy a test property.",
       "perturbed_model_tree_sha256": "d76c8bcaee7e75bbbc3b152a7415617a61ced716598114fd70bea05f640a3362",
       "report": "mps/materialization/evidence/control-failure-sensitivity.junit.xml",
-      "report_sha256": "98dedd307d67792da605969cfa473fe96a868b46bd0a0119b55bd1e77f298b93",
+      "report_sha256": "dcebce98db2ab1f310d90053ea132ec1bf24ba5cc756f00d63960c4cd5d2a64b",
       "restoration_identical": true,
       "restored_model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
       "verdict": "red-as-required"
@@ -62,13 +62,13 @@
       "perturbation": "S1's errorRef was retargeted from REA-C-002's ReportErrorStatement to GOV-C-001's, leaving the invalid sentinel unchanged. GOV-C-001 is applicable to Requirement, and only REA-C-002 and REA-C-003 apply to VerificationClaim at all, so it structurally cannot report on the sentinel. The node therefore still carries two real errors while S1 expects a rule reporting none.",
       "perturbed_model_tree_sha256": "482b9057ed1c00d71ab225e0e1ff95102acc5949a10487909fad849748d01cc0",
       "report": "mps/materialization/evidence/control-foreign-rule-discrimination.junit.xml",
-      "report_sha256": "8ef091fb5714c8a428051d90e48e4a0637cc5684f4370271863205eb75450c59",
+      "report_sha256": "97e9a87ada899173ea04a016a3f804f139d33189957d8fb4a6642e51b00a7f56",
       "restoration_identical": true,
       "restored_model_tree_sha256": "eeb7e478dc4484d187f05e299a6a2de746e66577e6151f01618bbe36d3c6e87f",
       "verdict": "red-as-required"
     }
   },
-  "controls_note": "These are red states. Each was produced by a perturbation of the fixture or of the assertion's rule pointer, never of a rule, and each records the tree it perturbed from, the tree it ran on, and the tree it restored to. base == restored is the restoration proof and is machine-checkable; perturbed != base establishes that the perturbation actually changed something. The runs were re-executed on the frozen tree so that artifacts exist: the JUnit reports of the original runs did not survive, because the test target deletes the reports directory on every run and a later run overwrote them. These reports are therefore new runs of the same controls, not the outputs of the historical ones.",
+  "controls_note": "These are red states. Each was produced by a perturbation of the fixture or of the assertion's rule pointer, never of a rule, and each records the tree it perturbed from, the tree it ran on, and the tree it restored to. base == restored is the restoration proof and is machine-checkable; perturbed != base establishes that the perturbation actually changed something. The runs were re-executed on the frozen tree so that artifacts exist: the JUnit reports of the original runs did not survive, because the test target deletes the reports directory on every run and a later run overwrote them. These reports are therefore new runs of the same controls, not the outputs of the historical ones. The retained reports are stored with LF endings so that git normalisation is a no-op and the bytes a reviewer clones are the bytes these hashes were taken over. The first attempt stored them CRLF, and the committed bytes differed from the working copy -- the gate would have failed on the fresh clone it exists to serve.",
   "head": "e66039e1e4949dd1e8e4737c91436c62c16e0e19",
   "model_tests": {
     "authored": 2,
