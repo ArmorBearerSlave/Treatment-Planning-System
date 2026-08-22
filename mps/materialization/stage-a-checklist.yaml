@@ -1834,6 +1834,33 @@ acceptance_items:
                 to bound it. Whether the test target should clear system/ each run is a
                 decision for the unit that closes this item, not something to change while a
                 diagnosis is open.
+            probe_mechanism_found:
+              task: >-
+                mps.run-worker, registered by the same antlib as mps.make and backed by
+                MpsLoadTask, the base class LaunchTestTask itself extends. It carries setWorker
+                with the error "Please specify 'worker' class to execute", so a CoreWorker
+                subclass supplied on the task classpath runs arbitrary code inside the worker's
+                MPS runtime with the repository loaded. WorkerBase declares a Script
+                constructor, work() and dispose(); CoreWorker extends it and warns "Can't find
+                suitable constructor (prefer the one that takes Script/Platform instances)".
+              why_this_and_not_a_reimplementation: >-
+                It observes the failing runtime rather than an environment reconstructed to
+                resemble it, so no equivalence needs proving. It is a plain Java class in a
+                plain jar compiled against mps-tool.jar and mps-core.jar with the bundled JDK:
+                build engineering, no MPS Build model and no MPS persistence, so nothing frozen
+                is touched. Every piece of wiring already paid for transfers unchanged -- the
+                three plugin declarations, jnaLibraryPath, the idea.system, config and log
+                paths, and autoPluginDiscovery left off, since this is the same CoreWorker that
+                crashes with it.
+              how_the_project_reaches_it: >-
+                Settled before wiring rather than during, because guessing the testmodules
+                shape already cost a cycle. MpsLoadTask has no project element: its only
+                Project references are org.apache.tools.ant.Project, Ant's own. Modules arrive
+                through RepositoryDataType, the repository element, which accepts modules with
+                a dir attribute and module with a file attribute, and setRepoDescriptor takes
+                the jetbrains.mps.tool.common.RepositoryDescriptor built from it. So the probe
+                names the module descriptors it needs in a repository element where
+                launchtests takes project plus testmodules.
             probe_mechanism_first: >-
               Prove the mechanism before trusting any value it produces. The diagnostic must
               observe the actual forked launchtests process at the failing call, not an
