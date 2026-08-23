@@ -2,6 +2,44 @@ schema_version: "0.2"
 package_id: MPS-MAT-01
 status: in_progress
 authority_stage: A_mirror
+
+assurance_state_correction:
+  correction_id: MPS-MAT-009-GSC-01
+  arising_from: MPS-MAT-009 independent adversarial review, finding F2
+  what_changed:
+    acceptance_items_before: 15 of 16 complete
+    acceptance_items_after: 11 of 16 complete
+    items_reopened: [MPS-MAT-003D, MPS-MAT-005D, MPS-MAT-006, MPS-MAT-008]
+    reopened_to: pending
+    not_blocked_because: >-
+      Each has identifiable remediation work remaining. blocked would assert that something
+      external prevents progress, which is not the case for any of them.
+  the_statement_that_matters: >-
+    The change from 15/16 to 11/16 is correction of an overstated historical assurance
+    state, not regression of the engineered system. Nothing was built that has since broken,
+    and no demonstration that was performed has been withdrawn. What changed is that the
+    record now distinguishes an obligation that was DISCHARGED from one that was merely
+    asserted, and four items were relying on the second while being counted as the first.
+  historical_observation_preserved: >-
+    15 of 16 was reported, in good faith, on every run before this correction, and that
+    report is retained rather than rewritten. It was true about what the record said and
+    false about what the record could show. Deleting it would remove the evidence that the
+    gate suite could report a state it could not substantiate, which is the finding.
+  scope_confined_to_mps4:
+    verified_mechanically: true
+    mps_0_through_mps_3: unchanged; every item complete before and after
+    mps_4: already all-complete false before this correction, because MPS-MAT-009 was pending
+    consequence: >-
+      No previously closed checkpoint state moves, and no checkpoint closure claim in the
+      session controls required amendment. The aggregate decreased; no closure did.
+  derivation_rule: >-
+    Both figures are derived from acceptance-item state and from the evidence reconciler on
+    every run. Neither is preserved here as an assertion, and this block records what the
+    correction was, not what the numbers are.
+  governing_principle: >-
+    A correct observer is allowed to remain RED while the governed object remains
+    incomplete. The observer was not weakened, suppressed, reclassified or bypassed because
+    the corrected state became numerically worse.
 patient_data_permitted: false
 clinical_credentials_permitted: false
 signing_keys_permitted: false
@@ -454,7 +492,7 @@ acceptance_items:
     checkpoint: MPS-4
     item: Realization concepts are disjoint, exhaustive, and single-owner against the blueprint
       inventory.
-    status: complete
+    status: pending
     completion_qualifier: COMPLETE
     completion_basis: The eighteen realization concepts were read back from MPS feature by
       feature against the frozen inventory, and the derived ceiling is unchanged by the
@@ -701,6 +739,17 @@ acceptance_items:
         must_be_reexercised_when: >-
           the verification concept becomes available; the literal frozen example is then
           run against the same unchanged mechanism.
+        discharged_by_record: GOV-C-004-literal-example
+        discharge_note: >-
+          Re-exercised under MPS-MAT-009 remediation. The literal example
+          Hazard --MITIGATES--> VerificationClaim was demonstrated against the unchanged
+          implementing rule GOV_C_002_tracelink_relation_validity, with the assertion bound
+          to the report-error statement by pointer rather than by message text, and with a
+          foreign-rule discrimination control run on the same fixture. There is no GOV-C-004
+          implementation rule: GOV-C-004 is a named specification case implemented by
+          GOV-C-002's generalized relation-validity rule, and both arms of the literal case
+          are invalid, so the source arm alone would satisfy a generic node-error check. That
+          is why the demonstration is statement-level and why the control is retained with it.
         traceability_retained: true
 
       - constraint: FND-C-003
@@ -1299,7 +1348,7 @@ acceptance_items:
     checkpoint: MPS-4
     item: Realization constraints, typesystems, editors, and negative model tests pass,
       including demonstrated rejection of deliberately invalid nodes.
-    status: complete
+    status: pending
     completion_qualifier: COMPLETE_WITH_ONE_DEFERRED_CONTROL
     completion_basis: Each of REA-C-001 through REA-C-007 was proven by the mechanism its
       frozen enforcement class names, negative example first and positive control after. The
@@ -1361,6 +1410,20 @@ acceptance_items:
       than counted. The classifier reads concept and model, never identifier text.'
     - 'Editors: eighteen ConceptEditorDeclarations, one per realization concept, and the
       language rebuilds cleanly.'
+    - 'GOV-C-004 literal example DEMONSTRATED against the unchanged mechanism, discharging the
+      literal_example_substitution deferral carried here from MPS-MAT-005A. The fixture is a
+      TraceLink with relation MITIGATES, source Hazard HAZ-001 and target VerificationClaim
+      VCL-001; every referenced node is persisted at the reviewed commit and was verified
+      individually. Rejection is attributable at report-error-statement granularity by
+      pointer: the target-arm statement, the only locus in the model naming GOV-C-004, and the
+      source-arm statement, asserted separately because the literal case is invalid on both
+      arms and a generic node-error check would be satisfied by the source arm alone.
+      Discrimination is proven at the assertion layer, not by finding a fixture on which only
+      GOV-C-004 fires: repointing the assertion at a foreign rule made it decline while the
+      source-arm assertion passed on the same node in the same run. Retained under record
+      GOV-C-004-literal-example, hash-bound. Recorded observation: GOV-C-004 has no
+      implementation rule of its own and is a named specification case implemented by
+      GOV_C_002_tracelink_relation_validity.'
     resolved_conflict:
       between: REA-C-002 and REA-C-003
       was: >-
@@ -1417,7 +1480,7 @@ acceptance_items:
   - id: MPS-MAT-006
     checkpoint: MPS-4
     item: The HLR importer accepts the schema-valid bundle and creates exactly 119 roots.
-    status: complete
+    status: pending
     completion_qualifier: COMPLETE
     completion_basis: Every root was read back from the MPS runtime and compared with the
       controlled bundle feature by feature. No sampling was used, and the count alone was
@@ -1465,7 +1528,7 @@ acceptance_items:
   - id: MPS-MAT-008
     checkpoint: MPS-4
     item: Headless build and model tests pass without the experimental agent toolkit.
-    status: complete
+    status: pending
     completion_qualifier: COMPLETE
     closure_authority: >-
       Recorded on the reviewer's ruling, not on the implementer's own assessment. The

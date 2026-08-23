@@ -1,0 +1,124 @@
+schema_version: "0.1"
+register_id: MPS-MAT-009-ADJ
+title: Adjudications required by the MPS-MAT-009 finding set
+status: recorded
+
+purpose: >-
+  An adjudication is recorded here BEFORE the work it authorizes is performed. The order
+  matters: deciding whether an obligation exists after running the demonstration would make
+  the demonstration the reason for the decision, and a proof obligation that is discovered
+  to be satisfiable is not the same thing as one that was owed.
+
+authored_by:
+  role: stage_a_remediation_actor
+  not: MPS-MAT-009 reviewer
+  separation_note: >-
+    The reviewer froze the findings and repaired nothing. Every disposition below is the
+    remediation actor's, and none of them is a re-review. Closure of these repairs is
+    dispositioned by review, not by the actor who wrote them.
+
+adjudications:
+  - id: ADJ-F2-001
+    finding: F2
+    question: >-
+      Does the GOV-C-004 literal-example proof obligation survive, given that the MPS-1
+      concept freeze calls the substitution an equivalent restatement "rather than
+      deferred", while MPS-2 and MPS-4 both classify it as an open deferral?
+    decided_before: >-
+      Any attempt to construct or demonstrate the literal example in the MPS model.
+
+    positions_in_the_controlled_record:
+      - artifact: mps/bootstrap/mps1-concept-features.yaml
+        locus: constraints GOV-C-004 negative_example
+        reads: >-
+          The constraint being proven is that MITIGATES rejects a Hazard source, which is
+          demonstrable with governance concepts alone, so the example is restated in MPS-1
+          terms rather than deferred.
+        class: concept_design_freeze
+      - artifact: mps/materialization/stage-a-checklist.yaml
+        locus: MPS-MAT-005A scoped_exclusions, constraint GOV-C-004
+        reads: >-
+          deferral_class literal_example_substitution; status reactivated at MPS-4, active
+          proof obligation; carried_to MPS-MAT-005D; active_means "Required, not
+          demonstrated".
+        class: acceptance_record
+      - artifact: mps/bootstrap/mps2-concept-features.yaml
+        locus: deferral transitions
+        reads: >-
+          unchanged, literal_example_substitution; the verification concept its frozen
+          negative example names is allocated to MPS-4 realization, so the substitution
+          stands.
+        class: concept_design_freeze
+      - artifact: mps/bootstrap/mps4-concept-features.yaml
+        locus: gov_c_004_reactivation, and acceptance_mapping MPS-MAT-005D evidence_required
+        reads: >-
+          reactivated at MPS-4, active proof obligation; and, as declared required evidence,
+          "the GOV-C-004 literal example demonstrated against the unchanged mechanism".
+        class: concept_design_freeze
+
+    determination: obligation_survives
+    rationale_amended: true
+    rationale_amendment: >-
+      An earlier draft of this adjudication treated the MPS-1 wording as a contradiction
+      requiring correction. That reading is withdrawn. There is no contradiction: the two
+      statements operate at different scopes and are both true. MPS-1 established the
+      MECHANISM, and the restatement of the example in MPS-1 terms is an accurate account of
+      why MPS-1 itself was not blocked. What remained after MPS-1 was the LITERAL
+      INSTANTIATION, which could not be exercised until VerificationClaim existed at MPS-4.
+      The obligation is therefore not the resolution of a disagreement in the record; it is
+      the second half of a two-part demonstration whose first half was completed at MPS-1.
+      No correction of mps1-concept-features.yaml is required or authorised.
+    determined_from:
+      - >-
+        The deferral register is the checklist. CLAUDE.md assigns scope, acceptance items
+        and deferrals to mps/materialization/stage-a-checklist.yaml; concept-features files
+        are concept design freezes. The checklist carries GOV-C-004 as an active deferral.
+      - >-
+        Three controlled artifacts written at three different checkpoints agree that the
+        obligation is open, and the MPS-1 wording does not dissent from them once its scope
+        is read correctly: it speaks to MPS-1's own acceptance, not to whether the literal
+        example must ever be instantiated.
+      - >-
+        The class rule is categorical and predates the conflict: literal_example_substitution
+        means the mechanism is proven but the frozen negative example named a concept
+        allocated to a later checkpoint, and the literal example must be re-run against the
+        unchanged mechanism when that concept lands. VerificationClaim landed at MPS-4.
+      - >-
+        The substituted and literal examples are not the same assertion. The MPS-1
+        substitution proved that MITIGATES rejects a Hazard SOURCE, with Requirement as the
+        target. The literal example additionally exercises the TARGET arm against a concept
+        that did not exist when the allowed lists were written. GOV-C-002 validates against
+        the referenced TraceRelation's allowed lists, so the target arm is a question about
+        data that changed at MPS-4, not about a rule that did not.
+
+    what_this_does_not_decide: >-
+      It does not decide that the demonstration will succeed, and it does not pre-approve
+      its result. If the literal example is NOT rejected, that is a finding about the
+      metamodel, not a reason to revisit this adjudication.
+
+    authority_boundary:
+      taken_by_the_actor: >-
+        Affirming that a declared obligation survives. This requires no authority: it
+        concludes only that work is owed, and it is the conservative direction.
+      not_taken_by_the_actor: >-
+        Extinguishing a declared proof obligation. Retiring an obligation that three
+        controlled artifacts carry would change what Stage A claims to have demonstrated,
+        which is a governance act. Had the record supported extinguishment, this file would
+        have stopped and named the decision required instead of recording one.
+
+    consequential_corrections:
+      - artifact: mps/bootstrap/mps1-concept-features.yaml
+        change: none
+        withdrawn: >-
+          An earlier draft proposed correcting the MPS-1 negative_example prose. That
+          proposal is withdrawn under rationale_amendment above. The MPS-1 wording is
+          accurate at its own scope and is left exactly as frozen.
+      - artifact: mps/materialization/stage-a-checklist.yaml
+        change: >-
+          MPS-MAT-005D carries the demonstration in its evidence once performed, and the
+          GOV-C-004 deferral is discharged with attribution rather than deleted.
+
+    authorizes: >-
+      An MPS-attached demonstration of Hazard --MITIGATES--> VerificationClaim against the
+      unchanged GOV-C-002 mechanism, negative example first, in the proof sandbox, with the
+      model restored to its base tree afterwards and the restoration verified by hash.

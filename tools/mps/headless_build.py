@@ -49,6 +49,78 @@ DERIVED_DIRS = {"source_gen", "source_gen.caches", "classes_gen", "test_gen",
                 "test_gen.caches", "work"}
 DERIVED_FILES = {"workspace.xml", "tasks.xml", "tasks.ids", "usageStatistics.xml"}
 
+# The generated-output directories a cold run must remove from the project. "work" is
+# excluded deliberately: the worker's system/config/log tree lives under build/work, outside
+# the project, and is handled separately.
+GENERATED_DIRS = {"source_gen", "source_gen.caches", "classes_gen", "test_gen",
+                  "test_gen.caches"}
+
+
+def generated_directories(project_dir: Path) -> list[Path]:
+    """Every generated-output directory currently present under the project.
+
+    This is the population a cold run must empty, and the population a receipt reports on.
+    It is computed by walking the tree rather than by trusting a previous run's record,
+    because the whole point of the observation is that the previous run's record is what is
+    in doubt.
+    """
+    found: list[Path] = []
+    for path in sorted(project_dir.rglob("*")):
+        if path.is_dir() and path.name in GENERATED_DIRS:
+            # A nested match inside an already-matched directory is part of that directory,
+            # not a second one; counting it would inflate the population.
+            if any(parent in found for parent in path.parents):
+                continue
+            found.append(path)
+    return found
+
+
+def make_cold(project_dir: Path) -> dict:
+    """Delete every generated-output directory, then observe that none remains.
+
+    Coldness has been the single most load-bearing premise in this programme and the one
+    nothing measured: the recorder wrote `cold: true` as a literal, and a build log declaring
+    itself a warm incremental build recorded cold anyway. POST-MPS4-01 exists because four
+    checkpoints stayed green on stale output. So coldness is established here by removing the
+    output and then looking, and the looking is what is reported -- an emptied tree that still
+    contains a generated directory is refused rather than recorded.
+    """
+    import shutil
+
+    before = generated_directories(project_dir)
+    for path in before:
+        shutil.rmtree(path, ignore_errors=True)
+    remaining = generated_directories(project_dir)
+    if remaining:
+        raise ToolchainError(
+            f"cold run requested but {len(remaining)} generated directories survived "
+            f"deletion (first: {remaining[0]}). Refusing to build: a run that calls itself "
+            f"cold over a tree that is not empty is the exact claim this observation exists "
+            f"to prevent.")
+    return {
+        "requested": True,
+        "observed_cold": True,
+        "generated_directories_before": len(before),
+        "generated_directories_deleted": len(before),
+        "generated_directories_remaining": 0,
+    }
+
+
+def observe_warm(project_dir: Path) -> dict:
+    """The same observation for a run that was not asked to be cold.
+
+    Recorded rather than omitted, because "cold was not requested" and "cold was requested
+    and achieved" must be distinguishable in the receipt without reading the invocation.
+    """
+    present = generated_directories(project_dir)
+    return {
+        "requested": False,
+        "observed_cold": not present,
+        "generated_directories_before": len(present),
+        "generated_directories_deleted": 0,
+        "generated_directories_remaining": len(present),
+    }
+
 
 class ToolchainError(Exception):
     """The build environment is not the pinned one. Refused, not worked around."""
@@ -175,14 +247,30 @@ def model_tree_hash(project_dir: Path) -> str:
     return digest.hexdigest()
 
 
-def run_build(toolchain: dict, log_path: Path, heap: str) -> tuple[int, float]:
+def receipt_path(log_path: Path) -> Path:
+    """The receipt that describes one run, beside the log that run produced."""
+    return log_path.with_suffix(log_path.suffix + ".receipt.json")
+
+
+def run_build(toolchain: dict, log_path: Path, heap: str, target: str,
+              project_dir: Path, cold: bool) -> dict:
+    """Run one Ant target and write a receipt describing what was actually observed.
+
+    The receipt exists because the currency recorder used to derive the run's properties
+    from the log TEXT: exit_code came from whether "BUILD SUCCESSFUL" appeared in it, and
+    coldness came from a literal. Both are properties of the RUN, and a run can report them
+    directly. What a downstream recorder must never do is infer them, so this writes them
+    down at the only point where they are observable.
+    """
     classpath = os.pathsep.join([toolchain["ant"], toolchain["launcher"]])
+    coldness = make_cold(project_dir) if cold else observe_warm(project_dir)
     command = [
         toolchain["java"], "-cp", classpath, "org.apache.tools.ant.launch.Launcher",
         "-f", str(BUILD_FILE),
         f"-Dmps.home={toolchain['mps_home']}",
-        f"-Dproject.dir={PROJECT_DIR}",
+        f"-Dproject.dir={project_dir}",
         f"-Dbuild.heap={heap}",
+        target,
     ]
     started = time.monotonic()
     # No shell, no inherited Ant, no ambient JAVA_HOME: the executable is the pinned JDK.
@@ -194,7 +282,25 @@ def run_build(toolchain: dict, log_path: Path, heap: str) -> tuple[int, float]:
         handle.write(" ".join(command) + "\n\n")
         handle.write(result.stdout)
         handle.write(result.stderr)
-    return result.returncode, elapsed
+
+    receipt = {
+        "receipt_version": 1,
+        "target": target,
+        "exit_code": result.returncode,
+        "elapsed_seconds": round(elapsed, 1),
+        "cold": coldness,
+        "mps_build": toolchain["mps_build"],
+        "java": toolchain.get("java_version", ""),
+        "model_tree_sha256": model_tree_hash(project_dir),
+        # Binds this receipt to the log it describes. Without it a receipt from one run can
+        # be presented alongside the log of another, which is the same dangling-reference
+        # defect the retained-artifact rule exists to prevent, moved one level up.
+        "log_sha256": hashlib.sha256(log_path.read_bytes()).hexdigest(),
+        "log": log_path.name,
+    }
+    with io.open(receipt_path(log_path), "w", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+    return receipt
 
 
 def main() -> int:
@@ -207,6 +313,20 @@ def main() -> int:
                         help="write the build provenance record on success")
     parser.add_argument("--validate-only", action="store_true",
                         help="check the toolchain and inputs, build nothing")
+    # MPS-MAT-009 F4: the make target had a controlled entry point carrying the pinned-build
+    # and JDK validation, and the test target had none at all -- half of the MPS-MAT-008
+    # acceptance wording was produced by an invocation that was not retained anywhere. The
+    # target is a parameter so both halves run through the same validation rather than one
+    # of them being reconstructed by hand.
+    parser.add_argument("--target", default="make",
+                        help="Ant target to invoke: make (generation) or test (model tests)")
+    # MPS-MAT-009 F3: coldness must be observed by the runner, because nothing else is in a
+    # position to observe it.
+    parser.add_argument("--cold", action="store_true",
+                        help="delete every generated directory under the project first, and "
+                             "verify none remains, before building")
+    parser.add_argument("--project-dir", type=Path, default=PROJECT_DIR,
+                        help="the MPS project to build; defaults to this repository's")
     args = parser.parse_args()
 
     try:
@@ -216,7 +336,11 @@ def main() -> int:
         return 2
 
     toolchain["java_version"] = java_identity(Path(toolchain["java"]))
-    tree_hash = model_tree_hash(PROJECT_DIR)
+    try:
+        tree_hash = model_tree_hash(args.project_dir)
+    except ToolchainError as error:
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 2
 
     if args.validate_only:
         print(f"PASS: toolchain validated; MPS {toolchain['mps_build']} at "
@@ -224,9 +348,23 @@ def main() -> int:
               f"model tree {tree_hash[:16]}")
         return 0
 
-    code, elapsed = run_build(toolchain, args.log, args.heap)
+    try:
+        receipt = run_build(toolchain, args.log, args.heap, args.target,
+                            args.project_dir, args.cold)
+    except ToolchainError as error:
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 2
+    code, elapsed = receipt["exit_code"], receipt["elapsed_seconds"]
+    cold_state = ("cold, " + str(receipt["cold"]["generated_directories_deleted"])
+                  + " generated directories deleted"
+                  if receipt["cold"]["requested"]
+                  else "not cold-requested, "
+                       + str(receipt["cold"]["generated_directories_before"])
+                       + " generated directories present")
+    print(f"receipt: target={receipt['target']}, exit_code={code}, {cold_state}; "
+          f"{receipt_path(args.log).name}")
     if code != 0:
-        print(f"ERROR: headless build failed with exit code {code}; see {args.log}",
+        print(f"ERROR: headless {args.target} failed with exit code {code}; see {args.log}",
               file=sys.stderr)
         return 1
 

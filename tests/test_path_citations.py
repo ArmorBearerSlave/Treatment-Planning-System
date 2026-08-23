@@ -82,7 +82,12 @@ class PathCitationTest(unittest.TestCase):
             declared = yaml.safe_load(handle.read())["absent_by_declaration"]
         self.assertEqual(
             {"mps/bootstrap/does-not-exist.yaml",
-             "tools/mps/check_nonexistent_thing.py"},
+             "tools/mps/check_nonexistent_thing.py",
+             # MPS-MAT-009 F2. Two fixtures driving the evidence reconciler's failure modes:
+             # an observer gate that does not exist, and an ambiguous duplicate declaration.
+             # Both must stay absent, for the same reason as the two above.
+             "tools/a.py",
+             "tools/mps/no_such_gate.py"},
             {entry["path"] for entry in declared})
         for entry in declared:
             self.assertFalse((REPO_ROOT / entry["path"]).exists(), entry["path"])

@@ -1,0 +1,9 @@
+# same repaired observer, repaired controlled inputs
+# HEAD -> 1b588953b31205ace9d3a2adb35280008d2cdd9e plus the F2 retained evidence and register
+
+$ python tools/mps/check_materialization_plan.py   # GOV-C-004 lines only
+GOV-C-004 error lines: 0   (historical: 2)
+
+$ python tools/mps/check_evidence_reconciliation.py   # MPS-MAT-005D GOV-C-004 obligation
+(no problem reported for the GOV-C-004 obligation -- it is discharged)
+17 of 25 declared obligations are discharged (1 by retained artifact, 16 by gate); 8 problems.

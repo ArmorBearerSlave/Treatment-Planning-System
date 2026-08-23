@@ -1,0 +1,88 @@
+diff --git a/mps/NLTPSGovernance/tests/nltps.modeltests/models/nltps.modeltests.headless@tests.mps b/mps/NLTPSGovernance/tests/nltps.modeltests/models/nltps.modeltests.headless@tests.mps
+index a698ce1..2975234 100644
+--- a/mps/NLTPSGovernance/tests/nltps.modeltests/models/nltps.modeltests.headless@tests.mps
++++ b/mps/NLTPSGovernance/tests/nltps.modeltests/models/nltps.modeltests.headless@tests.mps
+@@ -6,10 +6,12 @@
+     <use id="08070d1a-4999-4bfd-a38c-2b1b3ffd9ef4" name="nltps.realization" version="0" />
+     <use id="87311da3-67f4-4168-a5e2-0a32e6781088" name="nltps.foundation" version="0" />
+     <use id="f3061a53-9226-4cc5-a443-f952ceaf5816" name="jetbrains.mps.baseLanguage" version="12" />
++    <use id="4709dc1d-8658-45c6-b6ee-185bd2ba1b14" name="nltps.governance" version="0" />
+   </languages>
+   <imports>
+     <import index="pb3e" ref="r:098128cc-3125-4d66-a424-2542a6566f82(nltps.proof.cases)" />
+     <import index="icm7" ref="r:b5932721-da09-43aa-899b-0b0afcaf35de(nltps.realization.typesystem)" />
++    <import index="xv4b" ref="r:430deb07-cfa5-41b1-81b1-8b959ab409e8(nltps.governance.typesystem)" />
+   </imports>
+   <registry>
+     <language id="8585453e-6bfb-4d80-98de-b16074f1d86c" name="jetbrains.mps.lang.test">
+@@ -54,6 +56,14 @@
+         <property id="1365532761364539186" name="value" index="3gIvZX" />
+       </concept>
+     </language>
++    <language id="4709dc1d-8658-45c6-b6ee-185bd2ba1b14" name="nltps.governance">
++      <concept id="1365532761364587959" name="nltps.governance.structure.TraceLink" flags="ng" index="3gI3PS">
++        <property id="1365532761364588015" name="rationale" index="3gI3Ow" />
++        <reference id="1365532761364588018" name="target" index="3gI3OX" />
++        <reference id="1365532761364588017" name="source" index="3gI3OY" />
++        <reference id="1365532761364588016" name="relation" index="3gI3OZ" />
++      </concept>
++    </language>
+     <language id="08070d1a-4999-4bfd-a38c-2b1b3ffd9ef4" name="nltps.realization">
+       <concept id="1365532761387707747" name="nltps.realization.structure.VerificationClaim" flags="ng" index="3hnRmG">
+         <property id="1365532761387707755" name="verdict" index="3hnRm$" />
+@@ -103,5 +113,43 @@
+       <node concept="3clFbS" id="1bNmcZ3WSdS" role="3clF47" />
+     </node>
+   </node>
++  <node concept="1lH9Xt" id="1bNmcZ3WSew">
++    <property role="3DII0k" value="2hh8MJdVwqX/command" />
++    <property role="TrG5h" value="GOV_C_004_literal_hazard_mitigates_verification_claim" />
++    <node concept="1qefOq" id="1bNmcZ3WSex" role="1SKRRt">
++      <node concept="3gI3PS" id="1bNmcZ3WSez" role="1qenE9">
++        <property role="3gI3Ow" value="GOV-C-004 literal example: Hazard MITIGATES VerificationClaim, against the unchanged GOV-C-002 mechanism." />
++        <ref role="3gI3OZ" to="pb3e:1bNmcZ2wLsQ" />
++        <ref role="3gI3OY" to="pb3e:1bNmcZ2uzp2" />
++        <ref role="3gI3OX" to="pb3e:1bNmcZ3JGzF" />
++        <ref role="3gIvZZ" to="pb3e:1bNmcZ2uzo_" />
++        <node concept="3gIvZJ" id="1bNmcZ3WSeA" role="3gIvZz">
++          <property role="3gIvZX" value="LNKGOVC004LITERAL" />
++        </node>
++        <node concept="3gIvZH" id="1bNmcZ3WSeB" role="3gIvZy">
++          <property role="3gIvZS" value="0.2" />
++        </node>
++        <node concept="7CXmI" id="1bNmcZ3WSeC" role="lGtFl">
++          <node concept="1TM$A" id="1bNmcZ3WSeD" role="7EUXB">
++            <property role="TrG5h" value="S2_literal_gov_c_004_target_arm" />
++            <node concept="2PYRI3" id="1bNmcZ3WSeE" role="3lydEf">
++              <ref role="39XzEq" to="icm7:1bNmcZ3TkyF" />
++            </node>
++          </node>
++          <node concept="1TM$A" id="1bNmcZ3WSeK" role="7EUXB">
++            <property role="TrG5h" value="S3_literal_gov_c_004_source_arm" />
++            <node concept="2PYRI3" id="1bNmcZ3WSeL" role="3lydEf">
++              <ref role="39XzEq" to="xv4b:1bNmcZ2u$lj" />
++            </node>
++          </node>
++        </node>
++      </node>
++    </node>
++    <node concept="1LZb2c" id="1bNmcZ3WSeF" role="1SL9yI">
++      <property role="TrG5h" value="testLiteralGovC004ExampleIsRejected" />
++      <node concept="3cqZAl" id="1bNmcZ3WSeI" role="3clF45" />
++      <node concept="3clFbS" id="1bNmcZ3WSeJ" role="3clF47" />
++    </node>
++  </node>
+ </model>
+ 
+diff --git a/mps/NLTPSGovernance/tests/nltps.modeltests/nltps.modeltests.msd b/mps/NLTPSGovernance/tests/nltps.modeltests/nltps.modeltests.msd
+index 91133fc..b5623ac 100644
+--- a/mps/NLTPSGovernance/tests/nltps.modeltests/nltps.modeltests.msd
++++ b/mps/NLTPSGovernance/tests/nltps.modeltests/nltps.modeltests.msd
+@@ -14,6 +14,7 @@
+   <dependencies>
+     <dependency reexport="false">4745dc6f-8462-405d-b92b-cf0ea82dac23(nltps.proof)</dependency>
+     <dependency reexport="false">08070d1a-4999-4bfd-a38c-2b1b3ffd9ef4(nltps.realization)</dependency>
++    <dependency reexport="false">4709dc1d-8658-45c6-b6ee-185bd2ba1b14(nltps.governance)</dependency>
+   </dependencies>
+   <languageVersions>
+     <language slang="l:f3061a53-9226-4cc5-a443-f952ceaf5816:jetbrains.mps.baseLanguage" version="12" />

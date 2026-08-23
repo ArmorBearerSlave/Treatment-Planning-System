@@ -47,6 +47,12 @@ jobs:
       - name: Check MPS concept feature specification
         run: python tools/mps/check_concept_features.py
 
+      - name: Reconcile declared evidence obligations against observed evidence
+        run: python tools/mps/check_evidence_reconciliation.py
+
+      - name: Derive Stage A assurance metrics from their entity populations
+        run: python tools/spec/report_assurance_metrics.py --check
+
       - name: Check MPS module graph against the blueprint
         run: python tools/mps/check_module_graph.py --checkpoint MPS-4
 

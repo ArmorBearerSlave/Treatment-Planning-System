@@ -1,0 +1,16 @@
+# repaired observer, historical controlled inputs at 1b58895
+# git -C <worktree> rev-parse HEAD -> 1b588953b31205ace9d3a2adb35280008d2cdd9e
+
+$ python tools/mps/check_materialization_plan.py
+ERROR: MPS materialization plan gate failed
+- MPS-MAT-005D is recorded complete but carries an unresolved declared evidence obligation: 'the GOV-C-004 literal example demonstrated against the unchanged mechanism': artifact absent: mps/materialization/evidence/MPS-MAT-009/gov-c-004/positive-junit.xml
+- MPS-MAT-005A: deferral 'GOV-C-004' is ACTIVE -- VerificationClaim is constructible, so the literal example 'Hazard --MITIGATES--> VerificationClaim' is owed against MPS-MAT-005D -- and no discharged_by_record names a retained demonstration. A declared obligation with no retained evidence is not discharged by having been declared
+exit 1
+
+$ python tools/mps/check_evidence_reconciliation.py
+  - MPS-MAT-005D: 'REA-C-001 through REA-C-007, each with its frozen negative example demonstrated' is declared required and is explicitly unobserved. Reason recorded: Demonstrated through the model checker at MPS-4 and recorded as prose. No retained artifact carries the checker's verdicts and no gate re-runs the neg
+  - MPS-MAT-005D: 'positive controls where a false rejection would matter, named in each constraint' is declared required and is explicitly unobserved. Reason recorded: same as above; the positive controls are attested in prose and not retained.
+  - MPS-MAT-005D: 'the GOV-C-004 literal example demonstrated against the unchanged mechanism': artifact absent: mps/materialization/evidence/MPS-MAT-009/gov-c-004/positive-junit.xml
+  - MPS-MAT-005D: '18 minimum editors, with all four languages building' is declared required and is explicitly unobserved. Reason recorded: No gate counts editors. The building half is covered by the headless build, but that build's retained artifacts are MPS-MAT-008's record, and binding 
+16 of 25 declared obligations are discharged (0 by retained artifact, 16 by gate); 9 problems.
+exit 1

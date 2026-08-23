@@ -363,6 +363,35 @@ engineering review are different claims; only a named reviewer replacing a deriv
 hazard set with one determined for that specific entity moves it. See
 `spec/construction_policy.yaml`, `progress_metric.numerator_integrity`.
 
+## A correct observer may remain RED
+
+An observer that reports RED because a governed obligation is genuinely unresolved is
+working. It is not to be weakened, suppressed, reclassified or bypassed because the
+corrected state reads worse than the previous one, and a gate is never made green by
+narrowing its predicate.
+
+The Stage A aggregate moved from 15/16 to 11/16 when the evidence reconciler was built. That
+was correction of an overstated historical assurance state, not regression of the engineered
+system: nothing that was built has broken and no demonstration has been withdrawn. What
+changed is that the record now distinguishes an obligation that is DISCHARGED from one that
+was merely asserted, and four items had been counted on the second.
+
+Obligations carry five states and the distinctions are load-bearing. `DECLARED` is the
+contract naming it. `OPEN` is unresolved with no authority claim and no artifact. `ATTESTED`
+is a named authority asserting the state without an artifact establishing it. `OBSERVED` is
+an artifact bound and hash-matched, which may still show the obligation unmet. `DISCHARGED`
+is a bound observation that actually satisfies the obligation, and **only `DISCHARGED`
+closes anything**. Collapsing `OPEN` into `ATTESTED` loses who accepted what; collapsing
+`OBSERVED` into `DISCHARGED` loses the difference between a file existing and a claim being
+established.
+
+Construction-process attribution lives in `mps/materialization/process-attestations.yaml`
+and **must not reference the modelled clinical role ontology** -- `nltps.roles.*`,
+`ProfessionalRole`, `RoleCapability`, `AuthorityClass`, `ApprovalGate`, `AuthorizedActor`.
+Who may authorize a treatment plan and who accepted a Stage A obligation are different
+questions that share a word. Conflating them would let the system's domain model govern the
+provenance of its own construction, after which the two cannot be separated.
+
 ## What passing gates does and does not mean
 
 Every gate here is structural. Passing proves internal consistency and nothing else — no
@@ -378,6 +407,8 @@ python tools/mps/check_enum_persistence.py
 python tools/mps/check_concept_features.py
 python tools/mps/check_role_ontology.py
 python tools/mps/check_materialization_plan.py
+python tools/mps/check_evidence_reconciliation.py
+python tools/spec/report_assurance_metrics.py --check
 python tools/mps/check_hlr_root_placement.py
 python tools/mps/check_model_persistence.py
 python tools/mps/headless_build.py --validate-only

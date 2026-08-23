@@ -1,0 +1,208 @@
+schema_version: "0.1"
+register_id: MPS-MAT-009-F2-OBSERVATION
+title: GOV-C-004 literal example, rule-specific observation and foreign-rule control
+status: observed_restoration_incomplete
+depends_on:
+  adjudication: ADJ-F2-001
+  design: MPS-MAT-009-F2-DESIGN
+
+not_yet_evidence_against_the_baseline: >-
+  The restoration is not complete (see restoration below), so nothing in this file may yet be
+  described as evidence against the baseline model tree. It is retained now because the
+  observation is transient and must not be lost, not because it has been accepted.
+
+workspace_provenance:
+  demonstration_ran_in: separate MPS-attached producer clone
+  record_authored_in: a different working copy
+  explicitly: >-
+    The demonstration did NOT run in the workspace containing this remediation record. The
+    MPS-attached clone is the producer workspace whose model state the existing Stage A
+    evidence and currency key describe. It is not scratch space, which is why every
+    intervention below is reversible and why restoration is verified rather than assumed.
+  equivalence_established_before_intervention:
+    method: model_tree_hash computed over both working copies before anything was written
+    both: 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+    head_both: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+    status_both: clean
+
+four_states:
+  1_baseline_before_intervention:
+    model_tree_sha256: 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+    head: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+    git_status: empty
+  2_perturbed_experimental_state:
+    model_tree_sha256: f60963383d5213081349e99781c7efbd40a465f8b09ad8cdebea4f4b09e06ba4
+    head: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+    authored_model_tests: 5
+    note: >-
+      An intermediate perturbed state also existed at
+      5bb41668594f883a44a7746fb8defc0626f351e6673cf67dd3e70cd9dc0b31a0, after the test case
+      was created but before the second assertion was added. It is recorded so the sequence
+      is complete rather than tidy.
+  3_observed_result: see observations below
+  4_restored_state:
+    model_tree_sha256: 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+    equals_baseline: true
+    but: see restoration below; one criterion is not met
+
+fixture:
+  concept: nltps.governance.structure.TraceLink
+  stable_id: LNKGOVC004LITERAL
+  relation: MITIGATES TraceRelation, stable id REL-MITIGATES
+  source: Hazard, stable id HAZ-001, hazardId H-01
+  target: VerificationClaim, stable id VCL-001
+  provenance:
+    the_tracelink: newly created for this demonstration; not present at 1b58895
+    every_referenced_node: persisted at 1b58895 and verified individually
+  exercises:
+    disallowed_source: Hazard, where MITIGATES permits only RiskControl
+    disallowed_target: VerificationClaim, where MITIGATES permits only Hazard
+
+mechanism:
+  rule: GOV_C_002_tracelink_relation_validity
+  unchanged: true
+  no_gov_c_004_rule_exists: true
+  recorded_conclusion: >-
+    GOV-C-004 is a named specification case implemented by GOV-C-002's generalized
+    relation-validity rule. The specification names it; the implementation generalizes it.
+    There is no separate GOV-C-004 implementation rule anywhere in the model.
+
+observations:
+  liveness_probe:
+    what: >-
+      The fixture was placed in the proof sandbox and the model checker run over it, to
+      establish that the rule was live before any assertion was built on it.
+    result: both report-error statements fired on the same node
+    explicitly_not_the_demonstration: >-
+      A node-level error is made true by the source arm alone and is not attributable to
+      GOV-C-004. This probe establishes rule liveness and the overlap, nothing more.
+
+  positive_rule_specific:
+    run: headless launchtests, target test, via the controlled runner
+    suite: tests=5, skipped=0, failures=0, errors=0
+    S2_target_arm:
+      errorRef_declaration: nltps.governance.typesystem statement 1365532761367659922
+      the_only_statement_in_the_model_that_names_gov_c_004: true
+      outcome: PASSED
+    S3_source_arm:
+      errorRef_declaration: nltps.governance.typesystem statement 1365532761367659859
+      outcome: PASSED
+    establishes: >-
+      Both arms of the literal case are rejected, each attributable by pointer to a distinct
+      report-error statement node. Message text is not the discriminator.
+
+  foreign_rule_discrimination_control:
+    intervention: >-
+      S2's errorRef declaration repointed at the REA-C-002 report-error statement in
+      nltps.realization.typesystem, a rule about VerificationClaim evidence that cannot
+      report on a TraceLink relation violation. Nothing else changed.
+    suite: tests=5, skipped=0, failures=0, errors=1, process exit 1
+    S2: NOT PASSED
+    S2_assertion_text: >-
+      java.lang.AssertionError: node <TraceLink [1365532761392382883]> does not have the
+      expected 'error' message ''
+    S3: PASSED
+    why_this_is_the_strong_form: >-
+      S3 passed on the SAME node in the SAME run, so the node was demonstrably in error while
+      the assertion pointed at the foreign rule did not pass. The failure is therefore
+      attributable to the errorRef target rather than to the node being clean. An error from
+      the wrong rule does not satisfy the assertion.
+
+  discarded_invalid_run:
+    what: >-
+      The first attempt at the foreign-rule control reported all five tests in error with
+      NoClassDefFoundError org/jetbrains/mps/openapi/model/SNodeReference, including S3 and
+      both baseline tests that had passed minutes earlier.
+    why_it_was_discarded: >-
+      A whole-run class-loading failure, not a discrimination result. Accepting it would have
+      recorded the control as satisfied for entirely the wrong reason: S2 "did not pass", but
+      so did everything else. This is the stale worker system directory the session controls
+      already name, and the fix is to delete the worker system, config and log directories
+      and re-run, which was done.
+    retained: yes, alongside the valid run
+    recorded_because: >-
+      A measurement failure that reads exactly like a finding is the P1 class. Discarding it
+      silently would remove the only evidence that it was distinguished at all.
+
+restoration:
+  reversal_route: MPS-aware tooling only; no text edit of MPS persistence at any point
+  steps_performed:
+    - the experimental NodesTestCase root deleted via update_root_node_from_json DELETE
+    - >-
+      residue removed: deleting the root did NOT restore the workspace. Three artifacts
+      survived it, exactly the documented class -- a used-language declaration, a model
+      import (index xv4b, nltps.governance.typesystem, the same index the session controls
+      name), and a module dependency in the .msd. Each was removed through its own model-aware
+      tool: model_dependency DELETE, model_used_language DELETE, module_dependency DELETE.
+  criteria:
+    head:
+      required: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+      observed: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+      met: true
+    model_tree_sha256:
+      required: 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+      observed: 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+      met: true
+    git_diff_exit_code:
+      required: clean
+      observed: clean
+      met: true
+    git_status_porcelain:
+      required: empty
+      observed: two files listed as modified
+      met: false
+    derived_executable_state:
+      required: >-
+        derived output cleared, rebuilt from the restored model, rebuilt path set equal to a
+        pre-experiment manifest, authored=discovered=executed=2 with the two frozen identities
+      observed: not yet performed
+      met: pending
+
+  residual_state_characterisation:
+    files:
+      - mps/NLTPSGovernance/tests/nltps.modeltests/models/nltps.modeltests.headless@tests.mps
+      - mps/NLTPSGovernance/tests/nltps.modeltests/nltps.modeltests.msd
+    measured:
+      git_hash_object_of_filtered_worktree: equal to index and to HEAD for both files
+      git_diff_numstat: zero rows for both files
+      git_diff_cached_numstat: zero rows for both files
+      git_ls_files_eol: "i/lf w/crlf attr/text=auto eol=lf"
+    conclusion: >-
+      The CONTENT is fully restored. The blob git stores and the blob a fresh clone receives
+      are byte-identical to baseline for both files. The residual difference is working-tree
+      line endings only: MPS rewrote both files with CRLF, where a checkout produces LF.
+    why_only_these_two_files: >-
+      All 185 tracked files under mps/NLTPSGovernance are CRLF in this working tree, and 183
+      of them do not appear in git status. Those 183 retain their original stat information,
+      so status short-circuits without comparing content. The two files MPS rewrote have new
+      stat information, so status compares and reports the line-ending difference. The
+      difference is not that these two files are modified and the others are not.
+    not_a_stale_stat_cache: >-
+      git update-index --refresh was run and the entries survived it, which is what
+      distinguishes a real working-tree byte difference from a stale cache. This was measured
+      rather than assumed.
+    cannot_be_fixed_by_mps_aware_means: >-
+      MPS writes CRLF on Windows by design and no model-aware operation sets line endings.
+      Every available route to an empty git status is a git-side operation on the working
+      tree, not a model-aware one.
+    what_the_project_already_says_about_this: >-
+      The hygiene gate exempts mps/NLTPSGovernance from its working-tree CRLF rule
+      explicitly, on the stated grounds that MPS owns its persistence and that the index-level
+      check is the real invariant. By the project's own controlled definition, i/lf w/crlf
+      under this prefix is the expected state rather than a defect.
+
+  decision_required:
+    question: >-
+      Does restoration acceptance key on the project's controlled invariant -- index and
+      committed content identity, which is restored and verified four independent ways -- or
+      on literal git status emptiness, which is stricter than any control the project
+      operates and is not reachable by MPS-aware means?
+    why_it_is_not_the_actors_to_take: >-
+      Choosing the stricter criterion implies a working-tree normalisation step after every
+      model-aware session, which is a change to how MPS persistence is handled and interacts
+      with ADR-001. Choosing the controlled invariant accepts a git status that is not empty
+      as a normal post-session state. Either is defensible; both change what "restored" means
+      for every future experiment, not just this one.
+    not_done_pending_that_decision: >-
+      No normalisation, checkout, reset or other operation was performed to make git status
+      report empty. The discrepancy is reported rather than erased.

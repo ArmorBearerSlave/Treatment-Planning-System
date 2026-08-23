@@ -1,0 +1,80 @@
+schema_version: "0.1"
+register_id: PROCESS-ATTESTATIONS
+title: Construction-process attribution for Stage A obligations
+status: open
+
+purpose: >-
+  The MPS-MAT-009 review established that 0 of 103 evidence lines in the acceptance record
+  carry an explicit named authority. A repository-wide survey confirms the absence is
+  systemic rather than local: no engineering record anywhere carries an owner, an authority,
+  or an attested_by field. So ATTESTED was not merely unused as a state -- it was
+  structurally unreachable, because there was nowhere to put an attributable assertion.
+
+  This register is that place. It is deliberately small and purpose-specific.
+
+architecture_boundary:
+  rule: >-
+    This register MUST NOT use or reference the modelled clinical role ontology --
+    nltps.roles.*, ProfessionalRole, OperationalRole, RoleCapability, AuthorityClass,
+    ApprovalGate, AuthorizedActor -- and MUST NOT create any dependency from the
+    construction record into it.
+  why: >-
+    The two answer different classes of question that happen to share the words "authority"
+    and "role". The clinical ontology answers who may authorize, review, approve or act
+    WITHIN the treatment-planning system. This register answers who acknowledged, reviewed
+    or accepted an engineering obligation DURING CONSTRUCTION of that system. They are not
+    the same semantic domain.
+  what_conflating_them_would_cost: >-
+    The system's own domain model would govern the provenance of its own construction. After
+    that the two cannot be separated, and the clinical ontology comes under pressure to
+    accommodate process needs it was never designed for -- a pressure that only grows once
+    the NL-TPS begins representing actual clinical authorization while its development
+    programme continues accumulating V&V dispositions.
+  also_not_reused: >-
+    The reviewed_by and review_date fields on the construction record schemas are NOT reused
+    either. They record hazard-set review of a modelled entity, which is subject matter, and
+    borrowing them for process attribution would be the same category error one layer down.
+  enforced_by: tests/test_process_attestations.py
+
+state_model:
+  DECLARED: the controlled contract names the obligation
+  OPEN: >-
+    unresolved; no qualifying authority assertion and no qualifying artifact
+  ATTESTED: >-
+    a named authority explicitly asserts or acknowledges the obligation state, but no
+    qualifying artifact establishes it
+  OBSERVED: >-
+    a retained artifact exists and is identity- and hash-bound to the obligation. The
+    observation may show PASS or FAIL; binding is not satisfaction
+  DISCHARGED: the bound observation actually satisfies the controlled obligation
+
+invariants:
+  - OPEN is not ATTESTED
+  - ATTESTED is not OBSERVED
+  - ATTESTED is not DISCHARGED
+  - OBSERVED is not DISCHARGED
+  - only DISCHARGED may satisfy an evidence-required closure condition
+
+what_an_attestation_is_and_is_not:
+  is: >-
+    Attributable governance evidence. A named authority acknowledging that an obligation
+    stands, or that it remains open, is itself a fact worth retaining, because it records who
+    accepted what and when.
+  is_not: >-
+    Substitute evidence for the underlying technical or behavioural claim. An attestation
+    that a demonstration was performed is not the demonstration. This register can never move
+    an obligation to DISCHARGED.
+  encoded_as: attestation_discharges_obligations = false
+
+attestation_discharges_obligations: false
+
+no_retrofitting:
+  rule: >-
+    No historical assertion may be retroactively classified as ATTESTED. Names are not
+    fitted to prose written by an unnamed author.
+  consequence: >-
+    This register is empty of historical entries by design. The eight unresolved Stage A
+    obligations are OPEN, not ATTESTED, because no contemporaneous named authority record
+    exists for any of them. An empty register is the honest representation of that.
+
+attestations: []

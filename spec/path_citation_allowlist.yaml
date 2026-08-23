@@ -15,3 +15,15 @@ absent_by_declaration:
   reason: >-
     Cited by tests/test_construction_gates.py to prove the gate rejects a command naming a
     tool that is not present. It must not exist for the same reason.
+- path: tools/a.py
+  status: negative_control_fixture
+  reason: >-
+    Cited by tests/test_evidence_reconciliation.py to drive the evidence reconciler's
+    ambiguity failure mode, where two register entries claim the same declaration. It must
+    not exist; the fixture is about the ambiguity, not about the file.
+- path: tools/mps/no_such_gate.py
+  status: negative_control_fixture
+  reason: >-
+    Cited by tests/test_evidence_reconciliation.py to prove the reconciler refuses an
+    obligation whose named observer gate does not exist. Creating it would disarm the control
+    that stops a declaration being discharged by naming a gate nobody wrote.

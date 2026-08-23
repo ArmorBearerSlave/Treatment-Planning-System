@@ -1,0 +1,510 @@
+schema_version: "0.1"
+register_id: MPS-MAT-009-FINDINGS
+title: Controlled finding set arising from the MPS-MAT-009 independent adversarial review
+status: open
+
+purpose: >-
+  The reviewer froze seven findings and repaired none of them. Frozen findings that live
+  only in a review document are not controlled: nothing re-runs them, nothing fails while
+  they stand, and nothing notices when a repair makes one of them untrue. This register
+  makes each finding an object the gate suite can read, so that a repair is a state
+  transition rather than a claim.
+
+  It also carries findings the review did not make. Two are calibration probes released
+  after 009 closed, and one is a gap the review's own method exposed without naming. They
+  are attributed to post-009 calibration, never to the reviewer.
+
+source_review:
+  item: MPS-MAT-009
+  verdict: FAIL
+  reviewed_commit: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+  reviewed_model_tree_sha256: 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+  findings_frozen: true
+  repairs_by_reviewer: none
+  report:
+    original_sha256: 944554063bf57a8c76aadc93d5c26c814e4a3d3f4cf3e06e9985119555c2ea22
+    original_bytes: 50638
+    retained_as: mps/materialization/evidence/MPS-MAT-009/review-report.html
+    retained_form: canonical
+    normalization_rule: evidence_canonicalization/v1
+    note: >-
+      The retained copy is the frozen report with the declared canonicalization rule
+      applied, because the report quotes host-profile paths in its own F1 finding text and
+      the disclosure control must remain fully active over retained evidence. Both hashes
+      are recorded, so the retained copy is provably a declared derivation of the frozen
+      original rather than a rewrite of it. The original is unmodified.
+
+immutability:
+  baseline_commit: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+  rule: >-
+    Every reproducer below is stated against the baseline commit and remains runnable
+    there. A repair is recorded as a NEW observation at a later commit; no failed
+    observation is overwritten by a repaired one, and no reproducer is edited to stop
+    reproducing.
+
+loci:
+  SYSTEM: a defect in the modelled system
+  EVIDENCE: a defect in what the acceptance record carries
+  MEASUREMENT_PATH: the system may be correct; the instrument cannot establish that it is
+
+findings:
+
+  - id: F1
+    origin: MPS-MAT-009 reviewer
+    acceptance_blocking: true
+    locus: [EVIDENCE, PROCESS]
+    title: >-
+      The reviewed commit fails a gate declared in its own CI workflow, and has since the
+      commit that built this evidence package
+    claim: >-
+      tools/repo/check_repository_hygiene.py is step 2 of controlled-spec-gates.yml and
+      exits 1 at the baseline commit with four violations: three retained JUnit reports
+      carry a Windows user-profile path, and one retained build log is a generated artifact
+      type. Red from f20e82d onward; the three commits that assembled the MPS-MAT-009
+      evidence package each broke it and none was caught.
+    underlying: >-
+      A genuine control conflict, not an oversight. check_headless_build_currency.py
+      requires the verbatim runner artifacts to be retained under
+      mps/materialization/evidence/ with matching hashes; the hygiene gate rejects those
+      same artifacts. Satisfying either entailed failing the other.
+    reproducer_at_baseline:
+      - git checkout 1b588953b31205ace9d3a2adb35280008d2cdd9e
+      - python tools/repo/check_repository_hygiene.py
+      - observed exit 1, four violations
+    precommit:
+      disposition: repair_both_controls_and_observe_their_joint_satisfiability
+      expected_post_repair_behavior:
+        - >-
+          check_headless_build_currency.py --record canonicalizes each retained primary
+          artifact by a declared, deterministic rule before hashing it, and records the rule
+          identifier alongside the resulting hashes.
+        - >-
+          The currency gate refuses a retained primary artifact that is not in canonical
+          form, so a non-canonical artifact cannot be retained.
+        - >-
+          The hygiene gate carries a per-file allowlist that suppresses ONLY the
+          generated-artifact-type rule, and only for paths declared as retained execution
+          evidence. Disclosure scanning, secret scanning and the line-ending rules remain
+          fully active over every allowlisted file.
+        - Both gates exit 0 at the same commit.
+      failure_sensitivity_conditions:
+        - >-
+          Re-introducing a host-profile path into an allowlisted retained artifact must make
+          the hygiene gate red. If the allowlist suppressed disclosure scanning, the repair
+          would be a narrowing of the control disguised as a fix.
+        - >-
+          A retained primary artifact that is not in canonical form must make the currency
+          gate red, so canonicalization cannot be skipped and then asserted.
+        - >-
+          A cross-control test must fail if the two gates are ever jointly unsatisfiable
+          again, rather than only checking each gate alone.
+    broader_finding_recorded_as: F8
+
+  - id: F2
+    origin: MPS-MAT-009 reviewer
+    acceptance_blocking: true
+    locus: [EVIDENCE, MEASUREMENT_PATH]
+    title: >-
+      MPS-MAT-005D is complete without the evidence its own freeze declares required, and no
+      gate examines that deferral class
+    claim: >-
+      mps4-concept-features.yaml acceptance_mapping MPS-MAT-005D evidence_required lists
+      "the GOV-C-004 literal example demonstrated against the unchanged mechanism". The
+      checklist records the deferral as active, "Required, not demonstrated", carried to
+      MPS-MAT-005D. MPS-MAT-005D is status complete and its evidence covers REA-C-001
+      through REA-C-007 only. The literal example appears twice in the repository, both
+      times as a declaration of the obligation and never as a demonstration of it.
+    mechanical_gaps:
+      - >-
+        check_materialization_plan.py branches on non_instantiability and
+        semantic_model_absence and has no branch for literal_example_substitution, the third
+        declared class.
+      - >-
+        No tool or test reads acceptance_mapping or evidence_required at all, so declared
+        required evidence is never reconciled against recorded evidence for any item.
+    secondary_inconsistency: >-
+      MPS-1 calls the substitution an equivalent restatement "rather than deferred" while
+      MPS-2 and MPS-4 classify it as an open deferral, so the record does not agree with
+      itself on whether the obligation exists.
+    reproducer_at_baseline:
+      - grep -n "GOV-C-004" mps/materialization/stage-a-checklist.yaml
+      - grep -n "klass ==" tools/mps/check_materialization_plan.py
+      - grep -rn "acceptance_mapping" tools/ tests/ --include=*.py
+    precommit:
+      adjudication: ADJ-F2-001
+      disposition: obligation_survives_demonstrate_and_close_the_observability_gaps
+      expected_post_repair_behavior:
+        - >-
+          A TraceLink with relation MITIGATES, source a Hazard and target a
+          VerificationClaim is rejected by the model checker on BOTH the source and the
+          target reference descriptors, against the unchanged GOV-C-002 mechanism.
+        - >-
+          check_materialization_plan.py grows a literal_example_substitution branch that
+          fails while such a deferral is active on an item recorded complete, and that
+          requires a named substituted example, a named literal example and a reactivation
+          concept.
+        - >-
+          A mechanical reader reconciles evidence_required against the evidence recorded for
+          that item in the checklist, for every acceptance item across every
+          concept-features file, and missing required evidence makes completion non-passing.
+      failure_sensitivity_conditions:
+        - >-
+          The permitted case RiskControl MITIGATES Hazard must remain accepted throughout.
+          A rule that rejects the literal example and also the permitted case is reject-all
+          and demonstrates nothing.
+        - >-
+          Retargeting the literal link's target from VerificationClaim back to a Hazard must
+          leave the source violation and remove the target violation. Without that, the
+          target-arm rejection is not shown to be target-specific.
+        - >-
+          Removing the GOV-C-004 evidence line from MPS-MAT-005D after the repair must make
+          the evidence reconciler red. A reconciler that passes over a missing obligation is
+          the defect, not the repair.
+        - >-
+          Marking an item complete while a literal_example_substitution deferral carried to
+          it is still active must make check_materialization_plan.py red.
+
+  - id: F3
+    origin: MPS-MAT-009 reviewer
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: Coldness is asserted by the recorder, never observed
+    claim: >-
+      check_headless_build_currency.py sets cold true as a literal. headless_build.py has
+      no cold mode and never deletes generated output, so no instrument observes or enforces
+      coldness at any point. A build log declaring itself a warm incremental build records
+      cold true and the gate passes. exit_code is derived from the presence of BUILD
+      SUCCESSFUL in the log text rather than from the process, and modules is read from the
+      build descriptor rather than from the build.
+    why_it_matters: >-
+      POST-MPS4-01 established that four checkpoints stayed green on stale generated output
+      and that the project could not build from clean at all. Coldness is the single most
+      load-bearing premise in the package, and it is the one premise nothing measures.
+    reproducer_at_baseline:
+      - prepend a warm-build marker line to the retained build log
+      - python tools/mps/check_headless_build_currency.py --record
+      - the recorded build.cold is true regardless
+    precommit:
+      disposition: convert_the_assertion_into_an_observation
+      expected_post_repair_behavior:
+        - >-
+          headless_build.py gains a mode that deletes every derived directory under the
+          project, counts what it deleted, verifies zero remain, and writes a build receipt
+          carrying the observed coldness, the real process exit code, the invoked target and
+          the elapsed time.
+        - >-
+          The receipt is bound to the log it describes by hash, and --record reads cold and
+          exit_code from the receipt rather than inventing them.
+        - >-
+          --record refuses to record when no receipt accompanies the log, rather than
+          falling back to a literal.
+      failure_sensitivity_conditions:
+        - >-
+          Recording from a build performed without the cold mode must record cold false or
+          refuse. If it still records cold true, the repair is cosmetic.
+        - >-
+          A receipt whose log hash does not match the log being recorded must be refused, so
+          a receipt cannot be carried over from a different run.
+
+  - id: F4
+    origin: MPS-MAT-009 reviewer
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: The model-test half of MPS-MAT-008 has no controlled runner anywhere in the repository
+    claim: >-
+      headless_build.py is the only tool that invokes Ant and it invokes only the default
+      make target. The only references to the test target are read-only analyses. The
+      model-test verdict was produced by an invocation that is not retained, so the
+      pinned-build and JDK validation the acceptance record treats as essential are not
+      applied to it, and half of the acceptance wording has no controlled execution path.
+    reproducer_at_baseline:
+      - grep -rn "Launcher" tools/ scripts/ --include=*.py --include=*.ps1
+      - only headless_build.py invokes Ant, and it passes no target
+    precommit:
+      disposition: give_the_test_clause_the_same_controlled_entry_point_the_build_clause_has
+      expected_post_repair_behavior:
+        - >-
+          headless_build.py accepts an explicit target so the test target runs through the
+          same pinned-toolchain validation, the same refusal on a build-number mismatch and
+          the same receipt.
+        - The reproducer above returns a controlled path that invokes the test target.
+      failure_sensitivity_conditions:
+        - >-
+          Running the test target with a build number that does not match the pinned one
+          must be refused, exactly as the make target is. If the new path skips the pin it
+          reproduces the finding under a new name.
+
+  - id: F5
+    origin: MPS-MAT-009 reviewer
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      The Stage-B equivalence gate reports 119 of 119 equivalent while the model asserts the
+      opposite of the baseline
+    claim: >-
+      check_stage_b_equivalence.py loads the baseline bundle and the neutral export as JSON
+      and reads the MPS model only through root_identity, which supplies node identity and
+      root existence and never a compared field value. Inverting a requirement's normative
+      statement inside the persisted corpus leaves the gate reporting 119 of 119 equivalent.
+      The control set is closed in CI because export_hlr_corpus.py --check runs immediately
+      before it, but the binding is carried by a different instrument than the one whose
+      name, docstring and PASS message claim it.
+    reproducer_at_baseline:
+      - inject a negation into a requirement statement inside the persisted corpus
+      - python tools/mps/check_stage_b_equivalence.py
+      - observed exit 0, "119/119 requirements compared field by field ... found equivalent"
+    precommit:
+      disposition: bind_persisted_model_to_export_to_equivalence
+      expected_post_repair_behavior:
+        - >-
+          The equivalence gate derives the compared records from the persisted model through
+          the exporter's own model reader, so the comparison is baseline against model.
+        - >-
+          The retained neutral export is additionally compared against the model-derived
+          records and any divergence is reported as its own failure class, so the export
+          artifact stays bound without being the thing compared.
+        - >-
+          The PASS line states which artifacts were compared, so the message cannot credit a
+          discrimination performed elsewhere.
+      failure_sensitivity_conditions:
+        - >-
+          Mutating the persisted model while leaving hlr-baseline.json and
+          hlr-corpus-export.json untouched must make the equivalence gate red. This is the
+          exact experiment that produced the finding, and it is the only proof the repair is
+          real.
+        - >-
+          The unperturbed tree must still pass 119 of 119, or the repair has broken the gate
+          rather than bound it.
+
+  - id: F6
+    origin: MPS-MAT-009 reviewer
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: Three currency-gate fields attribute discrimination to the gate that lives elsewhere or nowhere
+    claim: >-
+      (a) authored, discovered and executed all derive from one artifact and two are the
+      same variable, and N is never pinned, so deleting the semantic test S1 from the green
+      report and re-recording still passes the gate. (b) halt_on_failure is a substring test
+      over the whole build descriptor, so stripping haltOnFailure from the test target alone
+      still reports it set, and the closure that catches it depends on diagnostic scaffolding
+      the descriptor itself calls not part of the controlled build. (c) All generated output
+      is gitignored, so the drift field cannot observe generated output even in principle.
+    consequence: >-
+      Non-blocking: the aggregate control set catches every case. Material because the PASS
+      line is the artifact a reader treats as the summary of what was verified, and it
+      credits itself with three discriminations it does not perform.
+    reproducer_at_baseline:
+      - excise the S1 testcase from the green report, set tests to 1, then --record and check
+      - observed exit 0
+      - remove haltOnFailure from the test target only; the gate still reports it set
+    precommit:
+      disposition: make_each_field_measure_what_it_claims_or_say_what_it_measures
+      expected_post_repair_behavior:
+        - >-
+          authored is derived from the authored model-test population rather than from the
+          report, so authored and executed are independent measurements that can disagree.
+        - >-
+          The expected test identities are pinned in the evidence and the gate itself refuses
+          a population that does not match, rather than delegating that to the regression
+          suite.
+        - halt_on_failure is read from the launchtests element of the invoked target only.
+        - >-
+          The drift field is renamed to what it observes and its description is narrowed to
+          the true and still useful claim that the build did not mutate authored persistence.
+      failure_sensitivity_conditions:
+        - >-
+          Deleting S1 from the report and re-recording must make the gate itself red, with
+          the regression suite disabled, or the discrimination still lives elsewhere.
+        - >-
+          Stripping haltOnFailure from the test target alone must make the gate red even when
+          the diagnostic probe target is absent entirely.
+
+  - id: F7
+    origin: MPS-MAT-009 reviewer
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH, EVIDENCE]
+    title: >-
+      The enumeration gate's population depends on build state, and in CI it examines less
+      than half the population its own rationale requires
+    claim: >-
+      collect walks discover with include_generated true, and generated output is gitignored,
+      so the population is 48 models and 6192 values on a cold clone and 75 models and 13932
+      after a build. The recorded evidence cites 74 models and 13903, a population that does
+      not exist in a clone. The CI job never builds, so every automated run examines exactly
+      the halved population the code comment identifies as the failure mode to avoid.
+    reproducer_at_baseline:
+      - fresh clone, no build, python tools/mps/check_enum_persistence.py
+      - observed 48 models and 6192 values
+      - python tools/mps/headless_build.py then re-run
+      - observed 75 models and 13932 values
+    precommit:
+      disposition: bind_the_population_to_the_controlled_object_and_correct_the_citation
+      expected_post_repair_behavior:
+        - >-
+          The gate reports the authored population and the generated population as separate
+          numbers, and states explicitly when the generated population is absent instead of
+          silently examining half.
+        - >-
+          The authored population is bound to a declared expected size so a silent shrink is
+          refused rather than printed as PASS.
+        - >-
+          The recorded evidence cites the clone-reproducible authored number, and the
+          post-build number is recorded separately and labelled as requiring a build.
+      failure_sensitivity_conditions:
+        - >-
+          Removing an authored model from the population must make the gate red. A superset
+          check that cannot notice its own population shrinking is the finding.
+        - >-
+          The cited evidentiary count must reproduce from a fresh clone with no build, which
+          is the property the recorded number did not have.
+
+  - id: F8
+    origin: post-009 remediation, generalised from F1
+    attribution_note: >-
+      Not a reviewer finding. Recorded because F1's underlying cause is more general than
+      F1, and repairing F1 alone would leave the cause in place.
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      Independently valid controls can be jointly unsatisfiable, and nothing in the suite
+      observes consistency between controls
+    claim: >-
+      The hygiene gate and the currency gate were each correct in isolation and could not
+      both be satisfied. Every gate in the suite is validated against the artifacts it reads
+      and none against the other gates' requirements, so a contradiction between two
+      controls is discoverable only by running the whole suite and noticing that a fix for
+      one turns the other red. At the baseline commit that state persisted across three
+      commits without being recorded.
+    precommit:
+      disposition: add_a_cross_control_observer_and_state_the_general_rule
+      expected_post_repair_behavior:
+        - >-
+          A test asserts that the retained evidence population satisfies the hygiene gate and
+          the currency gate simultaneously, and names the conflict class it is watching.
+        - >-
+          The session controls record the general rule, so the next control added is written
+          knowing that per-control validity is not suite validity.
+      failure_sensitivity_conditions:
+        - >-
+          Re-creating the conflict, by retaining an artifact one gate requires and the other
+          rejects, must make the cross-control test red even though each gate alone is
+          internally consistent.
+
+  - id: P1
+    origin: post-009 calibration probe
+    attribution_note: >-
+      Released into the controlled finding set after MPS-MAT-009 closed. NOT a reviewer
+      finding, and not part of the frozen 009 report.
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: The gate suite cannot express measurement invalidity, so a broken measurement reads as a finding
+    claim: >-
+      check_headless_build_currency.py distinguishes a failed measurement from an adverse
+      verdict by returning 2 and printing MEASUREMENT INVALID. It is the only gate that
+      does. Every other gate returns 1 for both "the object is defective" and "I could not
+      measure the object", so the two are indistinguishable to a reader and to CI. The
+      review met this directly: its first attempt to bisect F1 extracted commits with git
+      archive, the gate raised "fatal: not a git repository" and returned non-zero at every
+      commit including known-good ones, and that reads exactly like a finding. The reviewer
+      caught it; the suite did not help.
+    corroborating_first_person_observation: >-
+      The same class recurred during this remediation. A probe written to count host-profile
+      paths in the frozen review report reported zero matches, which reads as "the report is
+      clean". The report contains three. The probe's own regular expression had been mangled
+      by shell escaping before it reached Python, so the measurement was invalid and its
+      output was a confident wrong answer about the object. It was caught by re-running the
+      scan through the gate's own compiled patterns instead of a retyped copy.
+    precommit:
+      disposition: record_as_a_controlled_finding_and_state_the_repair_shape
+      expected_post_repair_behavior:
+        - >-
+          The finding is carried in this register with its own reproducer, so it is a
+          tracked object rather than an observation in a transcript.
+      repair_shape_if_authorised: >-
+        A shared exit convention across the gate suite: 0 verdict-pass, 1 verdict-fail,
+        2 measurement-invalid, with each gate's precondition failures routed to 2. This is a
+        suite-wide interface change affecting every CI step and is scoped deliberately, not
+        folded into a finding repair.
+      failure_sensitivity_conditions:
+        - >-
+          Any repair must be demonstrated by making a gate's precondition fail and observing
+          exit 2 rather than exit 1, on a tree known to be defect-free.
+
+  - id: P2
+    origin: post-009 calibration probe
+    attribution_note: >-
+      Released into the controlled finding set after MPS-MAT-009 closed. NOT a reviewer
+      finding, and not part of the frozen 009 report.
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH, EVIDENCE]
+    title: >-
+      Every control verifies project shape; nothing binds the evidence to the intended
+      project instance
+    claim: >-
+      model_tree_sha256 answers "is this the same model", which is a question about content.
+      It cannot answer "is this the intended project", which is a question about identity.
+      Two independent clones of this repository at the baseline commit produce the identical
+      model tree hash and pass every gate identically, so no control in the suite can
+      distinguish evidence produced from the project under review from evidence produced
+      from any other working copy of the same shape.
+    first_person_observation: >-
+      Directly observed during this remediation and not hypothetical. The MPS IDE holding
+      the model write lock has a different working copy open than the one this repair is
+      authored in, and the retained green JUnit report records a third path in its
+      idea.config.path property. All three carry the same model tree hash, and every gate
+      passes in each. The package therefore cannot state which working copy produced its
+      evidence, only that some working copy of that shape did.
+    why_it_is_not_merely_pedantic: >-
+      The premise the whole build clause rests on, coldness, is a property of a particular
+      run in a particular tree. F3 shows the record does not observe it. P2 shows the record
+      could not attribute it to a tree even if it did.
+    precommit:
+      disposition: record_as_a_controlled_finding_and_state_the_repair_shape
+      expected_post_repair_behavior:
+        - The finding is carried in this register with its first-person observation intact.
+      repair_shape_if_authorised: >-
+        A run identity recorded alongside each verdict: the working-copy path class, the git
+        common directory identity, and the MPS project instance the run addressed, recorded
+        as observations rather than assertions. Whether project instance identity SHOULD be
+        controlled is a governance question about what the acceptance claim is asserting,
+        and is named rather than decided here.
+      failure_sensitivity_conditions:
+        - >-
+          Any repair must be demonstrated by producing evidence in one working copy and
+          showing that a control refuses it when presented as evidence for another.
+
+  - id: P3
+    origin: post-009 remediation, exposed by the review's method
+    attribution_note: >-
+      Not a reviewer finding. The review's own experiments make it visible, but the frozen
+      report does not name it.
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: Execution co-identity gap; the executed tests are never bound to the authored model
+    claim: >-
+      The model-test verdict records identities that are Java method names in a generated
+      test class. The build verdict records a model tree hash. Nothing binds the two: no
+      control establishes that the class that executed was generated from the model tree the
+      verdict is keyed on, rather than from an older test_gen tree that happens to be
+      present. The currency gate compares the recorded tree hash to the current tree, which
+      answers whether the MODEL moved, not whether the EXECUTED ARTIFACT came from it.
+    why_it_is_live: >-
+      This is the same defect class as POST-MPS4-01, moved from generation to execution. A
+      warm output tree kept a project green that could not be built at all; a warm test_gen
+      tree can equally keep a test verdict green that the current model does not produce.
+      Coldness would close it, and F3 establishes that coldness is not observed.
+    relationship_to_other_findings: >-
+      Depends on F3. Repairing F3 supplies the observation this finding needs; until then P3
+      cannot be closed by argument.
+    precommit:
+      disposition: record_as_a_controlled_finding_repair_gated_on_F3
+      expected_post_repair_behavior:
+        - >-
+          Once coldness is observed rather than asserted, a cold run's test verdict is bound
+          to the model tree by construction, because no generated artifact predating the run
+          survives it. The receipt records that binding explicitly rather than leaving it to
+          be inferred.
+      failure_sensitivity_conditions:
+        - >-
+          A test verdict recorded from a run that was not observed cold must not be able to
+          claim co-identity with the model tree.

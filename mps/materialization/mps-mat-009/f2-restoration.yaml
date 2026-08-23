@@ -1,0 +1,181 @@
+schema_version: "0.1"
+register_id: MPS-MAT-009-F2-RESTORATION
+title: F2 derived and executable restoration closure
+status: complete
+
+verdicts:
+  f2_behavioral_observation: PASS
+  tracked_state_restoration: PASS
+  derived_executable_restoration: PASS
+
+tracked_state_restoration:
+  criterion_replaced: >-
+    The earlier criterion "git status --porcelain must be empty" was replaced, not waived.
+    It tested a property that is not the controlled object: git's stat-cache observation of
+    working-tree line endings, which MPS writes as CRLF on Windows by design and which no
+    model-aware operation can change.
+  criterion_applied:
+    - HEAD == 1b588953b31205ace9d3a2adb35280008d2cdd9e
+    - model_tree_sha256 == 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+    - git diff --exit-code == clean
+    - git diff --cached --exit-code == clean
+    - >-
+      for every path git status names: hash-object(worktree) == index blob == baseline blob
+  observed:
+    head: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+    model_tree_sha256: 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+    git_diff: clean
+    git_diff_cached: clean
+    status_named_paths:
+      - path: mps/NLTPSGovernance/tests/nltps.modeltests/models/nltps.modeltests.headless@tests.mps
+        worktree_index_baseline_blob: a698ce13eb679605a93baa42a58e826c73a63234
+        all_three_equal: true
+      - path: mps/NLTPSGovernance/tests/nltps.modeltests/nltps.modeltests.msd
+        worktree_index_baseline_blob: 91133fc2da7f83bf0b8cedb03ab2f3a55bceb8a6
+        all_three_equal: true
+  nothing_was_touched_to_achieve_this: >-
+    No normalisation, checkout, reset or other operation was applied to MPS persistence to
+    clear git's stat-cache observation. The two entries remain listed and are content-restored.
+
+destroyed_measurement_baseline:
+  classification: MEASUREMENT FAILURE, retained separately, not reconstructed
+  what_was_lost: >-
+    The producer workspace's pre-experiment derived path-set manifest. It was never captured,
+    because a cold generation was run over that workspace -- deleting all 34 generated
+    directories and regenerating them with the experimental test present -- before the
+    requirement to capture it existed.
+  cause: the remediation actor's own action, one command before the requirement arrived
+  why_it_is_recorded_rather_than_reconstructed: >-
+    A reconstruction is not the historical observation. The independent cold baseline
+    reconstruction below is a different object with a different warrant, and describing it as
+    the destroyed manifest would be exactly the substitution this programme exists to refuse.
+  what_survives_of_it: >-
+    The PERTURBED derived manifest was captured before any further change: 1947 files
+    project-wide, 11 under tests/nltps.modeltests, including the three experimental paths
+    GOV_C_004_literal_hazard_mitigates_verification_claim_Test.java, the corresponding .class
+    and its $TestBody.class. That is an observation of the perturbed state, not of the
+    pre-experiment state.
+  consequence_for_the_verdict: >-
+    None, because the comparison performed is A against B rather than pre-experiment against
+    post-restoration, and A is authoritative on stronger grounds. The loss is recorded because
+    a destroyed measurement baseline is a finding whether or not a substitute exists.
+
+independent_cold_baseline_reconstruction:
+  label: INDEPENDENT COLD BASELINE RECONSTRUCTION
+  explicitly_not: the destroyed historical pre-experiment manifest
+  workspace: the independent repair workspace, never MPS-attached during this experiment
+  admissibility:
+    criterion: >-
+      Model admissibility is determined by the model under generation, not by HEAD. Changes
+      elsewhere in the workspace -- tools/, mps/materialization/, the finding register, the
+      remediation instrumentation -- are not inputs to MPS generation and do not disqualify it.
+    model_tree_sha256: 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+    equals_baseline: true
+    git_diff_mps_NLTPSGovernance: clean
+    git_diff_cached_mps_NLTPSGovernance: clean
+    git_status_mps_NLTPSGovernance: empty
+    head_incidentally: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+    head_not_relied_upon: true
+  procedure:
+    - derived output verified absent before generation; zero derived directories present
+    - worker system, config, log and reports state cleared
+    - cold regenerate and compile with the pinned MPS toolchain, MPS-261.25134.779
+    - exit code 0, 57 seconds
+  why_it_is_authoritative_for_derived_set_comparison: >-
+    It is regenerated from the baseline model into a workspace that had never accumulated any
+    derived output at all, rather than inferred from a historically accumulated work tree. A
+    historically accumulated tree can carry residue from earlier runs -- which is the whole
+    substance of POST-MPS4-01 -- so it answers "what has this tree got" rather than "what does
+    this model produce". Only the second question is the one restoration needs answered.
+
+restored_producer_cold_regeneration:
+  label: RESTORED PRODUCER COLD REGENERATION
+  admissibility_before_regeneration:
+    model_tree_sha256: 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+    git_diff_mps_NLTPSGovernance: clean
+    git_diff_cached_mps_NLTPSGovernance: clean
+    content_test_on_status_named_paths: passed, all three blobs equal for both files
+  procedure:
+    - all derived output explicitly removed; 34 directories deleted
+    - absence proved per directory kind and project-wide before generation
+    - worker system, config, log and reports state cleared
+    - cold regenerate and compile with the same pinned toolchain
+    - exit code 0, 60 seconds
+
+derived_set_comparison:
+  method: mechanical enumeration and set difference, not an absence search for predicted names
+  retained_enumerations:
+    - mps/materialization/evidence/MPS-MAT-009/gov-c-004/manifest-A-independent-cold-baseline.json
+    - mps/materialization/evidence/MPS-MAT-009/gov-c-004/manifest-A-independent-cold-baseline-testmodule.json
+    - mps/materialization/evidence/MPS-MAT-009/gov-c-004/manifest-B-restored-producer-cold.json
+    - mps/materialization/evidence/MPS-MAT-009/gov-c-004/manifest-B-restored-producer-cold-testmodule.json
+  the_observation_is_the_two_listings: >-
+    "The sets are equal" is the derived verdict. The retained enumerations are the observation,
+    and they let the next reader re-perform the comparison without re-running MPS.
+  whole_project:
+    A_total_files: 1820
+    B_total_files: 1820
+    A_manifest_sha256: f2aa56f26814f4e1f329f49303c76aa4ef403b1bbfed0c1cc75e65ad785e60f4
+    B_manifest_sha256: f2aa56f26814f4e1f329f49303c76aa4ef403b1bbfed0c1cc75e65ad785e60f4
+    per_kind_counts: {classes_gen: 1410, source_gen: 406, test_gen: 2, test_gen.caches: 2}
+    in_A_not_in_B: none
+    in_B_not_in_A: none
+    set_equality: true
+  test_module_subtree:
+    subtree: tests/nltps.modeltests
+    A_total_files: 7
+    B_total_files: 7
+    A_manifest_sha256: ecdd0d3df4039699ad0b698f6cbbaad60d0fbb3a3134b0a25468f889cca431cc
+    B_manifest_sha256: ecdd0d3df4039699ad0b698f6cbbaad60d0fbb3a3134b0a25468f889cca431cc
+    per_kind_counts: {classes_gen: 3, source_gen: 0, test_gen: 2, test_gen.caches: 2}
+    in_A_not_in_B: none
+    in_B_not_in_A: none
+    set_equality: true
+    verbatim_paths:
+      - tests/nltps.modeltests/classes_gen/nltps/modeltests/headless/REA_C_002_evidence_required_for_assessed_verdict_Test$TestBody.class
+      - tests/nltps.modeltests/classes_gen/nltps/modeltests/headless/REA_C_002_evidence_required_for_assessed_verdict_Test.class
+      - tests/nltps.modeltests/classes_gen/nltps/modeltests/headless/trace.info
+      - tests/nltps.modeltests/test_gen.caches/nltps/modeltests/headless/dependencies
+      - tests/nltps.modeltests/test_gen.caches/nltps/modeltests/headless/generated
+      - tests/nltps.modeltests/test_gen/nltps/modeltests/headless/REA_C_002_evidence_required_for_assessed_verdict_Test.java
+      - tests/nltps.modeltests/test_gen/nltps/modeltests/headless/trace.info
+    note: >-
+      No GOV-C-004 or otherwise experimental generated source or compiled class appears in
+      either enumeration, and no path appears in one and not the other under any name.
+
+three_independently_sourced_populations:
+  model_authored:
+    value: 2
+    source: the persisted @tests model only
+    measured_by: tools/mps/authored_model_tests.py
+    definition: SimpleNodeTest roots plus NodeErrorCheckOperation annotations
+    detail: 1 error-check operation, 1 test method, across 1 test case
+    explicitly_not_derived_from:
+      - JUnit
+      - generated Java
+      - classes_gen
+      - headless-acceptance-evidence.json
+      - the recorder's authored field
+  discovered:
+    value: 2
+    source: the fresh JUnit result from the restored producer regeneration
+  executed:
+    value: 2
+    source: the same fresh JUnit result
+  failures: 0
+  errors: 0
+  skipped: 0
+  agreement: model_authored == discovered == executed == 2
+  identities_observed_exactly:
+    - test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()
+    - test_testAssessedClaimWithoutEvidenceIsRejected()
+  third_or_experimental_identity: none
+
+frozen_evidence_not_rewritten:
+  record_invoked: false
+  note: >-
+    --record was not invoked anywhere in this restoration verification. The newly generated
+    artifacts were read and assessed directly.
+  verified_unchanged_in_both_workspaces:
+    - mps/materialization/headless-acceptance-evidence.json
+    - mps/materialization/evidence/MPS-MAT-008/

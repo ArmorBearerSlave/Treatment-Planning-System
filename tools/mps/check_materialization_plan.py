@@ -27,6 +27,13 @@ import yaml
 # Reachability is owned by the feature-spec gate; importing it keeps a single
 # definition of "can this concept hold an instance" rather than two that can drift.
 from check_concept_features import compute_reachability, load_features
+# The deferral gate and the evidence reconciler must answer "is this evidence real" the
+# same way. Two implementations of that question would drift, which is how a substring test
+# and a real check ended up on the same field elsewhere in this suite.
+from check_evidence_reconciliation import (
+    record_status as evidence_record_status,
+    unresolved_by_item as unresolved_evidence_by_item,
+)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -64,6 +71,7 @@ def collect_declared_links() -> set[tuple[str, str]]:
 def check() -> list[str]:
     errors: list[str] = []
     plan = yaml.safe_load(PLAN_PATH.read_text(encoding="utf-8"))
+    unresolved_evidence = unresolved_evidence_by_item()
 
     for flag in PROHIBITED_FLAGS:
         if plan.get(flag) is not False:
@@ -153,6 +161,17 @@ def check() -> list[str]:
             errors.append(f"{item_id} has unsupported status {item.get('status')!r}")
         if item.get("status") == "complete" and not item.get("evidence"):
             errors.append(f"{item_id} is complete without attributable evidence")
+        # MPS-MAT-009 F2, completion consequence. Having an evidence list is not the same as
+        # having the evidence the item's own freeze declares required. MPS-MAT-005D carried a
+        # non-empty evidence list and the check above passed on it for the whole of Stage A,
+        # while the obligation its freeze called mandatory was absent. An item cannot be
+        # mechanically complete while any obligation carried to it is unresolved.
+        if item.get("status") == "complete":
+            for message in unresolved_evidence.get(item_id, []):
+                errors.append(
+                    f"{item_id} is recorded complete but carries an unresolved declared "
+                    f"evidence obligation: {message}"
+                )
 
     # A proof deferral justified by non-instantiability is only honest while no instance
     # of the affected concept can exist. Once some checkpoint makes one possible, the
@@ -213,6 +232,85 @@ def check() -> list[str]:
                         f"concept {concept} can now be instantiated; run the deferred "
                         f"negative example and clear the deferral"
                     )
+
+            elif klass == "literal_example_substitution":
+                # MPS-MAT-009 F2. This was the third declared deferral class and the gate had
+                # no branch for it, so a deferral of this class could sit active, carried to
+                # an item recorded complete, with its demonstration never performed, and
+                # every gate stayed green. The class fails by NOT firing, which is
+                # indistinguishable from compliance -- the project wrote that prediction down
+                # at the freeze and it came true anyway, because a prediction is not an
+                # instrument.
+                #
+                # The trigger is the substituted-for concept becoming instantiable, computed
+                # from the same reachability mechanism the other classes use. This governs the
+                # class; no constraint is special-cased.
+                needed = deferral.get("reactivation_concept")
+                literal = deferral.get("literal_example")
+                substituted = deferral.get("substituted_negative_example")
+                carried = deferral.get("carried_to")
+                reactivated = deferral.get("status", "").startswith("reactivated")
+
+                if not needed:
+                    errors.append(
+                        f"{item['id']}: literal-example deferral {label!r} names no "
+                        f"reactivation_concept, so the trigger cannot be evaluated and the "
+                        f"deferral fails by never firing"
+                    )
+                if not literal:
+                    errors.append(
+                        f"{item['id']}: literal-example deferral {label!r} does not name the "
+                        f"literal_example it owes; an obligation that does not say what is "
+                        f"owed cannot be discharged or refused"
+                    )
+                if not substituted:
+                    errors.append(
+                        f"{item['id']}: literal-example deferral {label!r} does not name the "
+                        f"substituted_negative_example that stood in for it, so what was "
+                        f"actually demonstrated instead is unrecorded"
+                    )
+
+                # not instantiable -> the deferral remains legitimately unavailable.
+                if needed and needed not in not_instantiable:
+                    if not reactivated:
+                        errors.append(
+                            f"{item['id']}: deferral {label!r} was justified by {needed} not "
+                            f"being constructible, which it now is. This class does not lapse "
+                            f"automatically: reclassify it deliberately as an active "
+                            f"obligation"
+                        )
+                    if not carried:
+                        errors.append(
+                            f"{item['id']}: deferral {label!r} is active but names no "
+                            f"carried_to acceptance item; an active obligation must land on a "
+                            f"named item"
+                        )
+                    elif carried not in known_items:
+                        errors.append(
+                            f"{item['id']}: deferral {label!r} is carried to {carried}, which "
+                            f"is not an acceptance item"
+                        )
+                    else:
+                        # ACTIVE. A qualifying demonstration is a retained record bound to the
+                        # carrying item by content hash -- not a sentence asserting it was
+                        # done. Prose is what let this obligation stay open under a complete
+                        # item in the first place.
+                        record = deferral.get("discharged_by_record")
+                        if not record:
+                            errors.append(
+                                f"{item['id']}: deferral {label!r} is ACTIVE -- {needed} is "
+                                f"constructible, so the literal example {literal!r} is owed "
+                                f"against {carried} -- and no discharged_by_record names a "
+                                f"retained demonstration. A declared obligation with no "
+                                f"retained evidence is not discharged by having been declared"
+                            )
+                        else:
+                            ok, why = evidence_record_status(record, carried)
+                            if not ok:
+                                errors.append(
+                                    f"{item['id']}: deferral {label!r} is ACTIVE and names "
+                                    f"record {record!r}, which does not discharge it: {why}"
+                                )
 
             elif klass == "semantic_model_absence":
                 # This class never lapses on reachability, which is exactly why it can rot

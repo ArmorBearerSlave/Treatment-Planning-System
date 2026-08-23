@@ -1,0 +1,206 @@
+schema_version: "0.1"
+register_id: MPS-MAT-009-F2-DESIGN
+title: Demonstration design for the GOV-C-004 literal example
+status: recorded_before_execution
+supersedes_design: >-
+  An earlier design would have accepted a node-level error on the literal fixture as the
+  demonstration. That design is withdrawn as insufficient and is recorded here rather than
+  deleted, because the reason it fails is the substance of this finding.
+
+why_a_generic_error_check_is_not_acceptable: >-
+  The literal fixture Hazard --MITIGATES--> VerificationClaim violates GOV-C-002 on BOTH
+  arms: MITIGATES permits source RiskControl and target Hazard, so the fixture has a
+  disallowed source AND a disallowed target. "The node has an error" is therefore made true
+  by GOV-C-002's source arm alone, independently of anything GOV-C-004 names. An observation
+  that a generic error exists cannot be attributed to GOV-C-004 and does not discharge the
+  obligation.
+
+rule_identity_determination:
+  question: Does GOV-C-004 have a rule identity that an assertion can point at?
+  method: >-
+    Enumerated the checking rules in nltps.governance.typesystem and read the GOV-C-002 rule
+    body, then located its report-error statement nodes by node identity.
+  observed_rules_in_nltps_governance_typesystem:
+    - GOV_C_001_requirement_shall
+    - GOV_C_002_tracelink_relation_validity
+    - GOV_C_005_derived_identifier
+    - GOV_C_006_override_rationale
+  finding: >-
+    There is no GOV_C_004 rule. GOV-C-004 has no independent rule node anywhere in the
+    model. It is discharged by GOV_C_002_tracelink_relation_validity, which contains two
+    separate report-error statements.
+  the_two_statements:
+    source_arm:
+      node: r:430deb07-cfa5-41b1-81b1-8b959ab409e8(nltps.governance.typesystem)/1365532761367659859
+      message_text_used_only_to_identify_which_statement_this_is: >-
+        GOV-C-002: TraceLink source concept is not permitted by the referenced TraceRelation
+      names_gov_c_004: false
+    target_arm:
+      node: r:430deb07-cfa5-41b1-81b1-8b959ab409e8(nltps.governance.typesystem)/1365532761367659922
+      message_text_used_only_to_identify_which_statement_this_is: >-
+        GOV-C-002/GOV-C-004: TraceLink target concept is not permitted by the referenced
+        TraceRelation
+      names_gov_c_004: true
+  consequence_for_the_design: >-
+    Rule-specific attribution is achievable, but at report-error-statement granularity
+    rather than at rule granularity. That is precisely the granularity the MPS-MAT-008
+    mechanism already discriminates at: NodeErrorCheckOperation.errorRef holds a
+    ReportErrorStatementReference whose declaration points at one report-error statement
+    node. The existing mechanism is reused; no second assertion mechanism is introduced.
+  discriminator: >-
+    The node identity of the report-error statement, reached by pointer. Message text is NOT
+    the discriminator. Message text appears above only to record which of the two statement
+    nodes is which, for a human reading this file.
+
+overlap_observation:
+  recorded_as: an observation, deliberately not resolved during F2
+  observed: >-
+    A rule-liveness probe placed the literal fixture in the proof sandbox and ran the model
+    checker over it. Both statements fired on the same node: the source arm and the target
+    arm. The observation is retained exactly as made.
+  what_it_may_mean: >-
+    The GOV-C-004 trigger population appears structurally contained within GOV-C-002's
+    invalid population, and GOV-C-004 may be a named special case of behaviour GOV-C-002
+    already rejects rather than an independently discriminating constraint.
+  recorded_conclusion: >-
+    GOV-C-004 is a named specification case implemented by GOV-C-002's generalized
+    relation-validity rule. It has no separate implementation and no separate rule identity.
+    The specification names it; the implementation generalizes it.
+  what_it_does_not_do: >-
+    It does not extinguish the recorded GOV-C-004 proof obligation and it does not alter
+    ADJ-F2-001. Whether a constraint carrying no independent rule identity should remain a
+    separate entry in the controlled constraint inventory is a governance question about the
+    inventory, and is named here rather than decided.
+  not_to_be_smoothed_over: >-
+    No attempt is made in F2 to construct a fixture on which only GOV-C-004 fires. Because
+    the populations are nested, such a fixture is not expected to exist, and searching for
+    one would either fail or produce a contrived result that misrepresents the constraint.
+
+demonstration:
+  fixture: >-
+    A TraceLink whose relation is the MITIGATES TraceRelation, whose source is a Hazard and
+    whose target is a VerificationClaim, inlined under NodesTestCase / nodesToCheck /
+    TestNode / nodeToCheck, exactly as the MPS-MAT-008 fixture is.
+  mechanism_unchanged: >-
+    GOV_C_002_tracelink_relation_validity, unmodified. The demonstration changes no rule.
+    This rule is the actual implementing rule, and it is what the assertions address.
+
+  fixture_provenance:
+    established_before_use: true
+    why_it_matters: >-
+      A fixture assembled from nodes that do not exist in the reviewed commit would
+      demonstrate something about a tree nobody reviewed. Provenance is therefore
+      established per referenced node before the fixture is used, not assumed.
+    the_tracelink_itself:
+      status: newly created for this demonstration
+      persisted_at_1b58895: false
+      live_only: false
+      note: >-
+        Created through the sanctioned model-aware route during this experiment and written
+        to disk by MPS as an uncommitted working-tree change in the MPS-attached clone. It
+        is transient by design and is removed at the end of the experiment.
+    referenced_nodes:
+      - node: TraceRelation MITIGATES
+        stable_id: REL-MITIGATES
+        persisted_at_1b58895: true
+        allowed_source_concepts: [RiskControl]
+        allowed_target_concepts: [Hazard]
+      - node: Hazard
+        stable_id: HAZ-001
+        hazard_id: H-01
+        persisted_at_1b58895: true
+      - node: VerificationClaim
+        stable_id: VCL-001
+        persisted_at_1b58895: true
+      - node: LifecycleState in ProofLifecycle
+        persisted_at_1b58895: true
+    verification_method: >-
+      Each identifier was read out of the blob committed at 1b58895 for
+      mps/NLTPSGovernance/sandbox/nltps.proof/models/nltps.proof.cases.mps, each occurring
+      exactly once, and each runtime node was read back and matched to its identifier. The
+      long runtime node ids are not the compact ids MPS writes to persistence, so identity is
+      established through the StableId values rather than by grepping a runtime id.
+
+  literal_case_exercises_both_arms:
+    disallowed_source: >-
+      Hazard is the fixture's source; MITIGATES permits only RiskControl as a source.
+    disallowed_target: >-
+      VerificationClaim is the fixture's target; MITIGATES permits only Hazard as a target.
+    therefore: >-
+      The literal case is invalid on both arms, and each arm is asserted separately so that
+      neither can stand in for the other.
+
+  observation_A1_source_arm:
+    assertion: NodeErrorCheckOperation with errorRef declaration -> source_arm statement node
+    expected: passes
+    establishes: The disallowed Hazard source is rejected, attributable by pointer.
+
+  observation_A2_target_arm:
+    assertion: NodeErrorCheckOperation with errorRef declaration -> target_arm statement node
+    expected: passes
+    establishes: >-
+      The disallowed VerificationClaim target is rejected, attributable by pointer to the
+      one report-error statement in the model that names GOV-C-004. This is the arm the
+      literal example newly exercises: at MPS-1 the substituted example used a Requirement
+      target, and VerificationClaim did not exist.
+
+  observation_B_foreign_rule_control:
+    assertion: >-
+      The same fixture with errorRef declaration repointed at the REA-C-002 report-error
+      statement in nltps.realization.typesystem, a rule about VerificationClaim evidence
+      that cannot report on a TraceLink relation violation.
+    expected: does not pass
+    establishes: >-
+      The assertion layer discriminates by rule identity. An error from the wrong rule does
+      not satisfy the assertion, so observation A is not satisfied merely by the node being
+      in error.
+    symmetry_note: >-
+      This is the inverse of the MPS-MAT-008 foreign-rule discrimination control, which
+      repointed a REA-C-002 assertion at a governance statement. The same mechanism is used
+      in the opposite direction.
+
+  both_retained: >-
+    The positive observation and the foreign-rule control are retained together. The
+    positive observation alone would not establish discrimination.
+
+workspace_provenance:
+  demonstration_workspace:
+    kind: separate MPS-attached clone
+    reason: >-
+      The live MPS instance holding the model write lock has a different working copy open
+      than the workspace containing this remediation record. Model-aware work is only
+      possible where the IDE is attached, and ADR-001 prohibits reaching the model any other
+      way.
+    authorised_scope: >-
+      The reversible F2 evidence experiment only. No persistent MPS repair is authorised in
+      that clone.
+  remediation_record_workspace:
+    note: >-
+      This record is authored in a different working copy from the one the demonstration
+      runs in. Nothing in this file should be read as implying the demonstration ran here.
+  equivalence_established_before_the_experiment:
+    method: >-
+      headless_build.model_tree_hash computed over both working copies before any
+      intervention, together with HEAD and working-tree status in each.
+    demonstration_workspace_head: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+    demonstration_workspace_status: clean
+    remediation_workspace_head: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+    remediation_workspace_status: clean
+    model_tree_sha256_both: 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+    controlled_model_trees_mechanically_equal_before_intervention: true
+  restoration_requirements:
+    - remove or reverse every experimental mutation in the MPS-attached clone
+    - verify the model tree hash returns exactly to the baseline value above
+    - require an empty git diff and a clean working tree in that clone
+    - retain the rule-specific observation and the intervention evidence
+    - state explicitly in the evidence record that the demonstration occurred elsewhere
+  restoration_procedure_pre_verified: >-
+    The procedure was exercised once before it was relied on. The liveness probe fixture was
+    added to the proof sandbox, the checker was run over it, the fixture was deleted, and the
+    clone returned to a clean working tree and to the exact baseline model tree hash. A
+    restoration procedure that is first used on the evidence it must protect is untested at
+    the moment it matters.
+  known_residue_hazard: >-
+    Retargeting a cross-model reference does not withdraw the import the old target required.
+    Restoration is therefore verified by an empty git diff over the whole clone, never by
+    re-reading the field that was changed.

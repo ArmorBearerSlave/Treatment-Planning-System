@@ -1,0 +1,158 @@
+schema_version: "0.1"
+register_id: MPS-MAT-009-F2-OBSERVABILITY
+title: F2 observability repairs -- deferral class and evidence reconciliation
+status: implemented_with_consequences_outstanding
+
+disposition:
+  remediation_actor: COMPLETE
+  independent_verification: VERIFIED
+  verified_in: C:/src/gcpl-stage-a-repair on branch mps/stage-a-009-remediation
+  independently_established:
+    - baseline HEAD 1b588953b31205ace9d3a2adb35280008d2cdd9e
+    - model_tree_sha256 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+    - hash instrument proven comparable to the historical instrument
+    - regression population passing
+    - the F2 historical RED and post-evidence GREEN
+    - the eight-obligation population
+  reporting_error_corrected: >-
+    An earlier report said "eight declared obligations across four items". The count of eight
+    was right; "across four items" was wrong. It combined a five-item reconciler population
+    with a four-item completion-error table, and MPS-MAT-009#0 was absent from the latter
+    because MPS-MAT-009 was already pending and therefore produced no completion error.
+
+scope_note: >-
+  These repairs were required regardless of the F2 adjudication outcome. The single missing
+  demonstration was worth less than the reason nobody noticed it was missing, and this is that
+  reason: a declared deferral class with no branch, and 25 declared evidence obligations that
+  no instrument read.
+
+A_literal_example_substitution_branch:
+  gate: tools/mps/check_materialization_plan.py
+  governs: the deferral CLASS, not any constraint. GOV-C-004 is not special-cased anywhere.
+  trigger: >-
+    The substituted-for concept becoming instantiable, computed from the same
+    compute_reachability mechanism the other two deferral classes already use. One definition
+    of "can this concept hold an instance", not a second one that can drift.
+  state_transitions:
+    not_reachable: the deferral remains legitimately unavailable; no error
+    reachable_or_instantiable: the literal-example obligation becomes ACTIVE
+    active_without_qualifying_evidence: ERROR, non-passing
+    active_with_qualifying_retained_evidence: the obligation may be discharged
+  structural_requirements_independent_of_the_trigger:
+    - names a reactivation_concept, or the deferral fails by never firing
+    - names the literal_example it owes, or what is owed cannot be discharged or refused
+    - names the substituted_negative_example, or what was demonstrated instead is unrecorded
+    - when ACTIVE, is deliberately reclassified rather than lapsing silently
+    - when ACTIVE, carries to a named acceptance item that exists
+  what_counts_as_qualifying_evidence: >-
+    A retained record bound to the carrying item by content hash, resolved through the same
+    record_status function the reconciler uses. Not a sentence asserting the demonstration
+    happened. Prose is what allowed this obligation to stay open beneath a complete item for
+    the whole of Stage A.
+
+B_evidence_reconciliation:
+  gate: tools/mps/check_evidence_reconciliation.py
+  register: mps/materialization/evidence-obligations.yaml
+  added_to_declared_population:
+    - .github/workflows/controlled-spec-gates.yml
+    - CLAUDE.md verification list
+  chain_enforced: >-
+    structured evidence_required declaration -> named acceptance item -> named retained
+    evidence record -> artifact exists -> artifact content hash matches the declared digest
+    -> obligation satisfied.
+  principle: >-
+    A declaration does not satisfy another declaration. A sentence in an item's evidence list
+    is not evidence because it repeats or paraphrases the requirement.
+  observer_kinds:
+    retained_artifact: full chain to bytes
+    gate: >-
+      The named gate must exist AND be a declared INVOCATION. This was wrong on the first
+      implementation and is recorded rather than quietly corrected: the population was derived
+      by scanning for any token ending in .py, which made every script merely discussed in the
+      session controls a member -- mps_layout.py appears in a paragraph about model layout and
+      would have counted as an observer. That is the reconciler committing the exact defect it
+      was written to detect, a check crediting itself with a discrimination it does not
+      perform. Caught by its own failure-sensitivity control, not by inspection.
+    unobserved: explicitly non-passing
+  failure_modes_each_independently_non_passing:
+    - retained record absent
+    - artifact absent
+    - hash absent
+    - hash mismatch
+    - evidence belongs to wrong item
+    - ambiguous multiple candidate records, surfaced and never resolved by choosing
+    - declaration with no observer
+    - stale register entry matching no declaration
+  failure_sensitivity_controls: tests/test_evidence_reconciliation.py, 17 controls, all passing
+  exit_convention: 0 verdict-pass, 1 verdict-fail, 2 measurement-invalid
+
+C_f2_evidence_identity:
+  specification_obligation: GOV-C-004 literal example
+  implementing_rule: GOV_C_002_tracelink_relation_validity
+  no_gov_c_004_rule_identity_invented: true
+  statement_level_observations:
+    source_arm: report-error statement 1365532761367659859, assertion S3, PASSED
+    target_arm: >-
+      report-error statement 1365532761367659922, the only locus naming GOV-C-004,
+      assertion S2, PASSED
+  discrimination_control:
+    foreign_rule_assertion: NOT PASSED
+    concurrent_control: S3 PASSED on the same erroneous node in the same run
+  record: GOV-C-004-literal-example
+
+D_red_then_green:
+  red:
+    method: >-
+      The repaired observer and its register installed into a detached worktree at 1b58895.
+      The controlled inputs -- checklist, concept freezes, evidence tree -- are historical and
+      untouched. The RED is produced by the observer meeting the historical state, not by
+      deleting evidence from the repaired state afterwards.
+    worktree_head: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+    plan_gate: >-
+      2 GOV-C-004 error lines: the deferral is ACTIVE with no discharged_by_record, and
+      MPS-MAT-005D is recorded complete while carrying an unresolved obligation whose artifact
+      is absent.
+    reconciler: 16 of 25 discharged, 0 by retained artifact, 9 problems
+    retained: mps/materialization/evidence/MPS-MAT-009/f2-observability/historical-red.txt
+  green:
+    method: the same observer against the repaired state, with the F2 evidence hash-bound
+    plan_gate: 0 GOV-C-004 error lines
+    reconciler: 17 of 25 discharged, 1 by retained artifact, 8 problems
+    retained: mps/materialization/evidence/MPS-MAT-009/f2-observability/post-evidence-green.txt
+  both_preserved: true
+
+E_completion_consequence:
+  rule_implemented: >-
+    An acceptance item recorded complete that carries any unresolved declared evidence
+    obligation is a gate error. Having a non-empty evidence list is not the same as having the
+    evidence the item's own freeze declares required -- MPS-MAT-005D had the first and lacked
+    the second for the whole of Stage A, and the pre-existing check passed on it every time.
+  aggregate: >-
+    Package status continues to be derived from acceptance-item state by the existing rule. It
+    is not independently preserved and was not adjusted.
+  items_now_mechanically_non_complete:
+    MPS-MAT-003D: 1 unresolved -- per-link read-back is unobserved
+    MPS-MAT-005D: 3 unresolved -- REA-C-001..007 negative examples, positive controls, editors
+    MPS-MAT-006: 1 unresolved -- importer idempotence and conflict report
+    MPS-MAT-008: 2 unresolved -- the headless record is not yet bound; one scope note
+  MPS-MAT-005D_specifically: >-
+    The GOV-C-004 obligation IS now discharged. What keeps MPS-MAT-005D mechanically
+    non-complete is the other three obligations its own freeze declares, which were unobserved
+    before this repair and are unobserved after it. The repair did not create that condition;
+    it made it visible.
+
+decision_required:
+  question: >-
+    Eight declared obligations across four items recorded complete have no mechanical observer.
+    Each is attested in prose in the checklist and none is bound to a retained artifact or a
+    gate. Resolving them means either retaining evidence for each, or amending the freezes that
+    declare them, or accepting them as attested-but-unobserved under a named authority.
+  why_it_is_not_the_actors_to_take: >-
+    All three routes change what Stage A claims. Retaining evidence means re-performing
+    demonstrations the actor did not originally perform and cannot attribute. Amending a freeze
+    to drop a declared obligation is a change to the acceptance basis. Accepting
+    attested-but-unobserved is precisely the position F2 found indefensible, and adopting it
+    would need to be a deliberate, attributed governance act rather than a gate exemption.
+  what_the_actor_did_instead: >-
+    Recorded each one explicitly, with the reason it is unobserved, so that the state is
+    auditable rather than silent. No obligation was reclassified to make a gate pass.

@@ -1,0 +1,43 @@
+{
+  "kinds": [
+    "test_gen",
+    "classes_gen",
+    "test_gen.caches",
+    "source_gen"
+  ],
+  "manifest_sha256": "ecdd0d3df4039699ad0b698f6cbbaad60d0fbb3a3134b0a25468f889cca431cc",
+  "paths": [
+    "tests/nltps.modeltests/classes_gen/nltps/modeltests/headless/REA_C_002_evidence_required_for_assessed_verdict_Test$TestBody.class",
+    "tests/nltps.modeltests/classes_gen/nltps/modeltests/headless/REA_C_002_evidence_required_for_assessed_verdict_Test.class",
+    "tests/nltps.modeltests/classes_gen/nltps/modeltests/headless/trace.info",
+    "tests/nltps.modeltests/test_gen.caches/nltps/modeltests/headless/dependencies",
+    "tests/nltps.modeltests/test_gen.caches/nltps/modeltests/headless/generated",
+    "tests/nltps.modeltests/test_gen/nltps/modeltests/headless/REA_C_002_evidence_required_for_assessed_verdict_Test.java",
+    "tests/nltps.modeltests/test_gen/nltps/modeltests/headless/trace.info"
+  ],
+  "per_kind_counts": {
+    "classes_gen": 3,
+    "source_gen": 0,
+    "test_gen": 2,
+    "test_gen.caches": 2
+  },
+  "per_kind_paths": {
+    "classes_gen": [
+      "tests/nltps.modeltests/classes_gen/nltps/modeltests/headless/REA_C_002_evidence_required_for_assessed_verdict_Test$TestBody.class",
+      "tests/nltps.modeltests/classes_gen/nltps/modeltests/headless/REA_C_002_evidence_required_for_assessed_verdict_Test.class",
+      "tests/nltps.modeltests/classes_gen/nltps/modeltests/headless/trace.info"
+    ],
+    "source_gen": [],
+    "test_gen": [
+      "tests/nltps.modeltests/test_gen/nltps/modeltests/headless/REA_C_002_evidence_required_for_assessed_verdict_Test.java",
+      "tests/nltps.modeltests/test_gen/nltps/modeltests/headless/trace.info"
+    ],
+    "test_gen.caches": [
+      "tests/nltps.modeltests/test_gen.caches/nltps/modeltests/headless/dependencies",
+      "tests/nltps.modeltests/test_gen.caches/nltps/modeltests/headless/generated"
+    ]
+  },
+  "subtree": "tests/nltps.modeltests",
+  "total_files": 7,
+  "workspace_label": "INDEPENDENT COLD BASELINE RECONSTRUCTION"
+}

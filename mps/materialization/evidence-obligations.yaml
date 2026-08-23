@@ -1,0 +1,328 @@
+schema_version: "0.1"
+register_id: EVIDENCE-OBLIGATIONS
+title: Declared evidence obligations, bound to observers
+status: open
+
+purpose: >-
+  MPS-MAT-009 F2 found that acceptance_mapping.<item>.evidence_required is read by nothing.
+  A declared obligation that no instrument reads is a sentence, and a sentence in an item's
+  evidence list does not become evidence by repeating or paraphrasing the requirement. This
+  register binds every declared obligation to an observer, so that a reconciler can ask a
+  question with a false answer available.
+
+  A declaration does not satisfy another declaration. Where the observer is a retained
+  artifact the chain is enforced end to end: declaration -> acceptance item -> named record
+  -> artifact exists -> content hash matches the declared digest. Where the observer is a
+  gate, the gate must exist as a file and appear in the declared gate population, so the
+  binding is falsifiable rather than asserted.
+
+observer_kinds:
+  retained_artifact: >-
+    Discharged by a retained record whose artifacts exist and whose content hashes match.
+    The strongest form, and the only one that survives the record being wrong about itself.
+  gate: >-
+    Discharged by a named gate that runs over the controlled tree on every CI run. The
+    reconciler verifies the gate file exists and is a declared step, not that the gate is
+    correct; gate correctness is the gate's own tests' business.
+  unobserved: >-
+    No mechanical observer and no retained artifact exists for this declaration. This is a
+    statement about OBSERVATION, not a claim that the work was not done. Several of these
+    describe model-aware read-back performed at MPS-2 through MPS-4 and recorded as prose in
+    the checklist; the work is attested, but nothing re-checks it and nothing would notice if
+    it ceased to be true. Every one of these is NON-PASSING by design, because that is
+    exactly the condition F2 found and the condition this register exists to surface.
+
+authored_by:
+  role: stage_a_remediation_actor
+  caution: >-
+    Classifications below are factual claims about whether an observer exists, which the
+    remediation actor can verify. They are NOT dispositions of whether the underlying work
+    was adequate, which belongs to whoever owns each item.
+
+records:
+  GOV-C-004-literal-example:
+    acceptance_item: MPS-MAT-005D
+    observation: >-
+      The GOV-C-004 literal example, Hazard --MITIGATES--> VerificationClaim, demonstrated
+      against the unchanged implementing rule GOV_C_002_tracelink_relation_validity. There is
+      no GOV-C-004 implementation rule; GOV-C-004 is a named specification case implemented by
+      GOV-C-002's generalized relation-validity rule, and no such rule identity is invented
+      here.
+    statement_level_observations:
+      source_arm:
+        report_error_statement: nltps.governance.typesystem node 1365532761367659859
+        assertion: S3_literal_gov_c_004_source_arm
+        outcome: PASSED
+      target_arm:
+        report_error_statement: nltps.governance.typesystem node 1365532761367659922
+        names_gov_c_004: true
+        assertion: S2_literal_gov_c_004_target_arm
+        outcome: PASSED
+    discrimination_control:
+      method: >-
+        S2's errorRef repointed at the REA-C-002 report-error statement, a rule that cannot
+        report on a TraceLink relation violation. Nothing else changed.
+      foreign_rule_assertion: NOT PASSED
+      same_node_same_run_control: S3 PASSED on the same erroneous node in the same run
+      why_that_matters: >-
+        The node was demonstrably in error while the foreign-pointed assertion declined, so
+        the decline is attributable to the errorRef target rather than to a clean node.
+    demonstration_workspace: separate MPS-attached producer clone; reversible; restored
+    canonicalization_rule: evidence_canonicalization/v1
+    # Binding is not satisfaction. This flag is the separate, explicit claim that the bound
+    # observation actually establishes the frozen obligation -- both arms rejected,
+    # attributable by pointer, with the foreign-rule control declining on the same node in
+    # the same run. Without it the record would be OBSERVED and stop there, which is the
+    # correct state for a bound artifact that shows the obligation unmet.
+    satisfies_obligation: true
+    satisfaction_basis: >-
+      The frozen obligation is the GOV-C-004 literal example demonstrated against the
+      unchanged mechanism. The retained observation is that literal example, run against
+      GOV_C_002_tracelink_relation_validity unmodified, with rejection attributable to the
+      report-error statement that names GOV-C-004 rather than to the mere existence of an
+      error.
+    artifacts:
+      - path: mps/materialization/evidence/MPS-MAT-009/gov-c-004/positive-junit.xml
+        sha256: 3211e6f17438f964dc69a569eedc61dc95a1e9fdafd666348c9cbf97930ed8e6
+        as_produced_sha256: 41302a1fef03f3ee8e80c05e22adcc914b2782b327a10be67383610e276b42b3
+        role: positive rule-specific observation, both arms
+      - path: mps/materialization/evidence/MPS-MAT-009/gov-c-004/foreign-rule-control-junit.xml
+        sha256: f7ad0c571897aeeb9daa84dcadb6d9ddb996dfe8117ee287647c31b5fb6a8c5c
+        as_produced_sha256: 969424b55131a2a7482378ffe0044953acf970395be5aa68a3583f8f12b6b73d
+        role: foreign-rule discrimination control
+      - path: mps/materialization/evidence/MPS-MAT-009/gov-c-004/positive-test.log
+        sha256: 8cacd3e024aee5761eba1f21f93a94840f9135b4241dba7d1b40ae14dcc5ee91
+        role: runner log for the positive observation
+      - path: mps/materialization/evidence/MPS-MAT-009/gov-c-004/foreign-rule-control-test.log
+        sha256: d35a811bba968878835d0d9ee89d8cd0ea1e28b9a4d7f89db884b64c1dcd7e49
+        role: runner log for the discrimination control
+      - path: mps/materialization/evidence/MPS-MAT-009/gov-c-004/gov-c-004-intervention.patch
+        sha256: 6e77b2ea1a2b71b56f97ffe907c55113735de146c376c11bbd654d526c3e754c
+        role: the intervention, binding the observation to what was changed
+
+obligations:
+
+  MPS-MAT-003D:
+    - declaration: 18 concepts materialized, matching this specification feature by feature
+      observer: gate
+      gate: tools/mps/check_module_graph.py
+    - declaration: cumulative ceiling deriving to 96 with the sequence 40 / 66 / 78 / 96
+      observer: gate
+      gate: tools/mps/check_module_graph.py
+    - declaration: every link read back individually against the frozen contract
+      observer: unobserved
+      why: >-
+        Per-link read-back was performed through the model-aware route at MPS-4 and recorded
+        as prose. No gate re-reads the links against the frozen contract and no artifact of
+        the read-back was retained, so nothing would notice if a link changed.
+    - declaration: every persisted enumeration value resolving to its declared enumeration
+      observer: gate
+      gate: tools/mps/check_enum_persistence.py
+    - declaration: the realization module carrying EXTENDS governance and no undeclared dependency
+      observer: gate
+      gate: tools/mps/check_module_graph.py
+
+  MPS-MAT-005D:
+    - declaration: REA-C-001 through REA-C-007, each with its frozen negative example demonstrated
+      observer: unobserved
+      why: >-
+        Demonstrated through the model checker at MPS-4 and recorded as prose. No retained
+        artifact carries the checker's verdicts and no gate re-runs the negative examples.
+        This is the same shape as the GOV-C-004 omission, differing only in that the prose was
+        written.
+    - declaration: positive controls where a false rejection would matter, named in each constraint
+      observer: unobserved
+      why: same as above; the positive controls are attested in prose and not retained.
+    - declaration: the GOV-C-004 literal example demonstrated against the unchanged mechanism
+      observer: retained_artifact
+      record: GOV-C-004-literal-example
+    - declaration: 18 minimum editors, with all four languages building
+      observer: unobserved
+      why: >-
+        No gate counts editors. The building half is covered by the headless build, but that
+        build's retained artifacts are MPS-MAT-008's record, and binding another item's
+        evidence to this obligation is precisely the wrong-item failure this register rejects.
+
+  MPS-MAT-004B:
+    - declaration: the import model in file-per-root mode
+      observer: gate
+      gate: tools/mps/check_model_persistence.py
+    - declaration: one file per imported root and one root per file
+      observer: gate
+      gate: tools/mps/check_model_persistence.py
+    - declaration: no imported root under any languages/*/models/*.structure.mps path
+      observer: gate
+      gate: tools/mps/check_hlr_root_placement.py
+    - declaration: the concept ceiling still deriving to 96 after the corpus is imported
+      observer: gate
+      gate: tools/mps/check_module_graph.py
+
+  MPS-MAT-006:
+    - declaration: schema validation of the bundle before any write
+      observer: gate
+      gate: tools/mps/build_hlr_import_bundle.py
+    - declaration: exactly 119 ImportedHLR roots by the structural classifier, not by identifier text
+      observer: gate
+      gate: tools/mps/check_hlr_root_placement.py
+    - declaration: the proof sandbox demonstrably excluded from that count
+      observer: gate
+      gate: tools/mps/check_hlr_root_placement.py
+    - declaration: every mandatory inherited feature populated from the mapping above
+      observer: gate
+      gate: tools/mps/check_stage_b_equivalence.py
+    - declaration: idempotence, and a reported conflict on differing content
+      observer: unobserved
+      why: >-
+        An importer behaviour demonstrated once during materialization. No artifact was
+        retained and no gate re-runs the import, so neither idempotence nor the conflict
+        report is observable now.
+
+  MPS-MAT-007:
+    - declaration: the neutral export as specified, byte-stable across repeated runs
+      observer: gate
+      gate: tools/mps/export_hlr_corpus.py
+    - declaration: the 119-row per-root equivalence table
+      observer: gate
+      gate: tools/mps/check_stage_b_equivalence.py
+    - declaration: every failure category checked and reported, not only the count
+      observer: gate
+      gate: tools/mps/check_stage_b_equivalence.py
+
+  MPS-MAT-008:
+    - declaration: a build run without the MCP toolkit in the loop
+      observer: retained_artifact
+      record: MPS-MAT-008-headless
+    - declaration: >-
+        note that every prior checkpoint used MCP for authoring; this item is about the build
+        being reproducible without it
+      observer: unobserved
+      why: >-
+        This declaration is a note about scope rather than an evidence obligation, and it is
+        recorded as unobserved rather than reclassified. Deciding that a line in a frozen
+        evidence_required list is not really an obligation is a change to the freeze, which
+        belongs to whoever owns the item and not to the remediation actor.
+
+  MPS-MAT-009:
+    - declaration: a named reviewer, since this item is a human judgement and no gate can stand in for it
+      observer: unobserved
+      why: >-
+        The independent review was performed and its report is retained, but the report
+        carries no personal reviewer name. The obligation asks for a NAMED reviewer, and a
+        retained report by an unnamed reviewer does not satisfy it. Binding the report to this
+        obligation would answer a different question than the one asked.
+    - declaration: the repository hygiene gate as supporting evidence only
+      observer: gate
+      gate: tools/repo/check_repository_hygiene.py
+
+records_pending:
+  MPS-MAT-008-headless:
+    acceptance_item: MPS-MAT-008
+    status: >-
+      Not yet declared here. The MPS-MAT-008 artifacts exist under
+      mps/materialization/evidence/MPS-MAT-008/ and are hash-bound by
+      headless-acceptance-evidence.json, but they are not in canonical form and binding them
+      into this register is F1's work, not F2's. Declared as a named record with no artifact
+      list so the reconciler reports it as incomplete rather than silently passing.
+
+# ---------------------------------------------------------------------------------------
+# Frozen dispositions for the eight unresolved obligations.
+#
+# Each is preserved as an independent controlled obligation. They are NOT collapsed into one
+# remediation decision, because they fail for different reasons and will be discharged by
+# different work, and a single decision covering all eight would hide that.
+# ---------------------------------------------------------------------------------------
+dispositions:
+
+  MPS-MAT-003D#2:
+    state: OPEN
+    requirement: every link read back individually against the frozen contract
+    disposition: re-observe and retain a hash-bound per-link read-back artifact
+    candidate_artifact: none
+    mechanically_bindable_now: false
+
+  MPS-MAT-005D#0:
+    state: OPEN
+    requirement: REA-C-001 through REA-C-007 frozen negative examples demonstrated
+    disposition: re-demonstrate behaviourally and retain attributable artifacts
+    candidate_artifact: none
+    mechanically_bindable_now: false
+
+  MPS-MAT-005D#1:
+    state: OPEN
+    requirement: positive controls where a false rejection would matter
+    disposition: re-demonstrate and retain attributable artifacts
+    candidate_artifact: none
+    mechanically_bindable_now: false
+
+  MPS-MAT-005D#3:
+    state: OPEN
+    requirement: 18 minimum editors, and all four languages building
+    disposition: >-
+      Instrument the persisted model independently for the ConceptEditorDeclaration
+      population, and bind that observation to the four-language build evidence.
+    explicitly_not: >-
+      The editor population must not be inferred from prose, and must not be inferred from
+      generated output. Generated output is a function of the build, not of the authored
+      model, and reading it would answer a different question -- the same substitution the
+      enumeration gate's population defect turns on.
+    candidate_artifact: none yet
+    mechanically_bindable_now: false
+
+  MPS-MAT-006#4:
+    state: OPEN
+    requirement: importer idempotence, and a reported conflict on differing content
+    disposition: re-run both behaviours and retain and hash-bind both observations
+    candidate_artifact: none
+    mechanically_bindable_now: false
+
+  MPS-MAT-008#0:
+    state: OPEN
+    requirement: a build run without the MCP toolkit in the loop
+    candidate_artifact: >-
+      The existing retained mps/materialization/evidence/MPS-MAT-008/green/cold-build.log and
+      junit.xml, already hash-bound by headless-acceptance-evidence.json.
+    disposition: bind only after F1 makes the retained artifacts admissible
+    mechanically_bindable_now: false
+    blocked_on: F1
+    progression_note: >-
+      These artifacts may move this obligation to OBSERVED once bound, and to DISCHARGED only
+      if they actually establish the frozen claim. Binding is not satisfaction, and the
+      question of whether a build log establishes "without the MCP toolkit in the loop" is
+      answered when the binding is made, not assumed by making it.
+
+  MPS-MAT-008#1:
+    state: OPEN
+    requirement: >-
+      note that every prior checkpoint used MCP for authoring; this item is about the build
+      being reproducible without it
+    disposition: >-
+      Determine first whether a retained, attributable, hash-bound inspection record grounded
+      in controlled history can satisfy it. If the controlled history does not establish the
+      claim, it stays OPEN.
+    freeze_not_amended: >-
+      This obligation reads as a scope note rather than an evidence obligation, and that is
+      not sufficient reason to amend the freeze. Amending it would require a separately
+      demonstrated defect in the obligation itself, which has not been established. It is
+      left OPEN and reported, not reclassified.
+    candidate_artifact: none
+    mechanically_bindable_now: false
+
+  MPS-MAT-009#0:
+    state: OPEN
+    requirement: >-
+      a named reviewer, since this item is a human judgement and no gate can stand in for it
+    candidate_artifact: mps/materialization/evidence/MPS-MAT-009/review-report.html
+    disposition: >-
+      The retained independent-review report may become OBSERVED once bound. It does not make
+      the obligation DISCHARGED, because the frozen obligation requires a NAMED reviewer and
+      the report carries no personal reviewer name.
+    explicitly_prohibited: >-
+      Do not invent or infer a human reviewer identity from the AI review session. The review
+      was performed and its findings are real; the named human authority the freeze requires
+      is a different thing, and it does not exist.
+    mechanically_bindable_now: >-
+      Bindable to OBSERVED. Not bindable to DISCHARGED by any artifact currently in existence.
+    illustrates: >-
+      This is the live case for OBSERVED != DISCHARGED. A correctly bound, hash-matched
+      artifact that demonstrates the obligation is unmet is exactly why the two states cannot
+      be collapsed.

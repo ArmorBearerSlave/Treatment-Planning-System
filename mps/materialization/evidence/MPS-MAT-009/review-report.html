@@ -1,0 +1,626 @@
+<title>MPS-MAT-009 Adversarial Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+:root{
+  --paper:#f4f6f8; --surface:#ffffff; --surface-2:#eef2f5;
+  --ink:#131920; --ink-2:#39454f; --muted:#5f6c78;
+  --rule:#d6dde3; --rule-2:#e6ebef;
+  --accent:#17607f; --accent-soft:#e3eef3;
+  --defect:#9b2c2c; --defect-soft:#f7e8e8;
+  --caution:#8a5a05; --caution-soft:#f9f0df;
+  --held:#2c6a45; --held-soft:#e5f1ea;
+  --shadow:0 1px 2px rgba(19,25,32,.05),0 8px 24px -16px rgba(19,25,32,.28);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e1317; --surface:#151c22; --surface-2:#1b242b;
+    --ink:#e7edf2; --ink-2:#c2ced8; --muted:#93a2ae;
+    --rule:#28333b; --rule-2:#1f292f;
+    --accent:#6fb9d8; --accent-soft:#15303c;
+    --defect:#e08585; --defect-soft:#33191a;
+    --caution:#d9a94e; --caution-soft:#312611;
+    --held:#7ec49b; --held-soft:#14291d;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e1317; --surface:#151c22; --surface-2:#1b242b;
+  --ink:#e7edf2; --ink-2:#c2ced8; --muted:#93a2ae;
+  --rule:#28333b; --rule-2:#1f292f;
+  --accent:#6fb9d8; --accent-soft:#15303c;
+  --defect:#e08585; --defect-soft:#33191a;
+  --caution:#d9a94e; --caution-soft:#312611;
+  --held:#7ec49b; --held-soft:#14291d;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  font-size:16px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px; margin:0 auto; padding:0 28px 96px}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+code{font-size:.87em; background:var(--surface-2); padding:.1em .36em; border-radius:3px; word-break:break-word}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:2px}
+
+/* ---------- masthead ---------- */
+.mast{border-bottom:1px solid var(--rule); padding:56px 0 30px; margin-bottom:44px}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 18px;
+}
+h1{
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:clamp(2.1rem,4.6vw,3.15rem);
+  line-height:1.1; letter-spacing:-.015em; margin:0 0 14px; text-wrap:balance;
+}
+.dek{font-size:1.08rem; color:var(--ink-2); max-width:64ch; margin:0 0 30px}
+
+.verdict{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:14px 22px;
+  background:var(--defect-soft); border:1px solid var(--defect);
+  border-left-width:5px; border-radius:4px; padding:18px 22px;
+}
+.verdict-word{
+  font-family:Spectral,Georgia,serif; font-weight:700; font-size:1.75rem;
+  letter-spacing:.02em; color:var(--defect); line-height:1;
+}
+.verdict-note{font-size:.95rem; color:var(--ink-2); max-width:62ch; margin:0}
+
+/* ---------- structure ---------- */
+h2{
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:1.62rem;
+  letter-spacing:-.01em; margin:56px 0 6px; padding-bottom:9px;
+  border-bottom:1px solid var(--rule); text-wrap:balance;
+}
+h2 .num{
+  font-family:"IBM Plex Mono",monospace; font-size:.72em; font-weight:400;
+  color:var(--accent); margin-right:.7em; letter-spacing:.06em;
+}
+h3{font-family:Spectral,Georgia,serif; font-weight:600; font-size:1.15rem; margin:32px 0 8px}
+p{margin:0 0 14px; max-width:72ch}
+.lede{color:var(--ink-2)}
+ul{margin:0 0 16px; padding-left:20px; max-width:72ch}
+li{margin-bottom:7px}
+
+/* ---------- key-value tables ---------- */
+.tablewrap{overflow-x:auto; margin:0 0 20px; border:1px solid var(--rule); border-radius:5px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:.9rem}
+th,td{text-align:left; padding:9px 14px; border-bottom:1px solid var(--rule-2); vertical-align:top}
+thead th{
+  background:var(--surface-2); font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--muted); font-weight:500; white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+td.k{width:30%; color:var(--muted); font-weight:500; white-space:nowrap}
+.num-col{font-variant-numeric:tabular-nums}
+.hash{font-family:"IBM Plex Mono",monospace; font-size:.78rem; word-break:break-all}
+
+/* ---------- finding records ---------- */
+.finding{
+  background:var(--surface); border:1px solid var(--rule); border-radius:5px;
+  box-shadow:var(--shadow); margin:0 0 26px; overflow:hidden;
+}
+.finding > header{
+  display:flex; flex-wrap:wrap; gap:10px 16px; align-items:baseline;
+  padding:15px 20px; border-bottom:1px solid var(--rule);
+  background:var(--surface-2);
+}
+.fid{
+  font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:.82rem;
+  color:var(--paper); background:var(--accent); padding:2px 8px; border-radius:3px;
+  letter-spacing:.04em;
+}
+.ftitle{font-family:Spectral,Georgia,serif; font-weight:600; font-size:1.06rem; flex:1 1 320px; line-height:1.35}
+.chip{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; padding:3px 9px; border-radius:99px; white-space:nowrap;
+  border:1px solid currentColor;
+}
+.chip.sys{color:var(--defect); background:var(--defect-soft)}
+.chip.evi{color:var(--caution); background:var(--caution-soft)}
+.chip.mea{color:var(--accent); background:var(--accent-soft)}
+
+.fields{display:grid; grid-template-columns:minmax(150px,168px) 1fr; gap:0}
+.fields dt{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); padding:11px 8px 11px 20px;
+  border-bottom:1px solid var(--rule-2); border-right:1px solid var(--rule-2);
+}
+.fields dd{margin:0; padding:11px 20px; border-bottom:1px solid var(--rule-2); font-size:.93rem}
+.fields dd:last-of-type,.fields dt:last-of-type{border-bottom:none}
+.fields dd p{margin:0 0 8px}
+.fields dd p:last-child{margin:0}
+.fields pre{
+  margin:6px 0 0; background:var(--surface-2); border:1px solid var(--rule-2);
+  border-radius:4px; padding:10px 12px; overflow-x:auto;
+  font-family:"IBM Plex Mono",monospace; font-size:.78rem; line-height:1.5;
+}
+@media (max-width:640px){
+  .fields{grid-template-columns:1fr}
+  .fields dt{border-right:none; padding-bottom:2px; border-bottom:none}
+  .fields dd{padding-top:2px}
+}
+
+.observed{color:var(--defect); font-weight:500}
+.expected{color:var(--ink-2)}
+
+/* ---------- held / refuted list ---------- */
+.held-item{
+  border-left:3px solid var(--held); background:var(--held-soft);
+  padding:13px 18px; margin:0 0 12px; border-radius:0 4px 4px 0;
+}
+.held-item strong{font-family:Spectral,Georgia,serif; font-size:1rem}
+.held-item p{margin:5px 0 0; font-size:.92rem; color:var(--ink-2); max-width:none}
+
+.limit{
+  border-left:3px solid var(--caution); background:var(--caution-soft);
+  padding:13px 18px; margin:0 0 12px; border-radius:0 4px 4px 0; font-size:.93rem;
+}
+.limit strong{font-family:Spectral,Georgia,serif}
+.limit p{margin:5px 0 0; color:var(--ink-2); max-width:none}
+
+.note{font-size:.88rem; color:var(--muted); max-width:72ch; font-style:italic}
+footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--rule); font-size:.86rem; color:var(--muted)}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">GCPL / NL-TPS &middot; Stage A acceptance &middot; MPS-MAT-009</p>
+  <h1>Independent Adversarial Review of Stage&nbsp;A</h1>
+  <p class="dek">A reviewer-side attempt to falsify the Stage&nbsp;A acceptance warrant at commit
+  <code>1b58895</code> &mdash; executed, not read. Two of the package's strongest claims survived
+  independent execution. Two acceptance-significant defects did not.</p>
+
+  <div class="verdict">
+    <span class="verdict-word">FAIL</span>
+    <p class="verdict-note">The commit offered for review does not pass its own declared gate suite,
+    and one acceptance item is recorded <em>complete</em> while the evidence its own freeze declares
+    mandatory is absent from the controlled record and unexamined by every gate.</p>
+  </div>
+</header>
+
+<h2><span class="num">1</span>Reviewed object and environment</h2>
+
+<div class="tablewrap">
+<table>
+  <tbody>
+    <tr><td class="k">Reviewed commit</td><td class="hash">1b588953b31205ace9d3a2adb35280008d2cdd9e &mdash; &ldquo;The instrument must refuse rather than answer&rdquo;</td></tr>
+    <tr><td class="k">Starting repository state</td><td>Fresh isolated clone, detached at the reviewed commit. <code>git status --porcelain</code> empty. No <code>build/work/</code>, zero <code>source_gen</code>/<code>classes_gen</code>/<code>test_gen</code> directories &mdash; a genuinely cold tree, established by observation before any build.</td></tr>
+    <tr><td class="k">Controlled model tree</td><td class="hash">7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3<br><span class="note">Equal to the key recorded in <code>headless-acceptance-evidence.json</code>; the retained verdicts are current for this tree.</span></td></tr>
+    <tr><td class="k">Toolchain</td><td>MPS 2026.1, build <code>MPS-261.25134.779</code> (matches the pinned build); bundled JBR <code>openjdk 25.0.3</code>; bundled Ant from <code>MPS_HOME/lib/ant</code>. No system Ant, no ambient <code>JAVA_HOME</code>.</td></tr>
+    <tr><td class="k">Host</td><td>Windows 11 Pro 26200, Python 3.13.14, PyYAML 6.0.3, <code>core.autocrlf=true</code> with <code>* text=auto eol=lf</code>.</td></tr>
+    <tr><td class="k">Evidence record head</td><td><code>61a335e</code> &mdash; two commits behind the reviewed commit. Currency is keyed on the model tree, not the sha, and the tree is unchanged, so this is correct rather than stale.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="num">2</span>The acceptance claim, reconstructed by the reviewer</h2>
+
+<p>Stripped of narrative, the Stage&nbsp;A package asserts a chain in which each link is a separate
+proposition and any one of them failing breaks the warrant:</p>
+
+<ul>
+  <li><strong>P1 &mdash; Structural integrity.</strong> Nine languages, 96 uniquely owned concepts, an acyclic
+  dependency graph with declared kinds, projections that own no authority, and 119 imported HLR roots
+  confined to the import model.</li>
+  <li><strong>P2 &mdash; Corpus fidelity.</strong> The MPS model says what the controlled document says, per record
+  and per field, over all 119 requirements.</li>
+  <li><strong>P3 &mdash; Reproducible generation.</strong> The project builds headless from a genuinely clean state,
+  outside the IDE, idempotently, without mutating authored persistence.</li>
+  <li><strong>P4 &mdash; Semantic enforcement.</strong> Generation is <em>not</em> checking, so a separate mechanism
+  (native <code>launchtests</code>) demonstrates that a checking rule actually fires; and it is shown to be
+  capable of going red, and red for the <em>right rule</em>.</li>
+  <li><strong>P5 &mdash; Evidence currency and portability.</strong> Both verdicts are bound to the tree they were
+  taken on, and every referenced artifact is obtainable and hash-verifiable from a fresh clone.</li>
+  <li><strong>P6 &mdash; Complete acceptance bookkeeping.</strong> Every acceptance item marked <code>complete</code>
+  carries attributable evidence for what its own freeze declares required; every deferral that has
+  outlived its justification has been reclassified and discharged.</li>
+  <li><strong>P7 &mdash; MPS-MAT-009's own item text.</strong> No patient data, no credentials, no signing keys, no
+  authority cutover.</li>
+</ul>
+
+<p>The package's declared self-check is <code>.github/workflows/controlled-spec-gates.yml</code>, and
+<code>CLAUDE.md</code> requires every step in it to be run before a commit that closes a checkpoint.
+That workflow is therefore itself part of the acceptance claim, not merely a convenience.</p>
+
+<h2><span class="num">3</span>Experiments performed</h2>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>#</th><th>Experiment</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td class="num-col">E1</td><td>Run the full declared gate suite and regression tests at the reviewed commit</td><td>316 tests OK; 19 of 20 gates green; <strong class="observed">repository hygiene RED</strong></td></tr>
+    <tr><td class="num-col">E2</td><td>Bisect the hygiene failure across the closure commit series in real clones</td><td>Green through <code>832aa58</code>; red from <code>f20e82d</code> onward</td></tr>
+    <tr><td class="num-col">E3</td><td>Cold headless build on a tree observed to have zero generated output</td><td>Exit 0, 50s, 12 modules, zero drift</td></tr>
+    <tr><td class="num-col">E4</td><td>Second independent build over the first build's own output (idempotence)</td><td>Exit 0, 33s, zero drift</td></tr>
+    <tr><td class="num-col">E5</td><td>Reconstruct and run the <code>launchtests</code> target (no controlled runner exists)</td><td>tests=2, failures=0, errors=0, both identities</td></tr>
+    <tr><td class="num-col">E6</td><td>Apply both retained control patches; compare to recorded perturbed tree hashes</td><td>Both reproduce byte-exactly</td></tr>
+    <tr><td class="num-col">E7</td><td>Rebuild and re-run tests on the perturbed tree (failure-sensitivity control)</td><td>S1 red with the exact recorded assertion, H1 green, exit 1</td></tr>
+    <tr><td class="num-col">E8</td><td>Delete the semantic test S1 from the green report and re-record</td><td>Gate passes; regression suite catches it</td></tr>
+    <tr><td class="num-col">E9</td><td>Record from a build log declaring itself a warm incremental build</td><td><strong class="observed"><code>cold: true</code></strong> recorded regardless</td></tr>
+    <tr><td class="num-col">E10</td><td>Strip <code>haltOnFailure</code> from the <code>test</code> target only</td><td>Gate still reports it set; probe-derivation check catches the divergence</td></tr>
+    <tr><td class="num-col">E11</td><td>Invert a requirement's normative text inside the persisted MPS corpus</td><td>Exporter catches it; <strong class="observed">equivalence gate reports 119/119 equivalent</strong></td></tr>
+    <tr><td class="num-col">E12</td><td>Perturb the neutral export instead, leaving the model alone</td><td>Both gates catch it</td></tr>
+    <tr><td class="num-col">E13</td><td>Convert a language structure aspect to file-per-root layout</td><td>Caught &mdash; attack failed</td></tr>
+    <tr><td class="num-col">E14</td><td>Direct disclosure scan of the persisted corpus and the authority state of all 119 roots</td><td>Clean; 119/119 <code>authoritative=false</code>, <code>lifecycle=proposed</code></td></tr>
+    <tr><td class="num-col">E15</td><td>Trace every deferral class against its carrying acceptance item and gate coverage</td><td><strong class="observed">GOV-C-004 obligation undischarged and ungated</strong></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="note">All destructive experiments were performed in a throwaway clone under the scratchpad,
+or against gitignored derived state. The controlled tree was never modified.</p>
+
+<h2><span class="num">4</span>Findings</h2>
+
+<article class="finding">
+  <header>
+    <span class="fid">F1</span>
+    <span class="ftitle">The reviewed commit fails a gate declared in its own CI workflow, and has since the commit that built this evidence package</span>
+    <span class="chip evi">Evidence / process</span>
+  </header>
+  <dl class="fields">
+    <dt>Proposition challenged</dt><dd>P5, and <code>CLAUDE.md</code>'s rule that every step of <code>controlled-spec-gates.yml</code> is run before a commit closing a checkpoint. The MPS-MAT-008 closure narrative rests on gates being green.</dd>
+    <dt>Factual premise</dt><dd><code>tools/repo/check_repository_hygiene.py</code> is step 2 of the declared workflow. It rejects tracked generated artifacts and host-path disclosure.</dd>
+    <dt>Experiment</dt><dd>Run the gate at the reviewed commit, then re-run it at each commit in the closure series inside real clones (an earlier attempt using <code>git archive</code> was discarded: with no <code>.git</code> the gate errored rather than judged, which is a measurement failure, not a result).</dd>
+    <dt>Controlled baseline</dt><dd>Commits <code>ef09092</code> and <code>832aa58</code> &mdash; including the MPS-MAT-008 closure commit itself &mdash; pass with zero violations.</dd>
+    <dt>Expected behavior</dt><dd>Exit 0 at the commit offered for review.</dd>
+    <dt>Observed behavior</dt><dd><p class="observed">Exit 1, four violations, on a fresh clone:</p>
+      <pre>- .../failure-sensitivity/junit.xml contains Windows user-profile path: '%USERPROFILE%'
+- .../foreign-rule-discrimination/junit.xml contains Windows user-profile path: '%USERPROFILE%'
+- generated artifact type is tracked: .../green/cold-build.log
+- .../green/junit.xml contains Windows user-profile path: '%USERPROFILE%'</pre>
+      <p>Red from <code>f20e82d</code> (2 violations) &rarr; <code>61a335e</code> (2) &rarr; <code>40a2787</code> (4) &rarr; <code>1b58895</code> (4). The three commits that assembled the MPS-MAT-009 evidence package each broke the gate and none was caught.</p></dd>
+    <dt>Failure locus</dt><dd><strong>EVIDENCE</strong>, with a process component. The defect is in the retained evidence artifacts and in the pre-commit control being skipped &mdash; not in the modelled system.</dd>
+    <dt>Consequence</dt><dd>The commit offered for independent review cannot pass its own declared acceptance procedure. Separately, this is a genuine control conflict rather than simple oversight: <code>check_headless_build_currency.py</code> <em>requires</em> the verbatim runner artifacts to be retained under <code>mps/materialization/evidence/</code> with matching hashes, while the hygiene gate <em>rejects</em> those same artifacts. Satisfying one currently entails failing the other, and no record acknowledges the conflict.</dd>
+    <dt>Reproducer</dt><dd><pre>git clone &lt;repo&gt; r &amp;&amp; cd r &amp;&amp; git checkout 1b58895
+python tools/repo/check_repository_hygiene.py   # exit 1, four violations</pre></dd>
+    <dt>Disposition</dt><dd>Frozen. Not repaired. Repair requires a decision the reviewer cannot make: whether to scrub the retained artifacts (which changes their hashes and makes them no longer the runner's output) or to exempt the evidence tree from the hygiene gate (which narrows a disclosure control).</dd>
+  </dl>
+</article>
+
+<article class="finding">
+  <header>
+    <span class="fid">F2</span>
+    <span class="ftitle">MPS-MAT-005D is complete without the evidence its own freeze declares required, and no gate examines that deferral class</span>
+    <span class="chip evi">Evidence</span>
+    <span class="chip mea">Measurement path</span>
+  </header>
+  <dl class="fields">
+    <dt>Proposition challenged</dt><dd>P6, and the checklist's own rule: &ldquo;An acceptance item is <code>complete</code> only with attributable evidence.&rdquo;</dd>
+    <dt>Factual premise</dt><dd><code>mps4-concept-features.yaml</code> lists, under <code>acceptance_mapping.MPS-MAT-005D.evidence_required</code>, the line <em>&ldquo;the GOV-C-004 literal example demonstrated against the unchanged mechanism&rdquo;</em>, and states <em>&ldquo;GOV-C-004 is the one open record and this checkpoint is where it resolves.&rdquo;</em> The checklist records the deferral as <code>deferral_class: literal_example_substitution</code>, <code>status: reactivated at MPS-4, active proof obligation</code>, <code>carried_to: MPS-MAT-005D</code>, <code>active_means: Required, not demonstrated</code>.</dd>
+    <dt>Experiment</dt><dd>Exhaustively trace <code>GOV-C-004</code> and the literal example <code>Hazard --MITIGATES--&gt; VerificationClaim</code> across every controlled artifact; then read the deferral-handling branches in <code>check_materialization_plan.py</code>; then search every tool for any reader of <code>acceptance_mapping</code> or <code>evidence_required</code>.</dd>
+    <dt>Controlled baseline</dt><dd>The sibling deferral GOV-C-004 is compared against &mdash; <code>GOV-C-007</code>, class <code>semantic_model_absence</code> &mdash; <em>was</em> properly reactivated at MPS-2 and discharged by the CLI-C-005 five-case matrix, recorded in MPS-MAT-005B. The mechanism for doing this correctly exists and was used once.</dd>
+    <dt>Expected behavior</dt><dd>MPS-MAT-005D's evidence list contains the literal example's demonstration, or the item is not <code>complete</code>.</dd>
+    <dt>Observed behavior</dt><dd>
+      <p class="observed">The literal example appears exactly twice in the repository, both times as a declaration of the obligation, never as a demonstration of it.</p>
+      <p>MPS-MAT-005D is <code>status: complete</code>; its evidence list covers REA-C-001&ndash;007 only. The checklist therefore simultaneously asserts that the obligation is <em>&ldquo;Required, not demonstrated&rdquo;</em> and that the item carrying it is complete.</p>
+      <p>Two mechanical gaps let this stand:</p>
+      <pre>$ grep -n 'klass ==' tools/mps/check_materialization_plan.py
+180:            if klass == "non_instantiability":
+217:            elif klass == "semantic_model_absence":
+# no branch for literal_example_substitution — the third declared class
+
+$ grep -rn "acceptance_mapping\|evidence_required" tools/ tests/ --include=*.py
+# (no output) — nothing reconciles declared required evidence against recorded evidence</pre></dd>
+    <dt>Failure locus</dt><dd><strong>EVIDENCE</strong> (an acceptance item closed without declared required evidence) compounded by <strong>MEASUREMENT_PATH</strong> (the gate set has no coverage for this deferral class and no coverage of <code>evidence_required</code> at all).</dd>
+    <dt>Consequence</dt><dd>Directly material to P6, and this is the failure mode the project predicted for itself in writing: <em>&ldquo;literal_example_substitution does not lapse on reachability&hellip; nothing in the gate will notice if this is forgotten. That is why it is budgeted here rather than discovered during materialization.&rdquo;</em> It was budgeted, and then forgotten anyway, and every gate stayed green. A secondary inconsistency: the MPS-1 record argues the substitution was an equivalent restatement <em>&ldquo;rather than deferred&rdquo;</em>, while MPS-2 and MPS-4 both classify it as an open deferral &mdash; so the record does not agree with itself on whether the obligation exists.</dd>
+    <dt>Reproducer</dt><dd><pre>grep -n "GOV-C-004" mps/materialization/stage-a-checklist.yaml
+sed -n '671,693p' mps/materialization/stage-a-checklist.yaml   # active proof obligation
+sed -n '1266,1416p' mps/materialization/stage-a-checklist.yaml # 005D complete, no such evidence
+grep -n 'klass ==' tools/mps/check_materialization_plan.py</pre></dd>
+    <dt>Disposition</dt><dd>Frozen. Not repaired. Whether the demonstration was performed and not recorded, or never performed, is not determinable from the repository; either way the acceptance record does not carry it. The reviewer could not run it independently &mdash; see limitation L1.</dd>
+  </dl>
+</article>
+
+<article class="finding">
+  <header>
+    <span class="fid">F3</span>
+    <span class="ftitle">Coldness &mdash; the premise the whole build clause rests on &mdash; is asserted by the recorder, never observed</span>
+    <span class="chip mea">Measurement path</span>
+  </header>
+  <dl class="fields">
+    <dt>Proposition challenged</dt><dd>P3, and the currency gate's explicit claim that its build branch carries <em>&ldquo;cold, so a warm <code>source_gen</code> cannot keep green a project that cannot be built at all.&rdquo;</em></dd>
+    <dt>Factual premise</dt><dd>POST-MPS4-01 established that four checkpoints stayed green on stale output and that the project could not build from clean at all. Coldness is the single most load-bearing premise in the package.</dd>
+    <dt>Experiment</dt><dd>Prepend an explicit warm-build marker to the retained build log and re-record; separately, read <code>headless_build.py</code> for any cold mode.</dd>
+    <dt>Controlled baseline</dt><dd>The unmodified log records <code>cold: true</code>.</dd>
+    <dt>Expected behavior</dt><dd>A build log that is not cold either records <code>cold: false</code> or is refused.</dd>
+    <dt>Observed behavior</dt><dd>
+      <p class="observed">Records <code>cold: true</code> and the gate passes.</p>
+      <pre>build log now begins: INCREMENTAL BUILD OVER A WARM source_gen TREE - NOT COLD
+recorded build.cold      = True
+gate rc = 0</pre>
+      <p><code>check_headless_build_currency.py</code> line 118 sets <code>"cold": True</code> as a literal. <code>headless_build.py</code> has no cold option and never deletes generated output, so no instrument in the repository observes or enforces coldness at any point.</p>
+      <p><code>exit_code</code> is likewise derived from the presence of <code>BUILD SUCCESSFUL</code> in the log text rather than from the process, and <code>modules</code> is read from the build descriptor rather than from the build.</p></dd>
+    <dt>Failure locus</dt><dd><strong>MEASUREMENT_PATH.</strong> The system behaved correctly in E3; the instrument cannot tell whether it did.</dd>
+    <dt>Consequence</dt><dd>Bounded rather than fatal, because this review established coldness independently by direct observation (zero derived directories before E3) and the build reproduced. But no future run is bound to that premise, and the exact defect class POST-MPS4-01 exists to prevent would be invisible to the recorded evidence.</dd>
+    <dt>Reproducer</dt><dd><pre>printf 'WARM INCREMENTAL\n' | cat - &lt;log&gt; &gt; &lt;log&gt;.new &amp;&amp; mv &lt;log&gt;.new &lt;log&gt;
+python tools/mps/check_headless_build_currency.py --record
+python -c "import json;print(json.load(open('mps/materialization/headless-acceptance-evidence.json'))['build']['cold'])"</pre></dd>
+    <dt>Disposition</dt><dd>Frozen. Not repaired.</dd>
+  </dl>
+</article>
+
+<article class="finding">
+  <header>
+    <span class="fid">F4</span>
+    <span class="ftitle">The model-test half of MPS-MAT-008 has no controlled runner anywhere in the repository</span>
+    <span class="chip mea">Measurement path</span>
+  </header>
+  <dl class="fields">
+    <dt>Proposition challenged</dt><dd>P4 and P5 &mdash; that the model-test verdict is reproducible.</dd>
+    <dt>Factual premise</dt><dd><code>headless_build.py</code> is the only tool that invokes Ant, and it invokes only the default <code>make</code> target. It performs the build-number pinning and JDK validation that the acceptance record treats as essential.</dd>
+    <dt>Experiment</dt><dd>Search every tool and script for an invocation of the <code>test</code> target; then reconstruct the invocation by hand to run E5.</dd>
+    <dt>Controlled baseline</dt><dd>The <code>make</code> target has a controlled, toolchain-validating wrapper.</dd>
+    <dt>Expected behavior</dt><dd>A committed entry point that a reviewer can run to reproduce the model-test verdict.</dd>
+    <dt>Observed behavior</dt><dd><p class="observed">None exists.</p> The only references to the <code>test</code> target are read-only analyses (<code>check_headless_coverage.py</code>, <code>derive_probe_target.py</code>). The verdict was produced by an invocation that is not retained, and the pinned-build and JDK checks are not applied to it.</dd>
+    <dt>Failure locus</dt><dd><strong>MEASUREMENT_PATH.</strong></dd>
+    <dt>Consequence</dt><dd>Reproduction requires the reviewer to reconstruct the command, which this review did successfully &mdash; so the verdict is reproducible <em>in fact</em>, but not <em>by the repository</em>. Half of the acceptance wording has no controlled execution path.</dd>
+    <dt>Reproducer</dt><dd><pre>grep -rn "Launcher\|nltps-headless-build.xml" tools/ scripts/ --include=*.py --include=*.ps1
+# only headless_build.py invokes Ant, and only for the default `make` target</pre></dd>
+    <dt>Disposition</dt><dd>Frozen. Not repaired. The working invocation used in E5 is recorded in §5 for the successor.</dd>
+  </dl>
+</article>
+
+<article class="finding">
+  <header>
+    <span class="fid">F5</span>
+    <span class="ftitle">The Stage-B equivalence gate reports 119/119 equivalent while the model asserts the opposite of the baseline</span>
+    <span class="chip mea">Measurement path</span>
+  </header>
+  <dl class="fields">
+    <dt>Proposition challenged</dt><dd>P2, and the gate's own stated question: <em>&ldquo;does the imported model say what the controlled document says?&rdquo;</em></dd>
+    <dt>Factual premise</dt><dd><code>check_stage_b_equivalence.py</code> loads the baseline bundle and the neutral export as JSON, and reads the MPS model only through <code>root_identity()</code> &mdash; which supplies node identity and root existence, never a compared field value.</dd>
+    <dt>Experiment</dt><dd>In the clone, inject <code>NOT</code> into a requirement's normative statement inside the persisted corpus, inverting its meaning: <em>&ldquo;The NL-TPS shall operate as a human-supervised treatment-planning support system&hellip;&rdquo;</em> &rarr; <em>&ldquo;shall NOT operate&hellip;&rdquo;</em>. Then run the corpus and equivalence gates. Repeat in the other direction, perturbing only the export.</dd>
+    <dt>Controlled baseline</dt><dd>Unperturbed: both gates green. Export-side perturbation (E12): both gates red &mdash; so the gates are not simply inert.</dd>
+    <dt>Expected behavior</dt><dd>A gate whose stated question is about the model fails when the model contradicts the document.</dd>
+    <dt>Observed behavior</dt><dd>
+      <pre>rc=1  export_hlr_corpus.py         ERROR: the export on disk does not match the model
+rc=0  check_stage_b_equivalence.py PASS: 119/119 requirements compared field by field
+                                   against hlr-baseline.json and found equivalent</pre>
+      <p class="observed">The equivalence gate passed over an inverted safety requirement.</p></dd>
+    <dt>Failure locus</dt><dd><strong>MEASUREMENT_PATH.</strong> The corpus itself is correct; the gate's claim about what it measured is not.</dd>
+    <dt>Consequence</dt><dd>The control set is closed <em>in CI</em>, because <code>export_hlr_corpus.py --check</code> runs immediately before and binds the export to the model. But the binding is carried by a different instrument than the one whose name, docstring and PASS message claim it. <code>CLAUDE.md</code> lists the two as independent commands, so a reviewer running the equivalence gate alone &mdash; the natural thing to do when asking &ldquo;is the corpus faithful?&rdquo; &mdash; receives a specific, confident, wrong answer. This is the pattern the project names elsewhere: <em>&ldquo;a gate that compares two declarations with each other verifies neither.&rdquo;</em></dd>
+    <dt>Reproducer</dt><dd><pre>F=$(grep -l "shall" mps/NLTPSGovernance/corpus/nltps.corpus/models/nltps.corpus.hlr/*.mpsr | head -1)
+# inject "NOT " after the first 'shall ' inside a value="..." attribute in $F
+python tools/mps/check_stage_b_equivalence.py   # exit 0, "119/119 ... found equivalent"</pre></dd>
+    <dt>Disposition</dt><dd>Frozen. Not repaired.</dd>
+  </dl>
+</article>
+
+<article class="finding">
+  <header>
+    <span class="fid">F6</span>
+    <span class="ftitle">Three currency-gate fields attribute discrimination to the gate that lives elsewhere or nowhere</span>
+    <span class="chip mea">Measurement path</span>
+  </header>
+  <dl class="fields">
+    <dt>Proposition challenged</dt><dd>P5 &mdash; specifically the gate's claim that <code>authored = discovered = executed</code> plus recorded identities <em>&ldquo;excludes&hellip; a silently changing discovery population&rdquo;</em> and means <em>&ldquo;the count cannot be satisfied by different tests&rdquo;</em>; and that the build branch's <code>drift</code> field makes <em>&ldquo;generated output differing from committed output&hellip; visible&rdquo;</em>.</dd>
+    <dt>Factual premise</dt><dd>In <code>record()</code>, <code>authored = len(cases)</code> and <code>discovered = executed = suite.get("tests")</code> &mdash; all three derive from one artifact, and two are the same variable. <code>N</code> is never pinned. In <code>check()</code>, <code>identities</code> is only tested non-empty for the green branch, though the control branches <em>do</em> pin H1 by name and S1 by prefix. <code>halt_on_failure</code> is a substring test over the whole descriptor text.</dd>
+    <dt>Experiment</dt><dd>(a) Delete S1 from the green report, leaving only harness witness H1, and re-record. (b) Strip <code>haltOnFailure</code> from the <code>test</code> target only. (c) Build the project and check whether <code>drift</code> can see generated output.</dd>
+    <dt>Controlled baseline</dt><dd>Unmodified evidence: gate green, both identities present.</dd>
+    <dt>Expected behavior</dt><dd>Each perturbation is refused by the gate that claims to refuse it.</dd>
+    <dt>Observed behavior</dt><dd>
+      <p><strong>(a)</strong> Gate passes: <code>model_tests=pass with 1 executed &hellip; identities ['test_testAssessedClaimWithoutEvidenceIsRejected()']</code>. The only surviving test is the harness witness that passes in <em>both</em> red controls and therefore carries no semantic discrimination. <span class="expected">Caught by <code>tests/test_headless_currency.py::test_recorded_identities_match_the_frozen_population</code>, which is in CI &mdash; so the control set holds; the gate is not what holds it.</span></p>
+      <p><strong>(b)</strong> Gate reports <code>halt_on_failure = True</code> because the diagnostic <code>probe</code> target still contains the substring. <span class="expected">Caught by <code>derive_probe_target.py --check</code>.</span> That closure is incidental: it depends on diagnostic scaffolding the descriptor itself calls <em>&ldquo;not part of the controlled build&rdquo;</em>, so removing the probe as cleanup would silently make the <code>haltOnFailure</code> control vacuous.</p>
+      <p><strong>(c)</strong> After a full build: 21 derived directories on disk, <code>0</code> tracked by git, <code>git status</code> over the project empty. All generated output is gitignored, so no committed generated output exists to differ from. <span class="observed">The <code>drift</code> field cannot observe generated output even in principle</span> &mdash; what it actually proves is the narrower and still useful fact that the build did not mutate <em>authored</em> persistence.</p></dd>
+    <dt>Failure locus</dt><dd><strong>MEASUREMENT_PATH.</strong> No system defect; the instrument's self-description overstates it in three places.</dd>
+    <dt>Consequence</dt><dd>Non-blocking for acceptance: in every case the aggregate control set catches the perturbation. Material for a reviewer, because the gate's PASS line is the artifact a reader will treat as the summary of what was verified, and it credits itself with three discriminations it does not perform.</dd>
+    <dt>Reproducer</dt><dd><pre># (a) excise the S1 testcase from green/junit.xml, set tests="1", then:
+python tools/mps/check_headless_build_currency.py --record &amp;&amp; \
+python tools/mps/check_headless_build_currency.py     # exit 0
+# (c)
+python tools/mps/headless_build.py &amp;&amp; git status --porcelain -- mps/NLTPSGovernance  # empty</pre></dd>
+    <dt>Disposition</dt><dd>Frozen. Not repaired.</dd>
+  </dl>
+</article>
+
+<article class="finding">
+  <header>
+    <span class="fid">F7</span>
+    <span class="ftitle">The enumeration gate's population depends on build state, and in CI it examines less than half the population its own rationale requires</span>
+    <span class="chip mea">Measurement path</span>
+    <span class="chip evi">Evidence</span>
+  </header>
+  <dl class="fields">
+    <dt>Proposition challenged</dt><dd>P1 &mdash; and the recorded MPS-4 evidence line <em>&ldquo;check_enum_persistence examined 13,903 persisted enumeration values across 74 models&rdquo;</em>.</dd>
+    <dt>Factual premise</dt><dd><code>collect()</code> walks <code>mps_layout.discover(MPS_ROOT, include_generated=True)</code>. The inline rationale states: <em>&ldquo;MPS's own descriptor models mirror the declared enumerations and carried more than half the values this gate used to examine. Excluding them would halve the population and still print PASS.&rdquo;</em> Generated output is gitignored.</dd>
+    <dt>Experiment</dt><dd>Run the gate on the cold clone before any build, then again after a full build, and compare the reported population.</dd>
+    <dt>Controlled baseline</dt><dd>Recorded evidence: 13,903 values / 74 models.</dd>
+    <dt>Expected behavior</dt><dd>A population that is a property of the controlled model tree, and therefore reproducible from a clone.</dd>
+    <dt>Observed behavior</dt><dd>
+      <pre>cold clone, pre-build : 21 enumerations, 48 models,  6,192 values
+same tree, post-build : 21 enumerations, 75 models, 13,932 values
+recorded as evidence  :                  74 models, 13,903 values</pre>
+      <p class="observed">The population more than doubles depending on whether generated output happens to be present, and is not stable even between two post-build runs.</p>
+      <p>The CI job checks out a fresh clone and never builds, so every CI run of this gate examines the 6,192-value population &mdash; exactly the halving the code comment identifies as the failure mode to avoid.</p></dd>
+    <dt>Failure locus</dt><dd><strong>MEASUREMENT_PATH</strong> (population not bound to the controlled object) and <strong>EVIDENCE</strong> (a cited count that a reviewer cannot reproduce from a clone).</dd>
+    <dt>Consequence</dt><dd>The gate is a superset check, so a defect in <em>authored</em> persistence is caught in both regimes and P1 is not falsified. What fails is the evidentiary claim: the recorded number describes a population that does not exist in a clone, and the coverage the rationale calls essential is absent from every automated run.</dd>
+    <dt>Reproducer</dt><dd><pre>git clone &lt;repo&gt; r &amp;&amp; cd r &amp;&amp; python tools/mps/check_enum_persistence.py   # 48 models / 6,192
+python tools/mps/headless_build.py &amp;&amp; python tools/mps/check_enum_persistence.py # 75 / 13,932</pre></dd>
+    <dt>Disposition</dt><dd>Frozen. Not repaired.</dd>
+  </dl>
+</article>
+
+<h2><span class="num">5</span>Attacks that did not expose a defect</h2>
+
+<p class="lede">These are recorded because a review that lists only its hits is not a measurement. Each was
+a genuine attempt to break a claim; each claim held.</p>
+
+<div class="held-item">
+  <strong>The cold build clause &mdash; held, and independently confirmed.</strong>
+  <p>The clone was observed to have zero <code>source_gen</code>/<code>classes_gen</code>/<code>test_gen</code>
+  directories and no <code>build/work/</code> before anything ran, so coldness was established by the
+  reviewer rather than taken from the record. Build: exit 0 in 50s over all 12 modules, <code>git status</code>
+  over the project empty afterwards. Second independent build over that output: exit 0 in 33s, still clean.
+  This is a stronger result than the package's own, because F3 shows the package could not have established
+  the premise.</p>
+</div>
+
+<div class="held-item">
+  <strong>The model-test clause &mdash; held.</strong>
+  <p>Reconstructed <code>launchtests</code> invocation, run from a fresh process:
+  <code>tests="2" skipped="0" failures="0" errors="0"</code>, both identities present
+  (<code>test_S1_&hellip;REA_C_002&hellip;</code> and <code>test_testAssessedClaimWithoutEvidenceIsRejected</code>).
+  The recorded <code>authored = discovered = executed = 2</code> is a true statement about this tree.</p>
+</div>
+
+<div class="held-item">
+  <strong>The retained control patches are implementer assertions &mdash; refuted.</strong>
+  <p>Both patches were applied to the base tree and the resulting model-tree hash compared to the recorded
+  <code>perturbed_model_tree_sha256</code>. Both reproduce exactly:
+  <code class="hash">df52b5e1&hellip;</code> for failure sensitivity and <code class="hash">2308bbb6&hellip;</code>
+  for foreign-rule discrimination. Reversing each returns to <code class="hash">7a7f2362&hellip;</code>. The
+  <code>patch_reproduces_perturbed_tree</code> flag, which the gate only checks for truthiness, is true in fact.</p>
+</div>
+
+<div class="held-item">
+  <strong>Failure sensitivity rests on narrative &mdash; refuted, by re-execution.</strong>
+  <p>Applied the perturbation, rebuilt cold, and re-ran the tests. Result: <code>tests=2, failures=0, errors=1</code>,
+  <code>BUILD FAILED</code>, exit 1, with S1 not passing and H1 passing &mdash; and the assertion text matches the
+  recorded one character for character:
+  <code>java.lang.AssertionError: node &lt;VerificationClaim [1365532761392382826]&gt; does not have the expected 'error' message ''</code>.
+  This is the package's strongest claim and it survives independent execution.</p>
+</div>
+
+<div class="held-item">
+  <strong>The currency key omits the test model &mdash; refuted.</strong>
+  <p>Hypothesis: if <code>nltps.modeltests</code> lived outside <code>PROJECT_DIR</code>, editing the tests
+  would not invalidate the verdicts. It does not &mdash; the test module is registered in the project's own
+  <code>modules.xml</code> under <code>$PROJECT_DIR$/tests/</code> and is inside the hashed population.</p>
+</div>
+
+<div class="held-item">
+  <strong>Patient data, credentials, signing keys, authority cutover &mdash; not found.</strong>
+  <p>Direct scan of the persisted corpus (122 documents, 651,648 bytes) for private-key and certificate blocks,
+  password/secret/token assignments, bearer tokens, AWS keys, MRN and patient-identifier fields, dates of birth,
+  email addresses and phone numbers: <strong>zero hits in every category</strong>. All 119 exported records carry
+  <code>authoritative: false</code> and <code>lifecycle_state: "proposed"</code>; the persisted corpus contains no
+  <code>value="true"</code> property at all. Every occurrence of &ldquo;signed&rdquo;, &ldquo;approved&rdquo; and
+  &ldquo;release&rdquo; is inside requirement statement text, never a state assertion. MPS-MAT-009's literal item
+  text verifies.</p>
+</div>
+
+<div class="held-item">
+  <strong>The concept ceiling can be driven down by file-per-root conversion &mdash; refuted.</strong>
+  <p><code>check_module_graph.py</code> globs <code>*/models/*.structure.mps</code> without going through
+  <code>mps_layout</code>, and its only count assertion is an upper bound (<code>total_concepts &gt; max_concepts</code>),
+  so a silent under-count looked reachable via the project's own declared default persistence. Converting a language
+  structure aspect to folder form was caught:
+  <code>- languages without a structure aspect: ['nltps.roles.therapy']</code>. The protection comes from an
+  aspect-presence check rather than from the count, but it is real.</p>
+</div>
+
+<div class="held-item">
+  <strong>The neutral export could be stale against the model &mdash; refuted.</strong>
+  <p>Perturbing the export alone is caught by both <code>export_hlr_corpus.py --check</code> and the equivalence
+  gate; perturbing the model alone is caught by the exporter. The exporter genuinely reads the persisted model and
+  never reads the bundle, so the two sides of the Stage-B comparison are independent as claimed. (What is <em>not</em>
+  as claimed is which instrument carries the binding &mdash; see F5.)</p>
+</div>
+
+<h2><span class="num">6</span>Limitations of this review</h2>
+
+<div class="limit"><strong>L1 &mdash; No model-aware route.</strong>
+<p>No MPS IDE session was attached to this clone, so the <code>mps_mcp_*</code> toolkit was unavailable. Anything
+requiring a live model write &mdash; most importantly running the GOV-C-004 literal example in F2 &mdash; could not be
+attempted. F2 is therefore a finding about the acceptance record, not a claim that the constraint is wrong.</p></div>
+
+<div class="limit"><strong>L2 &mdash; Single host.</strong>
+<p>All executions ran on the same machine that produced the original evidence (<code>hostname HUPCI-LAP-11</code>
+appears in both). Host-independence of the build and test results is untested; a second machine would be required.</p></div>
+
+<div class="limit"><strong>L3 &mdash; Structural only.</strong>
+<p>Nothing here speaks to clinical correctness, risk acceptability, or whether REA-C-002 is the right condition.
+Verifying that the model faithfully mirrors the document says nothing about whether the document is right.</p></div>
+
+<div class="limit"><strong>L4 &mdash; Areas probed shallowly or not at all.</strong>
+<p>The role-ontology gate, the model-persistence gate, the trace graph and risk register, the four projection
+languages' semantics, and the provenance of the 119 records against the source LaTeX document were read but not
+adversarially attacked. The <code>document-build</code> CI job was not run. Absence of findings in these areas is
+absence of evidence.</p></div>
+
+<div class="limit"><strong>L5 &mdash; One negative control was itself invalid and was discarded.</strong>
+<p>The first attempt to bisect F1 extracted each commit with <code>git archive</code>; with no <code>.git</code> present
+the gate raised <code>fatal: not a git repository</code> and returned non-zero at <em>every</em> commit, including known-good
+ones. That is a measurement failure that reads exactly like a finding. It was re-run with real clones before any
+conclusion was drawn, and is recorded here because the same trap is available to the next reviewer.</p></div>
+
+<h2><span class="num">7</span>Disposition</h2>
+
+<div class="verdict">
+  <span class="verdict-word">FAIL</span>
+  <p class="verdict-note">Not <em>INVALID / INCOMPLETE</em>: every measurement reported above was established as
+  applying to the intended object, population and environment, and the two defects are reproducible from the
+  commands given.</p>
+</div>
+
+<p>The warrant fails on two independent grounds, both in the evidence and bookkeeping layer rather than in the
+modelled system:</p>
+
+<ul>
+  <li><strong>F1</strong> &mdash; the commit offered for review does not pass its own declared gate suite, and has not
+  since the first commit of this evidence package. The acceptance procedure's own precondition is unmet.</li>
+  <li><strong>F2</strong> &mdash; MPS-MAT-005D is recorded <code>complete</code> while evidence its own freeze declares
+  required is absent from the controlled record, its deferral still reads <em>&ldquo;Required, not demonstrated&rdquo;</em>,
+  and no gate examines that deferral class or reconciles <code>evidence_required</code> at all. This violates the
+  project's own acceptance rule and is the precise failure the project predicted for itself in writing.</li>
+</ul>
+
+<p>Set against that, the technically hardest claims in the package held under adversarial execution and are stronger
+than the record itself could establish: the cold build reproduced on a tree whose coldness the reviewer verified
+directly, the model tests reproduced at <code>2/2</code> with both identities, and both red-state controls reproduced
+&mdash; hashes byte-exact and, for failure sensitivity, the assertion text character-for-character. F3&ndash;F7 are
+measurement-path defects that do not falsify P1&ndash;P5 but do mean several instruments credit themselves with
+discriminations performed elsewhere or not at all.</p>
+
+<p><strong>Recommended sequencing</strong>, for whoever holds the repair authority: F1 and F2 are acceptance-blocking
+and F1 carries a design decision (the hygiene/currency control conflict) that should be resolved deliberately rather
+than by whichever gate is edited first. F3 and F5 are the highest-value non-blocking repairs, because each converts an
+assertion into an observation. F2's gate gap &mdash; no <code>literal_example_substitution</code> branch, no
+<code>evidence_required</code> reconciliation &mdash; is worth more than the single missing demonstration, since it is
+what allowed the omission to be invisible.</p>
+
+<h2><span class="num">8</span>Repository state and integrity</h2>
+
+<div class="tablewrap">
+<table>
+  <tbody>
+    <tr><td class="k">Controlled artifact modified</td><td><strong>No.</strong> <code>git status --porcelain</code> empty; <code>git diff --name-only HEAD</code> returns zero files.</td></tr>
+    <tr><td class="k">Repair performed</td><td><strong>No.</strong> Every finding is frozen. No failed observation was overwritten by a repaired one.</td></tr>
+    <tr><td class="k">Final commit</td><td class="hash">1b588953b31205ace9d3a2adb35280008d2cdd9e &mdash; unchanged from the starting state</td></tr>
+    <tr><td class="k">Final model tree hash</td><td class="hash">7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3 &mdash; unchanged</td></tr>
+    <tr><td class="k">What this review did write</td><td>Gitignored derived state only: <code>build/work/</code> and 21 <code>source_gen</code>/<code>source_gen.caches</code>/<code>classes_gen</code>/<code>test_gen</code> directories produced by E3&ndash;E5, all disposable and all ignored.</td></tr>
+    <tr><td class="k">Destructive experiments</td><td>Confined to a throwaway clone under the session scratchpad, restored to a clean tree after each experiment and verified by hash before the next.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Working invocation for the model-test target (see F4)</h3>
+<div class="tablewrap"><table><tbody><tr><td>
+<pre style="margin:0;background:none;border:none;padding:0">"$MPS_HOME/jbr/bin/java.exe" \
+  -cp "$MPS_HOME/lib/ant/lib/ant.jar;$MPS_HOME/lib/ant/lib/ant-launcher.jar" \
+  org.apache.tools.ant.launch.Launcher \
+  -f build/nltps-headless-build.xml \
+  -Dmps.home="$MPS_HOME" \
+  -Dproject.dir="&lt;repo&gt;\mps\NLTPSGovernance" \
+  -Dbuild.heap=4g \
+  test
+# reports land in build/work/reports/TEST-junit-jupiter.xml</pre>
+</td></tr></tbody></table></div>
+
+<footer>
+  MPS-MAT-009 &middot; independent adversarial review &middot; reviewed commit <span class="mono">1b58895</span> &middot;
+  MPS <span class="mono">MPS-261.25134.779</span>. Findings frozen prior to any repair. This review establishes
+  structural and evidentiary properties only; it asserts no clinical correctness, no risk acceptability, and no approval.
+</footer>
+
+</div>
