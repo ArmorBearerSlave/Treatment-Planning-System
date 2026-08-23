@@ -800,29 +800,194 @@ findings:
     origin: post-MI-EXIT-01 independent review
     acceptance_blocking: false
     locus: [MEASUREMENT_PATH]
-    title: The remediation record itself had no mechanical observer
-    claim: >-
-      Nothing in tools/, tests/ or .github/ read anything under
-      mps/materialization/mps-mat-009/. Nine files -- the controlled finding register, every
-      adjudication, every repair record, every observation and every review disposition --
-      and not one reader. Measured, not assumed: a search across those three trees returns no
-      match, while the neighbouring registers have readers (evidence-obligations 2,
-      process-attestations 4, evidence-allowlist 6, stage-a-checklist 15).
-    why_it_is_a_finding_and_not_housekeeping: >-
-      This programme's entire thesis is that a declaration without an observer is worth
-      nothing, and that a record which cannot be checked will eventually stop describing what
-      it claims to. F2 was that finding applied to evidence_required. This is the same finding
-      applied to the place where every adjudication, disposition and verdict in the
-      remediation lives. The record that argues most insistently for mechanical observation
-      was the one part of the repository nothing observed.
-    how_it_surfaced: >-
-      By asking what would break when keys were added to those files, and discovering the
-      answer was nothing, because nothing reads them.
-    first_observer: >-
-      tests/test_review_records.py, added by this checkpoint. It is the first mechanical
-      reader this record population has ever had, and it covers review-result consistency
-      only -- not the substance of the adjudications, dispositions or findings, which remain
-      unobserved.
+    title: >-
+      No dedicated observer treated the MPS-MAT-009 artifacts as a review-record population
+    superseded_claim:
+      wording: >-
+        Nothing in tools/, tests/ or .github/ read anything under
+        mps/materialization/mps-mat-009/.
+      status: FALSE, withdrawn
+      falsified_by: independent review of d6faf77
+      retained_because: >-
+        The wording is kept so the correction is auditable. Deleting a false claim leaves no
+        trace that it was made, and how it was reached is more instructive than the claim.
+    corrected_claim: >-
+      Before the review-record normalization checkpoint, no dedicated mechanical observer
+      treated the controlled MPS-MAT-009 artifacts as a review-record population or checked
+      review-result consistency across that population.
+    the_distinction_that_matters: >-
+      Generic enumeration of files is not semantic observation of those files as review
+      records. Both check_path_citations and the repository hygiene gate were resolving all
+      nine files as members of their populations throughout; neither had any notion of a
+      review result, a verdict, a reviewed object, or a missing disposition.
+    evidence_by_resolved_population:
+      method: >-
+        Each candidate reader's population-producing function was executed and its resolved
+        population inspected for membership, rather than its source being searched for the
+        target's name.
+      check_path_citations:
+        population_function: scanned_files()
+        resolved_cardinality: 105
+        target_members_present: 9
+        acquired_through: the mps/materialization *.yaml entry in SCAN
+      repository_hygiene:
+        population_function: git ls-files --cached --others --exclude-standard
+        resolved_cardinality: 390
+        target_members_present: 9
+    qualitative_contrast: >-
+      Other controlled registers already had dedicated subject-specific observers; the
+      MPS-MAT-009 review-record population did not. No reader count is asserted, here or
+      anywhere: a count of name references would preserve the same category error with a
+      cleaner definition.
+    first_dedicated_observer: >-
+      tests/test_review_records.py, added at d6faf77 and corrected in this checkpoint. It is
+      the first dedicated observer of these controlled artifacts as a review-record
+      population.
+    state: OPEN
     residual: >-
-      Open. One observer over one property is not coverage. The finding is recorded as
-      open so that the remaining unobserved content of this record population stays visible.
+      One observer over one property is not coverage. It now establishes population
+      membership and completeness, review-status presence, review-unit membership, schema
+      consistency, and the authority and non-identity constraints. It does not establish
+      adjudication soundness, the factual truth of any finding, evidence adequacy, the
+      correctness of any disposition, or the historical truth of external review events.
+      PopulationObserved does not imply AdjudicationSound.
+
+  - id: REC-OBS-01-METHOD
+    origin: independent review of d6faf77
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: A literal-name search cannot establish the absence of readers
+    the_error_as_committed: >-
+      A search for the literal string mps-mat-009 across tools/, tests/ and .github/ returned
+      nothing, and absence of readers was inferred from it. The inference does not hold: a
+      reader may acquire its target through a parent glob, a recursive walk, tracked-file
+      enumeration, graph traversal, or any other broader population definition, and in this
+      case two readers did exactly that.
+    durable_rule: >-
+      Absence of a literal reference to X is not absence of an observer of X.
+    operationally: >-
+      A name or reference search is a discovery and recall aid. Evidence of whether X is
+      observed is the resolved population of each candidate reader: identify the function
+      that produces that reader's input population, execute or instrument it against the
+      object in question, inspect the result, and test membership. Source inspection locates
+      the population function; it is not the membership proof.
+    why_it_generalises: >-
+      The same shape recurs whenever a search stands in for a measurement. It is the
+      searching equivalent of the finding this programme keeps making: an instrument credited
+      with a discrimination it does not perform.
+
+  - id: RT-F-01
+    origin: independent review of d6faf77
+    reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    acceptance_blocking: false
+    state: OPEN
+    disposition: carried, not repaired in this checkpoint
+    note: >-
+      Transported to preserve the reviewed population. Non-blocking findings are retained
+      rather than discarded, because a review record that keeps only what was acted on cannot
+      show what was deferred.
+
+  - id: RT-F-02
+    origin: independent review of d6faf77
+    reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    acceptance_blocking: false
+    state: OPEN
+    disposition: carried, not repaired in this checkpoint
+
+  - id: RT-F-03
+    origin: independent review of d6faf77
+    reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    acceptance_blocking: true
+    blocking_scope: correction required before F3
+    state: OPEN
+    title: False reader claim in REC-OBS-01
+    discovered_by: independent review of d6faf77
+    historical_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    repair: this commit
+    disposition: >-
+      Corrected. The false claim is withdrawn and retained as superseded_claim under
+      REC-OBS-01; the proposition actually established is recorded in its place, with the
+      generic-reader versus dedicated-observer distinction made explicit and supported by
+      resolved population evidence.
+
+  - id: RT-F-04
+    origin: independent review of d6faf77
+    reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    acceptance_blocking: true
+    blocking_scope: correction required before F3
+    state: OPEN
+    title: Neighbour reader counts encoded the same category error
+    discovered_by: independent review of d6faf77
+    historical_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    repair: this commit
+    disposition: >-
+      Removed. The counts 2, 4, 6 and 15 are gone and are NOT replaced by a corrected count.
+      A count of name references would preserve the same error with a cleaner definition, so
+      the contrast is qualitative: other registers already had dedicated subject-specific
+      observers and this population did not. No numerical reader-count contract is introduced.
+
+  - id: RT-F-05
+    origin: independent review of d6faf77
+    reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    acceptance_blocking: true
+    blocking_scope: correction required before F3
+    state: OPEN
+    title: Temporal population count implied a state that never existed
+    discovered_by: independent review of d6faf77
+    historical_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    repair: this commit
+    rederived_mechanically:
+      method: git ls-tree -r --name-only OBJECT -- mps/materialization/mps-mat-009/
+      at_51261fd:
+        controlled_files: 8
+        dedicated_review_record_observers: 0
+      at_d6faf77:
+        controlled_files: 9
+        ninth_file: mps/materialization/mps-mat-009/independent-reviews.yaml
+        dedicated_review_record_observers: 1
+        observer: tests/test_review_records.py
+    disposition: >-
+      Corrected. No state ever existed with nine files and no observer: the ninth file and
+      the first dedicated observer arrived in the same checkpoint. The actual temporal
+      relation is eight records with no dedicated semantic review observer, then
+      normalization, then nine records with the first one.
+
+  - id: RT-F-06
+    origin: independent review of d6faf77
+    reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    acceptance_blocking: true
+    blocking_scope: review-population observer design gap
+    state: CLOSED
+    title: A commit-scoped review was undiscoverable by a record-file-derived population
+    discovered_by: independent review of d6faf77
+    historical_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    repair: this commit
+    the_gap: >-
+      The population assumed every reviewable unit had a backing record file, so a legitimate
+      commit-scoped review could hold a register entry that no record-file-derived population
+      could discover, making it invisible to the very control meant to detect omission.
+    disposition: >-
+      Closed by typing membership source inside the authoritative reviewable_units
+      declaration rather than adding a second classifier. E is every register entry; F is
+      every reviewable_units member whose kind is record_file_backed. Both directions are
+      enforced, commit-scoped units are members without a synthetic record file, and directory
+      classification is defined only over record-backed units because only those have a record
+      path.
+    closure_derived_from: >-
+      tests/test_review_records.py MutationControls A through F, none of which depends on a
+      hard-coded list of review ids.
+
+  - id: RT-F-07
+    origin: independent review of d6faf77
+    reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    acceptance_blocking: false
+    state: OPEN
+    disposition: carried, not repaired in this checkpoint
+
+  - id: RT-F-08
+    origin: independent review of d6faf77
+    reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    acceptance_blocking: false
+    state: ACCEPTED
+    disposition: no change required
+    preserved_as: accepted; not reinterpreted

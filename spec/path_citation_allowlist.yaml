@@ -27,3 +27,10 @@ absent_by_declaration:
     Cited by tests/test_evidence_reconciliation.py to prove the reconciler refuses an
     obligation whose named observer gate does not exist. Creating it would disarm the control
     that stops a declaration being discharged by naming a gate nobody wrote.
+- path: mps/materialization/mps-mat-009/absent.yaml
+  status: negative_control_fixture
+  reason: >-
+    Cited by tests/test_review_records.py mutation control C, which proves the review-record
+    observer rejects a reviewable unit declared record_file_backed while pointing at a record
+    that does not exist. It must not exist; creating it would disarm the control that stops a
+    review unit being backed by a file nobody wrote.

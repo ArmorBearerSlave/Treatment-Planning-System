@@ -363,6 +363,30 @@ engineering review are different claims; only a named reviewer replacing a deriv
 hazard set with one determined for that specific entity moves it. See
 `spec/construction_policy.yaml`, `progress_metric.numerator_integrity`.
 
+## Absence of a literal reference is not absence of an observer
+
+Searching the tree for a name tells you where that name appears. It does not tell you what
+is observed, because a reader acquires its target through a *population*: a parent glob, a
+recursive walk, tracked-file enumeration, a graph traversal. A file no tool mentions by name
+may still be read by several.
+
+**To establish whether X is observed, resolve the candidate readers' populations.** Identify
+the function that produces a reader's input set, execute or instrument it, and test whether X
+is a member. Source inspection locates that function; it is not the membership proof, and
+neither is a grep.
+
+This was got wrong here. A search for `mps-mat-009` across `tools/`, `tests/` and `.github/`
+returned nothing, and "nothing reads these files" was recorded as a finding. It was false:
+`check_path_citations.scanned_files()` resolves a 105-file population containing all nine of
+them, through its `mps/materialization` glob, and the hygiene gate reaches them through
+`git ls-files` in a 390-file population. What was actually true is narrower and worth
+stating separately — no observer treated them *as review records*. Generic enumeration of
+files is not semantic observation of those files. The corrected finding and its withdrawn
+wording are both in `mps/materialization/mps-mat-009/findings.yaml`.
+
+Related: do not answer "is this observed?" with a count of name references. That preserves
+the same category error with a cleaner definition.
+
 ## Git-clean does not establish execution-cold
 
 A clean working tree says what Git tracks is unmodified. It says nothing about the generated

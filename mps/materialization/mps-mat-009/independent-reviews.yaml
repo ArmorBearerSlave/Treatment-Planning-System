@@ -33,18 +33,50 @@ verdict_vocabulary:
 
 population:
   definition: >-
-    A record in mps/materialization/mps-mat-009/ that describes an independently reviewable
-    UNIT of remediation work. Defined by content, not by filename: the one record that
-    already carried a verdict, f2-observability.yaml, is precisely the file a *-repair.yaml
-    glob would miss, so a pattern-based population would have excluded the only member that
-    already had what the others lacked.
+    An independently reviewable UNIT of remediation work. Defined by content, not by
+    filename: the one record that already carried a verdict, f2-observability.yaml, is
+    precisely the file a *-repair.yaml glob would miss, so a pattern-based population would
+    have excluded the only member that already had what the others lacked.
+
+  membership_kinds:
+    record_file_backed: >-
+      The unit is described by a controlled record file, which the entry names. Only these
+      participate in directory classification, because only these possess a record path.
+    commit_scoped: >-
+      The unit is a reviewed commit with no backing record file. RT-F-06: a population
+      derived only from record files cannot discover such a unit, so it would be invisible
+      to the very control meant to detect omission. Requiring a synthetic record file to
+      make it visible would be manufacturing evidence to satisfy an observer.
+  why_the_discriminator_lives_here: >-
+    This is the authoritative classification. A second scheme -- per-file self-declaration,
+    an id list, another pattern -- would be a competing source of truth that drifts, and the
+    drift would be invisible for exactly as long as the two happened to agree. One
+    classification structure, two populations derived from it, zero competing schemes.
+
   reviewable_units:
-    - record: mps/materialization/mps-mat-009/f2-observability.yaml
+    - kind: record_file_backed
+      record: mps/materialization/mps-mat-009/f2-observability.yaml
       review: REV-F2
-    - record: mps/materialization/mps-mat-009/f1-repair.yaml
+    - kind: record_file_backed
+      record: mps/materialization/mps-mat-009/f1-repair.yaml
       review: REV-F1
-    - record: mps/materialization/mps-mat-009/f5-repair.yaml
+    - kind: record_file_backed
+      record: mps/materialization/mps-mat-009/f5-repair.yaml
       review: REV-F5
+    - kind: commit_scoped
+      reviewed_object: ae475138c77f9bcc6fb6508d90b4dafcc10a5cba
+      review: REV-MI-EXIT-01-R1
+    - kind: commit_scoped
+      reviewed_object: 51261fdd73002143f2cc81d702740f468e251e76
+      review: REV-MI-EXIT-01-R2
+
+  membership_kind_is_not_object_identity_strength: >-
+    Two independent dimensions, deliberately not conflated. REV-F2 is record_file_backed and
+    its reviewed object is nonetheless only working-tree identified; REV-MI-EXIT-01-R1 is
+    commit_scoped and SHA-bound. How a unit enters the population says nothing about how
+    strongly the thing it reviewed was identified, and F2's weaker historical identity is
+    preserved exactly as observed rather than silently upgraded to commit-scoped evidence.
+
   supporting_records:
     reason: >-
       These describe or support a reviewable unit without themselves being one. They are
@@ -58,10 +90,12 @@ population:
       - mps/materialization/mps-mat-009/f2-restoration.yaml
       - mps/materialization/mps-mat-009/independent-reviews.yaml
   unclassified_is_an_error: >-
-    Every file in that directory must appear in exactly one of the two lists above. A record
-    added later that appears in neither is a control failure, not a silent pass -- otherwise
-    a new file escapes by not matching a pattern, which is the same silence the control
-    exists to end.
+    Every file in mps/materialization/mps-mat-009/ must appear either as a record_file_backed
+    reviewable unit or in supporting_records. A record added later that appears in neither is
+    a control failure, not a silent pass -- otherwise a new file escapes by not matching a
+    pattern, which is the same silence the control exists to end. Directory classification is
+    defined only over record_file_backed units, because commit_scoped units have no record
+    path to classify.
 
 path_citation_note: >-
   No repository-relative path is cited for any external primary, so the declared-absent
@@ -89,12 +123,16 @@ reviews:
 
   - review_id: REV-F2
     subject: F2 observability repairs, sequence item 2
-    reviewed_object: working tree of the remediation workspace, later committed as edd6b0b
+    reviewed_object:
+      kind: working_tree
+      later_committed_as: edd6b0b
     reviewed_object_note: >-
       Unlike the later reviews, F2 was verified against an uncommitted working tree rather
       than a frozen commit; the review recorded HEAD 1b58895, the model tree hash and a
       333-test result. That is a weaker object identity than a commit sha and is recorded as
-      it happened rather than tidied into one. The content reviewed was committed as edd6b0b.
+      it happened rather than tidied into one. It is NOT upgraded to commit-scoped evidence:
+      the content reviewed was later committed as edd6b0b, which is a different statement
+      from having reviewed that commit.
     verdict: INDEPENDENTLY VERIFIED
     reviewer:
       relationship: reviewer did not implement the reviewed object
@@ -112,7 +150,9 @@ reviews:
 
   - review_id: REV-F1
     subject: F1 repair, sequence item 3
-    reviewed_object: 7db9bc13c4e159a4ced99be78926578bc966cbbc
+    reviewed_object:
+      kind: commit
+      sha: 7db9bc13c4e159a4ced99be78926578bc966cbbc
     verdict: INDEPENDENTLY VERIFIED
     reviewer:
       relationship: reviewer did not implement the reviewed object
@@ -127,7 +167,9 @@ reviews:
 
   - review_id: REV-F5
     subject: F5 model-binding repair, sequence item 4
-    reviewed_object: 6803828b24f6377c9bc9cc9a4106dae49ac824fa
+    reviewed_object:
+      kind: commit
+      sha: 6803828b24f6377c9bc9cc9a4106dae49ac824fa
     verdict: INDEPENDENTLY VERIFIED
     reviewer:
       relationship: reviewer did not implement the reviewed object
@@ -143,7 +185,9 @@ reviews:
 
   - review_id: REV-MI-EXIT-01-R1
     subject: MI-EXIT-01 measurement-invalid exit semantics, round 1
-    reviewed_object: ae475138c77f9bcc6fb6508d90b4dafcc10a5cba
+    reviewed_object:
+      kind: commit
+      sha: ae475138c77f9bcc6fb6508d90b4dafcc10a5cba
     verdict: FAIL
     first_class_result: true
     not_superseded_by: REV-MI-EXIT-01-R2
@@ -166,7 +210,9 @@ reviews:
 
   - review_id: REV-MI-EXIT-01-R2
     subject: MI-EXIT-01 measurement-invalid exit semantics, round 2
-    reviewed_object: 51261fdd73002143f2cc81d702740f468e251e76
+    reviewed_object:
+      kind: commit
+      sha: 51261fdd73002143f2cc81d702740f468e251e76
     verdict: INDEPENDENTLY VERIFIED
     preceded_by: REV-MI-EXIT-01-R1
     sequence: >-

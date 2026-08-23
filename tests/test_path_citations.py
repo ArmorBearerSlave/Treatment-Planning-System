@@ -87,7 +87,10 @@ class PathCitationTest(unittest.TestCase):
              # an observer gate that does not exist, and an ambiguous duplicate declaration.
              # Both must stay absent, for the same reason as the two above.
              "tools/a.py",
-             "tools/mps/no_such_gate.py"},
+             "tools/mps/no_such_gate.py",
+             # RT-F-06. Mutation control C: a reviewable unit declared record_file_backed
+             # whose record does not exist must be refused. It must stay absent.
+             "mps/materialization/mps-mat-009/absent.yaml"},
             {entry["path"] for entry in declared})
         for entry in declared:
             self.assertFalse((REPO_ROOT / entry["path"]).exists(), entry["path"])
