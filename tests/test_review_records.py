@@ -16,10 +16,12 @@ glob, a recursive walk, tracked-file enumeration, or any other broader populatio
 A name search is a recall aid; membership is established by resolving the candidate reader's
 actual population.
 
-What this observer establishes is membership and completeness of the review population. It
-does not establish that any adjudication is sound, that any finding is true, that evidence is
-adequate, or that the external review events happened as recorded. PopulationObserved does
-not imply AdjudicationSound, which is why REC-OBS-01 stays open.
+What this observer establishes is membership and completeness of the review population, and
+-- since the RT-F-01/02/07 transport -- that an open finding carries enough substance to be
+disposed of from a clone. It does not establish that any adjudication is sound, that any
+finding is true, that evidence is adequate, that a disposition is correct, or that the
+external review events happened as recorded. PopulationObserved does not imply
+AdjudicationSound, which is why REC-OBS-01 stays open.
 
 The property is NOT "every repair must carry a verdict" -- PENDING is legitimate, and a
 review that has not happened must not be forced to produce one. It is that a reviewed
@@ -310,6 +312,175 @@ class EvidenceProvenanceIsPreserved(unittest.TestCase):
             "of it.",
             reviews["REV-MI-EXIT-01-R2"]["verbatim_review_statement"].strip())
 
+
+
+# ---------------------------------------------------------------------------------------
+# Second property: an open finding must be actionable from a clone.
+#
+# The review register says which reviews happened. It says nothing about whether the findings
+# those reviews produced were transported with enough substance to be disposed of. RT-F-01,
+# RT-F-02 and RT-F-07 were carried for a checkpoint as an id, a class and a state -- which
+# records that something exists without recording what, and leaves a future actor unable to
+# begin. The external review report is not retained and will not be; the fix is therefore not
+# to retain it but to require the finding itself to carry its proposition.
+#
+#     controlled finding is semantically actionable from a clone
+#         !=
+#     complete external review history is clone-contained
+#
+# The rule is scoped to OPEN findings on purpose: an open finding is work someone must do, a
+# closed one is a record of work done and is read through its disposition. Both the field
+# vocabulary and the threshold are declared in findings.yaml rather than written here, so the
+# control reads the register's own convention instead of imposing a second one.
+
+FINDINGS = RECORD_DIR / "findings.yaml"
+
+
+def findings_register() -> dict:
+    return yaml.safe_load(FINDINGS.read_text(encoding="utf-8"))
+
+
+def retention_vocabulary() -> set[str]:
+    """One vocabulary, declared once, in the review register. Not re-declared here."""
+    return set(register()["evidence_retention_vocabulary"])
+
+
+def finding_completeness_problems(body: dict) -> list[str]:
+    """Derived entirely from the register's declaration. Empty means complete."""
+    rules = body["finding_record_completeness"]
+    substance_fields = tuple(rules["substance_fields"])
+    minimum = int(rules["minimum_substance_characters"])
+    vocabulary = retention_vocabulary()
+
+    problems: list[str] = []
+    for finding in body["findings"]:
+        identifier = finding.get("id", "<unidentified finding>")
+        if finding.get("state") == "OPEN":
+            carried = [field for field in substance_fields
+                       if str(finding.get(field) or "").strip()]
+            if not carried:
+                problems.append(
+                    f"{identifier}: open with no substance field; one of "
+                    f"{list(substance_fields)} is required, because an id, a class and a "
+                    f"state say that a finding exists without saying what it is")
+            elif max(len(str(finding[field]).strip()) for field in carried) < minimum:
+                problems.append(
+                    f"{identifier}: open, and its substance is shorter than the declared "
+                    f"minimum of {minimum} characters")
+        if "reviewed_object" in finding:
+            retention = finding.get("primary_artifact_retention")
+            if retention is None:
+                problems.append(
+                    f"{identifier}: names a reviewed object but does not state whether that "
+                    f"review's primary artifacts were retained")
+            elif retention not in vocabulary:
+                problems.append(
+                    f"{identifier}: primary_artifact_retention {retention!r} is outside the "
+                    f"vocabulary declared in independent-reviews.yaml")
+    return problems
+
+
+class OpenFindingsAreActionableFromAClone(unittest.TestCase):
+
+    def test_the_register_as_committed_is_complete(self):
+        self.assertEqual([], finding_completeness_problems(findings_register()))
+
+    def test_the_rule_has_open_findings_to_bite_on(self):
+        """A completeness rule over an empty population passes without observing anything."""
+        body = findings_register()
+        self.assertTrue([f for f in body["findings"] if f.get("state") == "OPEN"])
+
+    def test_removing_the_proposition_from_an_open_finding_fails(self):
+        """The specified mutation control. RT-F-01 is the witness, not the population."""
+        body = copy.deepcopy(findings_register())
+        victim = next(f for f in body["findings"] if f["id"] == "RT-F-01")
+        for field in body["finding_record_completeness"]["substance_fields"]:
+            victim.pop(field, None)
+        problems = finding_completeness_problems(body)
+        self.assertTrue(any("RT-F-01" in p and "no substance field" in p for p in problems),
+                        problems)
+
+    def test_the_same_holds_for_every_open_finding_not_just_the_witness(self):
+        """Otherwise the control would be an assertion about one id."""
+        base = findings_register()
+        open_ids = [f["id"] for f in base["findings"] if f.get("state") == "OPEN"]
+        for identifier in open_ids:
+            with self.subTest(finding=identifier):
+                body = copy.deepcopy(base)
+                victim = next(f for f in body["findings"] if f["id"] == identifier)
+                for field in body["finding_record_completeness"]["substance_fields"]:
+                    victim.pop(field, None)
+                self.assertTrue(
+                    any(identifier in p and "no substance field" in p
+                        for p in finding_completeness_problems(body)))
+
+    def test_a_placeholder_does_not_satisfy_the_rule(self):
+        """'To be determined' is an absence with a longer spelling."""
+        body = copy.deepcopy(findings_register())
+        victim = next(f for f in body["findings"] if f["id"] == "RT-F-01")
+        for field in body["finding_record_completeness"]["substance_fields"]:
+            victim.pop(field, None)
+        victim["claim"] = "TBD"
+        problems = finding_completeness_problems(body)
+        self.assertTrue(any("RT-F-01" in p and "shorter than the declared minimum" in p
+                            for p in problems), problems)
+
+    def test_a_finding_naming_a_reviewed_object_must_state_primary_retention(self):
+        body = copy.deepcopy(findings_register())
+        victim = next(f for f in body["findings"] if f["id"] == "RT-F-02")
+        victim.pop("primary_artifact_retention")
+        problems = finding_completeness_problems(body)
+        self.assertTrue(any("RT-F-02" in p and "retained" in p for p in problems), problems)
+
+    def test_retention_status_comes_from_the_one_declared_vocabulary(self):
+        body = copy.deepcopy(findings_register())
+        victim = next(f for f in body["findings"] if f["id"] == "RT-F-02")
+        victim["primary_artifact_retention"] = "probably_somewhere"
+        self.assertTrue(any("outside the vocabulary" in p
+                            for p in finding_completeness_problems(body)))
+        self.assertEqual({"retained", "external_not_retained", "reproduction"},
+                         retention_vocabulary())
+
+    def test_a_closed_finding_is_not_required_to_carry_a_proposition(self):
+        """The rule's scope is a decision, so it is exercised rather than assumed."""
+        body = copy.deepcopy(findings_register())
+        victim = next(f for f in body["findings"] if f["id"] == "RT-F-08")
+        self.assertNotEqual("OPEN", victim["state"])
+        for field in body["finding_record_completeness"]["substance_fields"]:
+            victim.pop(field, None)
+        self.assertEqual([], [p for p in finding_completeness_problems(body)
+                              if "RT-F-08" in p and "substance" in p])
+
+
+class TheExternalPrimaryBoundaryIsStated(unittest.TestCase):
+    """What is retained and what is not must be answerable without this session."""
+
+    def test_the_transported_findings_declare_that_their_primary_is_not_retained(self):
+        body = findings_register()
+        transported = [f for f in body["findings"] if f["id"].startswith("RT-F-")]
+        self.assertTrue(transported)
+        for finding in transported:
+            with self.subTest(finding=finding["id"]):
+                self.assertEqual("external_not_retained",
+                                 finding["primary_artifact_retention"])
+
+    def test_the_boundary_is_written_and_claims_no_more_than_it_should(self):
+        body = findings_register()
+        boundary = body["transported_finding_records"]
+        for key in ("what_this_is", "the_boundary", "primary_retention",
+                    "what_this_does_not_claim"):
+            self.assertTrue(str(boundary.get(key) or "").strip(), key)
+        self.assertIn("clone-contained", boundary["what_this_does_not_claim"])
+
+    def test_the_retained_009_report_is_not_confused_with_the_unretained_one(self):
+        """findings.yaml retains the MPS-MAT-009 report. It does not retain the RT-F one."""
+        body = findings_register()
+        retained = body["source_review"]["report"]["retained_as"]
+        self.assertTrue((REPO_ROOT / retained).is_file(), retained)
+        for finding in body["findings"]:
+            if finding["id"].startswith("RT-F-"):
+                with self.subTest(finding=finding["id"]):
+                    self.assertNotIn("review-report.html", str(finding))
 
 if __name__ == "__main__":
     unittest.main()

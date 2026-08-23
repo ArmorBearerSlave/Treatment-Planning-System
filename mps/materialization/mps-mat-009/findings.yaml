@@ -47,6 +47,50 @@ loci:
   EVIDENCE: a defect in what the acceptance record carries
   MEASUREMENT_PATH: the system may be correct; the instrument cannot establish that it is
 
+transported_finding_records:
+  what_this_is: >-
+    Some findings here did not arise from the MPS-MAT-009 review whose report is retained
+    above. The RT-F family arose from a later independent review, of d6faf77, whose report was
+    never transported into the controlled evidence tree. Those findings are transported
+    finding records: the proposition travelled, the primary did not.
+  the_boundary: >-
+    A transported finding record is not the review it came from. It carries what must be
+    fixed and why, so a clone can dispose of it. It does not carry the review's reasoning, its
+    other observations, or any artifact that would let a later reader re-adjudicate the review
+    itself. Where an evidentiary question turns on the original report, the record says the
+    primary is unavailable rather than implying otherwise.
+  primary_retention: >-
+    Each such finding carries primary_artifact_retention, drawn from the vocabulary declared
+    in independent-reviews.yaml rather than a second one invented here. Every RT-F finding is
+    external_not_retained. No repository-relative path is cited for any of them, because a
+    path a clone cannot resolve is worse than no path.
+  what_this_does_not_claim: >-
+    That the complete independent-review history is clone-contained. It is not. The property
+    established is narrower and is the one that matters for disposition: the controlled
+    finding is semantically actionable from a clone.
+
+finding_record_completeness:
+  applies_to: >-
+    Every finding carrying state: OPEN. An open finding is one a future actor must act on, so
+    it has to say what it is; a closed one records what was done and is read through its
+    disposition. Scoping the rule to OPEN is deliberate and is the whole of what this control
+    claims.
+  requires: >-
+    At least one substance field, present and substantive. An id, a class and a state together
+    are an index entry, not a finding: they say something exists without saying what, and a
+    future actor holding only them cannot begin.
+  substance_fields: [claim, proposition, corrected_claim, observation]
+  minimum_substance_characters: 120
+  also_requires: >-
+    Any finding naming a reviewed_object states primary_artifact_retention, so that "the
+    finding is here" and "the review that produced it is here" cannot be confused by silence.
+  does_not_require: >-
+    Retention of the external review primary. The property is that the controlled finding is
+    semantically actionable from a clone -- not that the complete external review history is
+    clone-contained. Requiring the latter would force either fabrication or deletion of true
+    findings, and both are worse than an honest external_not_retained.
+  observer: tests/test_review_records.py
+
 findings:
 
   - id: F1
@@ -847,10 +891,12 @@ findings:
     residual: >-
       One observer over one property is not coverage. It now establishes population
       membership and completeness, review-status presence, review-unit membership, schema
-      consistency, and the authority and non-identity constraints. It does not establish
-      adjudication soundness, the factual truth of any finding, evidence adequacy, the
-      correctness of any disposition, or the historical truth of external review events.
-      PopulationObserved does not imply AdjudicationSound.
+      consistency, the authority and non-identity constraints, and -- since the RT-F-01/02/07
+      transport -- that an open finding carries a substantive proposition and states whether
+      its review primary was retained. It does not establish adjudication soundness, the
+      factual truth of any finding, evidence adequacy, the correctness of any disposition, or
+      the historical truth of external review events. PopulationObserved does not imply
+      AdjudicationSound.
 
   - id: REC-OBS-01-METHOD
     origin: independent review of d6faf77
@@ -876,11 +922,34 @@ findings:
       searching equivalent of the finding this programme keeps making: an instrument credited
       with a discrimination it does not perform.
 
+  # RT-F-01 .. RT-F-08 arose from the independent review of d6faf77. That review's report was
+  # not transported; see transported_finding_records above. What follows is the finding
+  # substance, recorded so that a clone can act on it without the review report and without
+  # the session in which the review was delivered.
+
   - id: RT-F-01
     origin: independent review of d6faf77
     reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    primary_artifact_retention: external_not_retained
     acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
     state: OPEN
+    title: F2 object-identity strength is authored, not typed
+    claim: >-
+      F2 object-identity strength is authored, not typed. The record distinguishes F2's
+      weaker working-tree identity in prose/data, but the observer does not mechanically
+      enforce identity-strength semantics strongly enough to prevent a future working-tree
+      review from being represented as commit-bound evidence.
+    why_it_matters: >-
+      independent-reviews.yaml already separates membership kind from object-identity
+      strength, and says so at length. A distinction only prose enforces degrades at the
+      first author who does not read it, and a working-tree review would then be
+      indistinguishable from one bound to a commit. The register's own argument applies to
+      itself: a declaration without an observer is worth nothing.
+    required_disposition_question: >-
+      Does any control fail when a review whose reviewed_object.kind is working_tree is
+      represented, cited or counted as commit-bound evidence? Closure requires a control that
+      fails on that representation, not prose that distinguishes the two.
     disposition: carried, not repaired in this checkpoint
     note: >-
       Transported to preserve the reviewed population. Non-blocking findings are retained
@@ -890,52 +959,98 @@ findings:
   - id: RT-F-02
     origin: independent review of d6faf77
     reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    primary_artifact_retention: external_not_retained
     acceptance_blocking: false
+    locus: [EVIDENCE, MEASUREMENT_PATH]
     state: OPEN
+    title: >-
+      REV-F2 and the legacy independent_verification field can diverge without a consistency
+      observer
+    claim: >-
+      REV-F2 and the legacy f2-observability.yaml independent_verification field can diverge
+      without a consistency observer. While both representations coexist, disagreement
+      between them could leave two controlled answers to the same review-status question.
+    why_it_matters: >-
+      Two controlled artifacts answering one question is the condition under which a record
+      stops describing what it claims. The drift is invisible for exactly as long as the two
+      happen to agree, which is the failure mode the reviewable-unit classification was
+      deliberately kept single to avoid.
+    required_disposition_question: >-
+      Either one representation is derived from the other, or a control fails when REV-F2's
+      verdict and the independent_verification field in f2-observability.yaml disagree.
+      Closure requires that the two cannot state different answers silently.
     disposition: carried, not repaired in this checkpoint
 
   - id: RT-F-03
     origin: independent review of d6faf77
     reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    primary_artifact_retention: external_not_retained
     acceptance_blocking: true
     blocking_scope: correction required before F3
-    state: OPEN
+    locus: [EVIDENCE]
+    state: CLOSED
     title: False reader claim in REC-OBS-01
+    claim: >-
+      REC-OBS-01 asserted that nothing in tools/, tests/ or .github/ read anything under
+      mps/materialization/mps-mat-009/. The assertion was false: two generic readers were
+      resolving all nine files as members of their populations throughout.
     discovered_by: independent review of d6faf77
     historical_object: d6faf77d517a2b369033c38a99155f666982ff1e
-    repair: this commit
+    repair: 7ad9b81e3bd7f67f7b1e87ef2cc0eafb76c349a7
     disposition: >-
       Corrected. The false claim is withdrawn and retained as superseded_claim under
       REC-OBS-01; the proposition actually established is recorded in its place, with the
       generic-reader versus dedicated-observer distinction made explicit and supported by
       resolved population evidence.
+    closed_by: >-
+      Independent closure review of 7ad9b81, verdict INDEPENDENTLY VERIFIED. The reviewer did
+      not implement the correction, executed check_path_citations.scanned_files() and the
+      hygiene gate's git ls-files population from a cold clone, and confirmed all nine
+      records are members of both. Unnamed reviewer: establishes independence from the
+      implementer and nothing about named human authority.
 
   - id: RT-F-04
     origin: independent review of d6faf77
     reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    primary_artifact_retention: external_not_retained
     acceptance_blocking: true
     blocking_scope: correction required before F3
-    state: OPEN
+    locus: [EVIDENCE]
+    state: CLOSED
     title: Neighbour reader counts encoded the same category error
+    claim: >-
+      REC-OBS-01 supported its false reader claim with counts of neighbouring registers'
+      readers -- 2, 4, 6 and 15 -- which counted name references rather than resolved
+      populations, and so encoded the same category error with a cleaner definition.
     discovered_by: independent review of d6faf77
     historical_object: d6faf77d517a2b369033c38a99155f666982ff1e
-    repair: this commit
+    repair: 7ad9b81e3bd7f67f7b1e87ef2cc0eafb76c349a7
     disposition: >-
       Removed. The counts 2, 4, 6 and 15 are gone and are NOT replaced by a corrected count.
       A count of name references would preserve the same error with a cleaner definition, so
       the contrast is qualitative: other registers already had dedicated subject-specific
       observers and this population did not. No numerical reader-count contract is introduced.
+    closed_by: >-
+      Independent closure review of 7ad9b81, verdict INDEPENDENTLY VERIFIED. The counts and
+      the phrase "between two and fifteen" are absent from the tracked tree, no replacement
+      count was introduced, and the surviving contrast is qualitative.
 
   - id: RT-F-05
     origin: independent review of d6faf77
     reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    primary_artifact_retention: external_not_retained
     acceptance_blocking: true
     blocking_scope: correction required before F3
-    state: OPEN
+    locus: [EVIDENCE]
+    state: CLOSED
     title: Temporal population count implied a state that never existed
+    claim: >-
+      REC-OBS-01 paired nine controlled files with the absence of any observer. No such state
+      ever existed: the ninth file and the first dedicated observer arrived in the same
+      checkpoint, so the pairing described a repository that never was.
     discovered_by: independent review of d6faf77
     historical_object: d6faf77d517a2b369033c38a99155f666982ff1e
-    repair: this commit
+    repair: 7ad9b81e3bd7f67f7b1e87ef2cc0eafb76c349a7
     rederived_mechanically:
       method: git ls-tree -r --name-only OBJECT -- mps/materialization/mps-mat-009/
       at_51261fd:
@@ -951,17 +1066,28 @@ findings:
       the first dedicated observer arrived in the same checkpoint. The actual temporal
       relation is eight records with no dedicated semantic review observer, then
       normalization, then nine records with the first one.
+    closed_by: >-
+      Independent closure review of 7ad9b81, verdict INDEPENDENTLY VERIFIED. Both git
+      ls-tree populations were re-derived independently -- 8 at 51261fd, 9 at d6faf77 -- the
+      ninth file was confirmed to be independent-reviews.yaml, and tests/test_review_records.py
+      was confirmed absent at 51261fd and present at d6faf77.
 
   - id: RT-F-06
     origin: independent review of d6faf77
     reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    primary_artifact_retention: external_not_retained
     acceptance_blocking: true
     blocking_scope: review-population observer design gap
+    locus: [MEASUREMENT_PATH]
     state: CLOSED
     title: A commit-scoped review was undiscoverable by a record-file-derived population
+    claim: >-
+      The review population assumed every reviewable unit had a backing record file, so a
+      legitimate commit-scoped review could hold a register entry that no record-file-derived
+      population could discover.
     discovered_by: independent review of d6faf77
     historical_object: d6faf77d517a2b369033c38a99155f666982ff1e
-    repair: this commit
+    repair: 7ad9b81e3bd7f67f7b1e87ef2cc0eafb76c349a7
     the_gap: >-
       The population assumed every reviewable unit had a backing record file, so a legitimate
       commit-scoped review could hold a register entry that no record-file-derived population
@@ -976,18 +1102,49 @@ findings:
     closure_derived_from: >-
       tests/test_review_records.py MutationControls A through F, none of which depends on a
       hard-coded list of review ids.
+    closed_by: >-
+      Independent closure review of 7ad9b81, verdict INDEPENDENTLY VERIFIED. Controls A
+      through F were reproduced by the reviewer's own mutation harness rather than by
+      re-running the committed tests, and a wholesale rename of every review id left the
+      population logic reconciling, which establishes that no hidden id list carries the
+      populations.
 
   - id: RT-F-07
     origin: independent review of d6faf77
     reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    primary_artifact_retention: external_not_retained
     acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
     state: OPEN
+    title: The verbatim-sentence control proves textual preservation only
+    claim: >-
+      The verbatim-sentence control proves textual preservation only. It does not
+      mechanically bind "The verification apparatus became correct; no assurance number moved
+      because of it." to the actual before/after assurance populations whose equality gives
+      the sentence its substantive meaning.
+    why_it_matters: >-
+      The sentence is a claim about populations, and only the populations can establish it. A
+      control that shows the sentence is still present is credited with a discrimination it
+      does not perform, which is the recurring shape this programme keeps finding, applied
+      here to its own review record.
+    required_disposition_question: >-
+      Closure requires a control that derives the assurance populations before and after the
+      apparatus change and fails if they differ, so that the sentence's truth is observed
+      rather than its text preserved.
     disposition: carried, not repaired in this checkpoint
 
   - id: RT-F-08
     origin: independent review of d6faf77
     reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+    primary_artifact_retention: external_not_retained
     acceptance_blocking: false
     state: ACCEPTED
+    substance_transported: false
+    substance_transport_note: >-
+      This checkpoint transported the propositions of RT-F-01, RT-F-02 and RT-F-07 only. What
+      RT-F-08 asserted was not supplied to the transport actor and is not in the controlled
+      record, so no locus is assigned: classifying a finding whose content is unknown here
+      would be inventing it. The gap is written rather than left to absence. A future actor
+      who needs it must recover it from the external review, which is not retained.
     disposition: no change required
     preserved_as: accepted; not reinterpreted
