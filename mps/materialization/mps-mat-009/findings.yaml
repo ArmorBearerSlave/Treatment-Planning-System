@@ -604,7 +604,18 @@ findings:
     acceptance_blocking: false
     locus: [MEASUREMENT_PATH]
     defect_class: measurement-invalid state encoded with substantive-finding exit code
-    classification: post-measurement verdict corruption / false red
+    classification: measurement-state-to-process-verdict corruption / false red
+    classification_corrected_from: post-measurement verdict corruption / false red
+    why_the_original_label_was_wrong: >-
+      Causally inaccurate. The defect can occur before any complete measurement
+      exists: derived_manifest raised before enumerating anything, and the metrics
+      tool raised before deriving a single aggregate. Nothing was corrupted AFTER
+      measurement; an incomplete measurement was mapped onto the verdict code
+      reserved for a completed one.
+    distinct_from: >-
+      F5-FU-02, which is genuine post-measurement verdict corruption: there a
+      correct equivalence result had already been computed and was destroyed while
+      being printed. Related subclasses, deliberately kept apart.
     title: >-
       Two instruments printed MEASUREMENT INVALID and exited 1
     claim: >-
@@ -656,3 +667,131 @@ findings:
       recompute its populations semantically rather than adjusting a number, because the
       whole point of the probe is that a syntactic count of exit codes does not classify
       meaning.
+
+  - id: MI-R-01
+    origin: independent review of ae47513
+    acceptance_blocking: true
+    locus: [EVIDENCE, MEASUREMENT_PATH]
+    title: Substitute metrics inputs could produce an unmarked production-shaped PASS
+    claim: >-
+      The --checklist and --relocation options added in round 1 were production CLI surface.
+      A normal invocation could be pointed at arbitrary files and print "Acceptance items:
+      16 / 16" followed by PASS, in a form indistinguishable from the controlled assurance
+      report, with nothing in the output disclosing that the sources were substituted.
+    disposition: closed
+    closed_by: >-
+      Removal of both options from the production CLI. main() now calls
+      run_assurance_measurement with the canonical controlled sources and there is no way to
+      supply others. Test injection happens through a disposable subprocess wrapper that
+      imports the same measurement function.
+    closure_derived_from: >-
+      tests/test_measurement_invalid_exit.py
+      AssuranceMetricsStates.test_the_production_cli_cannot_be_pointed_at_substitute_sources,
+      which asserts both that the options are absent from --help and that supplying one
+      yields no production-shaped report.
+
+  - id: MI-R-02
+    origin: independent review of ae47513
+    acceptance_blocking: true
+    locus: [EVIDENCE]
+    title: Substituted relocation assertions were misattributed to the controlled file
+    claim: >-
+      With --relocation pointing elsewhere, the failure text still read
+      "spec/relocation_verification.yaml asserts ...", naming a controlled artifact that had
+      not been read. The provenance in the message was false.
+    disposition: closed
+    closed_by: >-
+      The same removal. The production path reads only spec/relocation_verification.yaml, so
+      the message names the file it read.
+    residual: >-
+      The message string still hard-codes that path rather than deriving it from the argument.
+      That is now true by construction rather than by coincidence, but it would become false
+      again if a source override were ever reintroduced.
+
+  - id: MI-R-03
+    origin: independent review of ae47513
+    acceptance_blocking: true
+    locus: [MEASUREMENT_PATH]
+    title: derived_manifest --compare introduced false substantive FAILs on invalid comparands
+    claim: >-
+      --compare was added only because the round-1 order required every instrument to exhibit
+      an exit-1 state. It was not needed to repair MI-EXIT-01, and it created a new way for
+      the tool to report a substantive finding when the comparison itself was not measurable.
+    disposition: closed
+    closed_by: >-
+      Removal of --compare and all logic introduced for it. The instrument's reachable states
+      are 0 and 2. It has no substantive-finding state and none is invented for symmetry.
+    closure_derived_from: >-
+      DerivedManifestStates.test_it_exposes_no_comparison_interface and
+      test_it_has_no_reachable_substantive_finding_state_and_that_is_correct.
+
+  - id: MI-R-04
+    origin: independent review of ae47513
+    acceptance_blocking: true
+    locus: [MEASUREMENT_PATH]
+    title: One MI regression failed on a cold tree; another passed vacuously
+    claim: >-
+      Round 1's derived_manifest controls enumerated the repository's own project directory,
+      whose derived output is gitignored. On a cold clone that population is empty, so the
+      positive control compared zero paths against zero paths and passed while establishing
+      nothing, and the discrepancy control could not construct a difference and failed.
+    disposition: closed
+    closed_by: >-
+      Every fixture is now built by the test in a temporary directory with an exactly known,
+      non-empty population. No control reads source_gen, classes_gen, test_gen,
+      test_gen.caches or any other gitignored product.
+    closure_derived_from: >-
+      DerivedManifestStates.test_valid_measurement_over_a_non_empty_population_exits_0, which
+      asserts len(paths) > 0 before accepting the verdict and then asserts the exact
+      three-path population; and a full-suite run from a fresh clone with no derived output.
+
+  - id: MI-R-05
+    origin: independent review of ae47513
+    acceptance_blocking: true
+    locus: [MEASUREMENT_PATH]
+    title: The static anti-pattern guard missed the actual historical defect shape
+    claim: >-
+      Round 1's guard was a line-oriented substring test. The historical defect in
+      report_assurance_metrics.py was a raise SystemExit( ... ) wrapped across lines with the
+      marker on a continuation line, which no line-oriented pattern can see. The guard passed
+      while the defect was present in exactly the form it was written to catch.
+    disposition: closed
+    closed_by: >-
+      An AST-based detector that finds a raise whose exception is a SystemExit call carrying a
+      string argument containing the marker, independent of wrapping, indentation or quote
+      style; plus behavioural coverage of both historical branches at the process boundary.
+    closure_derived_from: >-
+      AstGuardIsProvenBeforeItIsTrusted, six synthetic controls including the wrapped
+      multiline form, the parenthesised f-string, the permitted integer forms and the
+      permitted print-and-return form; and
+      AssuranceMetricsStates.test_the_historical_vv_claim_count_branch_exits_2, which
+      exercises the exact branch that carried the defect.
+    scope_note: >-
+      The detector finds one anti-pattern. It is not proof of ternary exit semantics across
+      the repository, and the behavioural controls remain authoritative for the two repaired
+      sites. Its honest limit is recorded as a control of its own: a marker assembled at
+      runtime by concatenation of expressions is outside what it reads.
+
+  - id: MI-EXIT-01-VVCOUNT-TENSION
+    origin: independent review of ae47513, preserved for Probe 1
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      Is a self-contradicting measuring source a measurement failure or a governance finding?
+    the_case: >-
+      The trace graph declares vv_claim_count = N while only M of its records carry a
+      vv_claim_id. report_assurance_metrics treats that as MEASUREMENT INVALID.
+    the_reasoning_accepted_for_now: >-
+      The measuring source contradicts itself, and the instrument cannot know which of the two
+      populations is authoritative. Reporting either number would be reporting a figure it has
+      no basis to prefer, and reporting a discrepancy against the controlled record would
+      attribute to the record a defect that may belong to the graph.
+    why_it_is_a_tension: >-
+      A source that disagrees with itself is arguably a substantive finding about that source
+      rather than a failure to measure. The current encoding says the instrument declines to
+      adjudicate; a different reading would say it has adjudicated the graph.
+    status: >-
+      Preserved as a semantic judgement requiring later Probe 1 review. It is NOT converted
+      into a settled repository-wide rule by this repair. MI-EXIT-01 requires only that the
+      currently frozen interpretation be encoded distinctly from a substantive governance
+      discrepancy, which it now is.

@@ -80,11 +80,18 @@ def evidence_obligations() -> tuple[int, int, dict]:
     return counts.get(reconciler.DISCHARGED, 0), len(derived), dict(counts)
 
 
-def construction_population() -> tuple[int, int, int]:
-    """Source-explicit hazard sets, total entities, and V&V claims, from the trace graph."""
-    import build_trace_graph
+def construction_population(document: dict | None = None) -> tuple[int, int, int]:
+    """Source-explicit hazard sets, total entities, and V&V claims, from the trace graph.
 
-    document = build_trace_graph.materialize()
+    `document` is an internal injection seam for controls, not a command-line surface. The
+    production CLI never accepts a substitute population: a tool that can be pointed at
+    arbitrary inputs while printing output indistinguishable from the controlled assurance
+    report is a provenance hazard, and that hazard is worse than the testing convenience.
+    """
+    if document is None:
+        import build_trace_graph
+
+        document = build_trace_graph.materialize()
     records = document["records"]
     explicit = sum(1 for record in records
                    if record["hazard_specificity"] == "source_explicit")
@@ -115,26 +122,23 @@ def asserted_aggregates(relocation: Path | None = None) -> dict[str, int]:
     }
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--check", action="store_true",
-                        help="fail when an asserted aggregate disagrees with its population")
-    # Path overrides exist so the measurement-invalid and substantive-finding states are both
-    # reachable from the command line. A control that can only exercise a branch by patching
-    # module internals cannot observe the process exit code, and the process boundary is
-    # exactly where this defect lived.
-    parser.add_argument("--checklist", type=Path,
-                        help="acceptance-item population source")
-    parser.add_argument("--relocation", type=Path,
-                        help="source of the asserted aggregates to reconcile")
-    args = parser.parse_args()
+def run_assurance_measurement(checklist_path: Path, relocation_path: Path,
+                              check: bool = False, document: dict | None = None) -> int:
+    """The whole measurement, once. Sources are parameters; the CLI supplies canonical ones.
 
+    Separating this from main() is what lets a control drive the measurement-invalid and
+    substantive-finding branches with scratch fixtures at the process boundary, WITHOUT the
+    production command growing switches that accept arbitrary sources. The earlier round did
+    the opposite and created two provenance defects: a production invocation could print
+    "Acceptance items: 16 / 16" and "PASS" over substitute inputs, indistinguishable from the
+    controlled assurance report, and the reconciled assertions were attributed to the
+    controlled file when they had come from somewhere else.
+    """
     try:
-        complete, total_items, item_states = acceptance_items(args.checklist)
+        complete, total_items, item_states = acceptance_items(checklist_path)
         discharged, total_obligations, obligation_states = evidence_obligations()
-        explicit, entities, claims = construction_population()
-        asserted = asserted_aggregates(args.relocation)
+        explicit, entities, claims = construction_population(document)
+        asserted = asserted_aggregates(relocation_path)
     except MeasurementInvalid as error:
         print(f"MEASUREMENT INVALID: {error}. No assurance metrics are reported and no "
               f"statement is made about whether the asserted assurance state is correct; "
@@ -173,10 +177,23 @@ def main() -> int:
             print(f"  - {problem}", file=sys.stderr)
         return 1
 
-    if args.check and asserted:
+    if check and asserted:
         print(f"\nPASS: {len(asserted)} asserted aggregates agree with their derived "
               f"populations")
     return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--check", action="store_true",
+                        help="fail when an asserted aggregate disagrees with its population")
+    args = parser.parse_args()
+    # The canonical controlled sources, always. There is deliberately no way to substitute
+    # them from the command line: a production invocation must never be able to print a
+    # report shaped exactly like the controlled assurance report over inputs that are not the
+    # controlled ones.
+    return run_assurance_measurement(CHECKLIST, RELOCATION, args.check)
 
 
 if __name__ == "__main__":
