@@ -363,6 +363,27 @@ engineering review are different claims; only a named reviewer replacing a deriv
 hazard set with one determined for that specific entity moves it. See
 `spec/construction_policy.yaml`, `progress_metric.numerator_integrity`.
 
+## Git-clean does not establish execution-cold
+
+A clean working tree says what Git tracks is unmodified. It says nothing about the generated
+and compiled state Git ignores, and a suite's verdict can depend on that state. **Establish
+coldness before executing anything whose result you intend to rely on**, and treat "the
+working tree is clean" as answering a different question than "this run is reproducible from
+a clone".
+
+This is witnessed, not advisory. At MI-EXIT-01 round 1 the remediation workspace was clean,
+carried ignored derived output, and the suite was reported 404 PASS; an independent
+reproduction from a cold clone found one failure, because two controls read the repository's
+own gitignored derived output — one comparing an empty population against itself and passing
+vacuously, the other unable to construct a difference at all. At round 2 coldness was
+established first and the suite ran 414/414, repeated from a second cold clone. The contrast
+and both objects are recorded in
+`mps/materialization/mps-mat-009/independent-reviews.yaml`.
+
+The consequence for a control is that it should build its own fixtures rather than read
+whatever the tree happens to be carrying. A control whose population is supplied by derived
+state is a control whose applicability varies with what someone last built.
+
 ## A correct observer may remain RED
 
 An observer that reports RED because a governed obligation is genuinely unresolved is

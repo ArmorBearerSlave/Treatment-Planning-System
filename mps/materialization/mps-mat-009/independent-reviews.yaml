@@ -1,0 +1,248 @@
+schema_version: "0.1"
+register_id: MPS-MAT-009-REVIEWS
+title: Independent technical review results for the MPS-MAT-009 remediation sequence
+status: open
+
+purpose: >-
+  One place, one convention. Before this register, F2 carried an independent-verification
+  result and F1, F5 and MI-EXIT-01 did not, although all four had been reviewed. That
+  asymmetry is misleading in a specific way: a reader is entitled to read absence as "not
+  independently reviewed", so a record that omits the field says something false by omitting
+  it. The remedy is a single normalized structure covering the whole reviewed population,
+  including the ones that failed.
+
+what_these_reviews_are_and_are_not:
+  establish: >-
+    Technical independence from the remediation actor. The reviewer did not implement the
+    object being reviewed, so the verdict is not the implementer marking their own work.
+  do_not_establish: >-
+    The named human authority that MPS-MAT-009 requires. Every reviewer below is unnamed.
+    INDEPENDENTLY VERIFIED must never be read as discharging MPS-MAT-009#0, which asks for a
+    NAMED reviewer precisely because it is a human judgement that no gate and no unnamed
+    process can stand in for.
+  consequence: MPS-MAT-009#0 remains OPEN. See obligation_effect below.
+
+verdict_vocabulary:
+  PENDING: reviewed object exists; independent review has not returned
+  FAIL: independent review returned a failing verdict against the reviewed object
+  INDEPENDENTLY VERIFIED: independent review returned a passing verdict
+  note: >-
+    PENDING is a legitimate state. The control over this register checks that the reviewed
+    population is represented consistently, not that every repair carries a verdict before a
+    review has happened.
+
+population:
+  definition: >-
+    A record in mps/materialization/mps-mat-009/ that describes an independently reviewable
+    UNIT of remediation work. Defined by content, not by filename: the one record that
+    already carried a verdict, f2-observability.yaml, is precisely the file a *-repair.yaml
+    glob would miss, so a pattern-based population would have excluded the only member that
+    already had what the others lacked.
+  reviewable_units:
+    - record: mps/materialization/mps-mat-009/f2-observability.yaml
+      review: REV-F2
+    - record: mps/materialization/mps-mat-009/f1-repair.yaml
+      review: REV-F1
+    - record: mps/materialization/mps-mat-009/f5-repair.yaml
+      review: REV-F5
+  supporting_records:
+    reason: >-
+      These describe or support a reviewable unit without themselves being one. They are
+      enumerated so that "not a reviewable unit" is a written classification rather than an
+      absence.
+    records:
+      - mps/materialization/mps-mat-009/findings.yaml
+      - mps/materialization/mps-mat-009/adjudication.yaml
+      - mps/materialization/mps-mat-009/f2-demonstration-design.yaml
+      - mps/materialization/mps-mat-009/f2-observation.yaml
+      - mps/materialization/mps-mat-009/f2-restoration.yaml
+      - mps/materialization/mps-mat-009/independent-reviews.yaml
+  unclassified_is_an_error: >-
+    Every file in that directory must appear in exactly one of the two lists above. A record
+    added later that appears in neither is a control failure, not a silent pass -- otherwise
+    a new file escapes by not matching a pattern, which is the same silence the control
+    exists to end.
+
+path_citation_note: >-
+  No repository-relative path is cited for any external primary, so the declared-absent
+  mechanism in spec/path_citation_allowlist.yaml has nothing to hold and no parallel
+  convention is introduced. The retention fields below record a STATUS; they are not a second
+  way of naming files. If a review primary is ever transported, it goes through the F1
+  evidence rule -- canonicalize, type-validate, disclosure-scan, hash, bind -- and becomes a
+  citable controlled path at that point and not before.
+
+evidence_retention_vocabulary:
+  retained: >-
+    A primary artifact transported into the controlled evidence tree under the F1 rule --
+    canonicalized, type-validated, disclosure-scanned, hashed, and bound to the record by the
+    digest of the retained bytes.
+  external_not_retained: >-
+    The observation was made in a review workspace and its primary artifacts were not
+    transported. No path is cited for these, because a path a clone cannot resolve is worse
+    than no path: it implies the artifact is obtainable here.
+  reproduction: >-
+    An observation of the same proposition made later, by someone else, in another workspace.
+    A reproduction is never labelled as the original independent-review artifact. Transport
+    must preserve provenance, not merely content.
+
+reviews:
+
+  - review_id: REV-F2
+    subject: F2 observability repairs, sequence item 2
+    reviewed_object: working tree of the remediation workspace, later committed as edd6b0b
+    reviewed_object_note: >-
+      Unlike the later reviews, F2 was verified against an uncommitted working tree rather
+      than a frozen commit; the review recorded HEAD 1b58895, the model tree hash and a
+      333-test result. That is a weaker object identity than a commit sha and is recorded as
+      it happened rather than tidied into one. The content reviewed was committed as edd6b0b.
+    verdict: INDEPENDENTLY VERIFIED
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: external_not_retained
+    controlled_support:
+      - mps/materialization/mps-mat-009/f2-observability.yaml
+      - mps/materialization/evidence/MPS-MAT-009/f2-observability/historical-red.txt
+      - mps/materialization/evidence/MPS-MAT-009/f2-observability/post-evidence-green.txt
+    compatibility_note: >-
+      f2-observability.yaml carries a pre-existing disposition block with the field
+      independent_verification: VERIFIED. That field is left exactly as written. This entry
+      is added alongside it and does not reinterpret it.
+
+  - review_id: REV-F1
+    subject: F1 repair, sequence item 3
+    reviewed_object: 7db9bc13c4e159a4ced99be78926578bc966cbbc
+    verdict: INDEPENDENTLY VERIFIED
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: external_not_retained
+    controlled_support:
+      - mps/materialization/mps-mat-009/f1-repair.yaml
+      - mps/materialization/evidence/MPS-MAT-009/f1/historical-red.txt
+      - mps/materialization/evidence/MPS-MAT-009/f1/repaired-green.txt
+    review_raised_follow_ups: [F1-FU-01, F1-FU-02, F1-FU-03]
+
+  - review_id: REV-F5
+    subject: F5 model-binding repair, sequence item 4
+    reviewed_object: 6803828b24f6377c9bc9cc9a4106dae49ac824fa
+    verdict: INDEPENDENTLY VERIFIED
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: external_not_retained
+    controlled_support:
+      - mps/materialization/mps-mat-009/f5-repair.yaml
+      - mps/materialization/evidence/MPS-MAT-009/f5/historical-counterexample.txt
+    review_raised: >-
+      The two MEASUREMENT INVALID sites that exited 1, which became MI-EXIT-01; and a
+      gate-population-definition discrepancy carried to F6.
+
+  - review_id: REV-MI-EXIT-01-R1
+    subject: MI-EXIT-01 measurement-invalid exit semantics, round 1
+    reviewed_object: ae475138c77f9bcc6fb6508d90b4dafcc10a5cba
+    verdict: FAIL
+    first_class_result: true
+    not_superseded_by: REV-MI-EXIT-01-R2
+    why_it_is_retained: >-
+      A review population containing only passes cannot be distinguished from a review
+      process that ratifies. This failure is the evidence that the mechanism discriminates.
+      Collapsing the sequence into "MI-EXIT-01: VERIFIED" would delete the only proof that
+      the reviews are capable of returning anything else.
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    findings_raised: [MI-R-01, MI-R-02, MI-R-03, MI-R-04, MI-R-05]
+    findings_raised_note: >-
+      Plus an inaccurate defect-class label, corrected to
+      measurement-state-to-process-verdict corruption.
+    primary_artifact_retention: external_not_retained
+    controlled_support:
+      - mps/materialization/mps-mat-009/findings.yaml
+
+  - review_id: REV-MI-EXIT-01-R2
+    subject: MI-EXIT-01 measurement-invalid exit semantics, round 2
+    reviewed_object: 51261fdd73002143f2cc81d702740f468e251e76
+    verdict: INDEPENDENTLY VERIFIED
+    preceded_by: REV-MI-EXIT-01-R1
+    sequence: >-
+      ae47513 independent review FAIL, then remediation, then 51261fd independent review
+      INDEPENDENTLY VERIFIED. Both objects and both verdicts are retained.
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    verbatim_review_statement: >-
+      The verification apparatus became correct; no assurance number moved because of it.
+    high_value_observations:
+      - id: round_1_failure_re_derived_independently
+        observation: >-
+          The round-1 defect was not accepted on the remediation actor's report. The reviewer
+          re-derived it: ae47513 executed from a cold state gave "Ran 404" and
+          "FAILED (failures=1)".
+        why_it_is_stronger_than_tests_passed: >-
+          It establishes failure sensitivity of the review itself. A reviewer who only
+          re-runs the repaired object learns whether it passes, not whether the defect was
+          real.
+        primary_artifact_retention: external_not_retained
+        reproduction_by_remediation_actor: >-
+          The same contrast was reproduced in the remediation workspace during round 2: a
+          cold clone at ae47513 failed with an empty derived population, and a cold clone at
+          51261fd passed 414/414. Recorded as a reproduction, not as the reviewer's artifact.
+      - id: ast_guard_certified_by_mutation_against_the_real_defect
+        observation: >-
+          The guard was certified against the historical defect rather than against invented
+          examples. The single-line form is caught; the wrapped metrics form is caught by the
+          round-2 AST guard; and the round-1 substring guard was independently shown to miss
+          the wrapped form.
+        why_it_matters: >-
+          It establishes historical discrimination. A guard proven only on examples written
+          after the defect cannot show it would have caught the defect.
+        primary_artifact_retention: external_not_retained
+        controlled_support:
+          - tests/test_measurement_invalid_exit.py
+    primary_artifact_retention: external_not_retained
+    controlled_support:
+      - mps/materialization/mps-mat-009/findings.yaml
+      - tests/test_measurement_invalid_exit.py
+
+methodological_observations:
+
+  - id: git_clean_does_not_establish_execution_cold
+    proposition: >-
+      Verification applicability may depend on derived state that Git does not represent.
+    not_a_generic_warning: >-
+      This is a witnessed contrast between two reviews, not advice. It is recorded because
+      the round-1 suite was reported green by the remediation actor and was not green.
+    witnessed_contrast:
+      round_1:
+        workspace: remediation workspace
+        git_state: clean
+        carried: ignored derived state
+        reported_by_remediation_actor: 404 PASS
+        independent_cold_reproduction: 1 failure
+      round_2:
+        cold_state_established_before_execution: true
+        result: 414 of 414 PASS
+        independently_repeated_from_another_cold_clone: true
+    consequence_adopted: >-
+      MI-EXIT-01 controls build their own fixtures in temporary directories and read no
+      gitignored product, so the suite's verdict does not depend on what a working tree
+      happens to be carrying.
+
+obligation_effect:
+  mps_mat_009_hash_0:
+    state: OPEN
+    unchanged_by_this_register: true
+    why: >-
+      The obligation requires a NAMED reviewer. Four independent technical reviews, all by
+      unnamed reviewers, establish independence from the implementer and nothing about named
+      human authority. No state machinery is forced: the obligation's observer still reports
+      it OPEN, and this register does not attempt to move it.
+  assurance_state_unchanged: >-
+    This checkpoint transports review evidence only. No acceptance item, obligation state,
+    metric or model artifact is altered by it.

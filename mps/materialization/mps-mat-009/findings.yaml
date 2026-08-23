@@ -795,3 +795,34 @@ findings:
       into a settled repository-wide rule by this repair. MI-EXIT-01 requires only that the
       currently frozen interpretation be encoded distinctly from a substantive governance
       discrepancy, which it now is.
+
+  - id: REC-OBS-01
+    origin: post-MI-EXIT-01 independent review
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: The remediation record itself had no mechanical observer
+    claim: >-
+      Nothing in tools/, tests/ or .github/ read anything under
+      mps/materialization/mps-mat-009/. Nine files -- the controlled finding register, every
+      adjudication, every repair record, every observation and every review disposition --
+      and not one reader. Measured, not assumed: a search across those three trees returns no
+      match, while the neighbouring registers have readers (evidence-obligations 2,
+      process-attestations 4, evidence-allowlist 6, stage-a-checklist 15).
+    why_it_is_a_finding_and_not_housekeeping: >-
+      This programme's entire thesis is that a declaration without an observer is worth
+      nothing, and that a record which cannot be checked will eventually stop describing what
+      it claims to. F2 was that finding applied to evidence_required. This is the same finding
+      applied to the place where every adjudication, disposition and verdict in the
+      remediation lives. The record that argues most insistently for mechanical observation
+      was the one part of the repository nothing observed.
+    how_it_surfaced: >-
+      By asking what would break when keys were added to those files, and discovering the
+      answer was nothing, because nothing reads them.
+    first_observer: >-
+      tests/test_review_records.py, added by this checkpoint. It is the first mechanical
+      reader this record population has ever had, and it covers review-result consistency
+      only -- not the substance of the adjudications, dispositions or findings, which remain
+      unobserved.
+    residual: >-
+      Open. One observer over one property is not coverage. The finding is recorded as
+      open so that the remaining unobserved content of this record population stays visible.
