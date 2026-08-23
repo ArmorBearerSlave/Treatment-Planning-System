@@ -598,3 +598,61 @@ findings:
       Corrected during F5 because F5 is about a gate's output matching its measurement, and a
       verdict destroyed while being printed is that same defect at the last possible moment.
       Recorded here rather than folded silently into the F5 narrative.
+
+  - id: MI-EXIT-01
+    origin: post-F5 independent review
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    defect_class: measurement-invalid state encoded with substantive-finding exit code
+    classification: post-measurement verdict corruption / false red
+    title: >-
+      Two instruments printed MEASUREMENT INVALID and exited 1
+    claim: >-
+      tools/mps/derived_manifest.py and tools/spec/report_assurance_metrics.py each raised
+      SystemExit with a string beginning MEASUREMENT INVALID. Python prints a string-valued
+      SystemExit and exits 1, reserving the integer form for the status, so both emitted the
+      words for one state and the exit code of another.
+    what_was_and_was_not_wrong: >-
+      The manifest calculation and the metric derivation were correct. The defect is entirely
+      in the mapping from an internal state to an externally observable verdict, which is why
+      it survived every test that called an internal helper: those tests never crossed the
+      boundary where it lived.
+    why_the_metrics_case_is_the_costly_one: >-
+      report_assurance_metrics.py validates the headline assurance aggregates. Collapsing its
+      two exit-1 meanings merges "the asserted assurance state disagrees with its population"
+      with "I could not read the population", and only the first is a finding about the
+      record. A reader acting on the second would be responding to a defect that had not been
+      demonstrated.
+    frozen_proposition:
+      0: measurement valid, proposition satisfied
+      1: measurement valid, substantive finding
+      2: measurement invalid, proposition not adjudicated
+      scope: >-
+        These two instruments only. This is deliberately NOT a repository-wide exit-code
+        taxonomy; argparse and usage failures elsewhere also exit 2, and Probe 1 already
+        established that counting exit codes is not a semantic classifier.
+    controls: tests/test_measurement_invalid_exit.py
+    control_design_note: >-
+      Every control invokes the real command line and observes the real process exit code. A
+      unit test asserting on an exception type would not have caught this and would not catch
+      a regression to it.
+
+  - id: MI-EXIT-01-PROBE1-OBSERVATION
+    origin: post-F5 independent review, preserved for Probe 1
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: Semantic survey of exit-code usage, retained but not adjudicated
+    observation:
+      genuine_measurement_invalidity_sites: 7
+      usage_or_argument_validation_exit_2_sites: 4
+      unresolved_candidates: 3
+      explicit_measurement_invalid_sites_that_exited_1: 2
+    status: >-
+      Retained as an observation. Probe 1's disposition is NOT updated here and no stored
+      count is edited.
+    what_changes_after_this_repair: >-
+      The two sites that said MEASUREMENT INVALID while exiting 1 now encode it correctly, so
+      they may belong to a different population than when this survey was taken. Probe 1 must
+      recompute its populations semantically rather than adjusting a number, because the
+      whole point of the probe is that a syntactic count of exit codes does not classify
+      meaning.

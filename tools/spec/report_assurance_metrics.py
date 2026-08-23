@@ -39,13 +39,34 @@ CHECKLIST = REPO_ROOT / "mps" / "materialization" / "stage-a-checklist.yaml"
 RELOCATION = REPO_ROOT / "spec" / "relocation_verification.yaml"
 
 
+class MeasurementInvalid(Exception):
+    """A required population could not be derived. Not a statement about the metrics.
+
+    MI-EXIT-01. The vv_claim_count branch below already SAID measurement invalid and
+    nevertheless exited 1, because `raise SystemExit("text")` prints the text and exits 1 --
+    Python reserves the integer form for the status. This tool validates the headline
+    assurance aggregates, so that collapse was the costly one: "the asserted assurance state
+    disagrees with its population" and "I could not read the population" reached the process
+    boundary as the same number, and only the first is a finding about the record.
+    """
+
+
 def load(path: Path):
-    with io.open(path, encoding="utf-8") as handle:
-        return yaml.safe_load(handle.read())
+    if not path.is_file():
+        raise MeasurementInvalid(f"{path} is missing")
+    try:
+        with io.open(path, encoding="utf-8") as handle:
+            return yaml.safe_load(handle.read())
+    except (OSError, UnicodeError, yaml.YAMLError) as error:
+        raise MeasurementInvalid(f"{path} could not be read: {error}")
 
 
-def acceptance_items() -> tuple[int, int, dict]:
-    plan = load(CHECKLIST)
+def acceptance_items(checklist: Path | None = None) -> tuple[int, int, dict]:
+    plan = load(checklist or CHECKLIST)
+    if not isinstance(plan, dict) or "acceptance_items" not in plan:
+        raise MeasurementInvalid(
+            f"{checklist or CHECKLIST} carries no acceptance_items, so the acceptance-item "
+            f"population cannot be derived")
     items = plan["acceptance_items"]
     counts = Counter(item["status"] for item in items)
     return counts.get("complete", 0), len(items), dict(counts)
@@ -74,17 +95,18 @@ def construction_population() -> tuple[int, int, int]:
     claims = sum(1 for record in records if record.get("vv_claim_id"))
     declared_total = document.get("vv_claim_count")
     if declared_total is not None and declared_total != claims:
-        raise SystemExit(
-            f"MEASUREMENT INVALID: the trace graph declares vv_claim_count={declared_total} "
-            f"but {claims} records carry a vv_claim_id. Refusing to report either number.")
+        raise MeasurementInvalid(
+            f"the trace graph declares vv_claim_count={declared_total} but {claims} records "
+            f"carry a vv_claim_id. Refusing to report either number.")
     return explicit, len(records), claims
 
 
-def asserted_aggregates() -> dict[str, int]:
+def asserted_aggregates(relocation: Path | None = None) -> dict[str, int]:
     """Numbers asserted in the controlled record that must agree with their populations."""
-    if not RELOCATION.is_file():
+    path = relocation or RELOCATION
+    if relocation is None and not path.is_file():
         return {}
-    body = load(RELOCATION) or {}
+    body = load(path) or {}
     results = (body.get("results") or {})
     return {
         "records": results.get("records"),
@@ -98,11 +120,26 @@ def main() -> int:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--check", action="store_true",
                         help="fail when an asserted aggregate disagrees with its population")
+    # Path overrides exist so the measurement-invalid and substantive-finding states are both
+    # reachable from the command line. A control that can only exercise a branch by patching
+    # module internals cannot observe the process exit code, and the process boundary is
+    # exactly where this defect lived.
+    parser.add_argument("--checklist", type=Path,
+                        help="acceptance-item population source")
+    parser.add_argument("--relocation", type=Path,
+                        help="source of the asserted aggregates to reconcile")
     args = parser.parse_args()
 
-    complete, total_items, item_states = acceptance_items()
-    discharged, total_obligations, obligation_states = evidence_obligations()
-    explicit, entities, claims = construction_population()
+    try:
+        complete, total_items, item_states = acceptance_items(args.checklist)
+        discharged, total_obligations, obligation_states = evidence_obligations()
+        explicit, entities, claims = construction_population()
+        asserted = asserted_aggregates(args.relocation)
+    except MeasurementInvalid as error:
+        print(f"MEASUREMENT INVALID: {error}. No assurance metrics are reported and no "
+              f"statement is made about whether the asserted assurance state is correct; "
+              f"the instrument lacked the evidence required to decide.", file=sys.stderr)
+        return 2
 
     print(f"Acceptance items:      {complete} / {total_items}")
     print(f"Evidence obligations:  {discharged} / {total_obligations}")
@@ -116,7 +153,6 @@ def main() -> int:
           "are\n  real states and neither closes anything.")
 
     problems: list[str] = []
-    asserted = asserted_aggregates()
     for name, value, derived in (
             ("records", asserted.get("records"), entities),
             ("vv_claims", asserted.get("vv_claims"), claims),

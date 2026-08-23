@@ -37,11 +37,23 @@ CACHE_KINDS = ("source_gen.caches",)
 ALL_KINDS = NAMED_KINDS + CACHE_KINDS
 
 
+class MeasurementInvalid(Exception):
+    """The manifest could not be measured. Not an observation about the derived output.
+
+    MI-EXIT-01. This branch already SAID measurement invalid and nevertheless exited 1,
+    because `raise SystemExit("text")` prints the text and exits 1: Python reserves the
+    integer form for the status. So the two states a reader most needs to tell apart --
+    "I measured, and found a discrepancy" and "I could not measure" -- arrived at the process
+    boundary as the same number. The words were right and the verdict was wrong, which is the
+    F5-FU-02 shape: a correct internal state corrupted on its way out.
+    """
+
+
 def enumerate_derived(project_dir: Path, kinds: tuple[str, ...],
                       label: str = "") -> dict:
     """Every file under every directory of the given kinds, relative to the project."""
     if not project_dir.is_dir():
-        raise SystemExit(f"MEASUREMENT INVALID: {project_dir} is not a directory")
+        raise MeasurementInvalid(f"{project_dir} is not a directory")
 
     per_kind: dict[str, list[str]] = {kind: [] for kind in kinds}
     roots: list[Path] = []
@@ -89,10 +101,19 @@ def main() -> int:
     parser.add_argument("--subtree", help="restrict to paths beginning with this prefix")
     parser.add_argument("--label", default="",
                         help="workspace label recorded instead of the absolute path")
+    parser.add_argument("--compare", type=Path,
+                        help="compare the enumeration against a previously written manifest; "
+                             "a differing path set is a substantive finding, not a "
+                             "measurement failure")
     args = parser.parse_args()
 
     kinds = ALL_KINDS if args.include_caches else NAMED_KINDS
-    manifest = enumerate_derived(args.project_dir.resolve(), kinds, args.label)
+    try:
+        manifest = enumerate_derived(args.project_dir.resolve(), kinds, args.label)
+    except MeasurementInvalid as error:
+        print(f"MEASUREMENT INVALID: {error}. No manifest is available, so no statement "
+              f"about the derived output is made.", file=sys.stderr)
+        return 2
 
     if args.subtree:
         keep = [p for p in manifest["paths"] if p.startswith(args.subtree)]
@@ -118,6 +139,32 @@ def main() -> int:
           f"sha256 {manifest['manifest_sha256'][:16]}")
     for kind, count in sorted(manifest["per_kind_counts"].items()):
         print(f"  {kind:20s} {count}")
+
+    if args.compare:
+        # The substantive-finding branch. A differing path set is an observation ABOUT the
+        # derived output, which is exactly what exit 1 should mean here and what the
+        # measurement-invalid branch above must no longer be confused with.
+        if not args.compare.is_file():
+            print(f"MEASUREMENT INVALID: {args.compare} is not readable, so the two "
+                  f"enumerations could not be compared.", file=sys.stderr)
+            return 2
+        try:
+            previous = json.loads(args.compare.read_text(encoding="utf-8"))
+        except ValueError as error:
+            print(f"MEASUREMENT INVALID: {args.compare} is not a readable manifest: {error}",
+                  file=sys.stderr)
+            return 2
+        here, there = set(manifest["paths"]), set(previous.get("paths") or [])
+        if here != there:
+            print(f"FAIL: the derived path set differs from {args.compare.name}",
+                  file=sys.stderr)
+            for path in sorted(here - there):
+                print(f"  only here:  {path}", file=sys.stderr)
+            for path in sorted(there - here):
+                print(f"  only there: {path}", file=sys.stderr)
+            return 1
+        print(f"PASS: the derived path set equals {args.compare.name} "
+              f"({len(here)} paths)")
     return 0
 
 
