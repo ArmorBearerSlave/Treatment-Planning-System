@@ -5,6 +5,10 @@
     "drift": "clean",
     "exit_code": 0,
     "log": "mps/materialization/evidence/MPS-MAT-008/green/cold-build.log",
+    "log_canonicalization": {
+      "as_produced_sha256": "a709703c91a4b9969a2cca88ea7c094f640d412a364b459c9d91b6af64e872ce",
+      "rule": "evidence_canonicalization/v1"
+    },
     "log_sha256": "a709703c91a4b9969a2cca88ea7c094f640d412a364b459c9d91b6af64e872ce",
     "model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
     "modules": [
@@ -40,11 +44,19 @@
         "test_testAssessedClaimWithoutEvidenceIsRejected()"
       ],
       "patch": "mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/perturbation.patch",
+      "patch_canonicalization": {
+        "as_produced_sha256": "0ec43374d160831143b5517f028e9bdf72754b23a2cb3649255cef47c39aba75",
+        "rule": "evidence_canonicalization/v1"
+      },
       "patch_reproduces_perturbed_tree": true,
       "patch_sha256": "0ec43374d160831143b5517f028e9bdf72754b23a2cb3649255cef47c39aba75",
       "perturbed_model_tree_sha256": "df52b5e1dc7b7b2b8ee19c62ab8ed25fae9bbc3d35b0e0aa76d8e3584ee8ffa7",
       "report": "mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/junit.xml",
-      "report_sha256": "143aecd40c84cdea2d45e265b6f0f335fe7c02c595b42a559ff97e31bce22baf",
+      "report_canonicalization": {
+        "as_produced_sha256": "143aecd40c84cdea2d45e265b6f0f335fe7c02c595b42a559ff97e31bce22baf",
+        "rule": "evidence_canonicalization/v1"
+      },
+      "report_sha256": "a348d238febbfd03579880ab8aefacc4e346a1edaf229d03af2a9f9c16a9faac",
       "restoration_identical": true,
       "restored_model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
       "verdict": "red-as-required"
@@ -65,18 +77,26 @@
         "test_testAssessedClaimWithoutEvidenceIsRejected()"
       ],
       "patch": "mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/perturbation.patch",
+      "patch_canonicalization": {
+        "as_produced_sha256": "095404d9629e1fad219921638dc0a602e4ee7e3f58f0acdccf857c3af1f08fe0",
+        "rule": "evidence_canonicalization/v1"
+      },
       "patch_reproduces_perturbed_tree": true,
       "patch_sha256": "095404d9629e1fad219921638dc0a602e4ee7e3f58f0acdccf857c3af1f08fe0",
       "perturbed_model_tree_sha256": "2308bbb60b40e54e5ceba4d7d874adfdd1b97a4065993efa53386748afafbf7a",
       "report": "mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/junit.xml",
-      "report_sha256": "340a4850b7b27aa4efc6d8e3c021e8a8354c548db6ac91c2b9cdf2c4d7f720c0",
+      "report_canonicalization": {
+        "as_produced_sha256": "340a4850b7b27aa4efc6d8e3c021e8a8354c548db6ac91c2b9cdf2c4d7f720c0",
+        "rule": "evidence_canonicalization/v1"
+      },
+      "report_sha256": "550e0aa9a4a3a44d882c4ee0783529999f0507fb3d34a354f54bab41bb4ba366",
       "restoration_identical": true,
       "restored_model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
       "verdict": "red-as-required"
     }
   },
   "controls_note": "Each control retains both halves of the experiment. The patch is the intervention: applying it to the base tree reproduces the perturbed hash exactly, and reversing it returns to base, both verified. The report is the observation. Without the patch a reviewer could see that S1 went red but would have to take the cause on the implementer's word, which is the one source an independent review is told not to rely on. Note that the interventions are reproducible in effect but not in bytes when performed through MPS: node ids are freshly allocated on each write, so a repeated perturbation yields a different tree hash. That is why the patch, not the procedure, is the artifact of record. These runs were re-executed on the frozen model state; they are reproducibility evidence, not archival evidence.",
-  "head": "61a335ea064badbc7e1257c18f7dfb8e4eea536b",
+  "head": "edd6b0b1297674f73f71dd64e246bbafe3f1a8b0",
   "model_tests": {
     "authored": 2,
     "discovered": 2,
@@ -90,7 +110,11 @@
     ],
     "model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
     "report": "mps/materialization/evidence/MPS-MAT-008/green/junit.xml",
-    "report_sha256": "96273d00f78e5348f5de57181b5a2a46a70f119b9f5efafb5e85e79e543801cb",
+    "report_canonicalization": {
+      "as_produced_sha256": "96273d00f78e5348f5de57181b5a2a46a70f119b9f5efafb5e85e79e543801cb",
+      "rule": "evidence_canonicalization/v1"
+    },
+    "report_sha256": "72d1d14513ff38833a782ba9a3470960f958da6468a92bfa90fe461670f2453c",
     "verdict": "pass"
   },
   "model_tree_hash_normalises_line_endings": true,

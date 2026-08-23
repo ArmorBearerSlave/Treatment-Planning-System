@@ -100,6 +100,41 @@ records:
         sha256: 6e77b2ea1a2b71b56f97ffe907c55113735de146c376c11bbd654d526c3e754c
         role: the intervention, binding the observation to what was changed
 
+  MPS-MAT-008-headless:
+    acceptance_item: MPS-MAT-008
+    observation: >-
+      The cold headless build of the controlled project, run outside the interactive IDE
+      through MPS's own Ant machinery, and the model-test report from the same tree. Bound
+      here by F1, which put both artifacts into canonical form and rebound their digests.
+    canonicalization_rule: evidence_canonicalization/v1
+    # DELIBERATELY ABSENT. Binding is not satisfaction, and this obligation is not satisfied
+    # by these artifacts. See not_satisfied_because.
+    not_satisfied_because: >-
+      The frozen obligation is "a build run without the MCP toolkit in the loop". The retained
+      log establishes that a build ran, that it ran through MPS's own build file, and that it
+      succeeded. It does not establish the NEGATIVE the obligation asserts. Absence of the
+      string "MCP" from a build log is not evidence that the toolkit was not in the loop; a
+      log that never mentions MCP looks identical whether or not MCP was involved, and proving
+      a negative from an artifact that would not record it either way is exactly the inference
+      this programme refuses elsewhere.
+    what_would_discharge_it: >-
+      An observation of the invocation rather than of its output: the exact command line, the
+      process boundary, and the absence of any connection to a running IDE, recorded by the
+      runner at the time of the run. The build receipt introduced under F3/F4 records the
+      command line and the real process exit code and is the right shape for this; the
+      retained log predates it, so the artifact that would discharge this obligation does not
+      exist yet.
+    state: OBSERVED
+    artifacts:
+      - path: mps/materialization/evidence/MPS-MAT-008/green/cold-build.log
+        sha256: a709703c91a4b9969a2cca88ea7c094f640d412a364b459c9d91b6af64e872ce
+        as_produced_sha256: a709703c91a4b9969a2cca88ea7c094f640d412a364b459c9d91b6af64e872ce
+        role: the cold headless build log
+      - path: mps/materialization/evidence/MPS-MAT-008/green/junit.xml
+        sha256: 72d1d14513ff38833a782ba9a3470960f958da6468a92bfa90fe461670f2453c
+        as_produced_sha256: 96273d00f78e5348f5de57181b5a2a46a70f119b9f5efafb5e85e79e543801cb
+        role: the model-test report from the same tree
+
 obligations:
 
   MPS-MAT-003D:
@@ -214,15 +249,7 @@ obligations:
       observer: gate
       gate: tools/repo/check_repository_hygiene.py
 
-records_pending:
-  MPS-MAT-008-headless:
-    acceptance_item: MPS-MAT-008
-    status: >-
-      Not yet declared here. The MPS-MAT-008 artifacts exist under
-      mps/materialization/evidence/MPS-MAT-008/ and are hash-bound by
-      headless-acceptance-evidence.json, but they are not in canonical form and binding them
-      into this register is F1's work, not F2's. Declared as a named record with no artifact
-      list so the reconciler reports it as incomplete rather than silently passing.
+records_pending: {}
 
 # ---------------------------------------------------------------------------------------
 # Frozen dispositions for the eight unresolved obligations.
@@ -276,14 +303,19 @@ dispositions:
     mechanically_bindable_now: false
 
   MPS-MAT-008#0:
-    state: OPEN
+    state: OBSERVED
+    state_history: OPEN -> OBSERVED under F1, mechanically, when the artifacts became bound
     requirement: a build run without the MCP toolkit in the loop
     candidate_artifact: >-
       The existing retained mps/materialization/evidence/MPS-MAT-008/green/cold-build.log and
       junit.xml, already hash-bound by headless-acceptance-evidence.json.
-    disposition: bind only after F1 makes the retained artifacts admissible
-    mechanically_bindable_now: false
-    blocked_on: F1
+    disposition: >-
+      Bound under F1. It did NOT proceed to DISCHARGED. The artifacts establish that a build
+      ran and succeeded; they do not establish the negative the obligation asserts, because a
+      build log that never mentions the toolkit looks the same whether or not the toolkit was
+      involved. Discharging it needs an observation of the invocation, not of its output.
+    mechanically_bindable_now: true
+    bound_by: F1
     progression_note: >-
       These artifacts may move this obligation to OBSERVED once bound, and to DISCHARGED only
       if they actually establish the frozen claim. Binding is not satisfaction, and the

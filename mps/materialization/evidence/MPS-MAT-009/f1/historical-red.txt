@@ -1,0 +1,21 @@
+# F1 HISTORICAL RED
+# Naturally occurring at the reviewed commit. Not manufactured; no artifact was added.
+# worktree HEAD: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+
+$ python tools/repo/check_repository_hygiene.py
+ERROR: repository hygiene gate failed
+- mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/junit.xml contains Windows user-profile path: 'C:\\Users\\ERIC'
+- mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/junit.xml contains Windows user-profile path: 'C:\\Users\\ERIC'
+- generated artifact type is tracked: mps/materialization/evidence/MPS-MAT-008/green/cold-build.log
+- mps/materialization/evidence/MPS-MAT-008/green/junit.xml contains Windows user-profile path: 'C:\\Users\\ERIC'
+exit 1
+
+$ python tools/mps/check_headless_build_currency.py
+PASS: both verdicts current on model tree 7a7f23626af65d46. build=pass over 12 modules, drift clean; model_tests=pass with 2 executed, 0 failures, 0 errors; identities ['test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()', 'test_testAssessedClaimWithoutEvidenceIsRejected()']
+      control failure_sensitivity: red-as-required; H1 passed, S1 did not; restored to base tree; report retained at mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/junit.xml
+      control foreign_rule_discrimination: red-as-required; H1 passed, S1 did not; restored to base tree; report retained at mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/junit.xml
+exit 0
+
+# THE CONJUNCTION
+#   currency requires the retained artifacts, hygiene rejects them.
+#   CurrencyPass(S) AND HygienePass(S) is unsatisfiable at S = 1b58895.

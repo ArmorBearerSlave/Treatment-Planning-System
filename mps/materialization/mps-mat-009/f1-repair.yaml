@@ -1,0 +1,203 @@
+schema_version: "0.1"
+register_id: MPS-MAT-009-F1-REPAIR
+title: F1 -- compatibility of the retention and hygiene controls
+status: implemented
+
+proposition: >-
+  The acceptance mechanism required the runner's own artifacts to be retained under
+  mps/materialization/evidence/ with matching hashes; the hygiene gate rejected those same
+  artifacts. Both controls were correct in isolation and their conjunction was unsatisfiable.
+  F2 repaired the OBSERVABILITY of required evidence; F1 repairs the COMPATIBILITY of the
+  evidence controls themselves.
+
+historical_red:
+  natural_not_manufactured: >-
+    Taken at 1b58895 in a detached worktree. No artifact was added to produce it. The
+    conflict is the one the review found.
+  retained: mps/materialization/evidence/MPS-MAT-009/f1/historical-red.txt
+  hygiene_verdict: exit 1, four violations
+  offending_paths_and_predicates:
+    - path: mps/materialization/evidence/MPS-MAT-008/green/cold-build.log
+      predicate: generated artifact type is tracked
+    - path: mps/materialization/evidence/MPS-MAT-008/green/junit.xml
+      predicate: contains Windows user-profile path
+    - path: mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/junit.xml
+      predicate: contains Windows user-profile path
+    - path: mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/junit.xml
+      predicate: contains Windows user-profile path
+  the_conjunction: >-
+    At the same commit the currency gate PASSED, on precisely those artifacts. So
+    CurrencyPass(S) and HygienePass(S) was unsatisfiable at S = 1b58895, and the historical
+    RED records both halves rather than only the failing one.
+
+repair:
+  canonicalization_contract:
+    rule: evidence_canonicalization/v1
+    owned_by: the recorder, not the author
+    flow: >-
+      runner artifact -> recorder-owned deterministic canonicalization -> structural and type
+      validation -> disclosure re-scan -> retained canonical artifact -> SHA-256 of the
+      RETAINED bytes -> evidence record.
+    substitutions:
+      - windows user-profile paths -> "%USERPROFILE%"
+      - unix home paths -> "%HOME%"
+      - line endings normalised to LF
+    placeholders_carry_no_markup: >-
+      A correctness requirement, not a style choice. The first version substituted a
+      placeholder containing angle brackets and silently destroyed every JUnit report it
+      touched, reporting success while emitting a file no XML parser would read.
+    deliberately_retained: >-
+      The hostname. It is host-specific but is not a pattern the disclosure control names,
+      and it is the only reason the review's single-host limitation is checkable. Removing
+      disclosure and removing evidence are different operations; this rule performs the first.
+    digest_meaning: >-
+      The recorded digest describes the bytes a reviewer receives from the repository. Both
+      digests are kept: as_produced identifies the runner's own output, so a holder of the raw
+      artifact can re-derive the retained form and confirm it rather than trust it.
+    idempotent: canonicalize(canonicalize(x)) == canonicalize(x), checked, not assumed.
+
+  recorder_refusals:
+    principle: the invalid state is unreachable, not merely discouraged
+    refuses:
+      - artifact missing
+      - canonicalization would destroy the declared type
+      - disclosure remains after canonicalization, including patterns the rule cannot remove
+      - CR bytes remain after canonicalization
+    atomicity: >-
+      Every artifact is canonicalized and validated in memory BEFORE any is written. A
+      recorder that writes as it goes leaves a partially updated evidence record when the
+      third artifact is refused, and a partial record reads as a complete one.
+    controls: tests/test_evidence_retention.py
+
+  per_file_allowlist:
+    register: mps/materialization/evidence-allowlist.yaml
+    exempts: the generated-artifact-type rejection, and nothing else
+    granularity: exact repository-relative path; never a directory, prefix or glob
+    entries:
+      - mps/materialization/evidence/MPS-MAT-008/green/cold-build.log
+      - mps/materialization/evidence/MPS-MAT-009/gov-c-004/positive-test.log
+      - mps/materialization/evidence/MPS-MAT-009/gov-c-004/foreign-rule-control-test.log
+    each_entry_states: exact path, artifact class, reason retained, obligation supported
+    still_enforced_on_allowlisted_files:
+      - host and user-profile disclosure scanning
+      - secret and token scanning
+      - CR/LF working-tree and index integrity
+      - parse and type validity
+      - evidence hash binding
+    unlisted_generated_artifact: remains non-passing
+    allowlist_is_itself_a_control: >-
+      A stale entry, a missing reason and a duplicate are each refused, so an exemption
+      cannot outlive the artifact it was written for.
+
+  disclosure_coverage_defect_found_and_closed:
+    what: >-
+      Disclosure scanning was keyed on file extension, and .log, .patch, .diff and .html were
+      not in the scanned set. Seven retained evidence artifacts had therefore never been
+      disclosure-scanned at all.
+    why_it_was_nearly_catastrophic: >-
+      The .log case in particular: those files were rejected for BEING logs, which looked like
+      coverage. The moment F1 exempted three of them by name from that rule, they would have
+      become entirely unscanned -- the allowlist would have been a disclosure bypass on the
+      day it was introduced.
+    how_it_was_found: >-
+      By the four-cell control, not by inspection. Cell 3 drove a non-canonical .patch through
+      the hygiene policy and the policy accepted it.
+    fix: the retained-evidence types were added to the scanned population
+    control: tests/test_evidence_allowlist.py::DisclosureCoverage
+
+joint_satisfiability:
+  why_one_green_state_is_not_enough: >-
+    Observing both gates green on one repaired state establishes only that SOME state
+    satisfies both. F1 is a claim about the compatibility of two policies over the whole class
+    of artifacts the currency mechanism requires.
+  class_R:
+    enumerated_from: the evidence record itself, via required_artifacts(), never hand-selected
+    size: 6
+    members:
+      - mps/materialization/evidence/MPS-MAT-008/green/cold-build.log
+      - mps/materialization/evidence/MPS-MAT-008/green/junit.xml
+      - mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/junit.xml
+      - mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/perturbation.patch
+      - mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/junit.xml
+      - mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/perturbation.patch
+    subset_testing_refused: >-
+      The control asserts its population equals the gate's own enumeration, so an artifact
+      required by currency but absent from the joint-satisfiability population fails the
+      control rather than being silently skipped.
+  four_cells:
+    hygiene_accepts_canonical: yes, every member
+    currency_accepts_canonical: yes, every member
+    hygiene_accepts_non_canonical: no, every member
+    currency_accepts_non_canonical: no, every member
+  non_canonical_member_construction: >-
+    Same declared type, still parse-valid, and demonstrably non-canonical --
+    canonicalize(bytes) != bytes. Not "some malformed file", so rejection is attributable to
+    canonicality and disclosure policy rather than to a syntax error.
+  canonicality_is_established_from_the_artifact: >-
+    canonicalize(bytes) == bytes, plus successful type validation. Never from metadata
+    asserting canonical: true. A record that declares its own compliance is the defect.
+  currency_negative_cell_isolates_canonicality: >-
+    The variant's own digest is supplied, so the hash check cannot be what fires. Otherwise
+    the cell would prove only that currency notices changed bytes, which it did before F1.
+  same_state_co_identity:
+    manifest_covers: required artifact paths and digests, the evidence record digest, the
+      allowlist digest, and model_tree_sha256
+    computed: before the currency evaluation, between the two, and after the hygiene evaluation
+    required: all three identical
+    otherwise: >-
+      The result would establish only that some state satisfied currency and some state
+      satisfied hygiene, which is the execution/state co-identity defect recorded elsewhere in
+      this programme, committed here.
+  control: tests/test_joint_satisfiability.py
+
+obligation_state_transition:
+  obligation: MPS-MAT-008#0
+  before: OPEN
+  after: OBSERVED
+  did_not_become: DISCHARGED
+  why: >-
+    The artifacts are now bound and hash-matched, which is what OBSERVED means. The frozen
+    obligation is "a build run without the MCP toolkit in the loop", and the retained log
+    establishes that a build ran and succeeded, not the negative the obligation asserts. A
+    build log that never mentions the toolkit looks identical whether or not the toolkit was
+    involved.
+  what_would_discharge_it: >-
+    An observation of the invocation rather than of its output -- command line, process
+    boundary, absence of any connection to a running IDE -- recorded by the runner at the time
+    of the run. The build receipt introduced under F3/F4 is the right shape; the retained log
+    predates it.
+  not_jumped: >-
+    The transition was made mechanically by the state function, and stopped where the evidence
+    stops. F1 passing is not a reason to discharge an obligation F1 does not establish.
+
+results:
+  regression_tests: 382 PASS
+  gates_measured: 27
+  gates_pass: 26
+  gates_red: 1
+  the_red: >-
+    check_evidence_reconciliation.py, legitimately, at 17 of 25 discharged. A correct observer
+    is allowed to remain RED while the governed object remains incomplete.
+  acceptance_items: 11 / 16
+  evidence_obligations: 17 / 25
+  vv_checks: 76 / 2,144
+
+limitations:
+  - >-
+    Single host. Every execution in this repair ran on the machine that produced the original
+    evidence, and the retained log names the producer working copy rather than this one. That
+    is P2, unrepaired: nothing binds evidence to the intended project instance.
+  - >-
+    The canonicalization rule removes the disclosure patterns the hygiene gate names. A host
+    path in a shape neither knows about would pass both. The recorder re-scans after
+    canonicalizing, so such a path is refused rather than retained, but only if a pattern
+    covers it.
+  - >-
+    MPS persistence -- .mps, .mpsr, .mpl, .msd, 180 tracked files -- is still outside the
+    disclosure-scanned population. F1 widened the scan to the retained-evidence types only.
+    Whether tool-owned persistence should be scanned is a separate question with its own
+    false-positive risk, and is recorded here rather than decided.
+  - >-
+    An earlier capture of the repaired-green record read hygiene RED because the record was
+    mid-write when the gate ran. Corrected in place and annotated rather than deleted; it is a
+    small instance of the co-identity defect the same-state manifest exists to prevent.

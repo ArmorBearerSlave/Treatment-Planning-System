@@ -44,6 +44,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "tools" / "mps"))
 
 EVIDENCE = REPO_ROOT / "mps" / "materialization" / "headless-acceptance-evidence.json"
+EVIDENCE_TREE = REPO_ROOT / "mps" / "materialization" / "evidence"
 PROJECT_DIR = REPO_ROOT / "mps" / "NLTPSGovernance"
 
 REQUIRED_BUILD = ("verdict", "exit_code", "cold", "modules", "drift", "log_sha256")
@@ -62,6 +63,153 @@ def sha256(path: Path) -> str:
         return hashlib.sha256(handle.read()).hexdigest()
 
 
+class RetentionRefused(Exception):
+    """The artifact cannot be retained as controlled evidence. A refusal, not a repair."""
+
+
+def prepare_for_retention(source: Path, destination: Path) -> dict:
+    """Canonicalize one runner artifact, validate it, and describe what will be retained.
+
+    MPS-MAT-009 F1. The recorder used to hash whatever it was pointed at, which forced a
+    choice nobody should have to make: retain the runner's raw output and fail the disclosure
+    control, or scrub it by hand and retain something that is no longer the runner's output.
+    Canonicalization belongs here, inside the recorder, so the bytes that are hashed are the
+    bytes a reviewer receives from the repository -- and so the transformation is a declared,
+    deterministic, re-derivable rule rather than an edit.
+
+    Nothing is written by this function. It returns what WOULD be retained, so the caller can
+    validate every artifact before committing any of them; a recorder that writes as it goes
+    leaves a partially updated evidence record behind when the third artifact is refused.
+    """
+    import canonicalize_evidence as canon
+
+    if not source.is_file():
+        raise RetentionRefused(f"{source} does not exist")
+    raw = source.read_bytes()
+    canonical = canon.canonicalize_bytes(raw)
+
+    intact, why = canon.structurally_intact(canonical, source.suffix)
+    if not intact:
+        raise RetentionRefused(
+            f"{source.name}: {why}. Canonicalization that destroys the artifact's declared "
+            f"type has not produced evidence, it has produced a file.")
+
+    if canon.canonicalize_bytes(canonical) != canonical:
+        raise RetentionRefused(f"{source.name}: {canon.RULE_ID} is not idempotent here, so "
+                               f"canonical form is not checkable")
+
+    # Disclosure is re-scanned AFTER canonicalization, against the hygiene gate's own
+    # patterns. The canonicaliser's job is to remove the material it knows about; this asks
+    # whether any remains, so a pattern the rule does not yet cover refuses retention rather
+    # than passing into the evidence tree.
+    sys.path.insert(0, str(REPO_ROOT / "tools" / "repo"))
+    import check_repository_hygiene as hygiene
+
+    text = canonical.decode("utf-8", errors="replace")
+    for label, pattern in hygiene.SENSITIVE_PATTERNS.items():
+        match = pattern.search(text)
+        if match:
+            raise RetentionRefused(
+                f"{source.name} still contains {label} after canonicalization: "
+                f"{match.group(0)!r}. Refusing to retain it.")
+
+    if bytes([13]) in canonical:
+        raise RetentionRefused(f"{source.name} contains CR bytes after canonicalization")
+
+    return {
+        "destination": destination,
+        "bytes": canonical,
+        "rule": canon.RULE_ID,
+        "as_produced_sha256": hashlib.sha256(raw).hexdigest(),
+        "canonical_sha256": hashlib.sha256(canonical).hexdigest(),
+    }
+
+
+def retention_target(source: Path, default_name: str) -> Path:
+    """Where a runner artifact is retained. Inside the evidence tree, always."""
+    resolved = source.resolve()
+    try:
+        relative = resolved.relative_to(REPO_ROOT)
+    except ValueError:
+        relative = Path(default_name)
+    text = str(relative).replace("\\", "/")
+    if text.startswith("mps/materialization/evidence/"):
+        return resolved
+    return EVIDENCE_TREE / "MPS-MAT-008" / "green" / default_name
+
+
+PORTABLE = "mps/materialization/evidence/"
+
+
+def artifact_problems(label: str, reference, expected_sha256,
+                      root: Path | None = None) -> list[str]:
+    """The currency policy's verdict on ONE retained artifact.
+
+    Extracted so the policy can be tested as a policy. F1 is a claim about the compatibility
+    of two policies over a whole class of artifacts, and a claim of that shape cannot be
+    supported by observing one repository state where both gates happen to be green -- that
+    establishes only that some state satisfies both, not that the policies agree. Exposing
+    the per-artifact decision lets a control drive canonical and deliberately non-canonical
+    members of the same declared type through it and require opposite answers.
+    """
+    import canonicalize_evidence as canon
+
+    root = root or REPO_ROOT
+    problems: list[str] = []
+    if not reference:
+        return ["the " + label + " names no retained artifact"]
+    if not str(reference).startswith(PORTABLE):
+        return ["the " + label + " points at " + str(reference) + ", which is outside "
+                + PORTABLE + ". A reviewer cannot obtain it from a clone, so its recorded "
+                "hash is a dangling reference."]
+    path = root / reference
+    if not path.is_file():
+        return ["the " + label + " artifact is missing: " + str(reference)]
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != expected_sha256:
+        return ["the " + label + " artifact does not match its recorded hash"]
+    if b"\r" in raw:
+        return ["the " + label + " artifact contains CR bytes; git rewrites it on commit, so "
+                "the recorded hash will not survive a clone"]
+    # MPS-MAT-009 F1. Canonicality is established FROM THE ARTIFACT, never from metadata
+    # asserting it. A record carrying `canonical: true` is a declaration, and a declaration
+    # standing in for the property it describes is the defect this programme keeps finding.
+    # The test is that canonicalizing the retained bytes changes nothing -- a fixed point,
+    # which is checkable -- and that the result still validates as the type it claims to be.
+    if canon.canonicalize_bytes(raw) != raw:
+        problems.append("the " + label + " artifact is not in canonical form under "
+                        + canon.RULE_ID + ", so the retained bytes are not the bytes the "
+                        "recorder would produce and the disclosure rule has not been applied "
+                        "to what is actually retained")
+    intact, why = canon.structurally_intact(raw, path.suffix)
+    if not intact:
+        problems.append("the " + label + " artifact does not validate as its declared type: "
+                        + why)
+    return problems
+
+
+def required_artifacts(evidence: dict) -> list[tuple[str, str]]:
+    """Every retained artifact the evidence record requires, as (label, relative path).
+
+    Enumerated mechanically from the record rather than listed by hand, because the
+    joint-satisfiability control must cover the whole population the currency mechanism
+    depends on. A hand-picked subset would prove the policies compatible over the artifacts
+    someone happened to think of.
+    """
+    found: list[tuple[str, str]] = []
+    for label, holder, key in (
+            ("build log", evidence.get("build") or {}, "log"),
+            ("model-test report", evidence.get("model_tests") or {}, "report"),
+    ) + tuple(
+            (name + " " + kind, control, kind)
+            for name, control in sorted((evidence.get("controls") or {}).items())
+            for kind in ("report", "patch")):
+        reference = holder.get(key)
+        if reference:
+            found.append((label, str(reference)))
+    return found
+
+
 def record(build_log: Path, report: Path) -> int:
     import headless_build
 
@@ -69,21 +217,28 @@ def record(build_log: Path, report: Path) -> int:
         raise SystemExit("ERROR: build log not found: " + str(build_log))
     if not report.is_file():
         raise SystemExit("ERROR: test report not found: " + str(report))
-    for path in (build_log, report):
-        relative = str(path.resolve().relative_to(REPO_ROOT)).replace("\\", "/")
-        if not relative.startswith("mps/materialization/evidence/"):
+    # MPS-MAT-009 F1. The recorder now OWNS retention: a raw runner artifact is accepted,
+    # canonicalized, validated and written into the evidence tree by this function, and the
+    # digest recorded is the digest of what a clone receives. Previously the caller had to
+    # copy the artifact in by hand first, which is what forced the choice between retaining
+    # host-disclosing bytes and retaining bytes that were no longer the runner's output.
+    prepared = []
+    for path, retained_as in ((build_log, retention_target(build_log, "cold-build.log")),
+                              (report, retention_target(report, "junit.xml"))):
+        try:
+            prepared.append(prepare_for_retention(path, retained_as))
+        except RetentionRefused as refusal:
             raise SystemExit(
-                "ERROR: " + relative + " is not a retained artifact. Recording a hash for a "
-                "file under build/work/ produces a dangling reference: that tree is "
-                "gitignored and the test target deletes it on every run, so a reviewer "
-                "cannot obtain the file the hash describes. Copy the artifact under "
-                "mps/materialization/evidence/ with LF endings first.")
+                "ERROR: refusing to record. " + str(refusal) + chr(10) +
+                "No evidence record was written. An evidence record naming an artifact that "
+                "cannot be retained is a dangling reference, and a partially written one is "
+                "worse than none.")
+    build_log, report = prepared[0]["destination"], prepared[1]["destination"]
 
-    with io.open(build_log, encoding="utf-8", errors="replace") as handle:
-        log_text = handle.read()
+    log_text = prepared[0]["bytes"].decode("utf-8", errors="replace")
     build_ok = "BUILD SUCCESSFUL" in log_text and "BUILD FAILED" not in log_text
 
-    suite = ElementTree.parse(report).getroot()
+    suite = ElementTree.fromstring(prepared[1]["bytes"].decode("utf-8", errors="replace"))
     cases = [c.get("name") for c in suite.iter("testcase")]
     executed = int(suite.get("tests", "0"))
     failures = int(suite.get("failures", "0"))
@@ -116,7 +271,11 @@ def record(build_log: Path, report: Path) -> int:
             "modules": headless_build.module_list(),
             "drift": "clean" if not drift else drift,
             "log": str(build_log.relative_to(REPO_ROOT)).replace("\\", "/"),
-            "log_sha256": sha256(build_log),
+            "log_sha256": prepared[0]["canonical_sha256"],
+            "log_canonicalization": {
+                "rule": prepared[0]["rule"],
+                "as_produced_sha256": prepared[0]["as_produced_sha256"],
+            },
         },
         "model_tests": {
             "model_tree_sha256": current,
@@ -129,7 +288,11 @@ def record(build_log: Path, report: Path) -> int:
             "identities": sorted(cases),
             "halt_on_failure": halt,
             "report": str(report.relative_to(REPO_ROOT)).replace("\\", "/"),
-            "report_sha256": sha256(report),
+            "report_sha256": prepared[1]["canonical_sha256"],
+            "report_canonicalization": {
+                "rule": prepared[1]["rule"],
+                "as_produced_sha256": prepared[1]["as_produced_sha256"],
+            },
         },
     }
     # Preserve everything this function does not itself derive. Rebuilding the record from
@@ -141,6 +304,35 @@ def record(build_log: Path, report: Path) -> int:
             existing = json.load(handle)
         for key, value in existing.items():
             evidence.setdefault(key, value)
+
+    # The controls are retained artifacts too, and the currency gate requires them, so the
+    # recorder owns their retention on the same terms. Rebinding their digests here is what
+    # stops the record describing a pre-canonical form of a file the tree no longer holds.
+    for name, control in sorted((evidence.get("controls") or {}).items()):
+        for kind in ("report", "patch"):
+            reference = control.get(kind)
+            if not reference:
+                continue
+            path = REPO_ROOT / reference
+            try:
+                item = prepare_for_retention(path, path)
+            except RetentionRefused as refusal:
+                raise SystemExit(
+                    "ERROR: refusing to record. control " + name + " " + kind + ": "
+                    + str(refusal) + chr(10) + "No evidence record was written.")
+            prepared.append(item)
+            control[kind + "_sha256"] = item["canonical_sha256"]
+            control[kind + "_canonicalization"] = {
+                "rule": item["rule"],
+                "as_produced_sha256": item["as_produced_sha256"],
+            }
+
+    # Everything validated. Only now is anything written -- every artifact and the record
+    # together, so no refusal can leave the evidence tree half-updated.
+    for item in prepared:
+        item["destination"].parent.mkdir(parents=True, exist_ok=True)
+        with io.open(item["destination"], "wb") as handle:
+            handle.write(item["bytes"])
 
     with io.open(EVIDENCE, "w", encoding="utf-8", newline="\n") as handle:
         handle.write(json.dumps(evidence, indent=2, sort_keys=True) + "\n")
@@ -197,7 +389,6 @@ def check() -> int:
     # dangling references to files that could not be fetched, while the two supporting
     # controls verified -- and nothing marked which was which. Checking only the paths just
     # changed is what let that stand; this checks every reference.
-    PORTABLE = "mps/materialization/evidence/"
     for label, holder, key in (
             ("build log", evidence.get("build") or {}, "log"),
             ("model-test report", evidence.get("model_tests") or {}, "report"),
@@ -205,23 +396,8 @@ def check() -> int:
             (name + " " + kind, control, kind)
             for name, control in sorted((evidence.get("controls") or {}).items())
             for kind in ("report", "patch")):
-        reference = holder.get(key)
-        if not reference:
-            problems.append("the " + label + " names no retained artifact")
-            continue
-        if not str(reference).startswith(PORTABLE):
-            problems.append("the " + label + " points at " + str(reference)
-                            + ", which is outside " + PORTABLE + ". A reviewer cannot obtain "
-                            "it from a clone, so its recorded hash is a dangling reference.")
-            continue
-        path = REPO_ROOT / reference
-        if not path.is_file():
-            problems.append("the " + label + " artifact is missing: " + str(reference))
-        elif sha256(path) != holder.get(key + "_sha256"):
-            problems.append("the " + label + " artifact does not match its recorded hash")
-        elif b"\r" in path.read_bytes():
-            problems.append("the " + label + " artifact contains CR bytes; git rewrites it "
-                            "on commit, so the recorded hash will not survive a clone")
+        problems.extend(artifact_problems(label, holder.get(key),
+                                          holder.get(key + "_sha256")))
 
     tests = evidence.get("model_tests") or {}
     if isinstance(tests, dict) and all(k in tests for k in

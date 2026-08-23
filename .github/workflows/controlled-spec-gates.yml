@@ -29,6 +29,9 @@ jobs:
       - name: Reject tracked build products, path disclosure, and recognized secrets
         run: python tools/repo/check_repository_hygiene.py
 
+      - name: Check headless acceptance evidence is current and canonically retained
+        run: python tools/mps/check_headless_build_currency.py
+
       - name: Check workspace constraints
         run: python tools/repo/check_workspace_location.py --enforce
 

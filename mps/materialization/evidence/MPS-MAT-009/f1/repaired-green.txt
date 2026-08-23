@@ -1,0 +1,36 @@
+# F1 REPAIRED GREEN
+# Same controlled state S. Both policies evaluated over the mechanically enumerated
+# required-artifact class R, in canonical and non-canonical form.
+
+## R -- enumerated from the evidence record, not hand-selected
+  build log                              mps/materialization/evidence/MPS-MAT-008/green/cold-build.log
+  model-test report                      mps/materialization/evidence/MPS-MAT-008/green/junit.xml
+  failure_sensitivity report             mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/junit.xml
+  failure_sensitivity patch              mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/perturbation.patch
+  foreign_rule_discrimination report     mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/junit.xml
+  foreign_rule_discrimination patch      mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/perturbation.patch
+  |R| = 6
+
+## four-cell contract over every member of R
+                          canonical form      non-canonical form
+   hygiene accepts             yes                   no
+   currency accepts            yes                   no
+   (tests/test_joint_satisfiability.py, cells 1-4, subTest per artifact)
+
+## same-state co-identity
+   manifest digest computed before / between / after the two policy evaluations
+   all three identical -> both policies inspected one state, not two
+
+## gate results on that state
+   (an earlier capture of this file recorded hygiene RED. That reading was taken
+    while this very file was mid-write and still carried CRLF, so the gate was
+    measuring a state that did not settle until after the measurement. It is
+    corrected here rather than deleted: it is a small instance of exactly the
+    co-identity defect the same-state manifest above exists to prevent.)
+   check_repository_hygiene.py      : PASS
+   check_headless_build_currency.py : PASS
+
+## disclosure-on-allowlisted negative control
+   allowlisted generated artifact + user-profile path -> hygiene RED
+   generated-type rule suppressed, disclosure rule NOT suppressed
+   (tests/test_evidence_allowlist.py::test_disclosure_scanning_still_applies...)

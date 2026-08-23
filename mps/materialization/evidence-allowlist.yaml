@@ -1,0 +1,65 @@
+schema_version: "0.1"
+register_id: EVIDENCE-ALLOWLIST
+title: Retained execution artifacts exempt from the generated-artifact-type rule
+status: open
+
+purpose: >-
+  MPS-MAT-009 F1. The acceptance mechanism requires the runner's own artifacts to be retained
+  under mps/materialization/evidence/ with matching hashes, so a reviewer can obtain and
+  verify them from a clone. The hygiene gate rejects a tracked .log as a generated artifact.
+  Both controls were correct and their conjunction was unsatisfiable, and the reviewer was
+  right to refuse to choose: scrubbing by hand makes the artifact no longer the runner's
+  output, and exempting the evidence tree narrows a disclosure control.
+
+  This register is the narrow third option. It exempts NAMED FILES from ONE rule.
+
+scope:
+  exempts: >-
+    The generated-artifact-type rejection, and nothing else. A .log listed here is retained
+    because a build log IS the evidence, not because logs are acceptable in general.
+  does_not_exempt:
+    - host and user-profile disclosure scanning
+    - secret and token scanning
+    - CR/LF working-tree and index integrity checks
+    - parse and type validity of the retained artifact
+    - path-citation controls
+    - evidence hash binding in the currency gate
+  granularity: >-
+    Per file, by exact repository-relative path. Never a directory, never a glob, never a
+    prefix. A newly retained generated artifact that is not individually listed stays
+    non-passing, which is the property that makes this a control rather than a hole: adding
+    evidence requires a deliberate, reviewable entry.
+  wholesale_exemption_prohibited: >-
+    mps/materialization/evidence/ is NOT exempt as a tree. That was the option the review
+    named and rejected, because it converts a disclosure control into a directory rule.
+
+enforced_by: tools/repo/check_repository_hygiene.py
+controls: tests/test_evidence_allowlist.py
+
+entries:
+  - path: mps/materialization/evidence/MPS-MAT-008/green/cold-build.log
+    artifact_class: headless build log
+    reason: >-
+      The verbatim output of the cold headless build. The build verdict is derived from this
+      log rather than asserted, so a reviewer who cannot obtain it cannot check the verdict.
+    supports:
+      acceptance_item: MPS-MAT-008
+      obligation: MPS-MAT-008#0
+
+  - path: mps/materialization/evidence/MPS-MAT-009/gov-c-004/positive-test.log
+    artifact_class: model-test runner log
+    reason: >-
+      The runner log for the positive GOV-C-004 observation. Retained beside its JUnit report
+      so the invocation that produced the report is obtainable, not merely described.
+    supports:
+      acceptance_item: MPS-MAT-005D
+      obligation: MPS-MAT-005D#2
+
+  - path: mps/materialization/evidence/MPS-MAT-009/gov-c-004/foreign-rule-control-test.log
+    artifact_class: model-test runner log
+    reason: >-
+      The runner log for the foreign-rule discrimination control. The control is the reason
+      the positive observation means anything, so its log is retained on the same terms.
+    supports:
+      acceptance_item: MPS-MAT-005D
+      obligation: MPS-MAT-005D#2

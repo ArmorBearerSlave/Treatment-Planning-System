@@ -10,6 +10,14 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+# MPS-MAT-009 F1. Retained runner artifacts are named here, one path at a time, and the
+# listing exempts them from ONE rule: the generated-artifact-type rejection. Every other
+# predicate in this file -- disclosure, secrets, line endings, the index check -- continues
+# to apply to them unchanged. That asymmetry is the whole design: the conflict was that a
+# build log is simultaneously the evidence and a generated artifact, and only the second
+# fact is what the hygiene rule was about.
+EVIDENCE_ALLOWLIST = REPO_ROOT / "mps" / "materialization" / "evidence-allowlist.yaml"
+ALLOWLIST_REQUIRED_FIELDS = ("path", "artifact_class", "reason", "supports")
 REQUIRED_ROOT_FILES = {
     "README.md",
     "SECURITY.md",
@@ -19,7 +27,15 @@ REQUIRED_ROOT_FILES = {
 }
 GENERATED_SUFFIXES = {".aux", ".log", ".out", ".toc", ".synctex", ".fls", ".fdb_latexmk"}
 TEXT_SUFFIXES = {
-    ".md", ".txt", ".tex", ".sty", ".py", ".ps1", ".json", ".yaml", ".yml", ".toml", ".xml", ".csv"
+    ".md", ".txt", ".tex", ".sty", ".py", ".ps1", ".json", ".yaml", ".yml", ".toml", ".xml", ".csv",
+    # MPS-MAT-009 F1. Retained execution evidence types. These were tracked and NOT scanned:
+    # disclosure coverage was keyed on extension, so a retained runner log, an intervention
+    # patch or a review report could carry a host path and pass. The .log case was the sharp
+    # one -- the generated-artifact rule rejected those files for being logs, which looked
+    # like coverage, and the moment F1 exempted three of them by name they would have become
+    # entirely unscanned. An exemption from one rule must not silently remove another, so the
+    # scan is widened at the same time as the exemption is introduced.
+    ".log", ".patch", ".diff", ".html",
 }
 # MPS owns its persistence and writes CRLF on Windows. ADR-001 prohibits any text tool
 # from normalizing it, and no determinism gate reads it, so it is exempt from the
@@ -34,6 +50,89 @@ SENSITIVE_PATTERNS = {
     "OpenAI key": re.compile("sk" + r"-[A-Za-z0-9]{20,}"),
     "AWS access key": re.compile("AKIA" + r"[A-Z0-9]{16}"),
 }
+
+
+def load_generated_type_allowlist() -> tuple[dict[str, dict], list[str]]:
+    """Exact repository-relative paths exempt from the generated-artifact-type rule.
+
+    Returns the allowlist and any problems with the allowlist itself. A register that
+    exempts things is a control, so it is validated like one: every entry must say what the
+    artifact is, why it is retained, and which obligation it supports, and every listed path
+    must exist. A stale entry is how an exemption outlives its reason.
+    """
+    problems: list[str] = []
+    if not EVIDENCE_ALLOWLIST.is_file():
+        return {}, problems
+    import yaml
+
+    try:
+        body = yaml.safe_load(EVIDENCE_ALLOWLIST.read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as error:
+        return {}, [f"the evidence allowlist is not parseable: {error}"]
+
+    allowed: dict[str, dict] = {}
+    for entry in body.get("entries") or []:
+        relative = entry.get("path")
+        if not relative:
+            problems.append("an evidence-allowlist entry names no path")
+            continue
+        missing = [f for f in ALLOWLIST_REQUIRED_FIELDS if not entry.get(f)]
+        if missing:
+            problems.append(
+                f"evidence-allowlist entry {relative} is missing {missing}; an exemption "
+                f"that does not say what it exempts or why is not reviewable")
+            continue
+        if relative in allowed:
+            problems.append(f"evidence-allowlist lists {relative} more than once")
+            continue
+        if not (REPO_ROOT / relative).exists():
+            problems.append(
+                f"evidence-allowlist names {relative}, which does not exist; an exemption "
+                f"must not outlive the artifact it was written for")
+            continue
+        allowed[relative] = entry
+    return allowed, problems
+
+
+def file_problems(relative: str, path: Path,
+                  generated_type_allowed: dict) -> tuple[list[str], bool]:
+    """The hygiene policy's verdict on ONE file, and whether it carries working-tree CRLF.
+
+    Extracted so the policy can be tested as a policy rather than only as a whole-repository
+    verdict. F1's allowlist is a narrow exemption from exactly one rule, and the only way to
+    show that it is narrow is to drive an allowlisted path through this function with
+    prohibited content and observe that it is still rejected. A whole-repository PASS cannot
+    demonstrate the absence of a bypass, because a bypass shows up as a PASS.
+    """
+    errors: list[str] = []
+    normalized = relative.replace("\\", "/")
+    suffix = path.suffix.casefold()
+    if normalized.startswith(("tmp/", "output/")):
+        errors.append(f"generated build path is tracked: {relative}")
+    if suffix in GENERATED_SUFFIXES or suffix == ".pdf":
+        # The ONLY rule the allowlist can suppress, and only for an exactly-named path.
+        if normalized not in generated_type_allowed:
+            errors.append(f"generated artifact type is tracked: {relative}")
+    if "/" not in normalized and suffix == ".docx":
+        errors.append(f"legacy DOCX remains at repository root: {relative}")
+    if suffix not in TEXT_SUFFIXES or not path.exists():
+        return errors, False
+
+    text = path.read_text(encoding="utf-8", errors="replace")
+    # Deliberately NOT gated on the allowlist. An allowlisted artifact is exempt from being
+    # a generated type and from nothing else; if this scan were skipped for it, the allowlist
+    # would have become a disclosure bypass, which is the failure mode the whole design is
+    # arranged to prevent.
+    for label, pattern in SENSITIVE_PATTERNS.items():
+        match = pattern.search(text)
+        if match:
+            errors.append(f"{relative} contains {label}: {match.group(0)!r}")
+    # The determinism gates read working-tree bytes, so local CRLF makes them report drift
+    # that does not exist. Files a third-party tool owns are exempt here and covered by the
+    # index check instead.
+    if normalized.startswith(TOOL_OWNED_PERSISTENCE_PREFIXES):
+        return errors, False
+    return errors, b"\r\n" in path.read_bytes()
 
 
 def git_paths(*args: str) -> list[str]:
@@ -82,6 +181,8 @@ def index_eol_errors() -> list[str]:
 def main() -> int:
     errors: list[str] = []
     crlf_paths: list[str] = []
+    generated_type_allowed, allowlist_problems = load_generated_type_allowlist()
+    errors.extend(allowlist_problems)
     tracked = git_paths("ls-files", "--cached", "--others", "--exclude-standard")
     missing = sorted(
         relative for relative in REQUIRED_ROOT_FILES
@@ -94,29 +195,10 @@ def main() -> int:
         errors.append(f"tracked files match ignore rules: {ignored_tracked}")
 
     for relative in tracked:
-        normalized = relative.replace("\\", "/")
-        path = REPO_ROOT / relative
-        suffix = path.suffix.casefold()
-        if normalized.startswith(("tmp/", "output/")):
-            errors.append(f"generated build path is tracked: {relative}")
-        if suffix in GENERATED_SUFFIXES or suffix == ".pdf":
-            errors.append(f"generated artifact type is tracked: {relative}")
-        if "/" not in normalized and suffix == ".docx":
-            errors.append(f"legacy DOCX remains at repository root: {relative}")
-        if suffix not in TEXT_SUFFIXES or not path.exists():
-            continue
-        text = path.read_text(encoding="utf-8", errors="replace")
-        for label, pattern in SENSITIVE_PATTERNS.items():
-            match = pattern.search(text)
-            if match:
-                errors.append(f"{relative} contains {label}: {match.group(0)!r}")
-        # The determinism gates read working-tree bytes, so local CRLF makes them
-        # report drift that does not exist. Files a third-party tool owns are exempt
-        # here and covered by the index check instead.
-        normalized_relative = relative.replace("\\", "/")
-        if normalized_relative.startswith(TOOL_OWNED_PERSISTENCE_PREFIXES):
-            continue
-        if b"\r\n" in path.read_bytes():
+        found, carries_crlf = file_problems(relative, REPO_ROOT / relative,
+                                            generated_type_allowed)
+        errors.extend(found)
+        if carries_crlf:
             crlf_paths.append(relative)
 
     if crlf_paths:
@@ -137,8 +219,11 @@ def main() -> int:
             print(f"- {error}", file=sys.stderr)
         return 1
     print(
-        f"PASS: {len(tracked)} proposed tracked paths contain no build products, root DOCX files, "
-        "user-profile paths, or recognized secret material"
+        f"PASS: {len(tracked)} proposed tracked paths contain no build products, root DOCX "
+        f"files, user-profile paths, or recognized secret material; "
+        f"{len(generated_type_allowed)} retained evidence artifacts are individually exempt "
+        f"from the generated-artifact-type rule only, and were disclosure-scanned like every "
+        f"other file"
     )
     return 0
 
