@@ -91,6 +91,196 @@ finding_record_completeness:
     findings, and both are worse than an honest external_not_retained.
   observer: tests/test_review_records.py
 
+finding_state_control:
+  purpose: >-
+    NF-09. A state-scoped observer is only as good as the population it ranges over, and
+    this register's state representation was heterogeneous: two field names, canonical
+    values in one and lowercase or prose in the other, and most records carrying neither.
+    A closure-warrant rule keyed on state == CLOSED would therefore have been a correct
+    rule applied to an accidentally incomplete population -- passing not because every
+    finding was substantiated but because most were invisible to it.
+  canonical_states:
+    - OPEN
+    - CLOSED
+    - ACCEPTED
+  canonical_field: state
+  rule: >-
+    Every finding record must carry a canonical state in the `state` field, or appear in
+    the exceptions below with a non-empty controlled reason. Nothing else passes.
+  what_an_exception_means: >-
+    ONLY that the controlled state representation for that record is presently absent or
+    legacy. It does not mean OPEN, CLOSED, ACCEPTED, verified, repaired, or dispositioned
+    in any way. In particular it must never be read as closure: prose cannot move
+    controlled finding state, and a narrative report saying "closed" does not make a
+    controlled closure until the record acquires canonical CLOSED and a resolving
+    closure warrant.
+  not_adjudicated_here: >-
+    This checkpoint normalizes the state POPULATION so that state-scoped observers range
+    over a controlled set. It does not adjudicate the legacy dispositions themselves;
+    NF-09 carries that queue. State normalization and substantive disposition are
+    different operations and are deliberately not combined.
+  observed_baseline:
+    measured_at: >-
+      58d18db, before this checkpoint. These figures describe the population AT DISCOVERY and
+      deliberately do not track the current file, which has since gained the NF records this
+      checkpoint adds. A baseline that silently follows the thing it measures is not a
+      baseline.
+    finding_records: 34
+    canonical_state_records: 9
+    records_with_neither_state_nor_status: 20
+    legacy_lowercase_status_records: 3
+    legacy_prose_status_records: 2
+    measured_by: enumerating the finding records and bucketing both field names
+  exceptions:
+    F1:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    F2:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    F3:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    F4:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    F5:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    F6:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    F7:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    F8:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    P1:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    P2:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    P3:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    F5-FU-01:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    F5-FU-02:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    MI-EXIT-01:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    MI-R-01:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    MI-R-02:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    MI-R-03:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    MI-R-04:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    MI-R-05:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    REC-OBS-01-METHOD:
+      observed_state: absent
+      reason: >-
+        Disposition predates the controlled finding-state vocabulary. Whatever this
+        record says about its own resolution is expressed only in prose fields, and
+        no controlled state has been established for it.
+    F1-FU-01:
+      observed_state: legacy status field, non-canonical value 'open'
+      reason: >-
+        Expressed in the legacy `status` field with a non-canonical value. The
+        intended disposition is legible but is not a controlled state, and is not
+        promoted here.
+    F1-FU-02:
+      observed_state: legacy status field, non-canonical value 'open'
+      reason: >-
+        Expressed in the legacy `status` field with a non-canonical value. The
+        intended disposition is legible but is not a controlled state, and is not
+        promoted here.
+    F1-FU-03:
+      observed_state: legacy status field, non-canonical value 'open'
+      reason: >-
+        Expressed in the legacy `status` field with a non-canonical value. The
+        intended disposition is legible but is not a controlled state, and is not
+        promoted here.
+    MI-EXIT-01-PROBE1-OBSERVATION:
+      observed_state: prose in the legacy status field
+      reason: >-
+        The `status` field carries a sentence rather than a state value. Prose is not
+        a controlled state and is not converted into one by this checkpoint.
+    MI-EXIT-01-VVCOUNT-TENSION:
+      observed_state: prose in the legacy status field
+      reason: >-
+        The `status` field carries a sentence rather than a state value. Prose is not
+        a controlled state and is not converted into one by this checkpoint.
+
 findings:
 
   - id: F1
@@ -723,7 +913,7 @@ findings:
       16 / 16" followed by PASS, in a form indistinguishable from the controlled assurance
       report, with nothing in the output disclosing that the sources were substituted.
     disposition: closed
-    closed_by: >-
+    closure_note: >-
       Removal of both options from the production CLI. main() now calls
       run_assurance_measurement with the canonical controlled sources and there is no way to
       supply others. Test injection happens through a disposable subprocess wrapper that
@@ -744,7 +934,7 @@ findings:
       "spec/relocation_verification.yaml asserts ...", naming a controlled artifact that had
       not been read. The provenance in the message was false.
     disposition: closed
-    closed_by: >-
+    closure_note: >-
       The same removal. The production path reads only spec/relocation_verification.yaml, so
       the message names the file it read.
     residual: >-
@@ -762,7 +952,7 @@ findings:
       an exit-1 state. It was not needed to repair MI-EXIT-01, and it created a new way for
       the tool to report a substantive finding when the comparison itself was not measurable.
     disposition: closed
-    closed_by: >-
+    closure_note: >-
       Removal of --compare and all logic introduced for it. The instrument's reachable states
       are 0 and 2. It has no substantive-finding state and none is invented for symmetry.
     closure_derived_from: >-
@@ -780,7 +970,7 @@ findings:
       positive control compared zero paths against zero paths and passed while establishing
       nothing, and the discrepancy control could not construct a difference and failed.
     disposition: closed
-    closed_by: >-
+    closure_note: >-
       Every fixture is now built by the test in a temporary directory with an exactly known,
       non-empty population. No control reads source_gen, classes_gen, test_gen,
       test_gen.caches or any other gitignored product.
@@ -800,7 +990,7 @@ findings:
       marker on a continuation line, which no line-oriented pattern can see. The guard passed
       while the defect was present in exactly the form it was written to catch.
     disposition: closed
-    closed_by: >-
+    closure_note: >-
       An AST-based detector that finds a raise whose exception is a SystemExit call carrying a
       string argument containing the marker, independent of wrapping, indentation or quote
       style; plus behavioural coverage of both historical branches at the process boundary.
@@ -1002,7 +1192,12 @@ findings:
       REC-OBS-01; the proposition actually established is recorded in its place, with the
       generic-reader versus dedicated-observer distinction made explicit and supported by
       resolved population evidence.
-    closed_by: >-
+    closure_review: REV-RT-F-CLOSURE
+    closure_warrant_is_the_typed_reference: >-
+      The closure_review field above is authoritative and is resolved by the
+      observer against the review register. closure_note below is human-readable
+      context only; no observer reads it and no closure rests on it.
+    closure_note: >-
       Independent closure review of 7ad9b81, verdict INDEPENDENTLY VERIFIED. The reviewer did
       not implement the correction, executed check_path_citations.scanned_files() and the
       hygiene gate's git ls-files population from a cold clone, and confirmed all nine
@@ -1030,7 +1225,12 @@ findings:
       A count of name references would preserve the same error with a cleaner definition, so
       the contrast is qualitative: other registers already had dedicated subject-specific
       observers and this population did not. No numerical reader-count contract is introduced.
-    closed_by: >-
+    closure_review: REV-RT-F-CLOSURE
+    closure_warrant_is_the_typed_reference: >-
+      The closure_review field above is authoritative and is resolved by the
+      observer against the review register. closure_note below is human-readable
+      context only; no observer reads it and no closure rests on it.
+    closure_note: >-
       Independent closure review of 7ad9b81, verdict INDEPENDENTLY VERIFIED. The counts and
       the phrase "between two and fifteen" are absent from the tracked tree, no replacement
       count was introduced, and the surviving contrast is qualitative.
@@ -1066,7 +1266,12 @@ findings:
       the first dedicated observer arrived in the same checkpoint. The actual temporal
       relation is eight records with no dedicated semantic review observer, then
       normalization, then nine records with the first one.
-    closed_by: >-
+    closure_review: REV-RT-F-CLOSURE
+    closure_warrant_is_the_typed_reference: >-
+      The closure_review field above is authoritative and is resolved by the
+      observer against the review register. closure_note below is human-readable
+      context only; no observer reads it and no closure rests on it.
+    closure_note: >-
       Independent closure review of 7ad9b81, verdict INDEPENDENTLY VERIFIED. Both git
       ls-tree populations were re-derived independently -- 8 at 51261fd, 9 at d6faf77 -- the
       ninth file was confirmed to be independent-reviews.yaml, and tests/test_review_records.py
@@ -1102,7 +1307,12 @@ findings:
     closure_derived_from: >-
       tests/test_review_records.py MutationControls A through F, none of which depends on a
       hard-coded list of review ids.
-    closed_by: >-
+    closure_review: REV-RT-F-CLOSURE
+    closure_warrant_is_the_typed_reference: >-
+      The closure_review field above is authoritative and is resolved by the
+      observer against the review register. closure_note below is human-readable
+      context only; no observer reads it and no closure rests on it.
+    closure_note: >-
       Independent closure review of 7ad9b81, verdict INDEPENDENTLY VERIFIED. Controls A
       through F were reproduced by the reviewer's own mutation harness rather than by
       re-running the committed tests, and a wholesale rename of every review id left the
@@ -1148,3 +1358,122 @@ findings:
       who needs it must recover it from the external review, which is not retained.
     disposition: no change required
     preserved_as: accepted; not reinterpreted
+
+  - id: NF-01
+    origin: independent review of 58d18db
+    reviewed_object: 58d18db1f952ff18f9853161eb979048483e4bc5
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE]
+    title: A scanned-population cardinality in CLAUDE.md was stale and did not reproduce
+    claim: >-
+      CLAUDE.md recorded that check_path_citations.scanned_files() resolves a 105-file
+      population. The number was manually maintained and had already stopped describing what
+      a clone resolves.
+    independently_measured:
+      cold_clone_at_58d18db: 103
+      working_tree_at_58d18db: 105
+      difference: >-
+        Two members present only in the working tree, both gitignored derived output:
+        build/work/reports/TEST-junit-jupiter.xml and build/work/reports/TEST-junit-vintage.xml.
+      significance: >-
+        The same class as F7. A cited count that includes derived output describes a
+        population that does not exist in a clone, so the number cannot be reproduced by the
+        reader it was written for.
+      load_bearing_result_unaffected: >-
+        The membership result the sentence exists to support is 9 of 9 for the MPS-MAT-009
+        records, in both the clone and the working tree.
+    repair: this checkpoint, commit C2
+    disposition: >-
+      The manually maintained literal is removed rather than corrected. The authoritative
+      population is the function, and a derived statement cannot go stale the way a
+      transcribed number does.
+
+  - id: NF-05
+    origin: independent review of 58d18db
+    reviewed_object: 58d18db1f952ff18f9853161eb979048483e4bc5
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: Closure warrant was carried as prose that no observer resolved
+    claim: >-
+      closed_by held the warrant for a finding's closure as a sentence describing an
+      independent review. Nothing read it. No instrument checked that the review it named
+      existed, that it had reviewed the object the finding claimed as its repair, or that it
+      had returned a passing verdict.
+    repair: this checkpoint, commit C1
+    disposition: >-
+      Replaced by a typed closure_review reference resolved against the controlled review
+      register. The prose is retained as closure_note and is explicitly non-authoritative;
+      no observer parses it.
+
+  - id: NF-06
+    origin: independent review of 58d18db
+    reviewed_object: 58d18db1f952ff18f9853161eb979048483e4bc5
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: A finding could be moved to CLOSED by writing a convincing string
+    claim: >-
+      Because closure warrant was unresolved prose, a future finding could be closed by
+      asserting that a review had occurred. The assertion did not have to be true, and
+      nothing in the repository could tell the two cases apart.
+    the_distinction_that_had_to_become_mechanical: >-
+      CLOSED because a registered independent review warrants closure, versus CLOSED because
+      somebody wrote a sentence claiming a review occurred.
+    repair: this checkpoint, commit C1
+    disposition: >-
+      A population-driven closure-warrant observer now requires, for every finding in
+      canonical CLOSED state, exactly one registered review whose reviewed object equals the
+      finding's repair object and whose verdict is in the controlled closing set. Mutation
+      controls prove each failure mode.
+    note_on_rt_f_06: >-
+      RT-F-06 was already CLOSED at 7ad9b81, the same commit that repaired it, and therefore
+      before any independent review of that commit existed. Its warrant is bound now to the
+      review that did review 7ad9b81. The closure predating its warrant is exactly the
+      condition NF-06 names, and is recorded rather than smoothed over.
+
+  - id: NF-09
+    origin: independent review of 58d18db, deepened during this checkpoint
+    reviewed_object: 58d18db1f952ff18f9853161eb979048483e4bc5
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      Finding-state representation was heterogeneous and incomplete, so state-scoped
+      observers could silently omit most of the population
+    claim: >-
+      The finding register carried state in two different field names, with canonical values
+      in one and lowercase or prose in the other, and most records carrying neither. A
+      state-scoped observer would therefore have ranged over an accidentally incomplete
+      population -- passing not because every finding satisfied the rule but because most
+      were invisible to it.
+    why_it_had_to_be_fixed_first: >-
+      A correct closure-warrant rule applied to an incomplete population reproduces the exact
+      defect it exists to eliminate, one layer up. Population definition precedes closure
+      substantiation.
+    observed_baseline:
+      finding_records: 34
+      canonical_state_records: 9
+      records_with_neither_state_nor_status: 20
+      legacy_lowercase_status_records: 3
+      legacy_prose_status_records: 2
+      declared_state_vocabulary_at_discovery: none
+    repair: this checkpoint, commit C1
+    disposition: >-
+      A controlled finding_state_control declares the canonical vocabulary and an explicit
+      exception population, each exception carrying a reason. Every one of the 34 records is
+      now either canonically stated or declared state debt, and a state-completeness control
+      fails on anything else.
+    deliberately_not_done: >-
+      The legacy dispositions are NOT adjudicated. MI-R-01 through MI-R-05 are not inferred
+      CLOSED because a prior actor reported them closed in prose, and F1 and F5 are not given
+      states because their repairs have strong evidence. An exception means the controlled
+      representation is incomplete, nothing more.
+    residual: >-
+      Open. 25 of 34 records remain state debt. The finding is the visible remediation queue
+      for adjudicating them, which is separate work from normalizing the population.

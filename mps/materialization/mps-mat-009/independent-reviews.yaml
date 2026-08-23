@@ -22,6 +22,29 @@ what_these_reviews_are_and_are_not:
     process can stand in for.
   consequence: MPS-MAT-009#0 remains OPEN. See obligation_effect below.
 
+closure_rule:
+  purpose: >-
+    NF-05 and NF-06. A finding was moved to CLOSED by writing a sentence in closed_by that
+    described an independent review, and nothing resolved it. A convincing string was
+    therefore sufficient to close a finding, whether or not the review it named existed,
+    reviewed the right object, or returned a passing verdict.
+  invariant: >-
+    For every applicable CLOSED finding f there must exist exactly one review r in this
+    register such that closure_review(f) = r, reviewed_object(r) = repair(f), and
+    verdict(r) is a closing verdict.
+  applies_to_finding_state: CLOSED
+  requires_field: closure_review
+  matched_against: the finding's repair field, which names the object the review must have reviewed
+  closing_verdicts:
+    - INDEPENDENTLY VERIFIED
+  closing_verdicts_note: >-
+    Controlled data, read by the observer. It is deliberately NOT duplicated as a literal in
+    test code: a control that carries its own copy of the rule stops testing the rule and
+    starts testing its copy, and the two agree until they do not.
+  prose_is_not_warrant: >-
+    closure_note fields carry human-readable context and are explicitly non-authoritative.
+    No observer parses them, and no closure rests on them.
+
 verdict_vocabulary:
   PENDING: reviewed object exists; independent review has not returned
   FAIL: independent review returned a failing verdict against the reviewed object
@@ -69,6 +92,15 @@ population:
     - kind: commit_scoped
       reviewed_object: 51261fdd73002143f2cc81d702740f468e251e76
       review: REV-MI-EXIT-01-R2
+    - kind: commit_scoped
+      reviewed_object: d6faf77d517a2b369033c38a99155f666982ff1e
+      review: REV-RECORD-TRANSPORT
+    - kind: commit_scoped
+      reviewed_object: 7ad9b81e3bd7f67f7b1e87ef2cc0eafb76c349a7
+      review: REV-RT-F-CLOSURE
+    - kind: commit_scoped
+      reviewed_object: 58d18db1f952ff18f9853161eb979048483e4bc5
+      review: REV-RT-F-SUBSTANCE
 
   membership_kind_is_not_object_identity_strength: >-
     Two independent dimensions, deliberately not conflated. REV-F2 is record_file_backed and
@@ -255,6 +287,68 @@ reviews:
     controlled_support:
       - mps/materialization/mps-mat-009/findings.yaml
       - tests/test_measurement_invalid_exit.py
+
+  - review_id: REV-RECORD-TRANSPORT
+    subject: Review-record normalization and transport checkpoint
+    reviewed_object:
+      kind: commit
+      sha: d6faf77d517a2b369033c38a99155f666982ff1e
+    verdict: INDEPENDENTLY VERIFIED
+    verdict_label_as_returned: RECORD-TRANSPORT -- INDEPENDENTLY VERIFIED
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: external_not_retained
+    findings_raised:
+      - RT-F-01
+      - RT-F-02
+      - RT-F-03
+      - RT-F-04
+      - RT-F-05
+      - RT-F-06
+      - RT-F-07
+      - RT-F-08
+    controlled_support:
+      - mps/materialization/mps-mat-009/findings.yaml
+
+  - review_id: REV-RT-F-CLOSURE
+    subject: RT-F-03/04/05/06 review-observer correction
+    reviewed_object:
+      kind: commit
+      sha: 7ad9b81e3bd7f67f7b1e87ef2cc0eafb76c349a7
+    verdict: INDEPENDENTLY VERIFIED
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: external_not_retained
+    warrants_closure_of:
+      - RT-F-03
+      - RT-F-04
+      - RT-F-05
+      - RT-F-06
+    controlled_support:
+      - mps/materialization/mps-mat-009/findings.yaml
+      - tests/test_review_records.py
+
+  - review_id: REV-RT-F-SUBSTANCE
+    subject: RT-F-01/02/07 finding-substance transport
+    reviewed_object:
+      kind: commit
+      sha: 58d18db1f952ff18f9853161eb979048483e4bc5
+    verdict: INDEPENDENTLY VERIFIED
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: external_not_retained
+    findings_raised:
+      - NF-01
+      - NF-05
+      - NF-06
+    controlled_support:
+      - mps/materialization/mps-mat-009/findings.yaml
 
 methodological_observations:
 
