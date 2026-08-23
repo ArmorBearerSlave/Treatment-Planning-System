@@ -508,3 +508,93 @@ findings:
         - >-
           A test verdict recorded from a run that was not observed cold must not be able to
           claim co-identity with the model tree.
+
+  - id: F1-FU-01
+    origin: post-F1 independent review
+    acceptance_blocking: false
+    locus: [EVIDENCE]
+    title: evidence-allowlist.yaml overstates cold-build.log provenance
+    claim: >-
+      The allowlist entry for mps/materialization/evidence/MPS-MAT-008/green/cold-build.log
+      describes it in terms stronger than the artifact supports.
+    status: open
+    must_be_corrected_before: MPS-MAT-009 closes
+    not_bundled_into: F5
+    why_not_bundled: >-
+      It is an evidence-wording defect in F1's own output, not a model-binding defect. Folding
+      it into F5 because both are open at the same time would make F5's disposition depend on
+      work that has nothing to do with the proposition F5 repairs.
+
+  - id: F1-FU-02
+    origin: post-F1 independent review
+    acceptance_blocking: false
+    locus: [EVIDENCE]
+    title: evidence-obligations.yaml overstates "outside the interactive IDE"
+    claim: >-
+      The MPS-MAT-008-headless record describes the build as run outside the interactive IDE.
+      That is the same class of claim as the one MPS-MAT-008#0 was deliberately NOT discharged
+      on: the retained artifacts establish that a build ran and succeeded, not what was absent
+      from the invocation.
+    status: open
+    must_be_corrected_before: MPS-MAT-009 closes
+    not_bundled_into: F5
+    relationship: >-
+      Directly adjacent to the MPS-MAT-008#0 disposition. The obligation was held at OBSERVED
+      for exactly this reason while the record's own prose asserted the stronger claim.
+
+  - id: F1-FU-03
+    origin: post-F1 independent review
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: allowlist rationale is checked for presence, not substantiation
+    claim: >-
+      load_generated_type_allowlist requires each entry to carry a reason, and the controls
+      require the field to be non-empty. Nothing checks that the reason is true, or that it
+      corresponds to the artifact it justifies. A one-word reason satisfies the control.
+    status: open
+    must_be_corrected_before: MPS-MAT-009 closes
+    not_bundled_into: F5
+    note: >-
+      This is the same shape as the finding that produced this whole register: a control that
+      verifies a field exists rather than that the claim it carries holds.
+
+  - id: F5-FU-01
+    origin: post-F5 remediation
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      A documented warning with no mechanical observer, and the class it belongs to
+    claim: >-
+      export_hlr_corpus.py already stated, in prose, that file-to-file equivalence is
+      meaningful only when the export is bound to the model: "That only means anything if the
+      two sides are independent". The warning was correct, was written before the defect, and
+      had no executable consequence. F5 is what happens when a limitation is documented and
+      ungated.
+    the_general_shape: >-
+      A known limitation recorded in prose but absent from the executable acceptance path. It
+      is the same shape as F2, where the project predicted its own omission in writing at the
+      freeze and the omission occurred anyway.
+    follow_up_sweep:
+      status: open, deliberately not performed as part of F5
+      scope: >-
+        Survey tool docstrings and comments for explicit warnings, limitations,
+        prerequisites, "does not", "only meaningful if", "assumes", and similar statements
+        that carry no mechanical observer.
+      rule: >-
+        Any result of that sweep is a NEW finding. It is not retroactive F5 scope, and F5
+        must not be broadened into a repository-wide prose audit to absorb it.
+
+  - id: F5-FU-02
+    origin: post-F5 remediation, found while repairing F5
+    acceptance_blocking: false
+    locus: [MEASUREMENT_PATH]
+    title: The Stage B gate destroyed a correct verdict while printing it
+    claim: >-
+      check_stage_b_equivalence.py ended by printing args.table.relative_to(REPO_ROOT). With a
+      --table outside the repository this raises after the verdict has been computed, so a
+      correct PASS exited 1 with a traceback. The gate reported a failure it had not found.
+    present_at: 1b58895, and reproducible there
+    disposition: >-
+      Corrected during F5 because F5 is about a gate's output matching its measurement, and a
+      verdict destroyed while being printed is that same defect at the last possible moment.
+      Recorded here rather than folded silently into the F5 narrative.

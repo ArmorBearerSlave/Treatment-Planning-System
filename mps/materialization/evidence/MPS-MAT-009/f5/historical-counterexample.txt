@@ -1,0 +1,38 @@
+# F5 HISTORICAL COUNTEREXAMPLE, AND THE REPAIRED RESULT ON THE SAME STATE
+
+## the state
+   persisted MPS model : CHANGED -- AIM-005 statement inverted by inserting NOT,
+                         through MPS-aware tooling, in the MPS-attached producer clone
+   neutral export      : UNCHANGED  sha256 eccb7a9b92dc4228...
+   source baseline     : UNCHANGED  sha256 0b24e011f863906d...
+
+## old gate at 1b58895 -- the defect
+   $ check_stage_b_equivalence.py --model <perturbed>
+   PASS: 119/119 requirements compared field by field against hlr-baseline.json
+         and found equivalent; 17 compared fields per record
+   exit 0
+
+   The persisted model asserts the OPPOSITE of the baseline for AIM-005 and the
+   gate reports every one of the 119 equivalent. Its subject was the model; its
+   measurement was two files.
+
+## export_hlr_corpus.py --check -- the binding that already existed
+   ERROR: the export on disk does not match the model
+   exit 1
+   The model-aware measurement was present and correct throughout. It was simply
+   not on the equivalence gate's path.
+
+## repaired gate, same state -- the decisive evidence
+   ERROR: Stage B equivalence NOT ESTABLISHED
+   - failed edge: persisted model != neutral export -- 1 requirement(s) differ
+     between the persisted model and the neutral export, first: AIM-005
+     The export still matches the baseline, so the divergence is between the model
+     and its neutral representation: the export is stale.
+   exit 1
+
+   One failed edge, not two: this is seam A. The export still matches the source,
+   so only the model/export correspondence is broken, and the gate says which.
+
+## why this is the repair and not a rewording
+   The old and new gates were run on the SAME perturbed state, with the same export
+   and the same baseline. The verdict changed because the measurement path changed.

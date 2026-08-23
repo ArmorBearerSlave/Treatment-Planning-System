@@ -226,6 +226,59 @@ def export(model_path: Path) -> list[dict]:
     return records
 
 
+def serialize(records: list[dict]) -> str:
+    """The exact on-disk form of an export. One definition, used by writer and checker."""
+    return json.dumps(records, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+
+
+class ExportNotMeasurable(Exception):
+    """The model-to-export correspondence could not be measured. Not a finding about it."""
+
+
+def export_matches_model(model_path: Path, export_path: Path) -> tuple[bool, str, int]:
+    """Whether the neutral export on disk is current with respect to the persisted model.
+
+    This is the model-to-export edge, and it is defined HERE because the exporter already
+    owns model reading. MPS-MAT-009 F5 found the Stage B equivalence gate asserting a
+    proposition about the model while comparing two files; the repair binds the model into
+    that gate, and the way to do that without acquiring a second definition of "does the
+    export correspond to the model" is for the gate to call this.
+
+    Raises ExportNotMeasurable when the question cannot be asked at all -- an absent model,
+    an unreadable one, an absent export. That is deliberately distinct from returning False:
+    "I could not measure the correspondence" and "the correspondence does not hold" are
+    different statements, and only the second is a finding about the corpus.
+    """
+    if not model_path.exists():
+        raise ExportNotMeasurable(f"the persisted model is missing: {model_path}")
+    if not export_path.exists():
+        raise ExportNotMeasurable(f"the neutral export is missing: {export_path}")
+    try:
+        records = export(model_path)
+    except ModelError as error:
+        raise ExportNotMeasurable(f"the persisted model could not be read: {error}")
+
+    expected = serialize(records)
+    with io.open(export_path, encoding="utf-8", newline="") as handle:
+        current = handle.read()
+    if current == expected:
+        return True, "", len(records)
+
+    # Name what diverged, per record, so the failure identifies the edge and the rows rather
+    # than only announcing that two files differ.
+    try:
+        on_disk = {r["id"]: r for r in json.loads(current)}
+    except ValueError:
+        return False, "the neutral export is not readable as the exported form", len(records)
+    from_model = {r["id"]: r for r in records}
+    differing = sorted(i for i in set(on_disk) | set(from_model)
+                       if on_disk.get(i) != from_model.get(i))
+    detail = (f"{len(differing)} requirement(s) differ between the persisted model and the "
+              f"neutral export, first: {differing[0]}" if differing
+              else "the export differs from the model in form rather than in content")
+    return False, detail, len(records)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -246,7 +299,7 @@ def main() -> int:
         print(f"ERROR: {error}", file=sys.stderr)
         return 1
 
-    text = json.dumps(records, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    text = serialize(records)
 
     if args.check:
         if not args.out.exists():

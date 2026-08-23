@@ -1,0 +1,171 @@
+schema_version: "0.1"
+register_id: MPS-MAT-009-F5-REPAIR
+title: F5 -- the Stage B gate now measures the proposition it claims
+status: implemented
+
+proposition_repaired: >-
+  StageBEquivalencePass iff ModelExportCurrent and ExportSourceEquivalent, established over
+  one state. Before this the gate compared two files and reported a verdict whose subject was
+  the persisted model.
+
+historical_counterexample:
+  retained: mps/materialization/evidence/MPS-MAT-009/f5/historical-counterexample.txt
+  state:
+    persisted_model: CHANGED -- AIM-005 statement inverted by inserting NOT
+    neutral_export: UNCHANGED
+    source_baseline: UNCHANGED
+  how_the_model_was_changed: >-
+    Through MPS-aware tooling in the MPS-attached producer clone, reversibly. No .mps, .mpl,
+    .mpr, .msd or .mpsr file was text-edited to produce it.
+  old_gate_at_1b58895: "PASS: 119/119 requirements ... found equivalent, exit 0"
+  export_check_at_1b58895: "ERROR: the export on disk does not match the model, exit 1"
+  what_that_shows: >-
+    The model-aware measurement existed and was correct throughout. It was simply not on the
+    equivalence gate's path, so the binding was carried by a different instrument than the one
+    whose name, docstring and PASS line claimed it.
+  repaired_gate_same_state:
+    verdict: "ERROR: Stage B equivalence NOT ESTABLISHED, exit 1"
+    named_edge: persisted model != neutral export
+    named_record: AIM-005
+    additional: >-
+      Reports ONE failed edge, correctly: the export still matches the baseline, so only the
+      model/export correspondence is broken. This is seam A.
+  why_this_is_the_repair_and_not_a_rewording: >-
+    Old and new gates were run on the same perturbed state with the same export and the same
+    baseline. The verdict changed because the measurement path changed.
+
+restoration_of_the_producer_clone:
+  route: MPS-aware tooling only
+  head: 1b588953b31205ace9d3a2adb35280008d2cdd9e
+  model_tree_sha256: 7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3
+  git_diff: clean
+  git_diff_cached: clean
+  content_test_on_status_named_paths: passed, worktree == index == baseline for both
+  criteria_used: the F1-ratified tracked-state criteria
+
+one_authoritative_definition:
+  model_to_export_owned_by: tools/mps/export_hlr_corpus.py
+  exposed_as: export_matches_model(model_path, export_path)
+  the_gate_calls_it: true
+  the_gate_does_not_reimplement:
+    - persisted-model traversal
+    - exported field selection
+    - export serialization
+  control: >-
+    tests/test_stage_b_binding.py ClaimScope
+    test_there_is_one_definition_of_the_model_export_contract
+
+claim_scope:
+  first_edge_establishes: >-
+    Correspondence between the persisted MPS HLR representation and the neutral export over
+    the fields the exporter selects. A persisted field outside that contract is NOT observed
+    by this edge.
+  pass_wording: >-
+    PASS: the current persisted MPS HLR representation matches the neutral export over the
+    frozen exported-field contract, and 119/119 exported requirements satisfy the frozen
+    Stage B source-comparison contract.
+  language_deliberately_avoided:
+    - model is equivalent
+    - model and source are equivalent
+  reason: >-
+    Neither edge measures equivalence of the whole model, and a gate may claim only the
+    proposition its measurement path actually establishes.
+  attributions_aligned:
+    - the module docstring
+    - the CI workflow step label
+    - the PASS line
+
+seam_controls:
+  fixtures: >-
+    Disposable copies in a temp directory, never the controlled model. Every perturbation is
+    same-type and parse-valid, so a rejection is about currentness rather than syntax. The
+    model perturbation reproduces the change made through MPS-aware tooling for the retained
+    counterexample.
+  A_model_changed:
+    model_export_edge: FAIL
+    export_source_edge: PASS
+    composed: NON-PASSING
+  B_export_changed:
+    model_export_edge: FAIL
+    export_source_edge: FAIL
+    composed: NON-PASSING
+    both_edges_reported: true
+    why_B_is_the_discriminating_case: >-
+      A changed export matches neither the model nor the baseline, so both correspondences
+      are broken. A gate that stopped at the first failure would report one where two are
+      broken, and that under-reporting is invisible unless the seams are measured
+      independently.
+  C_source_changed:
+    model_export_edge: PASS
+    export_source_edge: FAIL
+    composed: NON-PASSING
+  D_all_current:
+    model_export_edge: PASS
+    export_source_edge: PASS
+    composed: PASS
+  execution_policy_vs_diagnostic_evidence: >-
+    Separated deliberately. Production emits no PASS once any prerequisite edge has failed;
+    the diagnostic controls measure each edge on its own so under-reporting is detectable.
+    Conflating the two is what would hide seam B.
+
+measurement_atomicity:
+  pattern_reused_from: F1
+  manifest_binds:
+    - model_tree_sha256
+    - neutral export sha256
+    - source baseline sha256
+    - corpus model digest
+  measured_at: H_before, H_between, H_after
+  required: H_before == H_between == H_after
+  on_divergence: MEASUREMENT INVALID, exit 2, never an equivalence FAIL
+  reason: >-
+    Establishing ModelExportPass(S1) and ExportSourcePass(S2) and calling the conjunction
+    ModelSourceEquivalent(S) is sound only when S1 equals S2.
+
+measurement_invalidity:
+  preserved_distinction: >-
+    "the correspondence could not be measured" is reported as MEASUREMENT INVALID with exit
+    2, and is never converted into a verdict about the corpus.
+  triggers:
+    - the persisted model is absent or unreadable
+    - the neutral export is absent
+    - the compared objects moved during the composed check
+  scope_note: >-
+    This gate is not being broadened into the P1 suite-wide ternary remediation. It simply may
+    not convert its own measurement failure into a model-equivalence verdict.
+
+results:
+  regression_tests: 392 PASS
+  gates_measured: 27
+  gates_pass: 26
+  gates_red: 1
+  the_red: check_evidence_reconciliation.py, legitimately, at 17 of 25 DISCHARGED
+  acceptance_items: 11 / 16
+  evidence_obligations: 17 / 25
+  obligation_states:
+    DISCHARGED: 17
+    OBSERVED: 1
+    OPEN: 7
+  vv_checks: 76 / 2,144
+  no_obligation_moved: >-
+    F5 produced no evidence satisfying any declared obligation, so none was advanced. The
+    obligation population is unchanged from the F1 checkpoint.
+
+limitations:
+  - >-
+    The first edge observes only the exported field contract. A persisted field the exporter
+    does not select could diverge from the document and neither edge would see it. That is a
+    property of the frozen contract rather than a defect introduced here, but it bounds what
+    the composed PASS means.
+  - >-
+    The corpus digest in the state manifest hashes raw bytes, so it differs between a clone
+    with LF working-tree endings and the MPS-attached clone with CRLF. Its purpose is
+    detecting movement during one composed run, which it serves; it is not a portable identity
+    across clones.
+  - >-
+    The counterexample was produced on the same host and in the same producer clone as all
+    prior work. P2 is unrepaired: nothing binds this evidence to an intended project instance.
+  - >-
+    Seam fixtures are text-edited copies of persisted model files. They are disposable, are
+    never the controlled model, and reproduce a change independently made through MPS-aware
+    tooling; ADR-001's prohibition concerns authoring controlled persistence.
