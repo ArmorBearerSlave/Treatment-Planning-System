@@ -377,12 +377,20 @@ neither is a grep.
 
 This was got wrong here. A search for `mps-mat-009` across `tools/`, `tests/` and `.github/`
 returned nothing, and "nothing reads these files" was recorded as a finding. It was false:
-`check_path_citations.scanned_files()` resolves a 105-file population containing all nine of
-them, through its `mps/materialization` glob, and the hygiene gate reaches them through
-`git ls-files` in a 390-file population. What was actually true is narrower and worth
-stating separately — no observer treated them *as review records*. Generic enumeration of
-files is not semantic observation of those files. The corrected finding and its withdrawn
+`check_path_citations.scanned_files()` resolves a population that contains all nine of them,
+through its `mps/materialization` glob, and the hygiene gate reaches them through
+`git ls-files`. That function is the authoritative definition of the scanned population —
+run it rather than quoting a number, because a transcribed cardinality goes stale the moment
+the tree changes and it will not announce that it has. What was actually true is narrower and
+worth stating separately — no observer treated them *as review records*. Generic enumeration
+of files is not semantic observation of those files. The corrected finding and its withdrawn
 wording are both in `mps/materialization/mps-mat-009/findings.yaml`.
+
+The membership result is what carries the weight, and it is 9 of 9 in both a clone and a
+working tree. The cardinality is not: a count taken here included two gitignored
+`build/work` reports that no clone has, so the number described a population that does not
+exist for the reader it was written for — the same defect as the enumeration gate's, in a
+sentence.
 
 Related: do not answer "is this observed?" with a count of name references. That preserves
 the same category error with a cleaner definition.

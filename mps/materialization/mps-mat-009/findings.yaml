@@ -1389,6 +1389,16 @@ findings:
       The manually maintained literal is removed rather than corrected. The authoritative
       population is the function, and a derived statement cannot go stale the way a
       transcribed number does.
+    confirmed_after_repair:
+      note: >-
+        Re-measured after C1 landed, which is itself the argument for removing the literal:
+        the cardinality had already moved again while the load-bearing claim had not.
+      cold_clone_at_63694e5: 104
+      working_tree_at_63694e5: 106
+      mps_mat_009_membership: 9 of 9 in both
+      what_this_shows: >-
+        Cardinality varies with the tree; membership does not. The sentence now states the
+        property that holds and names the function that decides it.
 
   - id: NF-05
     origin: independent review of 58d18db
