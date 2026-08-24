@@ -104,6 +104,22 @@ finding_state_control:
     - CLOSED
     - ACCEPTED
   canonical_field: state
+  authoritative_field_note: >-
+    NF-10. `state` is the SOLE authoritative lifecycle-state field. `status` and
+    `disposition` are legacy representations and confer no OPEN, CLOSED or ACCEPTED
+    semantics whatever, no matter what they contain. A record whose disposition reads
+    "closed" is not closed; it is state debt whose legacy text says closed.
+  legacy_fields:
+    - status
+    - disposition
+  exception_representation_rule: >-
+    Each exception must declare, per legacy field, whether it is present and -- when
+    present -- the sha256 of its exact value. The observer checks that declaration
+    against the record and fails on any mismatch. Before NF-10 the declaration was the
+    unchecked assertion `observed_state: absent`, which was false for six records:
+    five carried `disposition: closed` and one carried a prose disposition, so a
+    legacy closure claim was sitting inside an exception that said nothing was there.
+    `excerpt` is a human aid and is NEVER checked.
   rule: >-
     Every finding record must carry a canonical state in the `state` field, or appear in
     the exceptions below with a non-empty controlled reason. Nothing else passes.
@@ -133,154 +149,258 @@ finding_state_control:
     measured_by: enumerating the finding records and bucketing both field names
   exceptions:
     F1:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     F2:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     F3:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     F4:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     F5:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     F6:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     F7:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     F8:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     P1:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     P2:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     P3:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     F5-FU-01:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     F5-FU-02:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: true
+          sha256: 9d60534c74bf9696694ea17e50b23b1c330c443a709bd30188d40d8a4d7723c7
+          excerpt: "Corrected during F5 because F5 is about a gate's output "
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        Carries a legacy `disposition` field. Whatever it says -- including the word closed
+        -- it is not a lifecycle state and is NOT adjudicated here. This record remains
+        state debt.
     MI-EXIT-01:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     MI-R-01:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: true
+          sha256: c3eefb58d7c42440a9d4abec51d629544d635a6d936ff3c4d3fca96d611b3cf3
+          excerpt: 'closed'
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        Carries a legacy `disposition` field. Whatever it says -- including the word closed
+        -- it is not a lifecycle state and is NOT adjudicated here. This record remains
+        state debt.
     MI-R-02:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: true
+          sha256: c3eefb58d7c42440a9d4abec51d629544d635a6d936ff3c4d3fca96d611b3cf3
+          excerpt: 'closed'
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        Carries a legacy `disposition` field. Whatever it says -- including the word closed
+        -- it is not a lifecycle state and is NOT adjudicated here. This record remains
+        state debt.
     MI-R-03:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: true
+          sha256: c3eefb58d7c42440a9d4abec51d629544d635a6d936ff3c4d3fca96d611b3cf3
+          excerpt: 'closed'
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        Carries a legacy `disposition` field. Whatever it says -- including the word closed
+        -- it is not a lifecycle state and is NOT adjudicated here. This record remains
+        state debt.
     MI-R-04:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: true
+          sha256: c3eefb58d7c42440a9d4abec51d629544d635a6d936ff3c4d3fca96d611b3cf3
+          excerpt: 'closed'
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        Carries a legacy `disposition` field. Whatever it says -- including the word closed
+        -- it is not a lifecycle state and is NOT adjudicated here. This record remains
+        state debt.
     MI-R-05:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: true
+          sha256: c3eefb58d7c42440a9d4abec51d629544d635a6d936ff3c4d3fca96d611b3cf3
+          excerpt: 'closed'
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        Carries a legacy `disposition` field. Whatever it says -- including the word closed
+        -- it is not a lifecycle state and is NOT adjudicated here. This record remains
+        state debt.
     REC-OBS-01-METHOD:
-      observed_state: absent
+      legacy_representation:
+        status:
+          present: false
+        disposition:
+          present: false
       reason: >-
-        Disposition predates the controlled finding-state vocabulary. Whatever this
-        record says about its own resolution is expressed only in prose fields, and
-        no controlled state has been established for it.
+        No legacy representation of any kind. This record predates the controlled finding-
+        state vocabulary and says nothing anywhere about its own resolution.
     F1-FU-01:
-      observed_state: legacy status field, non-canonical value 'open'
+      legacy_representation:
+        status:
+          present: true
+          sha256: 2348f998744212575d85959674f9607ab26f67708a917157472832386337c904
+          excerpt: 'open'
+        disposition:
+          present: false
       reason: >-
-        Expressed in the legacy `status` field with a non-canonical value. The
-        intended disposition is legible but is not a controlled state, and is not
-        promoted here.
+        Carries a legacy `status` field. Whatever it says, it is not a lifecycle state:
+        `state` is the sole authoritative field and `status` confers nothing.
     F1-FU-02:
-      observed_state: legacy status field, non-canonical value 'open'
+      legacy_representation:
+        status:
+          present: true
+          sha256: 2348f998744212575d85959674f9607ab26f67708a917157472832386337c904
+          excerpt: 'open'
+        disposition:
+          present: false
       reason: >-
-        Expressed in the legacy `status` field with a non-canonical value. The
-        intended disposition is legible but is not a controlled state, and is not
-        promoted here.
+        Carries a legacy `status` field. Whatever it says, it is not a lifecycle state:
+        `state` is the sole authoritative field and `status` confers nothing.
     F1-FU-03:
-      observed_state: legacy status field, non-canonical value 'open'
+      legacy_representation:
+        status:
+          present: true
+          sha256: 2348f998744212575d85959674f9607ab26f67708a917157472832386337c904
+          excerpt: 'open'
+        disposition:
+          present: false
       reason: >-
-        Expressed in the legacy `status` field with a non-canonical value. The
-        intended disposition is legible but is not a controlled state, and is not
-        promoted here.
+        Carries a legacy `status` field. Whatever it says, it is not a lifecycle state:
+        `state` is the sole authoritative field and `status` confers nothing.
     MI-EXIT-01-PROBE1-OBSERVATION:
-      observed_state: prose in the legacy status field
+      legacy_representation:
+        status:
+          present: true
+          sha256: a2f8ccb94a98c022bf839bd3d70b9a4c1e6df65bdc193e2dec39097ebc16b818
+          excerpt: "Retained as an observation. Probe 1's disposition is NOT"
+        disposition:
+          present: false
       reason: >-
-        The `status` field carries a sentence rather than a state value. Prose is not
-        a controlled state and is not converted into one by this checkpoint.
+        Carries a legacy `status` field. Whatever it says, it is not a lifecycle state:
+        `state` is the sole authoritative field and `status` confers nothing.
     MI-EXIT-01-VVCOUNT-TENSION:
-      observed_state: prose in the legacy status field
+      legacy_representation:
+        status:
+          present: true
+          sha256: 92ce6d6f0fe9543a9151fb382eb5cac217027a5df887e779c0e4691af7712d7c
+          excerpt: 'Preserved as a semantic judgement requiring later Probe '
+        disposition:
+          present: false
       reason: >-
-        The `status` field carries a sentence rather than a state value. Prose is not
-        a controlled state and is not converted into one by this checkpoint.
-
+        Carries a legacy `status` field. Whatever it says, it is not a lifecycle state:
+        `state` is the sole authoritative field and `status` confers nothing.
 findings:
 
   - id: F1
@@ -1487,3 +1607,53 @@ findings:
     residual: >-
       Open. 25 of 34 records remain state debt. The finding is the visible remediation queue
       for adjudicating them, which is separate work from normalizing the population.
+
+  - id: NF-10
+    origin: independent review of 63694e5
+    reviewed_object: 63694e5f514b12852cec5524db841bb12a52df69
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      State exceptions asserted their own content, so a legacy closure claim could hide
+      inside declared state debt
+    claim: >-
+      C1 declared each state exception with observed_state: absent. Nothing checked that
+      assertion against the record it exempted. The exception was therefore prose about a
+      record, of exactly the kind the closure-warrant repair had just replaced -- one layer
+      down, in the mechanism that defines the population the closure rule ranges over.
+    the_counterexample_present_in_the_committed_record:
+      finding: MI-R-01 through MI-R-05
+      record_carries: "disposition: closed"
+      exception_declared: "observed_state: absent"
+      consequence: >-
+        Five records asserting their own closure in a legacy field were exempted by
+        declarations stating that no representation existed. A sixth, F5-FU-02, carried a
+        prose disposition under the same false assertion. The exception mechanism concealed
+        the very claims a reader would most want to see.
+      why_it_matters_beyond_bookkeeping: >-
+        State debt is meant to mean "the controlled representation is incomplete". An
+        unchecked exception let it also mean "and I will not tell you what the record
+        actually says". A closure claim is then invisible to the state layer and invisible to
+        the closure layer, because the closure layer only ranges over canonical CLOSED.
+    repair: this checkpoint, commit C3
+    disposition: >-
+      Each exception now declares, per legacy field, whether it is present and the sha256 of
+      its exact value, and the observer checks the declaration against the record. A
+      declaration that does not correspond fails. The three cases the observer must
+      distinguish -- no legacy representation, legacy status with its actual value, legacy
+      disposition with its actual value -- are distinguished by construction.
+    what_was_deliberately_not_done: >-
+      No state-debt finding was adjudicated. MI-R-01 through MI-R-05 still carry
+      disposition: closed and still have no canonical state, because converting a legacy
+      disposition into canonical CLOSED to make an observer pass is the precise move this
+      finding exists to prevent. `state` is the sole authoritative lifecycle field; legacy
+      fields confer nothing.
+    state_after_implementation: >-
+      OPEN. The repair is here; closure requires an independent review of this checkpoint,
+      which does not exist yet.
+    residual: >-
+      The observer checks that an exception describes its record truthfully. It does not
+      check that the reason given is a good one, and it does not reduce the 25-record state
+      debt by one. NF-09 still carries that queue.

@@ -55,9 +55,25 @@ def reviewed_sha(review: dict):
 # --------------------------------------------------------------------------------------
 
 def state_completeness_problems(findings_body: dict) -> list[str]:
+    """Every finding is canonically stated, or is state debt that describes itself truthfully.
+
+    NF-10. The second clause used to be an unchecked assertion: an exception said
+    `observed_state: absent` and nothing compared that to the record. Six declarations were
+    false -- five records carrying `disposition: closed` and one carrying a prose disposition
+    were all exempted by declarations stating that no representation existed. A legacy
+    closure claim could therefore sit inside declared state debt, invisible to the state
+    layer and invisible to the closure layer, which only ranges over canonical CLOSED.
+
+    So the declaration is now mechanically checked against the record, per legacy field, by
+    digest of the exact value. `state` remains the sole authoritative lifecycle field:
+    whatever a legacy field says, including the word closed, confers nothing.
+    """
+    import hashlib
+
     control = findings_body["finding_state_control"]
     canonical = set(control["canonical_states"])
     field = control["canonical_field"]
+    legacy_fields = control["legacy_fields"]
     exceptions = control.get("exceptions") or {}
 
     problems: list[str] = []
@@ -78,9 +94,33 @@ def state_completeness_problems(findings_body: dict) -> list[str]:
             continue
         if not str(entry.get("reason", "")).strip():
             problems.append(f"{fid}: declared a state exception with no reason")
-        if not str(entry.get("observed_state", "")).strip():
-            problems.append(f"{fid}: declared a state exception without recording what its "
-                            f"observed representation actually is")
+
+        declared = entry.get("legacy_representation")
+        if not isinstance(declared, dict):
+            problems.append(f"{fid}: state exception declares no legacy_representation, so "
+                            f"what the record actually says is unchecked")
+            continue
+        for legacy in legacy_fields:
+            claim = declared.get(legacy)
+            if not isinstance(claim, dict) or "present" not in claim:
+                problems.append(f"{fid}: legacy_representation does not say whether "
+                                f"{legacy!r} is present")
+                continue
+            actual = finding.get(legacy)
+            if claim["present"] is False:
+                if actual is not None:
+                    problems.append(
+                        f"{fid}: exception declares {legacy!r} absent, but the record carries "
+                        f"it ({' '.join(str(actual).split())[:48]!r}); a declaration that does "
+                        f"not correspond to its record conceals what the record says")
+                continue
+            if actual is None:
+                problems.append(f"{fid}: exception declares {legacy!r} present, but the "
+                                f"record does not carry it")
+                continue
+            digest = hashlib.sha256(str(actual).encode("utf-8")).hexdigest()
+            if claim.get("sha256") != digest:
+                problems.append(f"{fid}: declared {legacy!r} value does not match the record")
 
     for fid in exceptions:
         if fid not in known:
@@ -252,11 +292,15 @@ class StateCompletenessMutations(unittest.TestCase):
         self.assertTrue(any("NOVEL-BADSTATE-01" in p for p in problems),
                         "a lowercase value is not a canonical state")
 
-    def test_a_novel_stateless_finding_with_a_declared_reason_passes(self):
+    ABSENT = ("      legacy_representation:\n"
+              "        status:\n          present: false\n"
+              "        disposition:\n          present: false\n")
+
+    def test_a_novel_stateless_finding_with_a_truthful_declaration_passes(self):
+        """Positive control: truthfully described state debt is legitimate."""
         novel = ("  - id: NOVEL-DEBT-01\n"
                  "    origin: synthetic mutation control\n")
-        declared = ("    NOVEL-DEBT-01:\n"
-                    "      observed_state: absent\n"
+        declared = ("    NOVEL-DEBT-01:\n" + self.ABSENT +
                     "      reason: synthetic control; representation deliberately incomplete\n")
         original = FINDINGS.read_bytes()
         text = original.decode("utf-8")
@@ -269,9 +313,80 @@ class StateCompletenessMutations(unittest.TestCase):
             FINDINGS.write_bytes(original)
             self.assertEqual(original, FINDINGS.read_bytes())
 
+    def test_a_novel_finding_with_a_truthfully_declared_legacy_disposition_passes(self):
+        """Positive control, NF-10: a legacy `disposition: closed`, truthfully declared,
+        remains state debt and acquires no lifecycle disposition whatever."""
+        import hashlib
+
+        digest = hashlib.sha256(b"closed").hexdigest()
+        novel = ("  - id: NOVEL-LEGACY-01\n"
+                 "    origin: synthetic mutation control\n"
+                 "    disposition: closed\n")
+        declared = ("    NOVEL-LEGACY-01:\n"
+                    "      legacy_representation:\n"
+                    "        status:\n          present: false\n"
+                    "        disposition:\n          present: true\n"
+                    f"          sha256: {digest}\n"
+                    "      reason: legacy disposition, not adjudicated; still state debt\n")
+        original = FINDINGS.read_bytes()
+        text = original.decode("utf-8")
+        try:
+            text = text.replace(NOVEL_ANCHOR, novel + NOVEL_ANCHOR, 1)
+            text = text.replace("  exceptions:\n", "  exceptions:\n" + declared, 1)
+            FINDINGS.write_bytes(text.encode("utf-8"))
+            self.assertEqual([], self.observe())
+            # And it confers no lifecycle state: the closure layer never sees it.
+            self.assertEqual([], closure_problems(load(FINDINGS), load(REVIEWS)))
+        finally:
+            FINDINGS.write_bytes(original)
+            self.assertEqual(original, FINDINGS.read_bytes())
+
+    def test_declaring_absent_while_the_record_carries_a_legacy_disposition_fails(self):
+        """The RED counterexample, preserved: it was true of the committed record.
+
+        Five MI-R findings carried `disposition: closed` under exceptions declaring that no
+        representation existed. This drives the same shape and requires refusal.
+        """
+        with mutated(FINDINGS,
+                     "        disposition:\n          present: true\n"
+                     "          sha256: c3eefb58d7c42440a9d4abec51d629544d635a6d936ff3c4d3fca96d611b3cf3",
+                     "        disposition:\n          present: false"):
+            problems = self.observe()
+        self.assertTrue(any("declares 'disposition' absent" in p and "conceals" in p
+                            for p in problems), problems[:3])
+
+    def test_declaring_present_while_the_record_lacks_it_fails(self):
+        import hashlib
+
+        digest = hashlib.sha256(b"nothing").hexdigest()
+        with mutated(FINDINGS,
+                     "    F1:\n      legacy_representation:\n"
+                     "        status:\n          present: false",
+                     "    F1:\n      legacy_representation:\n"
+                     f"        status:\n          present: true\n          sha256: {digest}"):
+            problems = self.observe()
+        self.assertTrue(any(p.startswith("F1:") and "does not carry it" in p
+                            for p in problems))
+
+    def test_a_declared_value_that_does_not_match_the_record_fails(self):
+        with mutated(FINDINGS,
+                     "          sha256: c3eefb58d7c42440a9d4abec51d629544d635a6d936ff3c4d3fca96d611b3cf3",
+                     "          sha256: " + "0" * 64):
+            problems = self.observe()
+        self.assertTrue(any("does not match the record" in p for p in problems))
+
+    def test_an_exception_with_no_representation_declaration_fails(self):
+        with mutated(FINDINGS,
+                     "    F1:\n      legacy_representation:\n"
+                     "        status:\n          present: false\n"
+                     "        disposition:\n          present: false\n",
+                     "    F1:\n"):
+            problems = self.observe()
+        self.assertTrue(any(p.startswith("F1:") and "no legacy_representation" in p
+                            for p in problems))
+
     def test_an_exception_referring_to_no_finding_fails(self):
-        orphan = ("    NO-SUCH-FINDING:\n"
-                  "      observed_state: absent\n"
+        orphan = ("    NO-SUCH-FINDING:\n" + self.ABSENT +
                   "      reason: synthetic control\n")
         with mutated(FINDINGS, "  exceptions:\n", "  exceptions:\n" + orphan):
             problems = self.observe()
@@ -280,18 +395,31 @@ class StateCompletenessMutations(unittest.TestCase):
 
     def test_an_exception_with_an_empty_reason_fails(self):
         with mutated(FINDINGS,
-                     "    F1:\n      observed_state: absent\n      reason: >-",
-                     "    F1:\n      observed_state: absent\n      reason: ''\n      unused: >-"):
+                     "    F1:\n" + self.ABSENT + "      reason: >-",
+                     "    F1:\n" + self.ABSENT + "      reason: ''\n      unused: >-"):
             problems = self.observe()
         self.assertTrue(any(p.startswith("F1:") and "no reason" in p for p in problems))
 
     def test_a_finding_both_canonical_and_excepted_fails(self):
-        both = ("    RT-F-03:\n"
-                "      observed_state: absent\n"
-                "      reason: synthetic control\n")
+        both = ("    RT-F-03:\n" + self.ABSENT + "      reason: synthetic control\n")
         with mutated(FINDINGS, "  exceptions:\n", "  exceptions:\n" + both):
             problems = self.observe()
         self.assertTrue(any("RT-F-03" in p and "one or the other" in p for p in problems))
+
+    def test_legacy_fields_confer_no_lifecycle_state(self):
+        """`state` is the sole authoritative field, asserted over the committed record."""
+        body = load(FINDINGS)
+        control = body["finding_state_control"]
+        legacy = set(control["legacy_fields"])
+        self.assertEqual({"status", "disposition"}, legacy)
+        self.assertEqual("state", control["canonical_field"])
+        closed_ids = {f["id"] for f in body["findings"]
+                      if f.get("state") == "CLOSED"}
+        legacy_closed = {f["id"] for f in body["findings"]
+                         if str(f.get("disposition", "")).strip() == "closed"}
+        self.assertTrue(legacy_closed, "the counterexample population must still exist")
+        self.assertEqual(set(), legacy_closed & closed_ids,
+                         "no legacy disposition was converted into canonical CLOSED")
 
     def test_the_observer_follows_the_controlled_state_vocabulary(self):
         with mutated(FINDINGS,
