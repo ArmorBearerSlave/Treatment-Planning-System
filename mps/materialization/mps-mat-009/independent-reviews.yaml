@@ -164,6 +164,9 @@ population:
     - kind: commit_scoped
       reviewed_object: 3188a11443e33c8c4f68933cf73282108957f356
       review: REV-C5-CUMULATIVE
+    - kind: commit_scoped
+      reviewed_object: 2f10b3e97e7461870700afb69db0ec6401326518
+      review: REV-C7-CUMULATIVE
 
   membership_kind_is_not_object_identity_strength: >-
     Two independent dimensions, deliberately not conflated. REV-F2 is record_file_backed and
@@ -476,6 +479,54 @@ reviews:
       - tests/test_closure_warrant.py
       - tests/test_review_records.py
 
+
+  - review_id: REV-C7-CUMULATIVE
+    subject: >-
+      C7 completion-presence repair, reviewed as the cumulative remediation checkpoint C1
+      through C7
+    reviewed_object:
+      kind: commit
+      sha: 2f10b3e97e7461870700afb69db0ec6401326518
+    verdict: FAIL
+    verdict_note: >-
+      FAIL is the controlled vocabulary's existing non-closing verdict and is used here
+      unchanged. The report's own wording was "C7 / CUMULATIVE REMEDIATION CHECKPOINT -- NOT
+      INDEPENDENTLY VERIFIED", recorded below as returned. No new verdict was invented, and
+      FAIL is not added to closing_verdicts.
+    verdict_label_as_returned: NOT INDEPENDENTLY VERIFIED
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: external_not_retained
+    primary_artifact_retention_note: >-
+      The report is not in this repository and is not claimed to be. No path is cited for it,
+      because a path a clone cannot resolve implies the artifact is obtainable here.
+    findings_returned:
+      - NEW-01 transported as NF-18
+      - NEW-02 transported as NF-19
+      - NEW-03 transported as NF-20
+      - NEW-04 transported as NF-21
+      - NEW-05 transported as NF-22
+    warrants_closure_of_note: >-
+      Deliberately absent. This review returned a non-closing verdict, so it warrants no
+      closure and no warrants_closure_of key is written. It is not used to move any finding
+      state.
+    per_finding_support_determinations:
+      what_the_reviewer_could_establish: >-
+        Reviewing REV-C5-CUMULATIVE's claimed per-finding substance, the reviewer could
+        independently establish support for NF-13 and returned INDETERMINATE for NF-01, NF-05,
+        NF-06, NF-10, NF-11 and NF-12.
+      supported: [NF-13]
+      indeterminate: [NF-01, NF-05, NF-06, NF-10, NF-11, NF-12]
+      what_must_not_be_done_about_it: >-
+        This is not repaired by editing verified_repairs_of again. Those assertions are left
+        exactly as written; none is added, removed or reinterpreted to make closure possible,
+        and the finding-side independent_review_support prose is remediation-authored and is
+        not independent evidence of anything. The six remain OPEN. Their disposition requires
+        a separate independent review whose own report contains the per-finding
+        determinations. C8 is not that review.
+
 methodological_observations:
 
   - id: git_clean_does_not_establish_execution_cold
@@ -641,6 +692,27 @@ methodological_observations:
       The retention model is not broadened at C7. Widening it to any object-naming field would
       change what a large number of existing records are required to carry, which is a
       controlled change to the rule and not an implementation detail.
+
+
+  - id: the_closure_machinery_lives_in_a_test_module
+    raised_by: REV-C7-CUMULATIVE
+    proposition: >-
+      The closure, completion and identity observers are defined in
+      tests/test_closure_warrant.py rather than in a tool under tools/. Every other controlled
+      gate is a script with its own exit code.
+    why_it_is_an_observation_and_not_a_finding: >-
+      A test can be a mandatory observer if its execution path is guaranteed, and the location
+      is not what made anything unreachable. Two real reachability defects were found alongside
+      it and both are repaired: NF-18, direct invocation collecting only part of the module,
+      and NF-21, the CI job stopping before most of its declared controls. Promoting the
+      location itself would be an architectural preference, and building a second tool to hold
+      the same predicates would create the two-representations problem this register already
+      records for cumulative repair verification.
+    what_would_change_the_assessment: >-
+      If the module's execution path stopped being guaranteed -- removed from the regression
+      step, or reachable only through a route that collects part of it -- the location would
+      stop being incidental. That is why NF-18's control compares collected identities across
+      both invocation routes rather than checking that the file merely runs.
 
 obligation_effect:
   mps_mat_009_hash_0:

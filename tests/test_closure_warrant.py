@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import collections
 import contextlib
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -200,11 +201,119 @@ def completion_declaration_problems(findings_body: dict, register_body: dict) ->
     return problems
 
 
-def reviewed_sha(review: dict):
-    obj = review.get("reviewed_object") or {}
+IDENTITY_FIELDS = ("sha", "later_committed_as")
+
+
+def reviewed_identity(review: dict) -> tuple:
+    """The object a review reviewed, and whether that identity is declared and usable.
+
+    Returns (value, problem). A problem is a string; None means the identity is usable as an
+    exact closure identity.
+
+    NF-19. This is the other side of the comparison NF-16 repaired, and it had the same
+    defect. It read `obj.get("sha") or obj.get("later_committed_as")`, so a `sha` present with
+    a falsy value silently resolved to `later_committed_as` -- and those two fields do not name
+    the same thing. `sha` is the object the review reviewed. `later_committed_as` says the
+    review reviewed a WORKING TREE that was afterwards committed as some object, which is a
+    different proposition about a different thing. Redirecting from one to the other is not a
+    fallback; it substitutes a distinct object identity for the one the record declared.
+
+    So selection is keyed to the declared `kind` rather than to which field happens to be
+    truthy, and declaration is key membership, as everywhere else since C7:
+
+        kind: commit        -> sha is the identity; later_committed_as does not belong
+        kind: working_tree  -> later_committed_as is the identity; there is no reviewed commit
+
+    Both present is an explicit outcome, not an incidental precedence: it is ambiguous and is
+    reported. A present-but-unusable identity stays an invalid declaration and never causes
+    substitution of another object.
+    """
+    obj = review.get("reviewed_object")
+    rid = review.get("review_id", "<unnamed review>")
     if isinstance(obj, str):
-        return obj
-    return obj.get("sha") or obj.get("later_committed_as")
+        return obj, None if usable_object(obj) else f"{rid}: reviewed_object is not usable"
+    if not isinstance(obj, dict):
+        return None, f"{rid}: declares no reviewed_object"
+
+    declared = [f for f in IDENTITY_FIELDS if f in obj]
+    if not declared:
+        return None, f"{rid}: reviewed_object declares neither {' nor '.join(IDENTITY_FIELDS)}"
+    if len(declared) > 1:
+        return None, (f"{rid}: reviewed_object declares both {' and '.join(declared)}; they "
+                      f"name different things and the ambiguity is surfaced, not resolved by "
+                      f"precedence")
+
+    field = declared[0]
+    kind = obj.get("kind")
+    expected = {"commit": "sha", "working_tree": "later_committed_as"}.get(kind)
+    if expected is not None and field != expected:
+        return None, (f"{rid}: kind {kind!r} carries its identity in {expected!r}, but the "
+                      f"record declares {field!r}")
+
+    value = obj[field]
+    if not usable_object(value):
+        return None, (f"{rid}: {field} is declared but cannot name an object ({value!r}); a "
+                      f"declared identity is never replaced by the other field")
+    return value, None
+
+
+def reviewed_sha(review: dict):
+    """The reviewed identity, or None when it is absent, ambiguous or unusable.
+
+    Fails closed by construction: every rejected case yields None, and None never equals a
+    closure target, so no rejected identity can produce a match.
+    """
+    value, problem = reviewed_identity(review)
+    return None if problem else value
+
+
+def identity_declaration_problems(register_body: dict) -> list[str]:
+    """Every review's object identity is declared exactly once, and is usable or reported."""
+    problems = []
+    for review in register_body.get("reviews") or []:
+        _, problem = reviewed_identity(review)
+        if problem:
+            problems.append(problem)
+    return problems
+
+
+FULL_OBJECT = __import__("re").compile(r"^[0-9a-f]{40}$")
+
+
+def exact_closure_identity_problems(findings_body: dict, register_body: dict) -> list[str]:
+    """No finding may close against a review whose identity is not an exact object.
+
+    NF-19. REV-F2 records `later_committed_as: edd6b0b`, an abbreviation. It resolves in this
+    repository today, and that is exactly why it is not expanded here: rewriting historical
+    review evidence so a future comparison becomes convenient is manufacturing provenance, and
+    the abbreviation is what the reviewer actually wrote.
+
+    The rule instead makes the consequence explicit. An abbreviated identity can never equal a
+    full closure target, so it fails closed on its own; what this adds is that the failure is
+    STATED rather than incidental. If a later actor points a closure warrant at such a review,
+    this reports it instead of leaving them to puzzle over a mismatch diagnostic. Expanding the
+    abbreviation would be the wrong repair -- the right one, if REV-F2 is ever needed for
+    closure, is for a reviewer to record the object they reviewed.
+    """
+    by_id = {r.get("review_id"): r for r in register_body.get("reviews") or []}
+    rule = register_body["closure_rule"]
+    problems = []
+    for finding in findings_body["findings"]:
+        if finding.get(findings_body["finding_state_control"]["canonical_field"]) \
+                != rule["applies_to_finding_state"]:
+            continue
+        review = by_id.get(finding.get(rule["requires_field"]))
+        if review is None:
+            continue
+        value, problem = reviewed_identity(review)
+        if problem:
+            continue  # reported by identity_declaration_problems; not restated here
+        if not FULL_OBJECT.match(str(value)):
+            problems.append(
+                f"{finding['id']}: closes against {review['review_id']}, whose identity "
+                f"{value!r} is not a full object and so can never satisfy exact matching; "
+                f"the abbreviation is not expanded to make it match")
+    return problems
 
 
 # --------------------------------------------------------------------------------------
@@ -1026,9 +1135,6 @@ class CompletionObjectMutations(unittest.TestCase):
         self.assertEqual([], state_completeness_problems(load(FINDINGS)))
 
 
-if __name__ == "__main__":
-    unittest.main()
-
 
 class CompletionPresenceSemantics(unittest.TestCase):
     """C7/NF-16. One field, one presence semantics, in every branch that consumes it.
@@ -1119,12 +1225,19 @@ class CompletionPresenceSemantics(unittest.TestCase):
         """
         import inspect
 
-        for name in ("test_the_original_repair_field_was_never_rewritten",
-                     "test_no_completion_declaration_moved_a_finding_to_closed"):
-            source = inspect.getsource(getattr(CompletionObjectMutations, name))
+        # NF-20. The two names used to be written here literally, which is not a population --
+        # it is the two the author remembered. The safety controls are now identified by what
+        # they do: any method whose source resolves the declared-completion population.
+        safety = {name: fn for name, fn in consumer_population(sys.modules[__name__]).items()
+                  if "findings_declaring_completion" in inspect.getsource(fn)
+                  and name.startswith("CompletionObjectMutations.")}
+        self.assertTrue(safety, "the derived safety-control population must not be empty")
+        for name in ("CompletionObjectMutations.test_the_original_repair_field_was_never_rewritten",
+                     "CompletionObjectMutations.test_no_completion_declaration_moved_a_finding_to_closed"):
             with self.subTest(control=name):
-                self.assertIn("findings_declaring_completion", source)
-                self.assertNotIn('get("repair_completion_object")', source)
+                self.assertIn(name, safety,
+                              "this control must resolve the declared-completion population")
+        self.assertEqual([], uniformity_problems(sys.modules[__name__]))
 
         for label, literal in self.FALSY_YAML.items():
             with self.subTest(value=label):
@@ -1173,27 +1286,16 @@ class CompletionPresenceSemantics(unittest.TestCase):
     # ---------------------------------------------------------------- source-level corroboration
 
     def test_no_consumer_decides_declaration_by_truthiness(self):
-        """Corroborating only. The behavioural controls above are the evidence.
+        """Superseded at C8 by ConsumerPopulationUniformity, and delegating rather than
+        duplicating.
 
-        Scoped to the module's own functions rather than its whole text: a scan of the file
-        matches the literal in this assertion and fails on itself, which is a control testing
-        its own source instead of the code it is about.
+        The C7 form scanned only module-level functions, so every TestCase method was outside
+        it -- and an independent review reintroduced truthiness into one of those methods with
+        the full suite staying green. NF-20. The population is now derived from the parse tree
+        and includes methods; this control is kept as the entry point it always was and asks
+        the real observer.
         """
-        import inspect
-
-        module = sys.modules[__name__]
-        scanned = []
-        for name, obj in vars(module).items():
-            if inspect.isfunction(obj) and obj.__module__ == __name__:
-                scanned.append(name)
-                with self.subTest(consumer=name):
-                    self.assertNotIn('get("repair_completion_object")',
-                                     inspect.getsource(obj),
-                                     "declaration is key membership; .get() on the "
-                                     "completion field reintroduces truthiness")
-        self.assertIn("closure_target", scanned, "the scan must actually reach the consumers")
-        self.assertIn("completion_declaration_problems", scanned)
-        self.assertIn("closure_problems", scanned)
+        self.assertEqual([], uniformity_problems(sys.modules[__name__]))
 
     def test_the_predicate_is_defined_once(self):
         import inspect
@@ -1218,3 +1320,394 @@ class CompletionPresenceSemantics(unittest.TestCase):
         self.assertEqual([], completion_declaration_problems(load(FINDINGS), load(REVIEWS)))
         self.assertEqual([], closure_problems(load(FINDINGS), load(REVIEWS)))
         self.assertEqual([], state_completeness_problems(load(FINDINGS)))
+
+
+
+# --------------------------------------------------------------------------------------
+# NF-20: the uniformity observer, over the COMPLETE consumer population
+# --------------------------------------------------------------------------------------
+
+CONTROLLED_PRESENCE_FIELDS = ("repair_completion_object", "sha", "later_committed_as")
+
+
+def _controlled_field_name(node) -> str | None:
+    """The controlled field a node names, whether spelled literally or via a constant."""
+    import ast
+
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        return node.value if node.value in CONTROLLED_PRESENCE_FIELDS else None
+    if isinstance(node, ast.Name) and node.id in ("COMPLETION_FIELD",):
+        return "repair_completion_object"
+    return None
+
+
+def truthiness_declaration_sites(source: str, unit: str) -> list[str]:
+    """Every `.get(<controlled field>)` in `source`, which is a declaration test by truthiness.
+
+    NF-20. The C7 observer scanned module-level functions and named two TestCase methods
+    literally. Both halves were wrong in the same way. Module-level scanning silently excluded
+    every method, and a literal pair is not a population -- it is the two the author happened
+    to remember, and it goes stale the moment a third consumer is written. An independent
+    review reintroduced truthiness into a method outside that pair and the full 519-test suite
+    stayed green.
+
+    So the population is derived from the parse tree: every function and every method, at any
+    nesting depth, including comprehensions and nested definitions. A name list would have the
+    same defect one level up.
+
+    What is reported is `.get(field)` on a controlled presence field. That call is the defect
+    whether its result is branched on, filtered on, or compared -- `if f.get(x)` and
+    `[f for f in xs if f.get(x)]` and `f.get(x) == v` all read a field that may not be there
+    and answer with a value that cannot be distinguished from a declared falsy one. Retrieval
+    AFTER presence is established is `finding[field]`, which is not matched here, so the
+    legitimate access pattern is untouched.
+    """
+    import ast
+
+    found = []
+    for node in ast.walk(ast.parse(source)):
+        if not isinstance(node, ast.Call):
+            continue
+        func = node.func
+        if not (isinstance(func, ast.Attribute) and func.attr == "get"):
+            continue
+        if not node.args:
+            continue
+        field = _controlled_field_name(node.args[0])
+        if field is None:
+            continue
+        found.append(f"{unit}:{node.lineno}: .get({field!r}) tests declaration by truthiness; "
+                     f"use key membership, then index")
+    return found
+
+
+def consumer_population(module) -> dict:
+    """Every function and method defined in `module`, by qualified name.
+
+    Derived, never enumerated. Module functions, TestCase methods, nested definitions and
+    static/class methods all land here, so adding a consumer cannot add an unobserved one.
+    """
+    import inspect
+
+    units = {}
+
+    def take(obj, prefix=""):
+        for name, member in vars(obj).items():
+            target = member
+            if isinstance(target, (staticmethod, classmethod)):
+                target = target.__func__
+            if inspect.isfunction(target) and target.__module__ == module.__name__:
+                units[f"{prefix}{name}"] = target
+            elif inspect.isclass(member) and member.__module__ == module.__name__:
+                take(member, prefix=f"{member.__name__}.")
+
+    take(module)
+    return units
+
+
+def uniformity_problems(module) -> list[str]:
+    """The controlled presence fields are read by key membership everywhere in `module`."""
+    import inspect
+    import textwrap
+
+    problems = []
+    for qualname, fn in sorted(consumer_population(module).items()):
+        try:
+            source = textwrap.dedent(inspect.getsource(fn))
+        except OSError:                                    # pragma: no cover - source present
+            problems.append(f"{qualname}: source unavailable, so it cannot be observed")
+            continue
+        problems.extend(truthiness_declaration_sites(source, qualname))
+    return problems
+
+
+
+class InvocationRouteEquivalence(unittest.TestCase):
+    """NF-18. Both routes into this module must execute the same evidence.
+
+    Direct invocation used to run unittest.main() from the middle of the file, collecting only
+    what was defined above it. It printed OK, exited 0, and omitted twelve methods -- the whole
+    of the C7 completion-presence evidence. Nothing in that output indicated an omission.
+    """
+
+    def collected_by_import(self) -> set:
+        module = sys.modules[__name__]
+        suite = unittest.defaultTestLoader.loadTestsFromModule(module)
+
+        def flatten(s):
+            for t in s:
+                if isinstance(t, unittest.TestSuite):
+                    yield from flatten(t)
+                else:
+                    yield ".".join(t.id().split(".")[-2:])
+
+        return set(flatten(suite))
+
+    def collected_by_direct_invocation(self):
+        """Ask the script route what it collects, using its own loader at its own position.
+
+        Not predicted and not parsed out of a test log: the file is executed as a script, and
+        the collect-only branch at the very end reports what loadTestsFromModule finds in
+        __main__ at the point unittest.main() would run. If a class is ever appended below
+        that block again, this route reports the same shortfall the defect produced.
+        """
+        import os
+        import subprocess
+
+        env = dict(os.environ, CLOSURE_WARRANT_COLLECT_ONLY="1")
+        result = subprocess.run(
+            [sys.executable, str(Path(__file__).resolve())],
+            capture_output=True, text=True, cwd=str(REPO_ROOT), env=env)
+        collected = {".".join(line.split(".")[-2:]) for line in result.stdout.splitlines()
+                     if line.startswith("__main__.")}
+        return collected, result.returncode
+
+    def test_both_routes_collect_the_same_population(self):
+        by_import = self.collected_by_import()
+        by_direct, code = self.collected_by_direct_invocation()
+        self.assertEqual(0, code, "direct invocation must succeed")
+        missing = by_import - by_direct
+        extra = by_direct - by_import
+        self.assertEqual(set(), missing,
+                         "direct invocation omits evidence that discovery executes")
+        self.assertEqual(set(), extra,
+                         "direct invocation executes something discovery does not")
+
+    def test_the_completion_presence_evidence_is_in_both(self):
+        """Named explicitly: this is the class the defect actually hid."""
+        by_import = self.collected_by_import()
+        by_direct, _ = self.collected_by_direct_invocation()
+        for population, label in ((by_import, "discovery"), (by_direct, "direct invocation")):
+            with self.subTest(route=label):
+                present = {n for n in population if n.startswith("CompletionPresenceSemantics.")}
+                self.assertTrue(present, f"{label} collected no completion-presence evidence")
+
+    def test_the_guard_is_the_last_statement_in_the_module(self):
+        """The structural cause, checked structurally rather than by re-reading the symptom."""
+        import ast
+
+        tree = ast.parse(Path(__file__).resolve().read_text(encoding="utf-8"))
+        guards = [i for i, node in enumerate(tree.body)
+                  if isinstance(node, ast.If) and "__main__" in ast.dump(node.test)]
+        self.assertEqual(1, len(guards), "exactly one __main__ guard")
+        self.assertEqual(len(tree.body) - 1, guards[0],
+                         "the guard must be the last top-level statement; anything defined "
+                         "below it does not exist when unittest.main() runs")
+
+
+class ReviewIdentityPresenceSemantics(unittest.TestCase):
+    """NF-19. The reviewed-object side of the exact comparison, by declaration not truthiness.
+
+    `sha` and `later_committed_as` are not two spellings of one thing. `sha` is the object the
+    review reviewed; `later_committed_as` says a working tree was reviewed and afterwards
+    committed as some object. Redirecting between them substitutes a different object identity.
+    """
+
+    FULL = "a" * 40
+    OTHER = "b" * 40
+    FALSY = {"null": None, "empty string": "", "zero": 0, "false": False}
+
+    def obj(self, **fields):
+        return {"review_id": "SYN", "reviewed_object": dict(fields)}
+
+    # ---------------------------------------------------------------- sha, all six cases
+
+    def test_sha_absent_with_no_other_identity_is_not_an_identity(self):
+        value, problem = reviewed_identity(self.obj(kind="commit"))
+        self.assertIsNone(value)
+        self.assertIn("declares neither", problem)
+
+    def test_sha_present_and_valid_is_the_identity(self):
+        value, problem = reviewed_identity(self.obj(kind="commit", sha=self.FULL))
+        self.assertEqual(self.FULL, value)
+        self.assertIsNone(problem)
+
+    def test_no_falsy_sha_redirects_to_later_committed_as(self):
+        """The NF-19 defect itself, across every falsy value."""
+        for label, value in self.FALSY.items():
+            with self.subTest(sha=label):
+                record = self.obj(kind="commit", sha=value, later_committed_as=self.OTHER)
+                got, problem = reviewed_identity(record)
+                self.assertIsNotNone(problem, "a declared-but-unusable sha must be reported")
+                self.assertNotEqual(self.OTHER, got,
+                                    "redirecting to a different object identity is the defect")
+                self.assertIsNone(reviewed_sha(record), "and it must fail closed")
+
+    def test_a_falsy_sha_alone_is_reported_as_declared_and_unusable(self):
+        for label, value in self.FALSY.items():
+            with self.subTest(sha=label):
+                _, problem = reviewed_identity(self.obj(kind="commit", sha=value))
+                self.assertIn("cannot name an object", problem)
+
+    # ------------------------------------------------- later_committed_as, all six cases
+
+    def test_later_committed_as_absent_on_a_working_tree_review_is_reported(self):
+        _, problem = reviewed_identity(self.obj(kind="working_tree"))
+        self.assertIn("declares neither", problem)
+
+    def test_later_committed_as_present_and_valid_is_the_identity(self):
+        value, problem = reviewed_identity(
+            self.obj(kind="working_tree", later_committed_as=self.FULL))
+        self.assertEqual(self.FULL, value)
+        self.assertIsNone(problem)
+
+    def test_no_falsy_later_committed_as_is_accepted(self):
+        for label, value in self.FALSY.items():
+            with self.subTest(later_committed_as=label):
+                record = self.obj(kind="working_tree", later_committed_as=value)
+                _, problem = reviewed_identity(record)
+                self.assertIn("cannot name an object", problem)
+                self.assertIsNone(reviewed_sha(record))
+
+    # ---------------------------------------------------------------- ambiguity is explicit
+
+    def test_both_identity_fields_present_is_ambiguous_and_reported(self):
+        record = self.obj(kind="commit", sha=self.FULL, later_committed_as=self.OTHER)
+        value, problem = reviewed_identity(record)
+        self.assertIsNone(value, "no field wins by precedence")
+        self.assertIn("declares both", problem)
+        self.assertIsNone(reviewed_sha(record), "ambiguity fails closed")
+
+    def test_the_identity_field_must_match_the_declared_kind(self):
+        for kind, wrong in (("commit", "later_committed_as"), ("working_tree", "sha")):
+            with self.subTest(kind=kind):
+                _, problem = reviewed_identity(self.obj(**{"kind": kind, wrong: self.FULL}))
+                self.assertIn("carries its identity in", problem)
+
+    # ---------------------------------------------------------------- the committed register
+
+    def test_the_register_declares_every_identity_exactly_once(self):
+        self.assertEqual([], identity_declaration_problems(load(REVIEWS)))
+
+    def test_the_abbreviated_historical_identity_is_left_as_written(self):
+        """C8 section 8. It resolves here, and that is why it is not expanded.
+
+        Expanding a historical reviewer's abbreviation so a future comparison matches is
+        manufacturing provenance. The abbreviation stays, its consequence is stated, and it
+        fails closed against any full-object target on its own.
+        """
+        register = load(REVIEWS)
+        f2 = [r for r in register["reviews"] if r["review_id"] == "REV-F2"][0]
+        value, problem = reviewed_identity(f2)
+        self.assertEqual("edd6b0b", value, "unexpanded, exactly as the reviewer wrote it")
+        self.assertIsNone(problem, "structurally a valid declaration")
+        self.assertIsNone(FULL_OBJECT.match(value),
+                          "but not a full object, so it cannot satisfy exact matching")
+        self.assertNotEqual(value, git("rev-parse", "edd6b0b")[1],
+                            "and the record still does not carry the expansion")
+
+    def test_no_finding_closes_against_a_non_exact_identity(self):
+        self.assertEqual([], exact_closure_identity_problems(load(FINDINGS), load(REVIEWS)))
+
+    def test_a_finding_closing_against_the_abbreviated_review_is_reported(self):
+        """Failure sensitivity for the rule above."""
+        with mutated(FINDINGS, "    closure_review: REV-RT-F-CLOSURE",
+                     "    closure_review: REV-F2"):
+            problems = exact_closure_identity_problems(load(FINDINGS), load(REVIEWS))
+        self.assertTrue(any("is not a full object" in p for p in problems), problems[:2])
+
+    def test_exact_matching_is_not_weakened_by_this_repair(self):
+        import inspect
+
+        body = inspect.getsource(reviewed_identity) + inspect.getsource(closure_problems)
+        for forbidden in ("startswith", ".lower()", ".upper()", "merge-base", "abbrev"):
+            self.assertNotIn(forbidden, body,
+                             "no prefix, case or ancestry equivalence enters the comparison")
+
+
+class ConsumerPopulationUniformity(unittest.TestCase):
+    """NF-20. The uniformity observer ranges over every consumer, derived not enumerated."""
+
+    def test_the_committed_module_is_uniform(self):
+        self.assertEqual([], uniformity_problems(sys.modules[__name__]))
+
+    def test_the_population_includes_testcase_methods(self):
+        population = consumer_population(sys.modules[__name__])
+        self.assertIn("closure_target", population, "module functions")
+        self.assertIn("CompletionObjectMutations.test_prose_without_the_typed_field_confers_nothing",
+                      population, "TestCase methods -- the half C7 could not see")
+        self.assertIn("ConsumerPopulationUniformity.test_the_population_includes_testcase_methods",
+                      population, "including this one, so the observer observes itself")
+
+    def test_the_population_is_not_a_hard_coded_name_list(self):
+        import inspect
+
+        source = inspect.getsource(consumer_population) + inspect.getsource(uniformity_problems)
+        self.assertNotIn("test_no_completion_declaration_moved_a_finding_to_closed", source)
+        self.assertNotIn("test_the_original_repair_field_was_never_rewritten", source)
+
+    def test_truthiness_in_a_testcase_method_is_detected(self):
+        """The mutation the independent review showed survived C7's full suite."""
+        cases = {
+            "pure truthiness filter":
+                ('            declared = [f["id"] for f in '
+                 'findings_declaring_completion(load(FINDINGS))]',
+                 '            declared = [f["id"] for f in load(FINDINGS)["findings"]\n'
+                 '                        if f.get("repair_completion_object")]'),
+            "equality selection":
+                ('        declared = {f["id"] for f in '
+                 'findings_declaring_completion(load(FINDINGS))\n'
+                 '                    if f[COMPLETION_FIELD] == self.COMPLETION}',
+                 '        declared = {f["id"] for f in load(FINDINGS)["findings"]\n'
+                 '                    if f.get("repair_completion_object") == self.COMPLETION}'),
+        }
+        source = Path(__file__).resolve().read_text(encoding="utf-8")
+        for label, (old, new) in cases.items():
+            with self.subTest(mutation=label):
+                self.assertIn(old, source, "mutation anchor present")
+                problems = truthiness_declaration_sites(source.replace(old, new, 1), "module")
+                self.assertTrue(problems, "the mutation must be detected")
+
+    def test_truthiness_on_the_review_identity_fields_is_detected(self):
+        """The NF-19 shape is in the same population, not a second mechanism."""
+        restored = 'value, problem = reviewed_identity(review)'
+        mutant = 'value = review.get("sha") or review.get("later_committed_as")'
+        problems = truthiness_declaration_sites(
+            f"def f(review):\n    {mutant}\n    return value\n", "synthetic")
+        self.assertEqual(2, len(problems), problems)
+
+    def test_legitimate_retrieval_after_presence_is_not_flagged(self):
+        """A control that flags the correct pattern would push authors back to the wrong one."""
+        good = ('def f(finding):\n'
+                '    if "repair_completion_object" in finding:\n'
+                '        return finding["repair_completion_object"]\n'
+                '    return None\n')
+        self.assertEqual([], truthiness_declaration_sites(good, "synthetic"))
+
+    def test_unrelated_get_calls_are_not_flagged(self):
+        noise = ('def f(d):\n'
+                 '    return d.get("kind"), d.get("verdict"), d.get("state")\n')
+        self.assertEqual([], truthiness_declaration_sites(noise, "synthetic"))
+
+
+# NF-18. The guard is the LAST thing in this module, and stays last.
+#
+# It used to sit above CompletionPresenceSemantics, because C7 appended that class after it.
+# unittest.main() runs at import time when the file is executed directly, so it collected only
+# what was already defined -- 59 of 71 test methods -- printed OK, and exited 0. The twelve it
+# omitted were the entire body of evidence C7 was written to produce. A command that reports
+# success while silently omitting the evidence it was run to check is worse than one that
+# fails, because nothing about its output says anything is missing.
+#
+# test_direct_invocation_and_discovery_collect_the_same_population is the control. It compares
+# collected identities, not a count, so appending a class below this line without moving the
+# guard fails by naming exactly what went missing.
+if __name__ == "__main__":
+    # NF-18. Collect-only exists so the equivalence control can ask this route what it
+    # collects without running it. Executing it would re-enter that control, which spawns
+    # this route again, without bound. It uses the same loader against the same __main__
+    # module, so it reports exactly what unittest.main() below would see -- including, if a
+    # class is ever appended beneath this block again, that the class is missing.
+    if os.environ.get("CLOSURE_WARRANT_COLLECT_ONLY"):
+        def _ids(suite):
+            for item in suite:
+                if isinstance(item, unittest.TestSuite):
+                    yield from _ids(item)
+                else:
+                    yield item.id()
+
+        loaded = unittest.defaultTestLoader.loadTestsFromModule(sys.modules["__main__"])
+        for _identity in sorted(_ids(loaded)):
+            print(_identity)
+        raise SystemExit(0)
+    unittest.main()

@@ -2193,14 +2193,37 @@ findings:
       consume it
     claim: >-
       The controlled rule says a repair_completion_object is declared, not that it is truthy.
-      completion_declaration_problems tested key membership and was right. Three other
-      branches tested truthiness: closure_target, which returned
-      finding.get(COMPLETION_FIELD) or finding.get("repair"), and the two safety tests that
-      enforce "the original repair field was never rewritten" and "no completion declaration
-      moved a finding to CLOSED". A completion field physically present with a falsy value --
+      completion_declaration_problems tested key membership and was right. Four other
+      branches tested truthiness. A completion field physically present with a falsy value --
       written with no value, or as "", 0, or false -- was therefore rejected by one observer
-      while being silently redirected by closure_target and skipped entirely by both safety
-      controls. The same field had two populations depending on who asked.
+      while being silently redirected or skipped by those four. The same field had two
+      populations depending on who asked.
+    truthiness_consumers_at_c6:
+      at_object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+      method: >-
+        Derived by parsing the module at that object and attributing every .get() call on the
+        completion field to its enclosing definition. Named rather than counted, because a
+        count is what was wrong here: NF-16 originally said three and there were four.
+      units:
+        - closure_target
+        - CompletionObjectMutations.test_the_original_repair_field_was_never_rewritten
+        - CompletionObjectMutations.test_no_completion_declaration_moved_a_finding_to_closed
+        - CompletionObjectMutations.test_prose_without_the_typed_field_confers_nothing
+      also_present_but_not_a_declaration_test: >-
+        CompletionObjectMutations.test_exact_match_to_the_registered_review_object_passes read
+        the field with .get() and compared the result for equality. It is listed separately
+        because it selects rather than tests declaration, and it was repaired at C7 with the
+        other four.
+    withdrawn_consumer_count: >-
+      This finding said "Three other branches tested truthiness" and named closure_target and
+      two safety controls. That was wrong: the fourth,
+      test_prose_without_the_typed_field_confers_nothing, was repaired at C7 in the same
+      commit and was described in the C7 report as "a fourth site of the same class", but the
+      controlled record was never brought level with what the repair actually covered. The
+      wording is preserved rather than deleted. An understated defect population is the
+      failure this register already names -- a diagnostic count is not a defect population --
+      and here the record understated a population its own author had already enumerated
+      correctly elsewhere.
     what_the_redirection_would_have_done: >-
       For a CLOSED finding declaring an unreadable completion object, closure_target under
       the C6 form returns the repair field instead. Where the repair field names the reviewed
@@ -2216,20 +2239,68 @@ findings:
       model's internal consistency rather than as an exploitable defect, because that is what
       it is.
     independently_reproduced:
-      at_object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
       method: >-
         Behavioural, not by source inspection. Each falsy value was written into the register
         as YAML, loaded, and each consumer executed against the loaded record. Failure
-        sensitivity was then established by reinstating the C6 form of closure_target and
-        re-running only the new controls.
+        sensitivity was established by reinstating the C6 form of closure_target and
+        re-running the controls.
       falsy_values_exercised: [null, empty string, zero, false]
-      controls_red_against_the_c6_form: 9
-      controls_green_against_the_c7_form: 12
       note: >-
         The four values are not interchangeable illustrations of one case. 0 and false are the
         ones a reader would not predict, because they are the values YAML produces from input
         that looks like data rather than like absence -- the same coercion that produced the
         C6 integer-sha defect this register already records.
+    withdrawn_measurement: >-
+      This finding recorded "controls_red_against_the_c6_form: 9" and
+      "controls_green_against_the_c7_form: 12" under a single at_object of 3e397dc. Both
+      halves were wrong. The two numbers are not in the same unit -- 9 counted subtest failure
+      RECORDS emitted by the runner, where one test method reporting four values contributes
+      four, and 12 counted TEST METHODS in the class. Comparing them invites the reading that
+      three controls were unaffected, which is not what either number says. And both were bound
+      to 3e397dc, at which the controls did not exist: they were written at C7. The wording is
+      preserved and the numbers are not restated, because a bare count is what failed here.
+    discriminating_controls:
+      what_this_is: >-
+        The semantic form of the evidence the withdrawn counts were reaching for: which
+        controls actually distinguish the two implementations. Identities, not a cardinality,
+        so it does not go stale when a control is added beside them.
+      historical_red_at_the_c6_object:
+        object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+        statement: >-
+          The C6 implementation is what the C7 controls were written against. No control
+          existed at this object, so nothing was measured here and nothing is claimed here.
+      c7_control_behaviour:
+        object: 2f10b3e97e7461870700afb69db0ec6401326518
+        measured_by: >-
+          Reinstating the C6 form of closure_target in disposable state at that object and
+          running the C7 class, then restoring.
+        discriminating_test_methods:
+          - CompletionPresenceSemantics.test_no_falsy_declared_value_silently_falls_back_to_repair
+          - CompletionPresenceSemantics.test_a_falsy_declaration_on_a_closed_finding_is_reported_as_declared_not_as_absent
+          - CompletionPresenceSemantics.test_the_predicate_is_defined_once
+        unit_note: >-
+          Three test methods. The runner reported nine subtest failure records for them, which
+          is the same fact in a different unit and is stated here rather than presented as a
+          second measurement.
+      c8_control_behaviour:
+        object: >-
+          the C8A commit, which is this record's own commit and whose identity is therefore not
+          written here
+        why_no_object_is_named: >-
+          A record cannot name the object that contains it. The measurement is reproducible by
+          repeating the procedure above at whatever object carries this file, and the procedure
+          is stated so that it can be. No commit sha is predicted.
+        discriminating_test_methods:
+          - CompletionPresenceSemantics.test_no_falsy_declared_value_silently_falls_back_to_repair
+          - CompletionPresenceSemantics.test_a_falsy_declaration_on_a_closed_finding_is_reported_as_declared_not_as_absent
+          - CompletionPresenceSemantics.test_the_predicate_is_defined_once
+          - CompletionPresenceSemantics.test_no_consumer_decides_declaration_by_truthiness
+          - CompletionPresenceSemantics.test_the_safety_controls_resolve_that_same_population
+        what_changed: >-
+          Two more controls discriminate than did at C7, because C8 routed the uniformity
+          check through a population that includes TestCase methods. That is NF-20's repair
+          showing up here, and it is why the identities are recorded rather than a count: the
+          count changed for a reason that has nothing to do with this finding.
     repair: >-
       C7. Declaration is defined once, as key membership, in declares_completion, and every
       consumer resolves its population through findings_declaring_completion. closure_target
@@ -2329,3 +2400,311 @@ findings:
       have to encode a guess about which way the question is answered.
     not_repaired_here: >-
       C7 does not repair the locus vocabulary. The finding is recorded and left OPEN.
+
+  - id: NF-18
+    origin: independent review of 2f10b3e, returned NOT INDEPENDENTLY VERIFIED
+    observed_at_object: 2f10b3e97e7461870700afb69db0ec6401326518
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository. The measurements below were reproduced
+      here rather than copied from it.
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      Direct invocation of the closure-warrant module reported success while omitting the
+      whole of its completion-presence evidence
+    claim: >-
+      C7 appended CompletionPresenceSemantics below the module's `if __name__ == "__main__":
+      unittest.main()` block. unittest.main() executes at import time, so running the file as
+      a script collected only what was defined above it. The command printed OK and exited 0
+      while executing none of the twelve methods C7 was written to produce.
+    independently_reproduced:
+      at_object: 2f10b3e97e7461870700afb69db0ec6401326518
+      method: >-
+        Both routes' collected populations compared by identity, not by count. The discovery
+        route was loaded through unittest's own loader; the script route was executed and its
+        executed tests read back from its verbose output.
+      collected_by_discovery: 71
+      collected_by_direct_invocation: 59
+      direct_invocation_exit_code: 0
+      omitted_identities:
+        - CompletionPresenceSemantics.test_absent_falls_back_to_the_repair_field
+        - CompletionPresenceSemantics.test_a_declared_sha_selects_the_completion_branch
+        - CompletionPresenceSemantics.test_a_falsy_declaration_on_a_closed_finding_is_reported_as_declared_not_as_absent
+        - CompletionPresenceSemantics.test_each_falsy_literal_actually_loads_present_and_falsy
+        - CompletionPresenceSemantics.test_every_falsy_declaration_is_rejected_by_the_declaration_observer
+        - CompletionPresenceSemantics.test_exact_object_matching_is_unchanged
+        - CompletionPresenceSemantics.test_no_consumer_decides_declaration_by_truthiness
+        - CompletionPresenceSemantics.test_no_falsy_declared_value_silently_falls_back_to_repair
+        - CompletionPresenceSemantics.test_the_declared_population_includes_every_falsy_declaration
+        - CompletionPresenceSemantics.test_the_predicate_is_defined_once
+        - CompletionPresenceSemantics.test_the_record_is_unchanged_by_every_mutation_above
+        - CompletionPresenceSemantics.test_the_safety_controls_resolve_that_same_population
+      note: >-
+        The identities are recorded, not only the two cardinalities, because the cardinalities
+        go stale the moment a test is added and the identities say what was actually missing.
+    why_it_is_acceptance_blocking: >-
+      It is a false PASS on the measurement path, which is the class this register already
+      treats as blocking: MI-R-01 for an unmarked production-shaped PASS and MI-R-04 for a
+      control that passed vacuously are both acceptance_blocking. A command that reports
+      success while silently omitting the evidence it was run to check is worse than one that
+      fails, because nothing in its output indicates an omission. That the mandatory CI route
+      used discovery rather than this one limits the blast radius; it does not change what the
+      command reported.
+    repair: >-
+      C8A. The guard is the last top-level statement in the module, and a control asserts
+      structurally that it stays last. A second control compares the identities collected by
+      the two routes and requires them equal, so appending a class below the guard again fails
+      by naming exactly what went missing rather than by a count. The guard also grows a
+      collect-only branch, so the equivalence control can ask the script route what it collects
+      without executing it -- executing it would re-enter that control, which spawns the route
+      again, without bound.
+    failure_sensitivity_demonstrated: >-
+      A class appended below the guard in disposable state turned both controls RED: the
+      identity comparison reported the extra member, and the structural control reported that
+      the guard was no longer last. Restored byte-identically.
+    residual: >-
+      Open. Closure requires independent review of C8.
+
+  - id: NF-19
+    origin: independent review of 2f10b3e, returned NOT INDEPENDENTLY VERIFIED
+    observed_at_object: 2f10b3e97e7461870700afb69db0ec6401326518
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository; the matrix below was reproduced here.
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      The reviewed-object side of the exact comparison resolved identity by truthiness, so a
+      falsy sha silently became a different object
+    claim: >-
+      reviewed_sha returned obj.get("sha") or obj.get("later_committed_as"). C7 repaired
+      declaration-by-truthiness on the finding side and left the identical defect on the
+      review side of the same comparison. The two fields do not name the same thing: sha is
+      the object a review reviewed, and later_committed_as says a WORKING TREE was reviewed and
+      afterwards committed as some object. A sha present with a falsy value therefore did not
+      fall back; it substituted a distinct object identity for the one the record declared.
+    independently_reproduced:
+      at_object: 2f10b3e97e7461870700afb69db0ec6401326518
+      method: Each case constructed and passed to the committed reviewed_sha.
+      sha_present_null_with_later_committed_as: redirected to later_committed_as
+      sha_present_empty_string_with_later_committed_as: redirected to later_committed_as
+      sha_present_zero_with_later_committed_as: redirected to later_committed_as
+      sha_present_false_with_later_committed_as: redirected to later_committed_as
+      both_fields_present: resolved to sha by incidental precedence, with no stated rule
+    why_it_is_acceptance_blocking: >-
+      It could admit a closure match against an object the review did not review, which is the
+      property that makes NF-05, NF-06 and NF-11 acceptance_blocking in this register. It is
+      not currently reachable -- only REV-F2 carries later_committed_as and no finding closes
+      against it -- but unreachability here is a fact about today's records, not a property of
+      the mechanism, and the mechanism is what a closure warrant rests on.
+    repair: >-
+      C8A. Identity selection is keyed to the declared kind rather than to which field is
+      truthy: kind commit carries its identity in sha, kind working_tree in
+      later_committed_as, and a field that does not match its kind is reported. Declaration is
+      key membership. Both fields present is an explicit reported outcome rather than a
+      precedence. Every rejected case yields None, and None never equals a closure target, so
+      the repair fails closed by construction.
+    exact_matching_unchanged: >-
+      No ancestry, no abbreviated-sha equivalence, no case normalization, no prefix matching,
+      no latest-review selection, no descendant promotion, no automatic object inference. A
+      control asserts that none of those appears in the comparison path.
+    the_abbreviated_historical_identity: >-
+      REV-F2 records later_committed_as as edd6b0b, seven characters. It resolves in this
+      repository today, and that is exactly why it is NOT expanded: rewriting a historical
+      reviewer's evidence so a future comparison becomes convenient is manufacturing
+      provenance. It is left as written. What C8A adds is that the consequence is stated -- an
+      abbreviation can never equal a full closure target, and a control reports it if a
+      finding is ever pointed at that review, rather than leaving a later actor to puzzle over
+      a mismatch diagnostic. The right repair, if REV-F2 is ever needed for closure, is for a
+      reviewer to record the object they reviewed.
+    residual: >-
+      Open. Closure requires independent review of C8.
+
+  - id: NF-20
+    origin: independent review of 2f10b3e, returned NOT INDEPENDENTLY VERIFIED
+    observed_at_object: 2f10b3e97e7461870700afb69db0ec6401326518
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository; the mutation below was reproduced here.
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      The uniformity observer did not range over its complete consumer population, so the
+      defect it exists to prevent could be reintroduced with the suite green
+    claim: >-
+      C7's uniformity control scanned module-level functions and, separately, two TestCase
+      methods named literally. Both halves failed the same way. Module-level scanning excluded
+      every method in the file, and a literal pair is not a population -- it is the two the
+      author remembered. Some of the semantic consumers are test methods whose own
+      population-selection logic is part of the evidence mechanism, so they were exactly the
+      wrong things to exclude.
+    independently_reproduced:
+      at_object: 2f10b3e97e7461870700afb69db0ec6401326518
+      method: >-
+        Truthiness reintroduced into a TestCase method outside the literal pair, in disposable
+        state, and the full committed suite executed.
+      variants:
+        - unit: CompletionObjectMutations.test_prose_without_the_typed_field_confers_nothing
+          reintroduced: pure truthiness declaration filter
+          committed_suite_verdict: green
+        - unit: CompletionObjectMutations.test_exact_match_to_the_registered_review_object_passes
+          reintroduced: .get() equality selection on the same field
+          committed_suite_verdict: green
+      control_variant_that_was_caught: >-
+        Reintroducing it into one of the two literally named methods WAS caught, by the
+        literal name check. That contrast is the finding: the control discriminated exactly
+        the two cases its author had written down and nothing else.
+    why_it_is_acceptance_blocking: >-
+      A control that credits itself with a discrimination it does not perform is the MI-R-05
+      shape, which is acceptance_blocking in this register, and this one was demonstrated
+      rather than inferred -- a real reintroduction of the exact defect NF-16 records passed a
+      519-test suite.
+    repair: >-
+      C8A. The consumer population is derived from the module: every function and every
+      method, at any nesting depth, including comprehensions, nested definitions and
+      static/class methods. Each unit's source is parsed and every .get() call on a controlled
+      presence field is reported with its qualified name and line. Retrieval after presence is
+      established -- indexing the field -- is not matched, so the correct pattern is not
+      pushed back toward the wrong one. The literal pair is replaced by a derived one: the
+      safety controls are identified by what they do, namely resolving the declared-completion
+      population.
+    scope_note: >-
+      The observer covers repair_completion_object, sha and later_committed_as, so NF-19's
+      shape is in the same population rather than a second mechanism.
+    failure_sensitivity_demonstrated: >-
+      Both mutation variants above are detected by qualified name and line. Restored
+      byte-identically after each.
+    residual: >-
+      Open. Closure requires independent review of C8.
+
+  - id: NF-21
+    origin: independent review of 2f10b3e, returned NOT INDEPENDENTLY VERIFIED
+    observed_at_object: 2f10b3e97e7461870700afb69db0ec6401326518
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository; the topology below was reproduced here.
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH, EVIDENCE]
+    title: >-
+      Most of the controlled workflow's mandatory controls have no execution path, because a
+      standing-RED gate runs before them
+    claim: >-
+      The structural-gates job runs check_evidence_reconciliation as step 13 of 34. That gate
+      is legitimately and persistently nonzero -- exit 1, a substantive verdict that seven
+      declared evidence obligations remain OPEN. The workflow declares no continue-on-error,
+      no if-condition and no aggregation anywhere, so under GitHub Actions fail-fast semantics
+      the job stops there and the 21 steps after it never execute. They are declared mandatory
+      and are unreachable.
+    independently_reproduced:
+      at_object: 2f10b3e97e7461870700afb69db0ec6401326518
+      reconciler_step_position: 13
+      total_steps_in_job: 34
+      steps_after_it: 21
+      continue_on_error_present_anywhere: false
+      conditional_execution_present_anywhere: false
+      reconciler_exit_code: 1
+      reconciler_exit_semantics: >-
+        Valid measurement, substantive failure. Not the measurement-invalid code, which would
+        be 2 and would mean the instrument could not establish anything.
+      unreachable_control_classes:
+        - assurance metrics
+        - module graph
+        - enum persistence
+        - HLR root placement
+        - model persistence
+        - neutral export and Stage-B equivalence
+        - role ontology
+        - source relations
+        - safety and assurance classification
+        - clinical adapter allocations
+        - hazard trace graph
+        - risk register
+        - component view crosswalk
+        - construction records
+        - session controls currency
+        - controlled specification reconciliation
+        - approval state
+        - Gate 0 readiness
+        - V&V matrix
+        - terminal generated-source diff
+    why_it_is_acceptance_blocking:
+      determination: true
+      reasoning: >-
+        This required explicit analysis rather than inheritance from the review's wording. The
+        register's convention marks a finding blocking when a declared control cannot establish
+        what it is declared to establish. F1 is acceptance_blocking on exactly that basis -- a
+        gate declared in the reviewed commit's own CI workflow does not pass -- and this is the
+        stronger form of the same thing: twenty-one declared mandatory controls do not merely
+        fail, they never run. Every green result CI has ever reported for them since the
+        reconciler began standing RED is an absence of evidence presented by the workflow's
+        own structure as though the controls had been satisfied. It is also not self-limiting:
+        the reconciler is expected to stay RED until the evidence obligations are resolved, so
+        the unreachability persists for as long as the condition it reports does.
+      what_it_does_not_mean: >-
+        It does not mean those controls fail. They pass when run locally, and were run locally
+        at this checkpoint. It means CI establishes nothing about them.
+    repair: >-
+      C8B, deliberately a separate commit from the record and observer work in C8A. The
+      substantive RED is not hidden, neutralized or made conditional.
+    residual: >-
+      Open. Closure requires independent review of C8.
+
+  - id: NF-22
+    origin: independent review of 2f10b3e, returned NOT INDEPENDENTLY VERIFIED
+    observed_at_object: 2f10b3e97e7461870700afb69db0ec6401326518
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository; each of the three claims was reproduced
+      here against the objects named.
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE]
+    title: >-
+      NF-16's own evidence record understated its defect population, compared two
+      incommensurable counts, and bound both to an object where the controls did not exist
+    claim: >-
+      Three inaccuracies in a single record. It said "Three other branches tested truthiness"
+      when there were four -- the fourth was repaired in the same commit and described
+      correctly in that commit's report, so the record understated a population its author had
+      already enumerated. It recorded 9 red against 12 green as though comparable, where 9
+      counted subtest failure records emitted by the runner and 12 counted test methods in a
+      class. And it bound both figures to at_object 3e397dc, at which the controls did not
+      exist, having been written at 2f10b3e.
+    independently_reproduced:
+      consumer_population_at_3e397dc: >-
+        Four units read the completion field by .get() as a declaration test: closure_target
+        and three CompletionObjectMutations methods. A fifth read it by .get() for equality
+        selection. Derived by parsing the module at that object and attributing each call to
+        its enclosing definition.
+      unit_mismatch: >-
+        Re-running the same experiment at C8 gives eleven subtest failure records over five
+        distinct test methods, in a class of twelve. Neither eleven nor nine is commensurable
+        with twelve, and the fact that the numbers moved for reasons unrelated to this finding
+        is itself the argument against recording them.
+      object_scope: >-
+        CompletionPresenceSemantics was introduced at 2f10b3e. No control of that class existed
+        at 3e397dc, so no measurement of C7 control behaviour can be bound to that object.
+    why_it_is_not_acceptance_blocking:
+      determination: false
+      reasoning: >-
+        The load-bearing proposition of NF-16 -- that the defect existed, that it was not
+        exploitable, and what its repair is -- reproduces intact. No control, gate or
+        acceptance item consumes any of the three inaccurate figures. That is the same basis on
+        which NF-14 is non-blocking.
+      the_contrary_precedent_stated_deliberately: >-
+        RT-F-05, "Temporal population count implied a state that never existed", is
+        acceptance_blocking, and the object-scope half of this finding is that same shape. The
+        distinction relied on here is that RT-F-05's counts were cited in support of a
+        conclusion, and NF-16's are not cited by anything. That distinction is fine enough that
+        a reviewer could reasonably overrule it, and it is recorded rather than smoothed over
+        so that they can.
+    repair: >-
+      C8A. The consumer population is named rather than counted; the withdrawn count is
+      preserved with the reason it was wrong. The two incommensurable figures are withdrawn and
+      not restated -- what replaces them is the identities of the discriminating test methods,
+      separately for C7 behaviour at 2f10b3e and C8 behaviour, with the subtest-record figure
+      stated as the same fact in a different unit rather than as a second measurement. The C8
+      scope names no object, because a record cannot name the commit that contains it, and the
+      procedure is stated so the measurement can be repeated instead.
+    residual: >-
+      Open. Closure requires independent review of C8.
