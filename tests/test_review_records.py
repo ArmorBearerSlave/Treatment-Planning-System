@@ -42,10 +42,23 @@ observer.
 from __future__ import annotations
 
 import copy
+import sys
 import unittest
 from pathlib import Path
 
 import yaml
+
+# NF-23. This module used to carry its own reading of the review-object identity fields,
+# `obj.get("sha") or obj.get("later_committed_as")`, which is the semantics C8 withdrew from
+# the closure observer and did not withdraw from here. The two disagreed on seven of ten
+# shapes -- a falsy sha with a usable later_committed_as, a commit carrying only
+# later_committed_as, a working_tree carrying only sha -- so this control accepted identities
+# the closure rule rejects while asserting that every review identifies what it reviewed.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from controlled_field_semantics import (  # noqa: E402
+    IDENTITY_FIELD_BY_KIND,
+    reviewed_identity,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 RECORD_DIR = REPO_ROOT / "mps" / "materialization" / "mps-mat-009"
@@ -221,11 +234,14 @@ class VerdictsAreFromAnExplicitStateSpace(unittest.TestCase):
         self.assertIn("PENDING", register()["verdict_vocabulary"])
 
     def test_every_review_identifies_the_object_it_reviewed(self):
+        """NF-23. Resolved through the shared semantics, not a second reading of them."""
         for review in register()["reviews"]:
             with self.subTest(review=review["review_id"]):
                 obj = review["reviewed_object"]
-                self.assertIn(obj["kind"], {"commit", "working_tree"})
-                self.assertTrue(obj.get("sha") or obj.get("later_committed_as"))
+                self.assertIn(obj["kind"], set(IDENTITY_FIELD_BY_KIND))
+                value, problem = reviewed_identity(review)
+                self.assertIsNone(problem, problem)
+                self.assertTrue(value)
 
     def test_membership_kind_is_not_object_identity_strength(self):
         """Two dimensions, and the data exercises their independence."""

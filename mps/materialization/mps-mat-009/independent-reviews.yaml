@@ -167,6 +167,9 @@ population:
     - kind: commit_scoped
       reviewed_object: 2f10b3e97e7461870700afb69db0ec6401326518
       review: REV-C7-CUMULATIVE
+    - kind: commit_scoped
+      reviewed_object: 0db0213be250a05bf32b9466ee836a6ebf31eb19
+      review: REV-C8-CUMULATIVE
 
   membership_kind_is_not_object_identity_strength: >-
     Two independent dimensions, deliberately not conflated. REV-F2 is record_file_backed and
@@ -527,6 +530,48 @@ reviews:
         a separate independent review whose own report contains the per-finding
         determinations. C8 is not that review.
 
+
+  - review_id: REV-C8-CUMULATIVE
+    subject: >-
+      C8A identity and observer repair and C8B workflow reachability repair, reviewed as the
+      cumulative remediation checkpoint C1 through C8
+    reviewed_object:
+      kind: commit
+      sha: 0db0213be250a05bf32b9466ee836a6ebf31eb19
+    verdict: FAIL
+    verdict_note: >-
+      FAIL remains the controlled vocabulary's non-closing verdict and is used unchanged. The
+      report's wording was "C8 / CUMULATIVE REMEDIATION CHECKPOINT -- NOT INDEPENDENTLY
+      VERIFIED", recorded below as returned. No verdict was invented and closing_verdicts is
+      untouched.
+    verdict_label_as_returned: NOT INDEPENDENTLY VERIFIED
+    what_it_found_about_the_two_commits: >-
+      C8A and C8B each repaired their assigned defects correctly. The verdict is against the
+      cumulative checkpoint, not against either repair.
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: external_not_retained
+    primary_artifact_retention_note: >-
+      The report is not in this repository and is not claimed to be. No path is cited for it.
+    findings_returned:
+      - NEW-C8-01 transported as NF-23
+      - NEW-C8-02 transported as NF-24
+      - NEW-C8-03 transported as NF-25
+      - NEW-C8-04 transported as NF-26
+      - NEW-C8-05 transported as NF-27
+    warrants_closure_of_note: >-
+      Deliberately absent. A non-closing verdict warrants no closure, so no key is written and
+      no finding state moves on the strength of this review.
+    per_finding_support_determinations_unchanged: >-
+      The determinations returned at REV-C7-CUMULATIVE stand and are not revisited here:
+      NF-13 supported, and NF-01, NF-05, NF-06, NF-10, NF-11 and NF-12 INDETERMINATE for the
+      per-finding substance claimed by REV-C5-CUMULATIVE. C9 does not alter
+      verified_repairs_of, does not reinterpret the remediation-authored
+      independent_review_support prose as independent evidence, and closes none of the six.
+      Missing historical reviewer evidence is not repairable by changing metadata.
+
 methodological_observations:
 
   - id: git_clean_does_not_establish_execution_cold
@@ -713,6 +758,55 @@ methodological_observations:
       step, or reachable only through a route that collects part of it -- the location would
       stop being incidental. That is why NF-18's control compares collected identities across
       both invocation routes rather than checking that the file merely runs.
+
+
+  - id: document_build_is_publication_not_a_mandatory_control
+    raised_by: REV-C8-CUMULATIVE, as the classification question behind NF-25
+    proposition: >-
+      The controlled workflow has a second job, document-build, declared `needs:
+      structural-gates` with no condition. structural-gates now ends RED on the standing
+      evidence reconciler, so document-build does not run. The question the review raised is
+      whether that is a reachability defect.
+    determination: >-
+      It is not. document-build is publication activity and carries no mandatory control.
+    how_it_was_determined: >-
+      Derived from the repository rather than assumed. Its two commands are
+      tools/docs/compile_controlled_docs.py and tools/release/build_pdf_manifest.py, both
+      producers with no check mode: neither asserts anything about the model, the corpus or
+      the record, and neither can fail in the way a control fails. Both appear in
+      spec/readiness.yaml only as EVIDENCE CITATIONS for remediation items -- the tool's
+      existence is what is cited, not its execution in CI. check_gate_readiness and
+      check_approval_state neither invoke them nor read output/pdf. CLAUDE.md does not list
+      them among its verification commands. The job's product is an uploaded review artifact
+      which spec/readiness.yaml itself residualises as not a governed or clinically authorized
+      release.
+    consequence_adopted: >-
+      The workflow topology is unchanged, and no job-level condition is added. What is repaired
+      instead is the observer's wording, which claimed "every mandatory control in the
+      controlled workflow" while enforcing a property of one job. The claim is narrowed to the
+      population it actually enforces.
+    what_would_change_the_assessment: >-
+      A control moving into document-build, or a gate coming to depend on output/pdf. The
+      observer therefore fails if a job outside its declared scope acquires a command that
+      looks like a control, rather than silently continuing to describe one job.
+
+  - id: replacing_a_count_with_an_identity_does_not_by_itself_make_evidence_exact
+    raised_by: REV-C8-CUMULATIVE, generalising NF-26
+    proposition: >-
+      C8 corrected NF-16 by replacing two incommensurable counts with named test identities.
+      That was the right correction and it was still wrong, because the names were measured
+      against a mutation the record described differently -- "the C6 form", which has two
+      spellings that produce two different discriminator sets.
+    the_thing_worth_stating: >-
+      An identity is only more exact than a cardinality if the thing it identifies is itself
+      pinned. Naming the discriminating controls made the evidence look precise while leaving
+      the mutation, and therefore the answer, undetermined. Where a measurement depends on an
+      intervention, the intervention needs an identity too, and it needs to be the one that was
+      actually applied.
+    consequence_adopted: >-
+      NF-16 now records the mutation verbatim, including the spelling, states why the spelling
+      is load-bearing, and binds each discriminator set to the object at which those controls
+      exist.
 
 obligation_effect:
   mps_mat_009_hash_0:

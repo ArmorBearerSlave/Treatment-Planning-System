@@ -2269,38 +2269,74 @@ findings:
         statement: >-
           The C6 implementation is what the C7 controls were written against. No control
           existed at this object, so nothing was measured here and nothing is claimed here.
+      mutation_identity:
+        what_is_reinstated: >-
+          The body of closure_target is replaced by the C6 form as it stood verbatim at
+          3e397dc line 82, spelled with the literal field name -- a return of
+          finding.get("repair_completion_object") or finding.get("repair").
+        why_the_spelling_is_part_of_the_mutation_identity: >-
+          NF-26. It is not incidental. A variant spelling the same defect through the
+          COMPLETION_FIELD constant produces a DIFFERENT discriminator set, because one control
+          asserts on the literal text of that constant access and therefore responds to the
+          constant form and not to the literal one. A mutation named only as "the C6 form" does
+          not determine its own answer, and the earlier version of this block described one
+          spelling while having measured the other.
       c7_control_behaviour:
         object: 2f10b3e97e7461870700afb69db0ec6401326518
+        control_population: >-
+          CompletionPresenceSemantics as it exists at that object: twelve test methods.
         measured_by: >-
-          Reinstating the C6 form of closure_target in disposable state at that object and
-          running the C7 class, then restoring.
+          The mutation above applied in a detached worktree at that object, the class executed,
+          and the worktree removed. Measured where those controls exist, not at an earlier
+          object.
         discriminating_test_methods:
           - CompletionPresenceSemantics.test_no_falsy_declared_value_silently_falls_back_to_repair
           - CompletionPresenceSemantics.test_a_falsy_declaration_on_a_closed_finding_is_reported_as_declared_not_as_absent
-          - CompletionPresenceSemantics.test_the_predicate_is_defined_once
-        unit_note: >-
-          Three test methods. The runner reported nine subtest failure records for them, which
-          is the same fact in a different unit and is stated here rather than presented as a
-          second measurement.
+          - CompletionPresenceSemantics.test_no_consumer_decides_declaration_by_truthiness
       c8_control_behaviour:
-        object: >-
-          the C8A commit, which is this record's own commit and whose identity is therefore not
-          written here
-        why_no_object_is_named: >-
-          A record cannot name the object that contains it. The measurement is reproducible by
-          repeating the procedure above at whatever object carries this file, and the procedure
-          is stated so that it can be. No commit sha is predicted.
+        object: 0db0213be250a05bf32b9466ee836a6ebf31eb19
+        control_population: >-
+          The same class at that object, twelve test methods.
+        measured_by: The same mutation, in a detached worktree at that object.
         discriminating_test_methods:
           - CompletionPresenceSemantics.test_no_falsy_declared_value_silently_falls_back_to_repair
           - CompletionPresenceSemantics.test_a_falsy_declaration_on_a_closed_finding_is_reported_as_declared_not_as_absent
-          - CompletionPresenceSemantics.test_the_predicate_is_defined_once
           - CompletionPresenceSemantics.test_no_consumer_decides_declaration_by_truthiness
           - CompletionPresenceSemantics.test_the_safety_controls_resolve_that_same_population
-        what_changed: >-
-          Two more controls discriminate than did at C7, because C8 routed the uniformity
-          check through a population that includes TestCase methods. That is NF-20's repair
-          showing up here, and it is why the identities are recorded rather than a count: the
-          count changed for a reason that has nothing to do with this finding.
+        what_changed_from_c7: >-
+          One more control discriminates, because C8 routed the uniformity check through a
+          population that includes TestCase methods. That is NF-20's repair showing up here,
+          and it is why identities are recorded rather than a count: the set changed for a
+          reason that has nothing to do with this finding.
+      c9_control_behaviour:
+        object: >-
+          not named. This block is written in the commit it would describe, and a record cannot
+          name the object that contains it.
+        how_to_obtain_it: >-
+          Apply the mutation identified above in a detached worktree at whatever object carries
+          this file and run CompletionPresenceSemantics. The procedure is stated so the
+          measurement can be taken rather than transcribed, and no commit sha is predicted.
+      withdrawn_discriminator_claim: >-
+        NF-26. Both the C7 and C8 blocks above previously named
+        CompletionPresenceSemantics.test_the_predicate_is_defined_once as a discriminating
+        control. It is not one, and the association is withdrawn. Under the mutation this
+        record describes -- the verbatim C6 form, literal spelling -- that control PASSES,
+        confirmed at 2f10b3e and again at 0db0213. It responds only to a variant spelling the
+        defect through the COMPLETION_FIELD constant, which is not the C6 form and is not what
+        the record said was applied. The same lists also omitted
+        test_no_consumer_decides_declaration_by_truthiness, which does discriminate at both
+        objects. The earlier statement was therefore wrong in both directions at once: it named
+        a control that does not discriminate and omitted one that does.
+      how_the_error_arose: >-
+        Recorded because it is the more useful half. C8 replaced a bare count with named
+        identities, which was the right correction, and then took the names from a measurement
+        of a mutation the record described differently. Replacing a cardinality with an
+        identity does not make evidence exact by itself. The identity has to be measured
+        against the mutation the record actually names, at the object where the controls exist.
+      withdrawn_unit_note: >-
+        The C7 block also carried a note that the runner reported nine subtest failure records
+        for three methods. It is withdrawn with the rest: the figure was taken under the other
+        spelling, and it described a set of methods that was itself wrong.
     repair: >-
       C7. Declaration is defined once, as key membership, in declares_completion, and every
       consumer resolves its population through findings_declaring_completion. closure_target
@@ -2738,3 +2774,304 @@ findings:
       procedure is stated so the measurement can be repeated instead.
     residual: >-
       Open. Closure requires independent review of C8.
+
+  - id: NF-23
+    origin: independent review of 0db0213, returned NOT INDEPENDENTLY VERIFIED
+    observed_at_object: 0db0213be250a05bf32b9466ee836a6ebf31eb19
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository. The matrix below was reproduced here.
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      A second live implementation of the withdrawn review-identity semantics survived in the
+      review-record observer
+    claim: >-
+      C8 repaired review-object identity inside the closure observer and left
+      tests/test_review_records.py still reading the same controlled representation as
+      obj.get("sha") or obj.get("later_committed_as"). One controlled representation therefore
+      had two interpretations, and the surviving one was the semantics C8 had just withdrawn.
+      The control carrying it asserts that every review identifies the object it reviewed, so
+      it was accepting identity shapes the closure rule rejects while claiming to establish
+      that the identities are sound.
+    independently_reproduced:
+      at_object: 0db0213be250a05bf32b9466ee836a6ebf31eb19
+      method: >-
+        Ten review-object shapes passed to both implementations and their verdicts compared
+        pairwise. Not a source comparison: the two were executed against the same inputs.
+      disagreements: 7 of 10
+      disagreeing_shapes:
+        - kind commit with sha null and a usable later_committed_as
+        - kind commit with sha empty string and a usable later_committed_as
+        - kind commit with sha 0 and a usable later_committed_as
+        - kind commit with sha false and a usable later_committed_as
+        - kind commit carrying only later_committed_as
+        - kind working_tree carrying only sha
+        - kind commit carrying both identity fields
+      note: >-
+        In every disagreement the surviving implementation was the more permissive one, which
+        is the direction that matters: the control could not have reported an identity the
+        closure rule would have accepted, only accepted ones it would not.
+    why_it_is_acceptance_blocking:
+      determination: true
+      reasoning: >-
+        It is the NF-19 defect still occupied, in a control whose stated purpose is to
+        establish that reviews identify what they reviewed. The register marks a finding
+        blocking when a declared control cannot establish what it is declared to establish, and
+        this one asserts identity soundness under a reading the repository has withdrawn. That
+        C8 repaired the closure side does not reduce it: it means the repository held two
+        answers to one question, and the one a reader would reach through the review-record
+        observer was the wrong one.
+    repair: >-
+      C9A. The semantics move to tests/controlled_field_semantics.py and both consumers import
+      them; there is no second implementation to disagree with. Selection is keyed to the
+      declared kind through a single controlled mapping -- commit carries sha, working_tree
+      carries later_committed_as -- declaration is key membership, both-present is reported
+      rather than resolved by precedence, an unknown kind is reported rather than guessed, and
+      every rejected case yields None, which never equals a closure target.
+    the_population_is_derived: >-
+      The uniformity observer now ranges over every controlled module that names a controlled
+      field, discovered by parsing tools/ and tests/, rather than over the two modules that
+      happened to be known. A third consumer is in the population the moment it names a field.
+      That is what makes this repair different from repairing the one expression the review
+      found.
+    failure_sensitivity_demonstrated: >-
+      Reinstating the withdrawn expression in tests/test_review_records.py is reported by
+      qualified name and line; so is reintroducing it in a test method or at module scope in
+      the closure module. Each restored byte-identically.
+    residual: >-
+      Open. Closure requires independent review of C9.
+
+  - id: NF-24
+    origin: independent review of 0db0213, returned NOT INDEPENDENTLY VERIFIED
+    observed_at_object: 0db0213be250a05bf32b9466ee836a6ebf31eb19
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository. The bypass below was reproduced here.
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      The reachability observer read execution preservation as key presence, so declaring a
+      key that preserves nothing defeated it
+    claim: >-
+      C8B's observer treated the presence of continue-on-error or if on a step as proof that
+      the step still executes after an earlier failure. Neither key means that. `if: success()`
+      is the default condition and does not run after an earlier failure; `continue-on-error:
+      false` is the default value and preserves nothing. The observer asked whether a key was
+      written, and the platform question is whether the step will still execute.
+    independently_reproduced:
+      at_object: 0db0213be250a05bf32b9466ee836a6ebf31eb19
+      method: >-
+        The historical topology was restored in disposable state -- reconciler at step 13 of
+        34 with 21 mandatory controls behind it -- and the observer run over it.
+      control_without_any_bypass: >-
+        21 of 21 downstream controls correctly reported unreachable.
+      with_if_success_on_19_of_21: >-
+        Only 2 reported. The 19 carrying the key dropped out of the stranded population.
+      with_if_success_on_all_21: >-
+        No reachability problem reported at all. The historical defect was fully present and
+        the observer was silent.
+      with_continue_on_error_false_on_all_21: >-
+        No reachability problem reported at all.
+      restoration: >-
+        The workflow was restored and confirmed byte-identical by an empty git diff.
+    why_it_is_acceptance_blocking:
+      determination: true
+      reasoning: >-
+        The observer exists because 21 declared mandatory controls had silently not run. A
+        bypass consisting of writing the platform's own DEFAULT values is not an exotic
+        mutation -- `if: success()` and `continue-on-error: false` are what those settings
+        already mean when absent, so a maintainer could reintroduce the defect while believing
+        they had made the workflow more explicit. This is the MI-R-05 shape, a guard that
+        misses the defect shape it was written for, and it is blocking for the same reason.
+    repair: >-
+      C9B. Execution preservation becomes value-semantic over a conservative recognised subset,
+      with anything outside that subset returning an explicit unresolved measurement rather
+      than a pass.
+    residual: >-
+      Open. Closure requires independent review of C9.
+
+  - id: NF-25
+    origin: independent review of 0db0213, raised as a classification question
+    observed_at_object: 0db0213be250a05bf32b9466ee836a6ebf31eb19
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository. The topology and the classification
+      evidence below were derived here from the repository.
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE]
+    title: >-
+      The reachability observer's claim was job-wide in wording and single-job in enforcement
+    claim: >-
+      The observer's controlled claim was "every mandatory control in the controlled workflow".
+      It evaluates one job, structural-gates. The workflow also declares document-build with
+      `needs: structural-gates` and no condition, so that job does not run while
+      structural-gates ends RED -- which it does by design.
+    the_classification_question_and_its_answer:
+      question: >-
+        Whether document-build's non-execution is a reachability defect, which depends on
+        whether it carries mandatory controls. The review deliberately left this open.
+      determination: >-
+        It is not a topology defect. document-build carries no mandatory control, so its
+        non-execution establishes nothing that was supposed to be established.
+      evidence:
+        - >-
+          Its two commands are producers with no check mode -- tools/docs/compile_controlled_docs.py
+          and tools/release/build_pdf_manifest.py. Neither asserts anything about the model,
+          the corpus or the record.
+        - >-
+          Both appear in spec/readiness.yaml only as evidence citations for remediation items
+          RRR-002 and RRR-009. What is cited is that the tool exists, not that CI ran it.
+        - >-
+          check_gate_readiness and check_approval_state neither invoke them nor read output/pdf.
+        - >-
+          CLAUDE.md does not list either among its verification commands.
+        - >-
+          The job's product is an uploaded review artifact that spec/readiness.yaml itself
+          residualises as not a governed or clinically authorized release.
+      what_is_therefore_repaired: >-
+        The wording, not the workflow. An overbroad claim is a defect in the record even when
+        the mechanism under it is correct, because a reader relies on the claim and not on the
+        implementation.
+    why_it_is_not_acceptance_blocking:
+      determination: false
+      reasoning: >-
+        Nothing was established falsely about any control. Every mandatory control is in
+        structural-gates and every one of them is within the observer's enforced scope. The
+        defect is that the claim promised more scope than it enforced, and no gate, control or
+        acceptance item consumes that claim. This follows NF-22's basis rather than F1's: no
+        declared control failed to establish what it is declared to establish.
+      why_it_is_recorded_at_all: >-
+        Because the reasoning above is exactly the reasoning that would be offered for leaving
+        it unrecorded, and the register's convention is that an overbroad controlled statement
+        is recorded and narrowed rather than tacitly reinterpreted.
+    repair: >-
+      C9B narrows the claim to the population the observer enforces, and adds a control that
+      fails if a job outside that scope acquires something control-shaped -- so the narrowing
+      cannot quietly become wrong later.
+    workflow_topology_deliberately_unchanged: >-
+      No job-level condition is added and document-build is not made to run after a failing
+      structural-gates. Making it run would mean deciding that documents should be published
+      from a checkpoint whose assurance obligations are unmet, which is a governance question
+      and not an implementer's.
+    residual: >-
+      Open. Closure requires independent review of C9.
+
+  - id: NF-26
+    origin: independent review of 0db0213, returned NOT INDEPENDENTLY VERIFIED
+    observed_at_object: 0db0213be250a05bf32b9466ee836a6ebf31eb19
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository. The measurement below was reproduced here
+      at both objects.
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE]
+    title: >-
+      The corrective evidence added at C8 named a control that does not discriminate and
+      omitted one that does
+    claim: >-
+      NF-16's corrected record named
+      CompletionPresenceSemantics.test_the_predicate_is_defined_once among the controls that
+      discriminate the C6 implementation from the C7 one. Under the mutation the record
+      describes it passes. The actual discriminator it omitted is
+      test_no_consumer_decides_declaration_by_truthiness. The record was wrong in both
+      directions at once.
+    independently_reproduced:
+      method: >-
+        The mutation the record names -- the verbatim C6 body of closure_target, spelled with
+        the literal field name as at 3e397dc line 82 -- applied in a detached worktree at each
+        object and CompletionPresenceSemantics executed.
+      at_2f10b3e:
+        discriminates: 3
+        predicate_is_defined_once: passes, so it is not a discriminator
+        no_consumer_decides_declaration_by_truthiness: fails, so it is one
+      at_0db0213:
+        discriminates: 4
+        predicate_is_defined_once: passes
+      the_root_cause: >-
+        The spelling. test_the_predicate_is_defined_once asserts on the literal text of a
+        constant access, so it responds to a variant spelling the same defect through the
+        COMPLETION_FIELD constant and not to the C6 form. C8 described one spelling and
+        measured the other, and both spellings are truthfully describable as "the C6 form",
+        which is why that phrase was not a sufficient identification.
+    why_it_is_not_acceptance_blocking:
+      determination: false
+      reasoning: >-
+        No mechanism consumes the named identities. NF-16's load-bearing content -- that the
+        defect existed, why it was not exploitable, and what its repair is -- reproduces
+        intact, and the repair itself is unaffected. This follows NF-22, which was
+        non-blocking on the same basis, and NF-22 is the finding this one is about.
+      the_uncomfortable_part_stated_plainly: >-
+        NF-22 exists because NF-16's evidence was wrong. NF-26 exists because NF-22's repair of
+        it was also wrong. Two successive corrections of the same record each introduced a new
+        inaccuracy, and both were caught by review rather than by any control. That pattern is
+        worth a reviewer's attention more than either individual error is.
+    repair: >-
+      C9A. NF-16 now records the mutation verbatim including its spelling, states why the
+      spelling is load-bearing, binds each discriminator set to the object at which those
+      controls exist, and withdraws both the false association and the subtest-record note
+      taken under the other spelling.
+    residual: >-
+      Open. Closure requires independent review of C9.
+
+  - id: NF-27
+    origin: independent review of 0db0213, returned NOT INDEPENDENTLY VERIFIED
+    observed_at_object: 0db0213be250a05bf32b9466ee836a6ebf31eb19
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository. Both the gap and its unoccupancy were
+      reproduced here.
+    acceptance_blocking: false
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      Executable statements at module scope were outside the uniformity observer's population
+    claim: >-
+      C8's uniformity observer derived its units by walking the module for functions and class
+      methods. A statement at module scope belongs to neither, so it was outside the population
+      -- and module-scope statements execute on import, which makes them consumers in exactly
+      the sense the observer's claim covers.
+    independently_reproduced:
+      at_object: 0db0213be250a05bf32b9466ee836a6ebf31eb19
+      method: >-
+        Module-scope truthiness consumers of both a controlled identity field and the
+        completion field injected into the closure module in disposable state.
+      observer_verdict: no problems reported
+      full_suite_verdict: 95 tests, all passing
+      restoration: byte-identical, confirmed by empty git diff
+    occupancy_distinguished_from_the_gap:
+      currently_occupied: false
+      how_established: >-
+        Every .get() on a controlled field in the module attributed to its enclosing scope by
+        parsing the whole file. Module-scope sites at 0db0213: zero. The observer's blind spot
+        was real and nothing was sitting in it.
+      why_it_is_recorded_anyway: >-
+        An observer whose population is narrower than its claim is unsound independently of
+        whether anything currently occupies the difference. Unoccupied today is a fact about
+        the tree, not a property of the control, and the register's own history is that the
+        gap gets occupied by whoever next writes code without knowing the gap exists.
+    why_it_is_not_acceptance_blocking:
+      determination: false
+      reasoning: >-
+        Prospective rather than occupied: no module-scope violation existed at the reviewed
+        object, so no control reported a result it could not support. NF-19 was blocking
+        because its mechanism could admit a wrong closure; this one could only fail to notice
+        a defect that is not present.
+      contrast_with_nf_20: >-
+        NF-20 was blocking because its gap WAS occupied -- a real reintroduction passed a
+        519-test suite. That is the distinction being drawn, and it is the only thing
+        separating the two findings.
+    repair: >-
+      C9A. The observer reads the module's parse tree rather than walking its functions, so
+      module scope, functions, methods, comprehensions and nested definitions are all in the
+      population by construction. Sites are attributed to the innermost enclosing definition,
+      or to module scope, and reported with that name.
+    negative_controls_retained: >-
+      Indexing after presence is established, .get() on unrelated fields, and string literals
+      naming the forbidden syntax are all still unflagged. That is why the check is an AST walk
+      rather than a text search: a text search flags its own negative controls, which this
+      register has already recorded happening twice.
+    failure_sensitivity_demonstrated: >-
+      A module-scope truthiness consumer is reported by line and scope, and the committed suite
+      turns RED. Restored byte-identically.
+    residual: >-
+      Open. Closure requires independent review of C9.

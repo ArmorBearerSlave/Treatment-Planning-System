@@ -35,6 +35,30 @@ from pathlib import Path
 
 import yaml
 
+# NF-23. One controlled representation, one interpretation. These are imported rather than
+# restated: C8 repaired identity semantics here and left a second live implementation in
+# tests/test_review_records.py, and two implementations of one rule agree until they do not.
+#
+# The directory is put on the path explicitly so the import resolves identically under script
+# execution, `-m unittest`, and discovery. NF-18 is the reason that matters: two invocation
+# routes that resolve a module differently is how a route ends up executing something other
+# than what the other one checked.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from controlled_field_semantics import (  # noqa: E402
+    COMPLETION_FIELD,
+    CONTROLLED_PRESENCE_FIELDS,
+    FULL_OBJECT,
+    IDENTITY_FIELDS,
+    IDENTITY_FIELD_BY_KIND,
+    identity_consumer_modules,
+    identity_declaration_problems,
+    reviewed_identity,
+    reviewed_sha,
+    truthiness_declaration_sites,
+    uniformity_problems,
+    usable_object,
+)
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 RECORD_DIR = REPO_ROOT / "mps" / "materialization" / "mps-mat-009"
 REVIEWS = RECORD_DIR / "independent-reviews.yaml"
@@ -68,9 +92,6 @@ def git(*args: str) -> tuple[int, str]:
     return result.returncode, result.stdout.strip()
 
 
-COMPLETION_FIELD = "repair_completion_object"
-
-
 def declares_completion(finding: dict) -> bool:
     """C7/NF-16. Whether a completion object is DECLARED. The one definition, used everywhere.
 
@@ -94,11 +115,6 @@ def declares_completion(finding: dict) -> bool:
 def findings_declaring_completion(findings_body: dict) -> list[dict]:
     """The declared-completion population. Every C6 semantic branch resolves it through here."""
     return [f for f in findings_body["findings"] if declares_completion(f)]
-
-
-def usable_object(value) -> bool:
-    """A value that could name a git object. Not that it does -- that needs the repository."""
-    return isinstance(value, str) and bool(value.strip())
 
 
 def closure_target(finding: dict):
@@ -199,85 +215,6 @@ def completion_declaration_problems(findings_body: dict, register_body: dict) ->
             problems.append(f"{fid}: the completion review misrepresents its reviewer "
                             f"authority")
     return problems
-
-
-IDENTITY_FIELDS = ("sha", "later_committed_as")
-
-
-def reviewed_identity(review: dict) -> tuple:
-    """The object a review reviewed, and whether that identity is declared and usable.
-
-    Returns (value, problem). A problem is a string; None means the identity is usable as an
-    exact closure identity.
-
-    NF-19. This is the other side of the comparison NF-16 repaired, and it had the same
-    defect. It read `obj.get("sha") or obj.get("later_committed_as")`, so a `sha` present with
-    a falsy value silently resolved to `later_committed_as` -- and those two fields do not name
-    the same thing. `sha` is the object the review reviewed. `later_committed_as` says the
-    review reviewed a WORKING TREE that was afterwards committed as some object, which is a
-    different proposition about a different thing. Redirecting from one to the other is not a
-    fallback; it substitutes a distinct object identity for the one the record declared.
-
-    So selection is keyed to the declared `kind` rather than to which field happens to be
-    truthy, and declaration is key membership, as everywhere else since C7:
-
-        kind: commit        -> sha is the identity; later_committed_as does not belong
-        kind: working_tree  -> later_committed_as is the identity; there is no reviewed commit
-
-    Both present is an explicit outcome, not an incidental precedence: it is ambiguous and is
-    reported. A present-but-unusable identity stays an invalid declaration and never causes
-    substitution of another object.
-    """
-    obj = review.get("reviewed_object")
-    rid = review.get("review_id", "<unnamed review>")
-    if isinstance(obj, str):
-        return obj, None if usable_object(obj) else f"{rid}: reviewed_object is not usable"
-    if not isinstance(obj, dict):
-        return None, f"{rid}: declares no reviewed_object"
-
-    declared = [f for f in IDENTITY_FIELDS if f in obj]
-    if not declared:
-        return None, f"{rid}: reviewed_object declares neither {' nor '.join(IDENTITY_FIELDS)}"
-    if len(declared) > 1:
-        return None, (f"{rid}: reviewed_object declares both {' and '.join(declared)}; they "
-                      f"name different things and the ambiguity is surfaced, not resolved by "
-                      f"precedence")
-
-    field = declared[0]
-    kind = obj.get("kind")
-    expected = {"commit": "sha", "working_tree": "later_committed_as"}.get(kind)
-    if expected is not None and field != expected:
-        return None, (f"{rid}: kind {kind!r} carries its identity in {expected!r}, but the "
-                      f"record declares {field!r}")
-
-    value = obj[field]
-    if not usable_object(value):
-        return None, (f"{rid}: {field} is declared but cannot name an object ({value!r}); a "
-                      f"declared identity is never replaced by the other field")
-    return value, None
-
-
-def reviewed_sha(review: dict):
-    """The reviewed identity, or None when it is absent, ambiguous or unusable.
-
-    Fails closed by construction: every rejected case yields None, and None never equals a
-    closure target, so no rejected identity can produce a match.
-    """
-    value, problem = reviewed_identity(review)
-    return None if problem else value
-
-
-def identity_declaration_problems(register_body: dict) -> list[str]:
-    """Every review's object identity is declared exactly once, and is usable or reported."""
-    problems = []
-    for review in register_body.get("reviews") or []:
-        _, problem = reviewed_identity(review)
-        if problem:
-            problems.append(problem)
-    return problems
-
-
-FULL_OBJECT = __import__("re").compile(r"^[0-9a-f]{40}$")
 
 
 def exact_closure_identity_problems(findings_body: dict, register_body: dict) -> list[str]:
@@ -1228,9 +1165,13 @@ class CompletionPresenceSemantics(unittest.TestCase):
         # NF-20. The two names used to be written here literally, which is not a population --
         # it is the two the author remembered. The safety controls are now identified by what
         # they do: any method whose source resolves the declared-completion population.
-        safety = {name: fn for name, fn in consumer_population(sys.modules[__name__]).items()
-                  if "findings_declaring_completion" in inspect.getsource(fn)
-                  and name.startswith("CompletionObjectMutations.")}
+        safety = set()
+        for cls_name, member in vars(sys.modules[__name__]).items():
+            if not inspect.isclass(member) or member.__module__ != __name__:
+                continue
+            for attr, fn in vars(member).items():
+                if inspect.isfunction(fn) and                         "findings_declaring_completion" in inspect.getsource(fn):
+                    safety.add(f"{cls_name}.{attr}")
         self.assertTrue(safety, "the derived safety-control population must not be empty")
         for name in ("CompletionObjectMutations.test_the_original_repair_field_was_never_rewritten",
                      "CompletionObjectMutations.test_no_completion_declaration_moved_a_finding_to_closed"):
@@ -1326,100 +1267,6 @@ class CompletionPresenceSemantics(unittest.TestCase):
 # --------------------------------------------------------------------------------------
 # NF-20: the uniformity observer, over the COMPLETE consumer population
 # --------------------------------------------------------------------------------------
-
-CONTROLLED_PRESENCE_FIELDS = ("repair_completion_object", "sha", "later_committed_as")
-
-
-def _controlled_field_name(node) -> str | None:
-    """The controlled field a node names, whether spelled literally or via a constant."""
-    import ast
-
-    if isinstance(node, ast.Constant) and isinstance(node.value, str):
-        return node.value if node.value in CONTROLLED_PRESENCE_FIELDS else None
-    if isinstance(node, ast.Name) and node.id in ("COMPLETION_FIELD",):
-        return "repair_completion_object"
-    return None
-
-
-def truthiness_declaration_sites(source: str, unit: str) -> list[str]:
-    """Every `.get(<controlled field>)` in `source`, which is a declaration test by truthiness.
-
-    NF-20. The C7 observer scanned module-level functions and named two TestCase methods
-    literally. Both halves were wrong in the same way. Module-level scanning silently excluded
-    every method, and a literal pair is not a population -- it is the two the author happened
-    to remember, and it goes stale the moment a third consumer is written. An independent
-    review reintroduced truthiness into a method outside that pair and the full 519-test suite
-    stayed green.
-
-    So the population is derived from the parse tree: every function and every method, at any
-    nesting depth, including comprehensions and nested definitions. A name list would have the
-    same defect one level up.
-
-    What is reported is `.get(field)` on a controlled presence field. That call is the defect
-    whether its result is branched on, filtered on, or compared -- `if f.get(x)` and
-    `[f for f in xs if f.get(x)]` and `f.get(x) == v` all read a field that may not be there
-    and answer with a value that cannot be distinguished from a declared falsy one. Retrieval
-    AFTER presence is established is `finding[field]`, which is not matched here, so the
-    legitimate access pattern is untouched.
-    """
-    import ast
-
-    found = []
-    for node in ast.walk(ast.parse(source)):
-        if not isinstance(node, ast.Call):
-            continue
-        func = node.func
-        if not (isinstance(func, ast.Attribute) and func.attr == "get"):
-            continue
-        if not node.args:
-            continue
-        field = _controlled_field_name(node.args[0])
-        if field is None:
-            continue
-        found.append(f"{unit}:{node.lineno}: .get({field!r}) tests declaration by truthiness; "
-                     f"use key membership, then index")
-    return found
-
-
-def consumer_population(module) -> dict:
-    """Every function and method defined in `module`, by qualified name.
-
-    Derived, never enumerated. Module functions, TestCase methods, nested definitions and
-    static/class methods all land here, so adding a consumer cannot add an unobserved one.
-    """
-    import inspect
-
-    units = {}
-
-    def take(obj, prefix=""):
-        for name, member in vars(obj).items():
-            target = member
-            if isinstance(target, (staticmethod, classmethod)):
-                target = target.__func__
-            if inspect.isfunction(target) and target.__module__ == module.__name__:
-                units[f"{prefix}{name}"] = target
-            elif inspect.isclass(member) and member.__module__ == module.__name__:
-                take(member, prefix=f"{member.__name__}.")
-
-    take(module)
-    return units
-
-
-def uniformity_problems(module) -> list[str]:
-    """The controlled presence fields are read by key membership everywhere in `module`."""
-    import inspect
-    import textwrap
-
-    problems = []
-    for qualname, fn in sorted(consumer_population(module).items()):
-        try:
-            source = textwrap.dedent(inspect.getsource(fn))
-        except OSError:                                    # pragma: no cover - source present
-            problems.append(f"{qualname}: source unavailable, so it cannot be observed")
-            continue
-        problems.extend(truthiness_declaration_sites(source, qualname))
-    return problems
-
 
 
 class InvocationRouteEquivalence(unittest.TestCase):
@@ -1621,20 +1468,44 @@ class ConsumerPopulationUniformity(unittest.TestCase):
     def test_the_committed_module_is_uniform(self):
         self.assertEqual([], uniformity_problems(sys.modules[__name__]))
 
-    def test_the_population_includes_testcase_methods(self):
-        population = consumer_population(sys.modules[__name__])
-        self.assertIn("closure_target", population, "module functions")
-        self.assertIn("CompletionObjectMutations.test_prose_without_the_typed_field_confers_nothing",
-                      population, "TestCase methods -- the half C7 could not see")
-        self.assertIn("ConsumerPopulationUniformity.test_the_population_includes_testcase_methods",
-                      population, "including this one, so the observer observes itself")
+    def test_the_population_covers_module_scope_functions_and_methods(self):
+        """NF-27. The three scopes a consumer can occupy, checked as three rather than one."""
+        probe = "\n".join([
+            'X = {}',
+            'A = X.get("sha") or X.get("later_committed_as")',
+            'def f():',
+            '    return X.get("repair_completion_object")',
+            'class C:',
+            '    def m(self):',
+            '        return [y for y in [] if y.get("repair_completion_object")]',
+        ]) + "\n"
+        sites = truthiness_declaration_sites(probe, "probe")
+        owners = {s.split("(", 1)[1].split(")")[0] for s in sites}
+        self.assertEqual(4, len(sites), sites)
+        self.assertIn("<module scope>", owners, "module-scope statements are consumers too")
+        self.assertIn("f", owners, "module functions")
+        self.assertIn("C.m", owners, "methods, including inside a comprehension")
 
     def test_the_population_is_not_a_hard_coded_name_list(self):
         import inspect
 
-        source = inspect.getsource(consumer_population) + inspect.getsource(uniformity_problems)
+        source = (inspect.getsource(truthiness_declaration_sites)
+                  + inspect.getsource(uniformity_problems)
+                  + inspect.getsource(identity_consumer_modules))
         self.assertNotIn("test_no_completion_declaration_moved_a_finding_to_closed", source)
         self.assertNotIn("test_the_original_repair_field_was_never_rewritten", source)
+        self.assertNotIn("test_review_records", source,
+                         "the consumer-module population is derived, not a two-file list")
+
+    def test_the_whole_repository_consumer_population_is_uniform(self):
+        """NF-23. Every module that names a controlled field, not only this one."""
+        self.assertEqual([], uniformity_problems())
+
+    def test_the_derived_consumer_population_contains_both_known_consumers(self):
+        names = {p.name for p in identity_consumer_modules()}
+        self.assertIn("test_closure_warrant.py", names)
+        self.assertIn("test_review_records.py", names,
+                      "the module whose second implementation NF-23 records")
 
     def test_truthiness_in_a_testcase_method_is_detected(self):
         """The mutation the independent review showed survived C7's full suite."""
@@ -1689,7 +1560,7 @@ class ConsumerPopulationUniformity(unittest.TestCase):
 # success while silently omitting the evidence it was run to check is worse than one that
 # fails, because nothing about its output says anything is missing.
 #
-# test_direct_invocation_and_discovery_collect_the_same_population is the control. It compares
+# test_both_routes_collect_the_same_population is the control. It compares
 # collected identities, not a count, so appending a class below this line without moving the
 # guard fails by naming exactly what went missing.
 if __name__ == "__main__":
