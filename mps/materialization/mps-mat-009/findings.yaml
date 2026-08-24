@@ -2885,9 +2885,39 @@ findings:
         they had made the workflow more explicit. This is the MI-R-05 shape, a guard that
         misses the defect shape it was written for, and it is blocking for the same reason.
     repair: >-
-      C9B. Execution preservation becomes value-semantic over a conservative recognised subset,
-      with anything outside that subset returning an explicit unresolved measurement rather
-      than a pass.
+      C9B. Execution preservation is answered by VALUE, over a conservative recognised subset,
+      and the two keys are no longer conflated. `if` governs whether a step runs at all;
+      `continue-on-error` governs whether a step's own failure stops the job. They are asked of
+      different steps: a later control survives either because it declares that it runs
+      regardless, or because the blocking step's failure is tolerated.
+    recognised_semantics:
+      runs_after_an_earlier_failure: [always(), failure(), '!cancelled()']
+      does_not_run_after_an_earlier_failure: [success(), cancelled(), 'no if key at all']
+      failure_tolerated: ['continue-on-error: true']
+      failure_not_tolerated: ['continue-on-error: false', 'no continue-on-error key at all']
+      everything_else: >-
+        Unresolved. An arbitrary condition and any ${{ }} expression are reported as
+        measurements this observer cannot make, and they also count as stranded, so an
+        unsupported form fails closed in both directions. No general expression evaluator is
+        written: that would be a second implementation of someone else's semantics, and the
+        forms the workflow actually uses do not need one.
+    measurement_validity_states: >-
+      Three, not two. A valid PASS is an empty reachability result with no unresolved
+      measurement; a valid FAIL names the stranded controls; an unresolved measurement is
+      reported separately by unresolved_measurements and never arrives as a pass. The committed
+      workflow currently has none unresolved, which is asserted rather than assumed.
+    failure_sensitivity_demonstrated: >-
+      Nine mutations over disposable topologies and over the real historical workflow. The
+      exact C8 bypass -- the 2f10b3e topology with `if: success()` added to every downstream
+      step -- is reported. So is `continue-on-error: false` downstream, an arbitrary condition,
+      and a dynamic expression. Two genuinely preserving forms are accepted, `if: always()`
+      downstream and `continue-on-error: true` on the blocker, which is what shows the observer
+      is discriminating rather than rejecting every declaration. The workflow is restored and
+      byte-identity asserted inside the same control that mutated it.
+    the_actual_workflow_is_unchanged_by_this_repair: >-
+      The reconciler stays last, after every mandatory control and after the terminal
+      generated-source diff, exactly as C8B placed it. It is not moved earlier to exercise the
+      new observer, its failure is not tolerated, and the workflow still fails while it does.
     residual: >-
       Open. Closure requires independent review of C9.
 
@@ -2946,9 +2976,26 @@ findings:
         it unrecorded, and the register's convention is that an overbroad controlled statement
         is recorded and narrowed rather than tacitly reinterpreted.
     repair: >-
-      C9B narrows the claim to the population the observer enforces, and adds a control that
-      fails if a job outside that scope acquires something control-shaped -- so the narrowing
-      cannot quietly become wrong later.
+      C9B narrows the claim to the population the observer enforces -- every mandatory
+      structural-gates control -- and makes the narrowing mechanically defended rather than
+      merely reworded.
+    how_the_narrowing_is_defended: >-
+      A control-shape predicate derived from the repository's own conventions: a check flag in
+      either the POSIX or PowerShell spelling, a tool whose basename begins with check_, the
+      regression suite, or the terminal cleanliness diff. Two controls then hold the scope from
+      both sides. Every command in the enforced job must be control-shaped, so an unrecognised
+      command inside the scope is reported rather than silently relied on. And no command in
+      any job outside the enforced scope may be control-shaped, so if document-build ever
+      acquires a control this fails instead of continuing to describe one job while claiming
+      the workflow. The predicate was checked against the workflow as it stands: all
+      thirty-one enforced-job commands are control-shaped and neither document-build command
+      is.
+    dependency_recorded_not_repaired: >-
+      A control also asserts that document-build still declares `needs: structural-gates` with
+      no job-level condition. That is the topology as found, and it is deliberately left
+      alone: making documents publish from a checkpoint whose assurance obligations are unmet
+      is a governance decision, not an implementer's, and `if: always()` would make it without
+      anyone deciding it.
     workflow_topology_deliberately_unchanged: >-
       No job-level condition is added and document-build is not made to run after a failing
       structural-gates. Making it run would mean deciding that documents should be published
