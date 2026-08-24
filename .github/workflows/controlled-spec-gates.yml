@@ -50,9 +50,6 @@ jobs:
       - name: Check MPS concept feature specification
         run: python tools/mps/check_concept_features.py
 
-      - name: Reconcile declared evidence obligations against observed evidence
-        run: python tools/mps/check_evidence_reconciliation.py
-
       - name: Derive Stage A assurance metrics from their entity populations
         run: python tools/spec/report_assurance_metrics.py --check
 
@@ -116,6 +113,22 @@ jobs:
 
       - name: Confirm generated-source checks leave no diff
         run: git diff --exit-code
+
+      # NF-21. This gate stands substantively RED -- exit 1, seven declared evidence
+      # obligations still OPEN -- and is expected to until those obligations are resolved. It
+      # used to run thirteenth of thirty-four. GitHub Actions stops a job at the first failing
+      # step, and this workflow declares no continue-on-error, no if-condition and no
+      # aggregation, so the twenty-one steps after it never executed. They are declared
+      # mandatory and were unreachable, and had been for as long as the RED has stood.
+      #
+      # It is last so that every other mandatory control executes first. The RED is not
+      # hidden, made conditional or aggregated away: this step still fails, and the workflow
+      # still fails with it. What changes is that the other controls now report before it
+      # does. tests/test_workflow_reachability.py holds the invariant, which is reachability
+      # rather than this position -- any control standing nonzero has to be placed so nothing
+      # mandatory is stranded behind it, or carry an explicit execution-preserving mechanism.
+      - name: Reconcile declared evidence obligations against observed evidence
+        run: python tools/mps/check_evidence_reconciliation.py
 
   document-build:
     needs: structural-gates

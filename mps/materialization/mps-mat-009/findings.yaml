@@ -2646,7 +2646,37 @@ findings:
         at this checkpoint. It means CI establishes nothing about them.
     repair: >-
       C8B, deliberately a separate commit from the record and observer work in C8A. The
-      substantive RED is not hidden, neutralized or made conditional.
+      substantive RED is not hidden, neutralized or made conditional. The reconciler step is
+      moved to the end of the structural-gates job, after every other mandatory control and
+      after the terminal generated-source diff. It still fails, and the job still fails with
+      it; what changes is that the other controls report first.
+    why_not_continue_on_error: >-
+      continue-on-error on this step would turn a substantive evidence failure into a passing
+      workflow, which is defeating the observer rather than satisfying it. The requirement was
+      that mandatory controls execute, not that CI go green, and moving the step achieves the
+      first without touching the second. A control asserts that this step carries no
+      execution-preserving key, so the cheaper repair cannot be substituted later.
+    reachability_observer:
+      path: tests/test_workflow_reachability.py
+      invariant: >-
+        No mandatory control may sit behind a control that is nonzero in the repository's
+        current state unless that control declares an execution-preserving mechanism. The
+        invariant is reachability, not this step's position and not today's step count.
+      populations_derived_not_declared: >-
+        The control steps are parsed from the workflow. The standing-nonzero set is derived by
+        EXECUTING the controls rather than by naming which one is red, because a named list
+        agrees with itself rather than with the repository. The required-reachable set names
+        control classes by the tool that implements each, so a class removed from the workflow
+        is reported rather than silently satisfied.
+      failure_sensitivity_demonstrated: >-
+        The observer restores the workflow as it stood at 2f10b3e, in disposable state, and
+        requires that topology to be reported unreachable; the file is then restored and
+        byte-identity asserted. The historical RED is therefore reproduced by the control
+        itself on every run, not transcribed from a one-time measurement.
+      reached_by: >-
+        The workflow's regression step, which runs unittest discovery over tests/. It is
+        therefore subject to the same reachability property it observes, and is positioned
+        before the reconciler like every other mandatory control.
     residual: >-
       Open. Closure requires independent review of C8.
 
