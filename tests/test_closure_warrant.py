@@ -43,6 +43,21 @@ def load(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8"))
 
 
+def legacy_value_digest(value) -> str:
+    """The declared encoding of a legacy field's value, hashed.
+
+    Stated once, here, because a digest is only exact if both sides agree on what was
+    hashed. A present-but-null field is a real state -- someone wrote the key -- so it needs
+    an encoding of its own rather than being folded into absence: null encodes to the literal
+    four characters `null`, and every other value to its string form. Using Python's str(None)
+    would have leaked "None" into a controlled record as the canonical spelling of nothing.
+    """
+    import hashlib
+
+    text = "null" if value is None else str(value)
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
 def reviewed_sha(review: dict):
     obj = review.get("reviewed_object") or {}
     if isinstance(obj, str):
@@ -106,20 +121,27 @@ def state_completeness_problems(findings_body: dict) -> list[str]:
                 problems.append(f"{fid}: legacy_representation does not say whether "
                                 f"{legacy!r} is present")
                 continue
+            # NF-11. Presence is KEY MEMBERSHIP, not "the value is not None". The first
+            # implementation used finding.get(legacy), which conflates a field that is absent
+            # with a field that is physically present and null -- so `disposition:` written
+            # with no value satisfied a declaration of absent, and the record's own shape was
+            # again unobserved. The distinction matters because a present-but-null key is a
+            # field someone wrote.
+            actual_present = legacy in finding
             actual = finding.get(legacy)
             if claim["present"] is False:
-                if actual is not None:
+                if actual_present:
+                    shown = "null" if actual is None else " ".join(str(actual).split())[:48]
                     problems.append(
                         f"{fid}: exception declares {legacy!r} absent, but the record carries "
-                        f"it ({' '.join(str(actual).split())[:48]!r}); a declaration that does "
-                        f"not correspond to its record conceals what the record says")
+                        f"the key ({shown}); a declaration that does not correspond to its "
+                        f"record conceals what the record says")
                 continue
-            if actual is None:
+            if not actual_present:
                 problems.append(f"{fid}: exception declares {legacy!r} present, but the "
-                                f"record does not carry it")
+                                f"record does not carry the key")
                 continue
-            digest = hashlib.sha256(str(actual).encode("utf-8")).hexdigest()
-            if claim.get("sha256") != digest:
+            if claim.get("sha256") != legacy_value_digest(actual):
                 problems.append(f"{fid}: declared {legacy!r} value does not match the record")
 
     for fid in exceptions:
@@ -365,8 +387,91 @@ class StateCompletenessMutations(unittest.TestCase):
                      "    F1:\n      legacy_representation:\n"
                      f"        status:\n          present: true\n          sha256: {digest}"):
             problems = self.observe()
-        self.assertTrue(any(p.startswith("F1:") and "does not carry it" in p
+        self.assertTrue(any(p.startswith("F1:") and "does not carry the key" in p
                             for p in problems))
+
+    def _with_novel(self, record_lines: str, exception_lines: str):
+        """Insert a synthetic finding and its exception, restoring byte-identically."""
+        original = FINDINGS.read_bytes()
+        text = original.decode("utf-8")
+        try:
+            text = text.replace(NOVEL_ANCHOR, record_lines + NOVEL_ANCHOR, 1)
+            text = text.replace("  exceptions:\n", "  exceptions:\n" + exception_lines, 1)
+            FINDINGS.write_bytes(text.encode("utf-8"))
+            return self.observe()
+        finally:
+            FINDINGS.write_bytes(original)
+            assert FINDINGS.read_bytes() == original
+
+    def test_a_present_but_null_key_declared_absent_fails(self):
+        """NF-11, the independent RED: `disposition:` with no value is a key someone wrote.
+
+        The first implementation asked whether the value was None, which cannot tell an
+        absent field from a present empty one, so this declaration passed.
+        """
+        record = ("  - id: NOVEL-NULLKEY-01\n"
+                  "    origin: synthetic mutation control\n"
+                  "    disposition:\n")
+        exception = ("    NOVEL-NULLKEY-01:\n" + self.ABSENT +
+                     "      reason: claims the disposition key is absent\n")
+        problems = self._with_novel(record, exception)
+        self.assertTrue(any("NOVEL-NULLKEY-01" in p and "carries the key (null)" in p
+                            for p in problems), problems[:3])
+
+    def test_a_present_but_null_key_declared_truthfully_passes(self):
+        """Null is an allowed legacy value, and declaring it honestly is legitimate."""
+        record = ("  - id: NOVEL-NULLOK-01\n"
+                  "    origin: synthetic mutation control\n"
+                  "    status:\n")
+        exception = ("    NOVEL-NULLOK-01:\n"
+                     "      legacy_representation:\n"
+                     "        status:\n          present: true\n"
+                     f"          sha256: {legacy_value_digest(None)}\n"
+                     "        disposition:\n          present: false\n"
+                     "      reason: legacy status key present and empty; still state debt\n")
+        self.assertEqual([], self._with_novel(record, exception))
+
+    def test_an_absent_key_declared_absent_passes(self):
+        record = ("  - id: NOVEL-ABSENT-01\n"
+                  "    origin: synthetic mutation control\n")
+        exception = ("    NOVEL-ABSENT-01:\n" + self.ABSENT +
+                     "      reason: no legacy representation of any kind\n")
+        self.assertEqual([], self._with_novel(record, exception))
+
+    def test_an_absent_key_declared_present_fails(self):
+        record = ("  - id: NOVEL-GHOSTKEY-01\n"
+                  "    origin: synthetic mutation control\n")
+        exception = ("    NOVEL-GHOSTKEY-01:\n"
+                     "      legacy_representation:\n"
+                     "        status:\n          present: true\n"
+                     f"          sha256: {legacy_value_digest('open')}\n"
+                     "        disposition:\n          present: false\n"
+                     "      reason: claims a status the record does not carry\n")
+        problems = self._with_novel(record, exception)
+        self.assertTrue(any("NOVEL-GHOSTKEY-01" in p and "does not carry the key" in p
+                            for p in problems), problems[:3])
+
+    def test_a_present_non_null_key_with_a_wrong_digest_fails(self):
+        record = ("  - id: NOVEL-BADDIGEST-01\n"
+                  "    origin: synthetic mutation control\n"
+                  "    disposition: closed\n")
+        exception = ("    NOVEL-BADDIGEST-01:\n"
+                     "      legacy_representation:\n"
+                     "        status:\n          present: false\n"
+                     "        disposition:\n          present: true\n"
+                     f"          sha256: {legacy_value_digest('something else')}\n"
+                     "      reason: declares a value the record does not hold\n")
+        problems = self._with_novel(record, exception)
+        self.assertTrue(any("NOVEL-BADDIGEST-01" in p and "does not match the record" in p
+                            for p in problems), problems[:3])
+
+    def test_presence_is_key_membership_not_value_nullness(self):
+        """The property directly, so a regression to finding.get() is caught."""
+        import inspect
+
+        source = inspect.getsource(state_completeness_problems)
+        self.assertIn("legacy in finding", source)
+        self.assertNotIn("finding.get(legacy) is not None", source)
 
     def test_a_declared_value_that_does_not_match_the_record_fails(self):
         with mutated(FINDINGS,

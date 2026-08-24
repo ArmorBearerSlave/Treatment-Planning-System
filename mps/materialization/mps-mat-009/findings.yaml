@@ -94,8 +94,10 @@ finding_record_completeness:
 finding_state_control:
   purpose: >-
     NF-09. A state-scoped observer is only as good as the population it ranges over, and
-    this register's state representation was heterogeneous: two field names, canonical
-    values in one and lowercase or prose in the other, and most records carrying neither.
+    this register's state representation was heterogeneous. Three relevant representations
+    existed, not two: the canonical `state` field, a legacy `status` field, and a legacy
+    `disposition` field. Canonical values appeared in the first, lowercase values and prose
+    in the second, and closure claims in the third, while most records carried none of them.
     A closure-warrant rule keyed on state == CLOSED would therefore have been a correct
     rule applied to an accidentally incomplete population -- passing not because every
     finding was substantiated but because most were invisible to it.
@@ -138,9 +140,16 @@ finding_state_control:
   observed_baseline:
     measured_at: >-
       58d18db, before this checkpoint. These figures describe the population AT DISCOVERY and
-      deliberately do not track the current file, which has since gained the NF records this
-      checkpoint adds. A baseline that silently follows the thing it measures is not a
-      baseline.
+      deliberately do not track the current file, which has since gained the NF records later
+      checkpoints add. A baseline that silently follows the thing it measures is not a
+      baseline, so the numbers below are frozen rather than refreshed.
+    fields_counted: >-
+      The original measurement bucketed two fields only: the canonical `state` field and the
+      legacy `status` field. It did not count the legacy `disposition` field, which is why
+      the 20 records recorded here as carrying neither in fact included six that carried a
+      disposition -- five of them reading closed. That omission is exactly what NF-10 later
+      exposed. The figures are preserved as taken, with this clarification of their scope,
+      rather than silently recomputed.
     finding_records: 34
     canonical_state_records: 9
     records_with_neither_state_nor_status: 20
@@ -1605,8 +1614,13 @@ findings:
       states because their repairs have strong evidence. An exception means the controlled
       representation is incomplete, nothing more.
     residual: >-
-      Open. 25 of 34 records remain state debt. The finding is the visible remediation queue
-      for adjudicating them, which is separate work from normalizing the population.
+      Open. 25 records remain state debt, and that population is derived from
+      finding_state_control.exceptions rather than transcribed here. The earlier wording gave
+      it as "25 of 34", which had already stopped describing the file when NF records were
+      added -- the same fragile-cardinality defect as NF-01, in this register. A denominator
+      is not restated: the count of records in state debt is what matters, and the ratio can
+      be derived by anyone who wants it. The finding is the visible remediation queue for
+      adjudicating those records, which is separate work from normalizing the population.
 
   - id: NF-10
     origin: independent review of 63694e5
@@ -1657,3 +1671,73 @@ findings:
       The observer checks that an exception describes its record truthfully. It does not
       check that the reason given is a good one, and it does not reduce the 25-record state
       debt by one. NF-09 still carries that queue.
+
+  - id: NF-11
+    origin: independent review of 1db9948
+    reviewed_object: 1db99482ce894606ca68ec67a832cb1351369d68
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      The presence check conflated an absent legacy field with one present and null
+    claim: >-
+      finding_state_control declares whether each legacy field is present, and
+      state_completeness_problems determined that with finding.get(field). A field written
+      as `disposition:` with no value is physically present and reads as None, so a
+      declaration of absent satisfied it. Presence is key membership; the value is a separate
+      question.
+    independent_red:
+      record: "disposition: null, the key written with no value"
+      exception: "disposition: present: false"
+      observer_result_at_1db9948: PASS, no problems reported
+      required_result: FAIL
+      reproduced_by_the_remediation_actor: >-
+        Yes, against the observer exactly as committed at 1db9948, before any repair. The
+        record carried the key, the value was None, the declaration said absent, and the
+        observer reported nothing.
+    why_it_matters: >-
+      NF-10 made the exception describe its record. This is the same defect one level finer:
+      the description was checked against the value rather than against the shape, so a key
+      someone had written could still be declared away. No committed record triggers it,
+      which is what makes it worth closing now rather than after it bites.
+    repair: this checkpoint, commit C4
+    disposition: >-
+      Presence is determined by key membership. The value encoding is declared once so both
+      sides agree on what is hashed: null encodes to the literal four characters null, every
+      other value to its string form. Exact digest comparison is preserved for every field
+      declared present.
+    state_after_implementation: >-
+      OPEN. The repair is here; closure requires an independent review of this checkpoint.
+
+  - id: NF-12
+    origin: independent review of 1db9948
+    reviewed_object: 1db99482ce894606ca68ec67a832cb1351369d68
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE]
+    title: Controlled narrative in the finding register had gone stale
+    claim: >-
+      Two statements in the controlled record had stopped being true. NF-09's residual said
+      "25 of 34 records remain state debt" while the population had become 39 records, 14
+      canonical and 25 in debt. And finding_state_control described the historical
+      heterogeneity as "two field names" when three relevant representations existed:
+      canonical state, legacy status, and legacy disposition.
+    recorded_as_a_finding_because: >-
+      Repository convention already treats controlled-record inaccuracy as a finding rather
+      than as an edit: RT-F-03, RT-F-04 and RT-F-05 were exactly that. Absorbing this into
+      the repair commit without a record would make the register quieter about its own
+      errors than about anyone else's.
+    repair: this checkpoint, commit C4
+    disposition: >-
+      The NF-09 residual now gives the state-debt count without a denominator and names
+      finding_state_control.exceptions as the derivation, rather than restating "25 of 39"
+      and recreating the fragile-cardinality defect NF-01 already recorded. The
+      three-representation description replaces the two-field-name one. The frozen 58d18db
+      discovery baseline is preserved as measured, with an added statement of which fields it
+      counted -- two, not three -- which is why its 20 "carrying neither" in fact included six
+      carrying a disposition. That omission is what NF-10 later exposed.
+    not_done: >-
+      The historical measurement is not recomputed. A baseline that is quietly refreshed
+      whenever it disagrees with the present is not a baseline.
