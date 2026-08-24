@@ -1518,6 +1518,21 @@ findings:
         The membership result the sentence exists to support is 9 of 9 for the MPS-MAT-009
         records, in both the clone and the working tree.
     repair: this checkpoint, commit C2
+    independent_review_support:
+      review: REV-C5-CUMULATIVE
+      established: >-
+        The manually maintained literal is gone from CLAUDE.md and the invariant stands in its
+        place; no live scanned-population cardinality is asserted in CLAUDE.md, tools, tests or
+        spec; the frozen 58d18db and 63694e5 measurements are preserved as taken.
+      why_this_does_not_close_the_finding: >-
+        The closure rule matches reviewed_object(review) against repair(finding) as object identity.
+        This repair landed at 5fe5b69a19f7db58180a7b977164fc57819c5075, commit C2; the registered
+        review reviewed 3188a11443e33c8c4f68933cf73282108957f356. Those are different objects.
+        Ancestry is not object equality and the rule does not permit it, so closing this would
+        require either a review of C2 as a reviewed object in its own right or a weakened observer.
+        Neither is done here, and the repair field is deliberately left unchanged: rewriting it to
+        match a review that did not review it would make the warrant resolve by falsifying what it
+        resolves against.
     disposition: >-
       The manually maintained literal is removed rather than corrected. The authoritative
       population is the function, and a derived statement cannot go stale the way a
@@ -1547,6 +1562,21 @@ findings:
       existed, that it had reviewed the object the finding claimed as its repair, or that it
       had returned a passing verdict.
     repair: this checkpoint, commit C1
+    independent_review_support:
+      review: REV-C5-CUMULATIVE
+      established: >-
+        Every canonically CLOSED finding carries a typed closure_review that resolves to exactly one
+        register entry, and removing it while leaving the prose closure_note in place was refused by
+        the observer.
+      why_this_does_not_close_the_finding: >-
+        The closure rule matches reviewed_object(review) against repair(finding) as object identity.
+        This repair landed at 63694e5f514b12852cec5524db841bb12a52df69, commit C1; the registered
+        review reviewed 3188a11443e33c8c4f68933cf73282108957f356. Those are different objects.
+        Ancestry is not object equality and the rule does not permit it, so closing this would
+        require either a review of C1 as a reviewed object in its own right or a weakened observer.
+        Neither is done here, and the repair field is deliberately left unchanged: rewriting it to
+        match a review that did not review it would make the warrant resolve by falsifying what it
+        resolves against.
     disposition: >-
       Replaced by a typed closure_review reference resolved against the controlled review
       register. The prose is retained as closure_note and is explicitly non-authoritative;
@@ -1568,6 +1598,21 @@ findings:
       CLOSED because a registered independent review warrants closure, versus CLOSED because
       somebody wrote a sentence claiming a review occurred.
     repair: this checkpoint, commit C1
+    independent_review_support:
+      review: REV-C5-CUMULATIVE
+      established: >-
+        Six independent mutations were refused: missing typed reference with prose retained,
+        dangling reference, reviewed object not equal to the repair object, verdict FAIL, verdict
+        PENDING, and a duplicate review id surfaced as ambiguity rather than resolved by choosing.
+      why_this_does_not_close_the_finding: >-
+        The closure rule matches reviewed_object(review) against repair(finding) as object identity.
+        This repair landed at 63694e5f514b12852cec5524db841bb12a52df69, commit C1; the registered
+        review reviewed 3188a11443e33c8c4f68933cf73282108957f356. Those are different objects.
+        Ancestry is not object equality and the rule does not permit it, so closing this would
+        require either a review of C1 as a reviewed object in its own right or a weakened observer.
+        Neither is done here, and the repair field is deliberately left unchanged: rewriting it to
+        match a review that did not review it would make the warrant resolve by falsifying what it
+        resolves against.
     disposition: >-
       A population-driven closure-warrant observer now requires, for every finding in
       canonical CLOSED state, exactly one registered review whose reviewed object equals the
@@ -1607,6 +1652,21 @@ findings:
       legacy_prose_status_records: 2
       declared_state_vocabulary_at_discovery: none
     repair: this checkpoint, commit C1
+    independent_review_support:
+      review: REV-C5-CUMULATIVE
+      established: >-
+        The state population partitions exactly over 42 records, 17 canonical and 25 state debt,
+        disjoint and exhaustive, with no uncovered record and no exception naming an absent id. This
+        is support for the population mechanism only; the 25-record queue is not adjudicated.
+      why_this_does_not_close_the_finding: >-
+        The closure rule matches reviewed_object(review) against repair(finding) as object identity.
+        This repair landed at 63694e5f514b12852cec5524db841bb12a52df69, commit C1; the registered
+        review reviewed 3188a11443e33c8c4f68933cf73282108957f356. Those are different objects.
+        Ancestry is not object equality and the rule does not permit it, so closing this would
+        require either a review of C1 as a reviewed object in its own right or a weakened observer.
+        Neither is done here, and the repair field is deliberately left unchanged: rewriting it to
+        match a review that did not review it would make the warrant resolve by falsifying what it
+        resolves against.
     disposition: >-
       A controlled finding_state_control declares the canonical vocabulary and an explicit
       exception population, each exception carrying a reason. Every one of the 34 records is
@@ -1656,6 +1716,20 @@ findings:
         actually says". A closure claim is then invisible to the state layer and invisible to
         the closure layer, because the closure layer only ranges over canonical CLOSED.
     repair: this checkpoint, commit C3
+    independent_review_support:
+      review: REV-C5-CUMULATIVE
+      established: >-
+        Every state-debt declaration was checked against the record by recomputing the sha256 of
+        each declared legacy value; all matched, with no mismatch in presence or digest.
+      why_this_does_not_close_the_finding: >-
+        The closure rule matches reviewed_object(review) against repair(finding) as object identity.
+        This repair landed at 1db99482ce894606ca68ec67a832cb1351369d68, commit C3; the registered
+        review reviewed 3188a11443e33c8c4f68933cf73282108957f356. Those are different objects.
+        Ancestry is not object equality and the rule does not permit it, so closing this would
+        require either a review of C3 as a reviewed object in its own right or a weakened observer.
+        Neither is done here, and the repair field is deliberately left unchanged: rewriting it to
+        match a review that did not review it would make the warrant resolve by falsifying what it
+        resolves against.
     disposition: >-
       Each exception now declares, per legacy field, whether it is present and the sha256 of
       its exact value, and the observer checks the declaration against the record. A
@@ -1706,6 +1780,20 @@ findings:
       someone had written could still be declared away. No committed record triggers it,
       which is what makes it worth closing now rather than after it bites.
     repair: this checkpoint, commit C4
+    independent_review_support:
+      review: REV-C5-CUMULATIVE
+      established: >-
+        Presence is key membership. With a key declared absent, injecting it as null, as an empty
+        string, and as an ordinary value were each refused, while genuine absence passed.
+      why_this_does_not_close_the_finding: >-
+        The closure rule matches reviewed_object(review) against repair(finding) as object identity.
+        This repair landed at c2175bbcb798cf1a12a69d26a1504d973e76c284, commit C4; the registered
+        review reviewed 3188a11443e33c8c4f68933cf73282108957f356. Those are different objects.
+        Ancestry is not object equality and the rule does not permit it, so closing this would
+        require either a review of C4 as a reviewed object in its own right or a weakened observer.
+        Neither is done here, and the repair field is deliberately left unchanged: rewriting it to
+        match a review that did not review it would make the warrant resolve by falsifying what it
+        resolves against.
     disposition: >-
       Presence is determined by key membership. The value encoding is declared once so both
       sides agree on what is hashed: null encodes to the literal four characters null, every
@@ -1734,6 +1822,20 @@ findings:
       the repair commit without a record would make the register quieter about its own
       errors than about anyone else's.
     repair: this checkpoint, commit C4
+    independent_review_support:
+      review: REV-C5-CUMULATIVE
+      established: >-
+        The corrected narrative was read against the current mechanism, and the frozen discovery
+        baseline is preserved rather than refreshed.
+      why_this_does_not_close_the_finding: >-
+        The closure rule matches reviewed_object(review) against repair(finding) as object identity.
+        This repair landed at c2175bbcb798cf1a12a69d26a1504d973e76c284, commit C4; the registered
+        review reviewed 3188a11443e33c8c4f68933cf73282108957f356. Those are different objects.
+        Ancestry is not object equality and the rule does not permit it, so closing this would
+        require either a review of C4 as a reviewed object in its own right or a weakened observer.
+        Neither is done here, and the repair field is deliberately left unchanged: rewriting it to
+        match a review that did not review it would make the warrant resolve by falsifying what it
+        resolves against.
     disposition: >-
       The NF-09 residual now gives the state-debt count without a denominator and names
       finding_state_control.exceptions as the derivation, rather than restating "25 of 39"
@@ -1752,7 +1854,7 @@ findings:
     primary_artifact_retention: external_not_retained
     acceptance_blocking: true
     blocking_scope: checkpoint-blocking pending independent review
-    state: OPEN
+    state: CLOSED
     locus: [MEASUREMENT_PATH, EVIDENCE]
     title: >-
       The finding that recorded a non-reproducing population cited two paths a clone cannot
@@ -1777,7 +1879,21 @@ findings:
     the_irony_recorded_rather_than_smoothed: >-
       NF-01 exists because a statement described a population that does not exist in a clone.
       Its own evidence then did the same thing, in the same file, about the same two files.
-    repair: this checkpoint, commit C5
+    repair: 3188a11443e33c8c4f68933cf73282108957f356
+    repair_object_resolution: >-
+      Previously written as the self-reference "this checkpoint, commit C5". C5 is
+      3188a11443e33c8c4f68933cf73282108957f356, so this resolves the phrase to the object it
+      already denoted; it does not change which object repaired the finding. The closure rule
+      matches reviewed_object(review) against this field as an object identity, so the field
+      has to name an object rather than describe one. The same resolution was applied to
+      RT-F-03 through RT-F-06 at 58d18db.
+    closure_review: REV-C5-CUMULATIVE
+    closure_note: >-
+      Non-authoritative context. The independent review reproduced the RED at c2175bb from a
+      cold clone, confirmed this repair from a fresh clone with the ignored build work reports
+      absent, verified that the substantive propositions of NF-01 survive the rewording, and
+      confirmed nothing was added to the path-citation allowlist. The warrant is the typed
+      closure_review field above, not this sentence.
     disposition: >-
       The two artifacts are identified by basename and by a description of where they were
       generated, instead of by repository-relative paths. Nothing is added to
@@ -1791,3 +1907,63 @@ findings:
     state_after_implementation: >-
       OPEN, checkpoint-blocking. The repair is here; closure requires an independent review
       of this checkpoint from a fresh clone.
+
+  - id: NF-14
+    origin: independent review of 3188a11, from a fresh clone
+    reviewed_object: 3188a11443e33c8c4f68933cf73282108957f356
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE]
+    title: >-
+      Two population cardinalities in REC-OBS-01 state no measurement scope and no longer
+      reproduce
+    claim: >-
+      REC-OBS-01.evidence_by_resolved_population records two population cardinalities with no
+      measurement-scope qualifier of any kind -- check_path_citations resolved_cardinality 105
+      and repository_hygiene resolved_cardinality 390. Neither reproduces at 3188a11:
+      independent measurement produced 104 and 391 respectively. The block is titled evidence
+      and reads as a current, reproducible measurement rather than as a frozen one.
+    independently_measured:
+      at_object: 3188a11443e33c8c4f68933cf73282108957f356
+      path_citation_population:
+        recorded: 105
+        reproduced: 104
+      repository_hygiene_population:
+        recorded: 390
+        reproduced: 391
+      load_bearing_result_unaffected: >-
+        target_members_present is 9 for both readers and reproduces exactly for both. The
+        membership conclusion REC-OBS-01 exists to support is untouched.
+      execution_artifacts_excluded: >-
+        The reviewer ruled out its own execution as the cause. __pycache__ is ignored at
+        .gitignore line 11 and so is outside the hygiene population, and git ls-tree gives 390
+        at 58d18db and 391 at 63694e5, c2175bb and 3188a11 independently of any execution. The
+        390 was accurate when taken; C1 added a tracked file.
+    why_it_matters: >-
+      This is the same class as NF-01 and F7: a count that describes a population the reader
+      cannot reproduce. The 105 was in fact a warm-tree number, since NF-01 itself records
+      cold_clone_at_58d18db 103 against working_tree_at_58d18db 105, so the figure silently
+      mixes measurement conditions as well as being stale.
+    not_covered_by_the_existing_findings: >-
+      NF-01 is scoped to the CLAUDE.md statement, NF-12 to the NF-09 residual and the
+      two-field-name description, and NF-13 to the two citation paths. None of them reaches
+      this block, which is why it is recorded separately rather than folded into one of them.
+    why_it_is_not_acceptance_blocking: >-
+      The load-bearing membership result reproduces, so nothing that depends on this record is
+      wrong. NF-01, the closest analogue, is non-blocking for the same reason.
+    required_disposition_question: >-
+      Closure requires that these cardinalities either be removed in favour of the property
+      that holds, as NF-01's repair did, or be bound to an explicit historical measurement
+      scope naming the object and the tree condition they were taken under. Updating the
+      literals to 104 and 391 is expressly not the repair: it would preserve the defect with
+      fresher numbers and would go stale again at the next commit that adds a file.
+    additional_instance_observed_during_transport: >-
+      Not part of the independent review's finding and recorded here so it is not lost. The
+      obligation_effect block of independent-reviews.yaml says "Four independent technical
+      reviews". That sentence was written at d6faf77 when the register held five entries; the
+      register held eight before this transport and holds nine after it. It is the same class
+      of defect and is deliberately NOT refreshed here, because replacing four with nine is
+      the repair this finding says not to make. It is named so that whoever disposes of NF-14
+      disposes of it too.
+    disposition: carried, not repaired in this checkpoint

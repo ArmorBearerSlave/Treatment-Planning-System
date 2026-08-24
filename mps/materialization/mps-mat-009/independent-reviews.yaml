@@ -101,6 +101,9 @@ population:
     - kind: commit_scoped
       reviewed_object: 58d18db1f952ff18f9853161eb979048483e4bc5
       review: REV-RT-F-SUBSTANCE
+    - kind: commit_scoped
+      reviewed_object: 3188a11443e33c8c4f68933cf73282108957f356
+      review: REV-C5-CUMULATIVE
 
   membership_kind_is_not_object_identity_strength: >-
     Two independent dimensions, deliberately not conflated. REV-F2 is record_file_backed and
@@ -350,6 +353,46 @@ reviews:
     controlled_support:
       - mps/materialization/mps-mat-009/findings.yaml
 
+  - review_id: REV-C5-CUMULATIVE
+    subject: >-
+      C5 NF-13 path-citation repair, reviewed as the cumulative remediation checkpoint C1
+      through C5
+    reviewed_object:
+      kind: commit
+      sha: 3188a11443e33c8c4f68933cf73282108957f356
+    verdict: INDEPENDENTLY VERIFIED
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: external_not_retained
+    method_note: >-
+      Reviewed from a fresh clone with an independent object store, detached at the reviewed
+      object, with execution coldness established by enumeration before anything ran -- no
+      build/work, no source_gen, no classes_gen, no __pycache__. The historical RED was
+      reproduced against c2175bb in separate disposable state, and the warm-tree cause was
+      demonstrated by showing the same gate pass with the ignored reports present while
+      git status stayed empty.
+    scope_note: >-
+      The reviewed object is the cumulative checkpoint, not each repair commit as an object in
+      its own right. The C1 through C4 mechanisms were re-established by independent derivation
+      and by mutation, which is support for those repairs; it is not a review of 63694e5,
+      5fe5b69, 1db9948 or c2175bb as reviewed objects. That distinction is why this review
+      warrants the closure of NF-13 alone.
+    warrants_closure_of:
+      - NF-13
+    findings_raised:
+      - NF-14
+    observations_raised:
+      - path_citation_grammar_does_not_recognize_equivalent_absent_path_forms
+      - retained_html_evidence_is_outside_the_path_citation_population
+      - path_citation_reaches_the_mandatory_path_through_the_regression_suite
+    controlled_support:
+      - mps/materialization/mps-mat-009/findings.yaml
+      - tests/test_path_citations.py
+      - tests/test_closure_warrant.py
+      - tests/test_review_records.py
+
 methodological_observations:
 
   - id: git_clean_does_not_establish_execution_cold
@@ -373,6 +416,63 @@ methodological_observations:
       MI-EXIT-01 controls build their own fixtures in temporary directories and read no
       gitignored product, so the suite's verdict does not depend on what a working tree
       happens to be carrying.
+
+  - id: path_citation_grammar_does_not_recognize_equivalent_absent_path_forms
+    raised_by: REV-C5-CUMULATIVE
+    proposition: >-
+      The path-citation grammar recognizes a repository-relative path in one syntactic form
+      only. Naming the same absent artifact with Windows separators, or with a leading ./, is
+      not recognized as a citation and passes.
+    demonstrated: >-
+      Independent mutation in disposable state. The repository-relative form was refused at
+      exit 1; the backslash form and the leading-./ form of the same non-existent artifact
+      were both accepted at exit 0. Backticked and nested-path forms were correctly refused.
+    why_it_is_an_observation_and_not_a_finding: >-
+      Nothing in the controlled record relies on it. C5 did not repair NF-13 by respelling a
+      path; it removed the citation and described the artifact instead, which is truthful
+      independently of the grammar. The exposure is prospective: a future actor could make
+      this class of defect disappear by changing separators rather than by correcting the
+      representation, and the gate would go green.
+    not_repaired_here: >-
+      Widening the grammar changes a verified mechanism and is out of scope for a
+      record-transport step. If it is taken up it belongs with NF-13's closure question.
+
+  - id: retained_html_evidence_is_outside_the_path_citation_population
+    raised_by: REV-C5-CUMULATIVE
+    proposition: >-
+      The path-citation observer scans .py, .yaml, .yml, .json and .xml under declared roots,
+      plus CLAUDE.md. Retained HTML evidence is not in that population, so a
+      repository-relative-looking path inside a retained report is structurally unobserved.
+    instance: >-
+      mps/materialization/evidence/MPS-MAT-009/review-report.html still contains a
+      repository-relative form of the JUnit Jupiter report path, inside a preformatted block
+      describing where a build writes its reports. The path is not reproduced here, for the
+      reason NF-13 records: it names transient derived output that no clone has, so writing it
+      into a scanned artifact would recreate that finding rather than describe it.
+    recorded_while_transporting_this_observation: >-
+      The first draft of this entry did quote the path in full. check_path_citations refused it
+      from a cold tree on the next run, naming this file as the citer. The control caught the
+      transport actor committing the very defect the observation describes, which is a better
+      demonstration that it works than any assertion here would be.
+    why_it_is_not_a_defect_to_repair: >-
+      That file is a hash-bound retained primary. Editing it to satisfy an observer would
+      corrupt retained evidence to improve a gate, which is the wrong direction. The boundary
+      is recorded so that it is stated rather than discovered later and mistaken for an escape.
+
+  - id: path_citation_reaches_the_mandatory_path_through_the_regression_suite
+    raised_by: REV-C5-CUMULATIVE
+    proposition: >-
+      tools/spec/check_path_citations.py is not a separate step in
+      .github/workflows/controlled-spec-gates.yml. It reaches the mandatory execution path
+      only through tests/test_path_citations.py, which the workflow's regression step runs.
+    why_this_is_adequate: >-
+      The coupling is real and was exercised: the defect NF-13 records failed the full
+      regression from a cold clone, which is how it was caught. The control is on the
+      mandatory path; it is reached indirectly.
+    the_thing_worth_stating: >-
+      CLAUDE.md lists the gate among its prescribed verification commands, which can read as
+      though it were its own CI step. It is not. Anyone reasoning about which controls run in
+      CI should read the workflow rather than the command list.
 
 obligation_effect:
   mps_mat_009_hash_0:
