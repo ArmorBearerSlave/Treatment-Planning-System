@@ -58,6 +58,109 @@ def legacy_value_digest(value) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def git(*args: str) -> tuple[int, str]:
+    import subprocess
+
+    result = subprocess.run(["git", *args], capture_output=True, text=True,
+                            cwd=str(REPO_ROOT))
+    return result.returncode, result.stdout.strip()
+
+
+def closure_target(finding: dict) -> str | None:
+    """The object a closure review must have reviewed, EXACTLY.
+
+    C6. A repair introduced at one commit can only become complete at a later one -- NF-06's
+    mechanism landed at C1 and its population defects were repaired at C3 and C4. Before
+    this, the record could say where a repair was introduced or where it became complete but
+    not both, so the closure rule had nothing correct to match.
+
+    The target moves to the declared completion object when one exists. What does NOT change
+    is the match: it remains exact object identity. Ancestry is a validity precondition on a
+    declaration a person wrote, never a way of satisfying the match, and no descendant is
+    ever substituted for a target that was not declared.
+    """
+    return finding.get("repair_completion_object") or finding.get("repair")
+
+
+def completion_declaration_problems(findings_body: dict, register_body: dict) -> list[str]:
+    """Validity of every declared repair-completion relationship."""
+    rule = register_body["repair_completion_rule"]
+    closing = set(register_body["closure_rule"]["closing_verdicts"])
+    reviews = register_body.get("reviews") or []
+
+    problems: list[str] = []
+    for finding in findings_body["findings"]:
+        if "repair_completion_object" not in finding:
+            continue
+        fid = finding["id"]
+        completion = finding["repair_completion_object"]
+        # Declared-but-unusable is a failure, never a skip. An all-digit sha is parsed by
+        # YAML as an integer, and an integer is falsy, so a truthiness test would drop the
+        # finding out of the population silently -- the declaration would be present and
+        # unobserved, which is the shape of every finding in this register.
+        if not isinstance(completion, str) or not completion.strip():
+            problems.append(f"{fid}: repair_completion_object is not a commit-object string "
+                            f"({completion!r}); a declaration that cannot be read must fail "
+                            f"rather than remove the finding from the population")
+            continue
+
+        if not str(finding.get("repair", "")).strip():
+            problems.append(f"{fid}: declares a completion object while its original repair "
+                            f"field is absent; the completion must not replace it")
+        introduced = finding.get("repair_introduced_object")
+        if not introduced:
+            problems.append(f"{fid}: declares a completion object with no "
+                            f"repair_introduced_object, so the ancestry precondition cannot "
+                            f"be evaluated")
+        if not str(finding.get("repair_completion_reason", "")).strip():
+            problems.append(f"{fid}: declares a completion object with no completion reason")
+
+        for label, sha in (("completion", completion), ("introduced", introduced)):
+            if not sha:
+                continue
+            code, kind = git("cat-file", "-t", sha)
+            if code != 0 or kind != "commit":
+                problems.append(f"{fid}: {label} object {str(sha)[:12]} does not resolve to a "
+                                f"commit in this repository")
+
+        if introduced and completion:
+            code, _ = git("merge-base", "--is-ancestor", introduced, completion)
+            if code != 0:
+                problems.append(
+                    f"{fid}: repair_introduced_object {introduced[:12]} is not an ancestor of "
+                    f"or identical to the completion object {completion[:12]}; a completion "
+                    f"object must not be an unrelated convenient commit")
+
+        # Exactly one registered review must BOTH have verified this finding's repair and
+        # have reviewed the completion object. A generic review of a commit is never
+        # reinterpreted as verification of every finding in the repository.
+        supporting = [r for r in reviews
+                      if fid in (r.get("verified_repairs_of") or [])
+                      and reviewed_sha(r) == completion]
+        if not supporting:
+            problems.append(f"{fid}: no registered review both verified this finding's repair "
+                            f"and reviewed {completion[:12]}; prose asserting cumulative "
+                            f"verification is not the typed relationship")
+            continue
+        if len(supporting) > 1:
+            problems.append(f"{fid}: {len(supporting)} registered reviews claim to verify this "
+                            f"repair at {completion[:12]}; ambiguity is surfaced, not resolved")
+            continue
+        review = supporting[0]
+        if review.get("verdict") not in closing:
+            problems.append(f"{fid}: the completion review returned "
+                            f"{review.get('verdict')!r}, which is not a closing verdict")
+        if review.get("primary_artifact_retention") not in {
+                "retained", "external_not_retained", "reproduction"}:
+            problems.append(f"{fid}: the completion review declares no valid evidence "
+                            f"retention status")
+        reviewer = review.get("reviewer") or {}
+        if reviewer.get("satisfies_mps_mat_009_named_reviewer_obligation") is not False:
+            problems.append(f"{fid}: the completion review misrepresents its reviewer "
+                            f"authority")
+    return problems
+
+
 def reviewed_sha(review: dict):
     obj = review.get("reviewed_object") or {}
     if isinstance(obj, str):
@@ -204,13 +307,16 @@ def closure_problems(findings_body: dict, register_body: dict) -> list[str]:
         if reference not in registered_units:
             problems.append(f"{fid}: {reference!r} has a review entry but is not declared as "
                             f"a reviewable unit, so it is not a registered review")
-        claimed = finding.get("repair")
+        # C6: the target is the declared completion object when one exists, and the
+        # ORIGINAL repair otherwise. The match itself is unchanged -- exact object identity,
+        # no ancestry, no descendant substitution, no promotion.
+        claimed = closure_target(finding)
         actual = reviewed_sha(review)
         if not claimed:
-            problems.append(f"{fid}: names no repair object for the review to have reviewed")
+            problems.append(f"{fid}: names no closure target for the review to have reviewed")
         elif actual != claimed:
             problems.append(f"{fid}: closure review {reference} reviewed {str(actual)[:12]} "
-                            f"but the finding claims repair {str(claimed)[:12]}")
+                            f"but the finding's closure target is {str(claimed)[:12]}")
         if review.get("verdict") not in closing:
             problems.append(f"{fid}: closure review {reference} returned "
                             f"{review.get('verdict')!r}, which is not a closing verdict")
@@ -558,7 +664,7 @@ class ClosureWarrantMutations(unittest.TestCase):
                      "      sha: 7ad9b81e3bd7f67f7b1e87ef2cc0eafb76c349a7",
                      "      sha: " + "0" * 40):
             problems = self.observe()
-        self.assertTrue(any("but the finding claims repair" in p for p in problems))
+        self.assertTrue(any("closure target is" in p for p in problems))
 
     def test_a_non_closing_verdict_fails(self):
         with mutated(REVIEWS,
@@ -667,6 +773,210 @@ class RegistrationDoesNotConferAuthority(unittest.TestCase):
 
         state, _ = reconciler.states()["MPS-MAT-009#0"]
         self.assertEqual("OPEN", state)
+
+
+class CompletionObjectMutations(unittest.TestCase):
+    """C6. Rule-driven over every finding declaring a completion object, never an ID list.
+
+    The central invariant is unchanged and is what these protect: a closure review must have
+    reviewed the closure target EXACTLY. C6 only changes what that target is when a
+    completion object has been declared; it never lets ancestry, a descendant, a prefix, or a
+    later review stand in for the match.
+    """
+
+    ORIGIN = "c2175bbcb798cf1a12a69d26a1504d973e76c284"
+    COMPLETION = "3188a11443e33c8c4f68933cf73282108957f356"
+
+    def observe(self):
+        return completion_declaration_problems(load(FINDINGS), load(REVIEWS))
+
+    def test_the_record_as_committed_is_valid(self):
+        self.assertEqual([], self.observe())
+
+    def test_the_population_is_not_a_hard_coded_id_list(self):
+        import inspect
+
+        source = inspect.getsource(completion_declaration_problems)
+        for fid in ("NF-01", "NF-05", "NF-06", "NF-10", "NF-11", "NF-12"):
+            self.assertNotIn(fid, source)
+
+    def test_exact_match_to_the_registered_review_object_passes(self):
+        declared = {f["id"] for f in load(FINDINGS)["findings"]
+                    if f.get("repair_completion_object") == self.COMPLETION}
+        self.assertTrue(declared)
+        self.assertEqual([], self.observe())
+
+    def test_a_review_of_the_original_repair_only_fails(self):
+        """The review verified the repair, but reviewed the introduction commit."""
+        with mutated(REVIEWS,
+                     "      sha: " + self.COMPLETION + "\n    verdict: INDEPENDENTLY VERIFIED\n"
+                     "    reviewer:",
+                     "      sha: " + self.ORIGIN + "\n    verdict: INDEPENDENTLY VERIFIED\n"
+                     "    reviewer:"):
+            problems = self.observe()
+        self.assertTrue(any("no registered review both verified" in p for p in problems),
+                        problems[:2])
+
+    def test_a_descendant_with_no_completion_field_is_not_the_target(self):
+        """Ancestry alone never satisfies the match."""
+        finding = {"id": "SYN", "repair": self.ORIGIN}
+        self.assertEqual(self.ORIGIN, closure_target(finding),
+                         "with no declared completion object the target stays the repair")
+        code, _ = git("merge-base", "--is-ancestor", self.ORIGIN, self.COMPLETION)
+        self.assertEqual(0, code, "the descendant relation genuinely holds")
+        self.assertNotEqual(self.COMPLETION, closure_target(finding),
+                            "and it still does not become the target")
+
+    def test_a_completion_object_that_is_not_a_commit_fails(self):
+        absent = "deadbeef" * 5  # well-formed, unambiguously a string, resolves to nothing
+        code, _ = git("cat-file", "-t", absent)
+        self.assertNotEqual(0, code, "the fixture sha must genuinely be absent")
+        with mutated(FINDINGS,
+                     "    repair_completion_object: " + self.COMPLETION,
+                     "    repair_completion_object: " + absent):
+            problems = self.observe()
+        self.assertTrue(any("does not resolve to a commit" in p for p in problems), problems[:2])
+
+    def test_a_completion_object_yaml_reads_as_a_non_string_fails(self):
+        """An all-digit sha is loaded as an integer, and an integer is falsy.
+
+        This case was found by the control above failing for the wrong reason: the observer
+        skipped the finding rather than rejecting it, so a declaration that could not be read
+        removed itself from the population. That is the defect this register keeps finding one
+        level down, so it is now a named case rather than a footnote.
+        """
+        with mutated(FINDINGS,
+                     "    repair_completion_object: " + self.COMPLETION,
+                     "    repair_completion_object: " + "0" * 40):
+            body = load(FINDINGS)
+            problems = self.observe()
+        mutant = [f for f in body["findings"] if f["id"] == "NF-01"][0]
+        self.assertNotIsInstance(mutant["repair_completion_object"], str,
+                                 "the fixture must actually reproduce the coercion")
+        self.assertFalse(mutant["repair_completion_object"],
+                         "and the coerced value must actually be falsy")
+        self.assertTrue(any("NF-01" in p and "is not a commit-object string" in p
+                            for p in problems), problems[:2])
+
+    def test_an_origin_that_is_not_an_ancestor_of_the_completion_fails(self):
+        """A completion object must not be an arbitrary convenient reviewed commit."""
+        code, unrelated = git("rev-parse", "349f2dc")
+        self.assertEqual(0, code)
+        with mutated(FINDINGS,
+                     "    repair_introduced_object: " + self.ORIGIN + "\n"
+                     "    repair_completion_object: " + self.COMPLETION,
+                     "    repair_introduced_object: " + unrelated + "\n"
+                     "    repair_completion_object: " + self.COMPLETION):
+            problems = self.observe()
+        self.assertTrue(any("is not an ancestor of" in p for p in problems), problems[:2])
+
+    def test_a_completion_object_without_a_reason_fails(self):
+        empty = "    repair_completion_reason: " + chr(39) * 2 + "\n    unused_reason: >-"
+        with mutated(FINDINGS, "    repair_completion_reason: >-", empty):
+            problems = self.observe()
+        self.assertTrue(any("no completion reason" in p for p in problems))
+
+    def test_a_completion_reference_resolving_zero_times_fails(self):
+        with mutated(REVIEWS, "    verified_repairs_of:\n      - NF-01\n",
+                     "    verified_repairs_of:\n"):
+            problems = self.observe()
+        self.assertTrue(any("NF-01" in p and "no registered review both verified" in p
+                            for p in problems))
+
+    def test_a_completion_reference_resolving_more_than_once_fails(self):
+        duplicate = ("  - review_id: REV-C5-DUPLICATE\n"
+                     "    subject: synthetic duplicate verifier\n"
+                     "    reviewed_object:\n"
+                     "      kind: commit\n"
+                     "      sha: " + self.COMPLETION + "\n"
+                     "    verdict: INDEPENDENTLY VERIFIED\n"
+                     "    verified_repairs_of:\n      - NF-01\n"
+                     "    reviewer:\n"
+                     "      relationship: r\n"
+                     "      identity: unnamed\n"
+                     "      satisfies_mps_mat_009_named_reviewer_obligation: false\n"
+                     "    primary_artifact_retention: external_not_retained\n\n")
+        with mutated(REVIEWS, "  - review_id: REV-C5-CUMULATIVE",
+                     duplicate + "  - review_id: REV-C5-CUMULATIVE"):
+            problems = self.observe()
+        self.assertTrue(any("ambiguity is surfaced" in p for p in problems), problems[:2])
+
+    def test_a_completion_review_with_a_non_closing_verdict_fails(self):
+        with mutated(REVIEWS,
+                     "      sha: " + self.COMPLETION + "\n    verdict: INDEPENDENTLY VERIFIED",
+                     "      sha: " + self.COMPLETION + "\n    verdict: FAIL"):
+            problems = self.observe()
+        self.assertTrue(any("not a closing verdict" in p for p in problems), problems[:2])
+
+    def test_a_completion_object_one_commit_away_fails(self):
+        code, neighbour = git("rev-parse", "c2175bb")
+        self.assertEqual(0, code)
+        with mutated(FINDINGS,
+                     "    repair_completion_object: " + self.COMPLETION,
+                     "    repair_completion_object: " + neighbour):
+            problems = self.observe()
+        self.assertTrue(any("no registered review both verified" in p for p in problems),
+                        "off by one commit is not a match")
+
+    def test_prose_without_the_typed_field_confers_nothing(self):
+        """A sentence is not the relationship."""
+        with mutated(FINDINGS,
+                     "    repair_completion_object: " + self.COMPLETION + "\n", ""):
+            declared = [f["id"] for f in load(FINDINGS)["findings"]
+                        if f.get("repair_completion_object")]
+            closure = closure_problems(load(FINDINGS), load(REVIEWS))
+        self.assertNotIn("NF-01", declared,
+                         "removing the typed field must remove it from the population")
+        self.assertEqual([], closure,
+                         "and the finding falls back to its original repair target")
+
+    def test_the_original_repair_field_was_never_rewritten(self):
+        """History preservation, checked against the record as committed at 349f2dc."""
+        code, previous = git("show",
+                             "349f2dc:mps/materialization/mps-mat-009/findings.yaml")
+        self.assertEqual(0, code)
+        before = {f["id"]: f for f in yaml.safe_load(previous)["findings"]}
+        for finding in load(FINDINGS)["findings"]:
+            completion = finding.get("repair_completion_object")
+            if not completion:
+                continue
+            with self.subTest(finding=finding["id"]):
+                self.assertNotEqual(finding["repair"], completion,
+                                    "a repair field equal to the completion object would be "
+                                    "manufactured equality, not a completion relationship")
+                self.assertNotEqual(finding["repair_introduced_object"], completion)
+                self.assertEqual(before[finding["id"]]["repair"], finding["repair"])
+
+    def test_no_completion_declaration_moved_a_finding_to_closed(self):
+        """C6 changes the model; it performs no closure transition."""
+        for finding in load(FINDINGS)["findings"]:
+            if finding.get("repair_completion_object"):
+                with self.subTest(finding=finding["id"]):
+                    self.assertEqual("OPEN", finding.get("state"))
+
+    def test_nf_09_has_no_completion_object(self):
+        """Its mechanism was verified; its state-debt queue was not discharged."""
+        body, register = load(FINDINGS), load(REVIEWS)
+        nf09 = [f for f in body["findings"] if f["id"] == "NF-09"][0]
+        self.assertNotIn("repair_completion_object", nf09)
+        self.assertEqual("OPEN", nf09["state"])
+        review = [r for r in register["reviews"]
+                  if r["review_id"] == "REV-C5-CUMULATIVE"][0]
+        self.assertNotIn("NF-09", review.get("verified_repairs_of") or [])
+        self.assertIn("NF-09", review.get("not_verified_repairs_of") or [])
+
+    def test_nf_13_closure_is_undisturbed(self):
+        body = load(FINDINGS)
+        nf13 = [f for f in body["findings"] if f["id"] == "NF-13"][0]
+        self.assertEqual("CLOSED", nf13["state"])
+        self.assertNotIn("repair_completion_object", nf13)
+        self.assertEqual(nf13["repair"], closure_target(nf13))
+        self.assertEqual([], closure_problems(body, load(REVIEWS)))
+
+    def test_every_mutation_restored_the_files(self):
+        self.assertEqual([], self.observe())
+        self.assertEqual([], closure_problems(load(FINDINGS), load(REVIEWS)))
+        self.assertEqual([], state_completeness_problems(load(FINDINGS)))
 
 
 if __name__ == "__main__":

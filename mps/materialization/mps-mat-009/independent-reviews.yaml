@@ -30,11 +30,22 @@ closure_rule:
     reviewed the right object, or returned a passing verdict.
   invariant: >-
     For every applicable CLOSED finding f there must exist exactly one review r in this
-    register such that closure_review(f) = r, reviewed_object(r) = repair(f), and
+    register such that closure_review(f) = r, reviewed_object(r) = closure_target(f), and
     verdict(r) is a closing verdict.
+  invariant_note: >-
+    Amended at C6, and the amendment is to the target only. closure_target(f) is repair(f)
+    unless f declares a repair_completion_object, in which case it is that object. The
+    relation itself is unchanged and stays exact object identity: no ancestry, no
+    descendant, no prefix, no most-recent review. Before C6 this sentence read
+    reviewed_object(r) = repair(f), which stopped describing the observer the moment
+    completion objects existed -- the stale-narrative defect NF-12 records, appearing in the
+    rule NF-12 itself depends on.
   applies_to_finding_state: CLOSED
   requires_field: closure_review
-  matched_against: the finding's repair field, which names the object the review must have reviewed
+  matched_against: >-
+    the finding's closure target: its repair_completion_object when one is declared, and
+    otherwise its repair field. Either way it names the one object the review must have
+    reviewed.
   closing_verdicts:
     - INDEPENDENTLY VERIFIED
   closing_verdicts_note: >-
@@ -44,6 +55,55 @@ closure_rule:
   prose_is_not_warrant: >-
     closure_note fields carry human-readable context and are explicitly non-authoritative.
     No observer parses them, and no closure rests on them.
+
+repair_completion_rule:
+  purpose: >-
+    Some repairs are introduced at one commit and are only complete after later remediation
+    commits. NF-06's mechanism landed at C1 and acquired population defects that were
+    repaired at C3 and C4; the complete repaired proposition first existed at C5. The record
+    could express where a repair was introduced, or it could express where it became
+    complete, but not both -- so the closure rule, which matches object identity, had nothing
+    correct to match against.
+  what_it_is_not: >-
+    This is NOT ancestry-based closure. A descendant of the repair object is not a substitute
+    for it, "the latest review" is never adopted, no prefix matches, and no completion object
+    is ever inferred. Ancestry appears below only as a validity precondition on a declaration
+    a human wrote, never as a way of satisfying the closure match.
+  fields:
+    repair: >-
+      Preserved unchanged. The historical object, or historical statement, identifying where
+      the repair was introduced. C6 does not rewrite it for any finding.
+    repair_introduced_object: >-
+      The typed commit object corresponding to `repair`. Required alongside a completion
+      declaration because `repair` is a commit sha on the RT-F findings and prose on the NF
+      findings, and an ancestry precondition cannot be evaluated against prose. See NF-15.
+    repair_completion_object: >-
+      The exact commit object at which all changes necessary to complete this finding's
+      repair are present. It does not erase or replace the repair object.
+    repair_completion_reason: >-
+      Why the original repair object alone was not the complete repaired proposition. Prose,
+      and required, but never authority: the completion object is the machine-relevant field.
+  closure_target: >-
+    if repair_completion_object exists, the closure target is repair_completion_object;
+    otherwise it is repair. The closure rule then requires reviewed_object(review) to equal
+    that target EXACTLY, unchanged from before.
+  validity_conditions:
+    - the original repair field is present and unchanged
+    - repair_completion_object is an exact commit object that resolves in this repository
+    - repair_introduced_object is an exact commit object that resolves in this repository
+    - repair_introduced_object is an ancestor of, or identical to, repair_completion_object
+    - repair_completion_reason is present and non-empty
+    - >-
+      exactly one registered review both lists this finding in verified_repairs_of and has a
+      reviewed_object equal to the completion object; zero or more than one is a failure
+    - that review's verdict is in closing_verdicts
+    - that review carries valid reviewer and evidence-retention semantics
+    - no prose note substitutes for any failed condition
+  no_closure_transition_in_c6: >-
+    C6 establishes the model and the truthful completion metadata only. Even where the rule
+    would now make a finding mechanically closable, its state is left OPEN: a changed closure
+    model must itself be independently verified before it is used to move controlled finding
+    state.
 
 verdict_vocabulary:
   PENDING: reviewed object exists; independent review has not returned
@@ -381,6 +441,29 @@ reviews:
       warrants the closure of NF-13 alone.
     warrants_closure_of:
       - NF-13
+    verified_repairs_of:
+      - NF-01
+      - NF-05
+      - NF-06
+      - NF-10
+      - NF-11
+      - NF-12
+      - NF-13
+    verified_repairs_of_note: >-
+      Distinct from warrants_closure_of, and deliberately larger than it. This review
+      expressly verified the repair of each finding named here, by independent derivation and
+      by mutation, at the cumulative object. Verifying a repair is not the same act as
+      warranting a closure: the second additionally requires the closure target to equal this
+      review's reviewed object exactly, which is why only NF-13 appears above. A generic
+      review of a commit is never reinterpreted as verification of every finding in the
+      repository, so this list is enumerated rather than derived from the commit's contents.
+    not_verified_repairs_of:
+      - NF-09
+    not_verified_repairs_of_note: >-
+      NF-09's mechanism repair was verified, but the finding also carries a residual queue of
+      25 unadjudicated state-debt records. Listing it here would let a mechanism verification
+      erase an obligation the review did not discharge, so it is excluded and its
+      independent_review_support says what was and was not established.
     findings_raised:
       - NF-14
     observations_raised:

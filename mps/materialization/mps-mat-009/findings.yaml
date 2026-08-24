@@ -1518,6 +1518,17 @@ findings:
         The membership result the sentence exists to support is 9 of 9 for the MPS-MAT-009
         records, in both the clone and the working tree.
     repair: this checkpoint, commit C2
+    repair_introduced_object: 5fe5b69a19f7db58180a7b977164fc57819c5075
+    repair_completion_object: 3188a11443e33c8c4f68933cf73282108957f356
+    repair_completion_reason: >-
+      The literal was removed at C2, but the finding's own evidence then cited two paths a
+      clone cannot resolve, which C5 repaired. The repaired proposition -- a population
+      statement that reproduces from a clone -- did not exist until C5.
+    repair_completion_note: >-
+      The repair field above is preserved exactly as written and still identifies C2 as
+      where this repair was introduced. The completion object does not replace it, and C6
+      performs no closure transition: this finding remains OPEN until the changed closure
+      model has itself been independently verified.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -1562,6 +1573,17 @@ findings:
       existed, that it had reviewed the object the finding claimed as its repair, or that it
       had returned a passing verdict.
     repair: this checkpoint, commit C1
+    repair_introduced_object: 63694e5f514b12852cec5524db841bb12a52df69
+    repair_completion_object: 3188a11443e33c8c4f68933cf73282108957f356
+    repair_completion_reason: >-
+      The typed closure reference landed at C1 over a population that was itself incomplete.
+      C3 and C4 repaired the state representation the rule ranges over, so the warrant only
+      became meaningful once the population it applied to was controlled.
+    repair_completion_note: >-
+      The repair field above is preserved exactly as written and still identifies C1 as
+      where this repair was introduced. The completion object does not replace it, and C6
+      performs no closure transition: this finding remains OPEN until the changed closure
+      model has itself been independently verified.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -1577,6 +1599,21 @@ findings:
         Neither is done here, and the repair field is deliberately left unchanged: rewriting it to
         match a review that did not review it would make the warrant resolve by falsifying what it
         resolves against.
+      why_no_completion_object_is_declared: >-
+        C6 added a way to say that a repair introduced at one commit became complete at a later one,
+        and NF-05 and NF-06 use it for a mechanism that landed at this same commit C1. NF-09 does not,
+        and the difference is not an oversight. What C6 permits is a statement that the REPAIR is
+        complete at the later object; the mechanism half of this finding would qualify, but the
+        finding is not only its mechanism. Its residual is a 25-record adjudication queue that no
+        commit in C1 through C5 touched and that REV-C5-CUMULATIVE expressly did not adjudicate.
+        Declaring a completion object here would assert completion of a repair whose stated residual
+        is untouched, which is the class of defect this register exists to catch -- so the mechanism
+        is recorded as independently verified and the finding stays OPEN on its queue.
+      what_would_make_a_completion_object_truthful_later: >-
+        Adjudication of the 25 state-debt records, or an explicit re-scoping of this finding to the
+        population mechanism alone with the queue carried as a separate finding. Neither is done
+        here; the second is a scoping decision for whoever disposes of this finding, not an
+        implementer's inference.
     disposition: >-
       Replaced by a typed closure_review reference resolved against the controlled review
       register. The prose is retained as closure_note and is explicitly non-authoritative;
@@ -1598,6 +1635,17 @@ findings:
       CLOSED because a registered independent review warrants closure, versus CLOSED because
       somebody wrote a sentence claiming a review occurred.
     repair: this checkpoint, commit C1
+    repair_introduced_object: 63694e5f514b12852cec5524db841bb12a52df69
+    repair_completion_object: 3188a11443e33c8c4f68933cf73282108957f356
+    repair_completion_reason: >-
+      The mechanism distinguishing warranted closure from an assertion landed at C1, and C3
+      and C4 then found and repaired defects in the population definition and the presence
+      test it depends on. The complete repaired mechanism first existed at C5.
+    repair_completion_note: >-
+      The repair field above is preserved exactly as written and still identifies C1 as
+      where this repair was introduced. The completion object does not replace it, and C6
+      performs no closure transition: this finding remains OPEN until the changed closure
+      model has itself been independently verified.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -1716,6 +1764,17 @@ findings:
         actually says". A closure claim is then invisible to the state layer and invisible to
         the closure layer, because the closure layer only ranges over canonical CLOSED.
     repair: this checkpoint, commit C3
+    repair_introduced_object: 1db99482ce894606ca68ec67a832cb1351369d68
+    repair_completion_object: 3188a11443e33c8c4f68933cf73282108957f356
+    repair_completion_reason: >-
+      The representation check landed at C3 and could not distinguish an absent field from one
+      present and null. That gap was repaired at C4, so the check only became complete
+      afterwards.
+    repair_completion_note: >-
+      The repair field above is preserved exactly as written and still identifies C3 as
+      where this repair was introduced. The completion object does not replace it, and C6
+      performs no closure transition: this finding remains OPEN until the changed closure
+      model has itself been independently verified.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -1780,6 +1839,17 @@ findings:
       someone had written could still be declared away. No committed record triggers it,
       which is what makes it worth closing now rather than after it bites.
     repair: this checkpoint, commit C4
+    repair_introduced_object: c2175bbcb798cf1a12a69d26a1504d973e76c284
+    repair_completion_object: 3188a11443e33c8c4f68933cf73282108957f356
+    repair_completion_reason: >-
+      The presence repair landed at C4, and the cumulative checkpoint is where it was
+      exercised from a cold clone together with the mechanisms it depends on. C5 also repaired
+      the regression failure that prevented the suite completing from a clone at all.
+    repair_completion_note: >-
+      The repair field above is preserved exactly as written and still identifies C4 as
+      where this repair was introduced. The completion object does not replace it, and C6
+      performs no closure transition: this finding remains OPEN until the changed closure
+      model has itself been independently verified.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -1822,6 +1892,17 @@ findings:
       the repair commit without a record would make the register quieter about its own
       errors than about anyone else's.
     repair: this checkpoint, commit C4
+    repair_introduced_object: c2175bbcb798cf1a12a69d26a1504d973e76c284
+    repair_completion_object: 3188a11443e33c8c4f68933cf73282108957f356
+    repair_completion_reason: >-
+      The narrative repairs landed at C4, and C5 repaired a further stale citation in the same
+      register that a fresh clone refused. The record was not consistent from a clone until
+      C5.
+    repair_completion_note: >-
+      The repair field above is preserved exactly as written and still identifies C4 as
+      where this repair was introduced. The completion object does not replace it, and C6
+      performs no closure transition: this finding remains OPEN until the changed closure
+      model has itself been independently verified.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -1967,3 +2048,103 @@ findings:
       the repair this finding says not to make. It is named so that whoever disposes of NF-14
       disposes of it too.
     disposition: carried, not repaired in this checkpoint
+
+  - id: NF-15
+    origin: >-
+      self-observed while implementing the C6 repair-completion model, and named from
+      independent-reviews.yaml repair_completion_rule
+    observed_at_object: 349f2dcba5d1c1dfeb0038e8a668dac7c22b57c5
+    no_primary_artifact_retention_is_declared: >-
+      Deliberate, and not an omission. All three retention classes describe an artifact
+      produced by a review: retained transports one, external_not_retained says a review
+      workspace held one, and reproduction requires a later observation by someone else in
+      another workspace. This finding is none of those. It was self-observed by the
+      implementer while building C6, in this workspace, and nothing was produced that a
+      retention class could describe. Labelling it reproduction would have been the closest
+      fit and would have been false in every clause of its own definition.
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE, MEASUREMENT_PATH]
+    title: >-
+      The repair field carries two incompatible value types, and C6 emptied the population
+      that exercised the weaker one
+    claim: >-
+      closure_target falls back to the finding's repair field when no completion object is
+      declared, and that field is not one type. On five findings it is a resolvable commit
+      sha that can be compared with a review's reviewed_object. On seven it is deictic prose
+      of the form "this checkpoint, commit C2", which names no object and whose referent
+      depends on when it is read. Nothing in the record or in any observer constrains which
+      it is, so the closure rule has a branch whose comparison cannot succeed by
+      construction.
+    measured_population:
+      at_object: 349f2dcba5d1c1dfeb0038e8a668dac7c22b57c5
+      method: >-
+        Every record in this file read through yaml.safe_load and its repair field matched
+        against ^[0-9a-f]{40}$. Reproduced by re-running that classification; no retained
+        artifact is relied on.
+      commit_sha_valued: 5
+      commit_sha_valued_ids: [RT-F-03, RT-F-04, RT-F-05, RT-F-06, NF-13]
+      prose_valued: 7
+      prose_valued_ids: [NF-01, NF-05, NF-06, NF-09, NF-10, NF-11, NF-12]
+      field_absent: 31
+    mechanism: >-
+      closure_problems compares reviewed_sha(review) against closure_target(finding) by string
+      equality. Where the target is prose, that comparison is false for every possible review,
+      and the diagnostic it emits reports a reviewed-object mismatch -- naming a truncation of
+      the prose as though it were an object -- rather than saying the target was never an
+      object at all. It fails closed, so nothing is wrongly closed by it; what it does is
+      misdescribe why.
+    what_c6_changed_about_it: >-
+      C6 gave six of the seven prose-valued findings a typed repair_completion_object, so
+      their closure target is now a resolvable commit. NF-09 is the seventh and is
+      deliberately left without one. NF-09 is OPEN, and the closure rule applies only to
+      CLOSED, so after C6 the number of findings that reach the prose branch of closure_target
+      under the closure rule is zero. Every finding that does reach the target comparison
+      carries a sha.
+    why_it_matters: >-
+      A branch with an empty population is an untested branch, and C6 is what emptied it. The
+      defect did not become smaller; it became unobservable, which in this register is the
+      more dangerous of the two. The next actor to move a prose-repair finding to CLOSED --
+      NF-09 is the standing candidate -- gets a failure whose message points at the review
+      rather than at the finding, and the natural repair for that message is to edit the
+      repair field, which is the one thing C6 exists to prevent.
+    why_it_is_not_acceptance_blocking: >-
+      No finding is closed on a prose target and none can be: the comparison fails closed. The
+      five findings actually closed under this rule all carry sha-valued repairs and were
+      matched as object identity. This is a soundness-preserving representation defect, not a
+      warrant that resolves wrongly.
+    failure_sensitivity: >-
+      Nothing currently detects it. A type control over the repair field would, and so would a
+      control asserting that the prose branch of closure_target has a non-empty population or
+      is removed. Both are deliberately not written here: the first would fail on seven
+      preserved historical values, and repairing those values is expressly forbidden, so the
+      control and the preservation rule would be in direct conflict until the disposition
+      question below is answered.
+    required_disposition_question: >-
+      Whether the historical prose repair values are to be preserved as written with a
+      separate typed field carrying the object -- the shape C6 introduced for the completion
+      side, applied to the introduction side -- or whether closure_target is to stop falling
+      back to repair at all and require an explicit typed target on any finding proposed for
+      closure. The second removes the untyped branch rather than testing it. Rewriting the
+      seven prose values to shas is expressly not the repair, for the reason C6 was built:
+      the repair field is preserved history and the record must not manufacture the equality
+      the rule checks.
+    not_repaired_here: >-
+      C6's authorized scope is the completion semantics and its controls. This finding is
+      recorded at the checkpoint that made it visible so that it is not carried silently, and
+      is left OPEN for disposition. It is the same class as NF-14 and is recorded separately
+      for the same reason: no existing finding reaches it.
+    second_instance_in_a_neighbouring_field: >-
+      Found while classifying this finding, and recorded here because it is the same defect
+      rather than a related one: a controlled vocabulary that nothing checks membership
+      against. The register declares three loci -- SYSTEM, EVIDENCE and MEASUREMENT_PATH --
+      and F1 carries locus [EVIDENCE, PROCESS]. PROCESS is not a declared locus and never
+      was; SYSTEM is declared and used by nothing. A locus-scoped reader selecting on the
+      declared vocabulary silently drops half of F1's classification, and one selecting on
+      observed values reports a member the register does not define. This was caught only
+      because NF-15's own locus had to be chosen; no observer looks at it.
+    second_instance_not_repaired_here: >-
+      Neither retyping F1's locus nor adding PROCESS to the declaration is done here. Which
+      of the two is correct is a classification question about what F1 is -- and F1 is one of
+      the original review findings, so its classification is the reviewer's, not the
+      implementer's. It is named so that whoever disposes of NF-15 disposes of it too.
