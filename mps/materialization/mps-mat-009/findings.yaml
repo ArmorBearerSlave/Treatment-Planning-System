@@ -1504,8 +1504,12 @@ findings:
       cold_clone_at_58d18db: 103
       working_tree_at_58d18db: 105
       difference: >-
-        Two members present only in the working tree, both gitignored derived output:
-        build/work/reports/TEST-junit-jupiter.xml and build/work/reports/TEST-junit-vintage.xml.
+        Two members present only in the working tree, both gitignored derived output: the
+        JUnit Jupiter and Vintage report files, named TEST-junit-jupiter.xml and
+        TEST-junit-vintage.xml, generated beneath the ignored build work report area. Their
+        identities are given as basenames and a description rather than as
+        repository-relative paths, because a clone cannot resolve them and a citation that
+        cannot be resolved is what NF-13 records.
       significance: >-
         The same class as F7. A cited count that includes derived output describes a
         population that does not exist in a clone, so the number cannot be reproduced by the
@@ -1741,3 +1745,49 @@ findings:
     not_done: >-
       The historical measurement is not recomputed. A baseline that is quietly refreshed
       whenever it disagrees with the present is not a baseline.
+
+  - id: NF-13
+    origin: independent review of c2175bb, from a fresh clone
+    reviewed_object: c2175bbcb798cf1a12a69d26a1504d973e76c284
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: true
+    blocking_scope: checkpoint-blocking pending independent review
+    state: OPEN
+    locus: [MEASUREMENT_PATH, EVIDENCE]
+    title: >-
+      The finding that recorded a non-reproducing population cited two paths a clone cannot
+      resolve
+    claim: >-
+      NF-01 recorded which two members made the scanned population differ between a clone and
+      a working tree, and named them as repository-relative paths under the ignored build
+      work report area. Those paths are untracked and gitignored, so check_path_citations
+      refuses them from a fresh clone and the full regression fails there.
+    independent_red:
+      observed_from: a fresh clone at c2175bb
+      gate: python tools/spec/check_path_citations.py
+      result: exit 1, two citations do not exist
+      reproduced_by_the_remediation_actor: yes, against c2175bb before any repair
+    introduced_by: 63694e5, commit C1
+    why_it_went_unnoticed_here: >-
+      The gate passed in the remediation working tree, and only there, because that tree
+      still held the JUnit reports from earlier runs. A control green on account of
+      gitignored derived state is exactly what the session controls already warn about:
+      git-clean does not establish execution-cold. The rule was written down and the
+      violation still shipped, which is the more useful half of this finding.
+    the_irony_recorded_rather_than_smoothed: >-
+      NF-01 exists because a statement described a population that does not exist in a clone.
+      Its own evidence then did the same thing, in the same file, about the same two files.
+    repair: this checkpoint, commit C5
+    disposition: >-
+      The two artifacts are identified by basename and by a description of where they were
+      generated, instead of by repository-relative paths. Nothing is added to
+      spec/path_citation_allowlist.yaml: that register is for paths deliberately absent by
+      design or as negative-control fixtures, and these are neither -- they are transient
+      derived output that simply should never have been cited as controlled paths.
+    substantive_conclusion_unchanged: >-
+      NF-01's conclusion stands untouched. The load-bearing membership result remains 9 of 9
+      for the MPS-MAT-009 records in both the clone and the working tree, and the historical
+      cold and warm measurements are preserved exactly as taken.
+    state_after_implementation: >-
+      OPEN, checkpoint-blocking. The repair is here; closure requires an independent review
+      of this checkpoint from a fresh clone.
