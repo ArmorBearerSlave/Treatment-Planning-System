@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import collections
 import contextlib
+import sys
 import unittest
 from pathlib import Path
 
@@ -66,7 +67,40 @@ def git(*args: str) -> tuple[int, str]:
     return result.returncode, result.stdout.strip()
 
 
-def closure_target(finding: dict) -> str | None:
+COMPLETION_FIELD = "repair_completion_object"
+
+
+def declares_completion(finding: dict) -> bool:
+    """C7/NF-16. Whether a completion object is DECLARED. The one definition, used everywhere.
+
+    The controlled rule says a completion object exists, not that it is truthy, and those are
+    different populations. C6 got this right in one place and wrong in three: the declaration
+    observer tested key membership, while closure_target and two safety tests tested
+    truthiness. A field written as `repair_completion_object:` with no value, or `""`, or `0`,
+    or `false`, is a field somebody wrote -- present, declared, and invalid. Under truthiness
+    it vanished: closure_target silently redirected to the repair field, and the two tests
+    that enforce "the repair field was never rewritten" and "no completion moved a finding to
+    CLOSED" skipped the record entirely.
+
+    Nothing was exploitable, because completion_declaration_problems rejected those values
+    independently. That is not the property to rely on. A safety control that is harmless only
+    because a different control happens to fail alongside it has no failure mode of its own,
+    and the two are not coupled by anything that would notice if one moved.
+    """
+    return COMPLETION_FIELD in finding
+
+
+def findings_declaring_completion(findings_body: dict) -> list[dict]:
+    """The declared-completion population. Every C6 semantic branch resolves it through here."""
+    return [f for f in findings_body["findings"] if declares_completion(f)]
+
+
+def usable_object(value) -> bool:
+    """A value that could name a git object. Not that it does -- that needs the repository."""
+    return isinstance(value, str) and bool(value.strip())
+
+
+def closure_target(finding: dict):
     """The object a closure review must have reviewed, EXACTLY.
 
     C6. A repair introduced at one commit can only become complete at a later one -- NF-06's
@@ -74,12 +108,19 @@ def closure_target(finding: dict) -> str | None:
     this, the record could say where a repair was introduced or where it became complete but
     not both, so the closure rule had nothing correct to match.
 
-    The target moves to the declared completion object when one exists. What does NOT change
-    is the match: it remains exact object identity. Ancestry is a validity precondition on a
-    declaration a person wrote, never a way of satisfying the match, and no descendant is
+    The target moves to the declared completion object when one is DECLARED. What does NOT
+    change is the match: it remains exact object identity. Ancestry is a validity precondition
+    on a declaration a person wrote, never a way of satisfying the match, and no descendant is
     ever substituted for a target that was not declared.
+
+    C7/NF-16. A declared completion object is returned as written even when it is unusable.
+    Falling back to the repair field here would answer a question nobody asked -- the record
+    declared a completion object, and the honest target is that declaration, defective or not.
+    Substituting the repair field for it would be the silent redirection this repair removes.
     """
-    return finding.get("repair_completion_object") or finding.get("repair")
+    if declares_completion(finding):
+        return finding[COMPLETION_FIELD]
+    return finding.get("repair")
 
 
 def completion_declaration_problems(findings_body: dict, register_body: dict) -> list[str]:
@@ -89,16 +130,14 @@ def completion_declaration_problems(findings_body: dict, register_body: dict) ->
     reviews = register_body.get("reviews") or []
 
     problems: list[str] = []
-    for finding in findings_body["findings"]:
-        if "repair_completion_object" not in finding:
-            continue
+    for finding in findings_declaring_completion(findings_body):
         fid = finding["id"]
-        completion = finding["repair_completion_object"]
+        completion = finding[COMPLETION_FIELD]
         # Declared-but-unusable is a failure, never a skip. An all-digit sha is parsed by
         # YAML as an integer, and an integer is falsy, so a truthiness test would drop the
         # finding out of the population silently -- the declaration would be present and
         # unobserved, which is the shape of every finding in this register.
-        if not isinstance(completion, str) or not completion.strip():
+        if not usable_object(completion):
             problems.append(f"{fid}: repair_completion_object is not a commit-object string "
                             f"({completion!r}); a declaration that cannot be read must fail "
                             f"rather than remove the finding from the population")
@@ -307,12 +346,20 @@ def closure_problems(findings_body: dict, register_body: dict) -> list[str]:
         if reference not in registered_units:
             problems.append(f"{fid}: {reference!r} has a review entry but is not declared as "
                             f"a reviewable unit, so it is not a registered review")
-        # C6: the target is the declared completion object when one exists, and the
+        # C6: the target is the declared completion object when one is declared, and the
         # ORIGINAL repair otherwise. The match itself is unchanged -- exact object identity,
         # no ancestry, no descendant substitution, no promotion.
         claimed = closure_target(finding)
         actual = reviewed_sha(review)
-        if not claimed:
+        # C7/NF-16. Three outcomes, not two. A declared-but-unusable completion object is
+        # reported as the defective declaration it is; it is never reported as "no target",
+        # which would describe a record that said nothing, and never silently replaced by the
+        # repair field, which would describe a target the record did not declare.
+        if declares_completion(finding) and not usable_object(claimed):
+            problems.append(f"{fid}: declares {COMPLETION_FIELD} {claimed!r}, which cannot "
+                            f"name an object; a declared completion object is never replaced "
+                            f"by the repair field")
+        elif not claimed:
             problems.append(f"{fid}: names no closure target for the review to have reviewed")
         elif actual != claimed:
             problems.append(f"{fid}: closure review {reference} reviewed {str(actual)[:12]} "
@@ -801,8 +848,8 @@ class CompletionObjectMutations(unittest.TestCase):
             self.assertNotIn(fid, source)
 
     def test_exact_match_to_the_registered_review_object_passes(self):
-        declared = {f["id"] for f in load(FINDINGS)["findings"]
-                    if f.get("repair_completion_object") == self.COMPLETION}
+        declared = {f["id"] for f in findings_declaring_completion(load(FINDINGS))
+                    if f[COMPLETION_FIELD] == self.COMPLETION}
         self.assertTrue(declared)
         self.assertEqual([], self.observe())
 
@@ -922,8 +969,7 @@ class CompletionObjectMutations(unittest.TestCase):
         """A sentence is not the relationship."""
         with mutated(FINDINGS,
                      "    repair_completion_object: " + self.COMPLETION + "\n", ""):
-            declared = [f["id"] for f in load(FINDINGS)["findings"]
-                        if f.get("repair_completion_object")]
+            declared = [f["id"] for f in findings_declaring_completion(load(FINDINGS))]
             closure = closure_problems(load(FINDINGS), load(REVIEWS))
         self.assertNotIn("NF-01", declared,
                          "removing the typed field must remove it from the population")
@@ -936,10 +982,10 @@ class CompletionObjectMutations(unittest.TestCase):
                              "349f2dc:mps/materialization/mps-mat-009/findings.yaml")
         self.assertEqual(0, code)
         before = {f["id"]: f for f in yaml.safe_load(previous)["findings"]}
-        for finding in load(FINDINGS)["findings"]:
-            completion = finding.get("repair_completion_object")
-            if not completion:
-                continue
+        # C7/NF-16. Population by declaration, not by truthiness: a falsy-but-present
+        # completion object must not exempt a record from the history-preservation check.
+        for finding in findings_declaring_completion(load(FINDINGS)):
+            completion = finding[COMPLETION_FIELD]
             with self.subTest(finding=finding["id"]):
                 self.assertNotEqual(finding["repair"], completion,
                                     "a repair field equal to the completion object would be "
@@ -949,10 +995,11 @@ class CompletionObjectMutations(unittest.TestCase):
 
     def test_no_completion_declaration_moved_a_finding_to_closed(self):
         """C6 changes the model; it performs no closure transition."""
-        for finding in load(FINDINGS)["findings"]:
-            if finding.get("repair_completion_object"):
-                with self.subTest(finding=finding["id"]):
-                    self.assertEqual("OPEN", finding.get("state"))
+        # C7/NF-16. Population by declaration. A falsy-but-present completion object is
+        # still a completion declaration, and must not exempt a record from this check.
+        for finding in findings_declaring_completion(load(FINDINGS)):
+            with self.subTest(finding=finding["id"]):
+                self.assertEqual("OPEN", finding.get("state"))
 
     def test_nf_09_has_no_completion_object(self):
         """Its mechanism was verified; its state-debt queue was not discharged."""
@@ -981,3 +1028,193 @@ class CompletionObjectMutations(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CompletionPresenceSemantics(unittest.TestCase):
+    """C7/NF-16. One field, one presence semantics, in every branch that consumes it.
+
+    C6 tested key membership in the declaration observer and truthiness in three other places.
+    The gap was not exploitable, because the declaration observer rejected every falsy value
+    independently -- but that is a property of two controls happening to fail together, not a
+    property either one has. These controls are behavioural: each writes a real falsy value
+    into the record and asks what each consumer then does with it.
+
+    The distinction being preserved throughout:
+
+        absent          -> fallback branch, target is the repair field
+        present, null   -> declared and invalid
+        present, ""     -> declared and invalid
+        present, 0      -> declared and invalid
+        present, false  -> declared and invalid
+        present, sha    -> completion branch, target is the completion object
+    """
+
+    COMPLETION = "3188a11443e33c8c4f68933cf73282108957f356"
+    # Written as YAML source, because the defect only exists once YAML has loaded it. `0` and
+    # `false` are the cases that matter: both are physically present and both are falsy.
+    FALSY_YAML = {"null": "null", "empty string": '""', "zero": "0", "false": "false"}
+
+    def falsy_record(self, literal: str) -> dict:
+        """NF-01 with its completion object replaced by a falsy YAML literal."""
+        with mutated(FINDINGS,
+                     "    repair_completion_object: " + self.COMPLETION,
+                     "    repair_completion_object: " + literal):
+            body = load(FINDINGS)
+        return [f for f in body["findings"] if f["id"] == "NF-01"][0]
+
+    # ---------------------------------------------------------------- the fixtures are real
+
+    def test_each_falsy_literal_actually_loads_present_and_falsy(self):
+        """Without this the whole class could pass by never reproducing the condition."""
+        for label, literal in self.FALSY_YAML.items():
+            with self.subTest(value=label):
+                finding = self.falsy_record(literal)
+                self.assertIn(COMPLETION_FIELD, finding, "the key must be physically present")
+                self.assertFalse(finding[COMPLETION_FIELD], "and its value must be falsy")
+
+    # ---------------------------------------------------------------- closure_target
+
+    def test_absent_falls_back_to_the_repair_field(self):
+        finding = {"id": "SYN", "repair": "a" * 40}
+        self.assertNotIn(COMPLETION_FIELD, finding)
+        self.assertFalse(declares_completion(finding))
+        self.assertEqual("a" * 40, closure_target(finding))
+
+    def test_a_declared_sha_selects_the_completion_branch(self):
+        finding = {"id": "SYN", "repair": "a" * 40, COMPLETION_FIELD: self.COMPLETION}
+        self.assertTrue(declares_completion(finding))
+        self.assertEqual(self.COMPLETION, closure_target(finding))
+
+    def test_no_falsy_declared_value_silently_falls_back_to_repair(self):
+        """The core NF-16 property: present-and-falsy is never redirected to the repair field."""
+        for label, literal in self.FALSY_YAML.items():
+            with self.subTest(value=label):
+                finding = self.falsy_record(literal)
+                self.assertTrue(declares_completion(finding),
+                                "a present key is a declaration whatever its value")
+                self.assertNotEqual(finding["repair"], closure_target(finding),
+                                    "silent redirection to the repair field is the defect")
+                self.assertEqual(finding[COMPLETION_FIELD], closure_target(finding),
+                                 "the declared value is returned as written, defective or not")
+
+    # ------------------------------------------------- the population every consumer resolves
+
+    def test_the_declared_population_includes_every_falsy_declaration(self):
+        for label, literal in self.FALSY_YAML.items():
+            with self.subTest(value=label):
+                with mutated(FINDINGS,
+                             "    repair_completion_object: " + self.COMPLETION,
+                             "    repair_completion_object: " + literal):
+                    population = {f["id"] for f in findings_declaring_completion(load(FINDINGS))}
+                self.assertIn("NF-01", population,
+                              "a falsy declaration must not drop out of the population that "
+                              "the history and state safety controls range over")
+
+    def test_the_safety_controls_resolve_that_same_population(self):
+        """Not a source scan: the two controls are executed against a falsy record.
+
+        Both are written as loops over findings_declaring_completion, so the check is that
+        each one's population contains the falsy record and that each one's assertion is
+        actually evaluated for it -- reproduced here by running the same predicates.
+        """
+        import inspect
+
+        for name in ("test_the_original_repair_field_was_never_rewritten",
+                     "test_no_completion_declaration_moved_a_finding_to_closed"):
+            source = inspect.getsource(getattr(CompletionObjectMutations, name))
+            with self.subTest(control=name):
+                self.assertIn("findings_declaring_completion", source)
+                self.assertNotIn('get("repair_completion_object")', source)
+
+        for label, literal in self.FALSY_YAML.items():
+            with self.subTest(value=label):
+                finding = self.falsy_record(literal)
+                # history preservation still evaluates for this record
+                self.assertNotEqual(finding["repair"], finding[COMPLETION_FIELD])
+                # the no-transition control still evaluates for this record
+                self.assertEqual("OPEN", finding.get("state"))
+
+    # ---------------------------------------------------------------- the observers still fail
+
+    def test_every_falsy_declaration_is_rejected_by_the_declaration_observer(self):
+        for label, literal in self.FALSY_YAML.items():
+            with self.subTest(value=label):
+                with mutated(FINDINGS,
+                             "    repair_completion_object: " + self.COMPLETION,
+                             "    repair_completion_object: " + literal):
+                    problems = completion_declaration_problems(load(FINDINGS), load(REVIEWS))
+                self.assertTrue(any("NF-01" in p and "is not a commit-object string" in p
+                                    for p in problems), problems[:2])
+
+    def test_a_falsy_declaration_on_a_closed_finding_is_reported_as_declared_not_as_absent(self):
+        """The third outcome. NF-13 is CLOSED, so it reaches the closure comparison.
+
+        Under C6 this record would have had its target silently replaced by its repair field,
+        which is the reviewed object -- so the closure check would have PASSED over a finding
+        whose completion declaration was unreadable. That is the exploitable shape the gap did
+        not have only because no CLOSED finding declared completion. It does now, in a mutant.
+        """
+        for label, literal in self.FALSY_YAML.items():
+            with self.subTest(value=label):
+                with mutated(FINDINGS,
+                             "    repair: 3188a11443e33c8c4f68933cf73282108957f356\n",
+                             "    repair: 3188a11443e33c8c4f68933cf73282108957f356\n"
+                             "    repair_completion_object: " + literal + "\n"):
+                    body = load(FINDINGS)
+                    nf13 = [f for f in body["findings"] if f["id"] == "NF-13"][0]
+                    problems = closure_problems(body, load(REVIEWS))
+                self.assertTrue(declares_completion(nf13))
+                self.assertNotEqual(nf13["repair"], closure_target(nf13),
+                                    "C6 would have replaced the declaration with this value "
+                                    "and the closure check would have passed")
+                self.assertTrue(any("NF-13" in p and "cannot name an object" in p
+                                    for p in problems), problems[:3])
+
+    # ---------------------------------------------------------------- source-level corroboration
+
+    def test_no_consumer_decides_declaration_by_truthiness(self):
+        """Corroborating only. The behavioural controls above are the evidence.
+
+        Scoped to the module's own functions rather than its whole text: a scan of the file
+        matches the literal in this assertion and fails on itself, which is a control testing
+        its own source instead of the code it is about.
+        """
+        import inspect
+
+        module = sys.modules[__name__]
+        scanned = []
+        for name, obj in vars(module).items():
+            if inspect.isfunction(obj) and obj.__module__ == __name__:
+                scanned.append(name)
+                with self.subTest(consumer=name):
+                    self.assertNotIn('get("repair_completion_object")',
+                                     inspect.getsource(obj),
+                                     "declaration is key membership; .get() on the "
+                                     "completion field reintroduces truthiness")
+        self.assertIn("closure_target", scanned, "the scan must actually reach the consumers")
+        self.assertIn("completion_declaration_problems", scanned)
+        self.assertIn("closure_problems", scanned)
+
+    def test_the_predicate_is_defined_once(self):
+        import inspect
+
+        for fn in (closure_target, completion_declaration_problems,
+                   findings_declaring_completion):
+            with self.subTest(fn=fn.__name__):
+                body = inspect.getsource(fn)
+                self.assertNotIn('get(COMPLETION_FIELD)', body)
+
+    def test_exact_object_matching_is_unchanged(self):
+        """C7 changes presence semantics only. The predicate stays object identity."""
+        import inspect
+
+        body = inspect.getsource(closure_problems)
+        self.assertIn("actual != claimed", body)
+        for forbidden in ("merge-base", "startswith", ".lower()", "sorted(", "[-1]"):
+            self.assertNotIn(forbidden, body,
+                             "no ancestry, prefix, case folding, or latest-review selection")
+
+    def test_the_record_is_unchanged_by_every_mutation_above(self):
+        self.assertEqual([], completion_declaration_problems(load(FINDINGS), load(REVIEWS)))
+        self.assertEqual([], closure_problems(load(FINDINGS), load(REVIEWS)))
+        self.assertEqual([], state_completeness_problems(load(FINDINGS)))

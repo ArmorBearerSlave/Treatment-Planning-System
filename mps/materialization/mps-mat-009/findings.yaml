@@ -2096,30 +2096,63 @@ findings:
       misdescribe why.
     what_c6_changed_about_it: >-
       C6 gave six of the seven prose-valued findings a typed repair_completion_object, so
-      their closure target is now a resolvable commit. NF-09 is the seventh and is
-      deliberately left without one. NF-09 is OPEN, and the closure rule applies only to
-      CLOSED, so after C6 the number of findings that reach the prose branch of closure_target
-      under the closure rule is zero. Every finding that does reach the target comparison
-      carries a sha.
+      their closure target is a resolvable commit. NF-09 is the seventh and is deliberately
+      left without one. What that changed is the potential OPEN population that would depend
+      on the prose sub-case if it were ever proposed for closure: seven findings before C6,
+      one after. It did not change how many findings reach the prose sub-case under the
+      closure rule, because that number was already zero.
+    withdrawn_causal_claim: >-
+      This finding said at C6 that "a branch with an empty population is an untested branch,
+      and C6 is what emptied it". That is false and is withdrawn. It asserted a transition
+      from occupied to empty which never happened: the prose sub-case had zero
+      canonical-CLOSED members before C6, at C6, and after it. The wording is preserved here
+      rather than deleted, because the defect it misdescribes is real and the misdescription
+      is the more instructive half -- an implementer inferred a causal effect of its own
+      commit from a number it had measured only once, at the end.
+    independently_measured_at_three_objects:
+      method: >-
+        For each object, the findings register read through yaml.safe_load, and each record
+        classified by canonical state, by whether the repair_completion_object key is present,
+        and by whether the repair field matches ^[0-9a-f]{40}$. Reproduced by re-running that
+        classification against git show <object>:<path>; no retained artifact is relied on.
+      canonical_closed_reaching_the_prose_sub_case:
+        3188a11: 0
+        349f2dc: 0
+        3e397dc: 0
+      canonical_closed_reaching_the_sha_sub_case:
+        3188a11: 4
+        349f2dc: 5
+        3e397dc: 5
+      potential_open_population_depending_on_the_prose_sub_case:
+        3188a11: 8
+        349f2dc: 7
+        3e397dc: 1
+      note: >-
+        The 8 to 7 reduction is 349f2dc's, which resolved NF-13's prose repair to the object
+        it already denoted. The 7 to 1 reduction is C6's. Neither touched the CLOSED
+        population, which is where the closure rule ranges.
     why_it_matters: >-
-      A branch with an empty population is an untested branch, and C6 is what emptied it. The
-      defect did not become smaller; it became unobservable, which in this register is the
-      more dangerous of the two. The next actor to move a prose-repair finding to CLOSED --
-      NF-09 is the standing candidate -- gets a failure whose message points at the review
-      rather than at the finding, and the natural repair for that message is to edit the
-      repair field, which is the one thing C6 exists to prevent.
+      The fallback branch itself is exercised, by the five sha-valued CLOSED findings that
+      close through it; what is unexercised is the prose sub-case, and it always was. The
+      defect is not that C6 hid something but that the repair field was never constrained to
+      one type, so a value that cannot resolve to an object sits in a field the closure rule
+      compares against objects. The next actor to move a prose-repair finding to CLOSED --
+      NF-09 is the standing candidate, and now the only one -- gets a failure whose message
+      points at the review rather than at the finding, and the natural repair for that message
+      is to edit the repair field, which is the one thing C6 exists to prevent.
     why_it_is_not_acceptance_blocking: >-
       No finding is closed on a prose target and none can be: the comparison fails closed. The
       five findings actually closed under this rule all carry sha-valued repairs and were
       matched as object identity. This is a soundness-preserving representation defect, not a
       warrant that resolves wrongly.
     failure_sensitivity: >-
-      Nothing currently detects it. A type control over the repair field would, and so would a
-      control asserting that the prose branch of closure_target has a non-empty population or
-      is removed. Both are deliberately not written here: the first would fail on seven
-      preserved historical values, and repairing those values is expressly forbidden, so the
-      control and the preservation rule would be in direct conflict until the disposition
-      question below is answered.
+      Nothing currently detects it. A type control over the repair field would. It is
+      deliberately not written here, because it would fail on the preserved historical prose
+      values, and repairing those values is expressly forbidden -- so the control and the
+      preservation rule would be in direct conflict until the disposition question below is
+      answered. The C6 wording also proposed a control asserting the prose sub-case has a
+      non-empty population; that is withdrawn with the causal claim, since a sub-case that
+      never had members is not made sound by acquiring one.
     required_disposition_question: >-
       Whether the historical prose repair values are to be preserved as written with a
       separate typed field carrying the object -- the shape C6 introduced for the completion
@@ -2134,17 +2167,165 @@ findings:
       recorded at the checkpoint that made it visible so that it is not carried silently, and
       is left OPEN for disposition. It is the same class as NF-14 and is recorded separately
       for the same reason: no existing finding reaches it.
-    second_instance_in_a_neighbouring_field: >-
-      Found while classifying this finding, and recorded here because it is the same defect
-      rather than a related one: a controlled vocabulary that nothing checks membership
-      against. The register declares three loci -- SYSTEM, EVIDENCE and MEASUREMENT_PATH --
-      and F1 carries locus [EVIDENCE, PROCESS]. PROCESS is not a declared locus and never
-      was; SYSTEM is declared and used by nothing. A locus-scoped reader selecting on the
-      declared vocabulary silently drops half of F1's classification, and one selecting on
-      observed values reports a member the register does not define. This was caught only
-      because NF-15's own locus had to be chosen; no observer looks at it.
-    second_instance_not_repaired_here: >-
-      Neither retyping F1's locus nor adding PROCESS to the declaration is done here. Which
-      of the two is correct is a classification question about what F1 is -- and F1 is one of
-      the original review findings, so its classification is the reviewer's, not the
-      implementer's. It is named so that whoever disposes of NF-15 disposes of it too.
+    withdrawn_classification_of_the_locus_defect: >-
+      C6 folded the undeclared-locus observation into this finding as "the same defect rather
+      than a related one". The independent review rejected that, and the rejection is
+      accepted. The observation itself reproduced and is transported to NF-17 as a finding in
+      its own right. What the two share is only that both fields are uncontrolled, which is
+      too coarse to be a classification: this finding is about the type and semantics of
+      repair identity, and NF-17 is about a declared vocabulary whose membership nothing
+      enforces. Combining them would have made one disposition answer two unrelated
+      questions.
+
+  - id: NF-16
+    origin: >-
+      independent review of 3e397dc, the C6 completion-model checkpoint
+    observed_at_object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+    no_primary_artifact_retention_is_declared: >-
+      The review's primary artifacts were not transported. This record is the controlled
+      statement of the finding, and its measurements below were independently reproduced
+      here rather than copied from the review.
+    acceptance_blocking: false
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      The completion field had two different presence semantics across the branches that
+      consume it
+    claim: >-
+      The controlled rule says a repair_completion_object is declared, not that it is truthy.
+      completion_declaration_problems tested key membership and was right. Three other
+      branches tested truthiness: closure_target, which returned
+      finding.get(COMPLETION_FIELD) or finding.get("repair"), and the two safety tests that
+      enforce "the original repair field was never rewritten" and "no completion declaration
+      moved a finding to CLOSED". A completion field physically present with a falsy value --
+      written with no value, or as "", 0, or false -- was therefore rejected by one observer
+      while being silently redirected by closure_target and skipped entirely by both safety
+      controls. The same field had two populations depending on who asked.
+    what_the_redirection_would_have_done: >-
+      For a CLOSED finding declaring an unreadable completion object, closure_target under
+      the C6 form returns the repair field instead. Where the repair field names the reviewed
+      object -- which is the normal case for a closed finding, and is exactly NF-13's shape --
+      the closure comparison then succeeds. closure_problems alone would have passed a finding
+      whose completion declaration could not be read.
+    why_it_was_not_exploitable: >-
+      completion_declaration_problems resolves its population by key membership, so it
+      rejected every falsy value independently and the aggregate suite stayed red. That is a
+      property of two controls failing together, not a property either one has. Nothing
+      coupled them and nothing would have noticed if one moved; the safety controls had no
+      failure mode of their own for this input. Recorded as a soundness gap in the completion
+      model's internal consistency rather than as an exploitable defect, because that is what
+      it is.
+    independently_reproduced:
+      at_object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+      method: >-
+        Behavioural, not by source inspection. Each falsy value was written into the register
+        as YAML, loaded, and each consumer executed against the loaded record. Failure
+        sensitivity was then established by reinstating the C6 form of closure_target and
+        re-running only the new controls.
+      falsy_values_exercised: [null, empty string, zero, false]
+      controls_red_against_the_c6_form: 9
+      controls_green_against_the_c7_form: 12
+      note: >-
+        The four values are not interchangeable illustrations of one case. 0 and false are the
+        ones a reader would not predict, because they are the values YAML produces from input
+        that looks like data rather than like absence -- the same coercion that produced the
+        C6 integer-sha defect this register already records.
+    repair: >-
+      C7. Declaration is defined once, as key membership, in declares_completion, and every
+      consumer resolves its population through findings_declaring_completion. closure_target
+      returns a declared completion object as written even when it is unusable, because
+      falling back to the repair field would substitute a target the record did not declare.
+      closure_problems now reports three outcomes rather than two, so a declared-but-unusable
+      target is reported as the defective declaration it is and never as "no target", which
+      would describe a record that said nothing.
+    no_repair_object_is_named: >-
+      Deliberate. The introducing object is this C7 commit, whose sha is not knowable while
+      writing the record it contains, and a placeholder would plant an identity that resolves
+      to nothing -- worse than naming none. This finding declares no repair_completion_object
+      and so is not in the declared-completion population; the C6 machinery does not range
+      over it. Whoever reviews C7 records the object. The implementer does not name it
+      retroactively, because doing so is how a warrant is made to resolve against something
+      that was written to make it resolve.
+    this_finding_is_itself_an_instance_of_nf_15: >-
+      Its repair field above is prose, in the same deictic form NF-15 records, so C7 adds one
+      member to the population NF-15 measured as 1 at 3e397dc. Stated rather than avoided: the
+      alternative was to invent a second field name for the same content, which would answer
+      NF-15 by making the defect harder to count instead of by repairing it. NF-15's
+      measurements stay bound to the three objects they were taken at, which is what keeps
+      them true.
+    exact_matching_unchanged: >-
+      C7 changes presence semantics only. The closure predicate stays reviewed_object equals
+      the selected exact closure target -- no ancestry, no sha-prefix equivalence, no case
+      normalization, no latest-review selection, no descendant promotion, no automatic
+      completion inference. Ancestry remains a validity condition on an explicitly declared
+      introduction-to-completion relationship and never satisfies a match.
+    residual: >-
+      Open. Closure requires independent review of C7. This finding must not be closed by the
+      actor that repaired it, and the completion model must not be used to move it or any
+      other finding until that review has happened.
+
+  - id: NF-17
+    origin: >-
+      observed while classifying NF-15 at C6, misclassified there as an instance of NF-15,
+      and separated at C7 on the independent review's rejection of that classification
+    observed_at_object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+    no_primary_artifact_retention_is_declared: >-
+      Self-observed and reproduced in this workspace; no review artifact exists to retain.
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE, MEASUREMENT_PATH]
+    title: >-
+      Finding locus values are not constrained to the declared vocabulary, and no observer
+      checks membership
+    claim: >-
+      The register declares a locus vocabulary of three members and uses a fourth. Nothing
+      enforces the correspondence in either direction, so a locus-scoped reader selecting on
+      the declared vocabulary silently drops part of one finding's classification, and one
+      selecting on observed values reports a member the register does not define.
+    independently_reproduced:
+      at_object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+      declared_vocabulary: [SYSTEM, EVIDENCE, MEASUREMENT_PATH]
+      values_actually_used: [EVIDENCE, MEASUREMENT_PATH, PROCESS]
+      undeclared_but_used:
+        PROCESS: [F1]
+      declared_but_unused: [SYSTEM]
+      findings_carrying_no_locus_key: [RT-F-08]
+      findings_carrying_a_null_locus: []
+    no_observer_validates_membership:
+      method: >-
+        Established behaviourally, not by searching for the name. A wholly fabricated value,
+        TOTALLY_UNDECLARED_LOCUS_VALUE, was written into a finding's locus and the full
+        regression suite and every gate that reads this file were executed over it.
+      result: >-
+        507 tests passed and check_path_citations, check_repository_hygiene and
+        check_session_controls all returned 0 with the fabricated value present.
+        check_evidence_reconciliation returned 1, which is its standing state, and reproduced
+        the same seven OPEN obligations -- so its exit was unrelated to the injection.
+      restoration: >-
+        The injected value was reverted and the file confirmed byte-identical by an empty
+        git diff, not by re-reading the field.
+      why_this_and_not_a_search: >-
+        A search for the word locus across tools and tests returns nothing, and that is not
+        the same proposition. Readers acquire this file through populations -- a glob, a
+        tracked-file enumeration, a directory walk -- so several observers read it without
+        naming any field in it. What had to be established is whether any of them constrains
+        this value, and only executing them over a violating value establishes that.
+    why_it_is_not_the_same_defect_as_nf_15: >-
+      NF-15 is about the type and semantics of repair identity: one field holding two kinds of
+      value, one of which cannot resolve to the object the closure rule compares against. This
+      is about a declared vocabulary whose membership nothing enforces. They share only that
+      both fields are uncontrolled, which is too coarse to be a classification -- combining
+      them would make one disposition answer two unrelated questions, and the C6 record did
+      exactly that until the independent review rejected it.
+    why_it_is_not_acceptance_blocking: >-
+      No control, gate or acceptance item consumes locus. Nothing currently depends on it
+      being correct, which is the same reason nothing currently detects that it is not.
+    required_disposition_question: >-
+      Whether F1's locus is retyped or PROCESS is added to the declared vocabulary, and
+      whether SYSTEM is retained now that nothing uses it. Both are classification questions
+      about what F1 is, and F1 is one of the original independent-review findings, so its
+      classification belongs to a reviewer and not to the implementer. A membership control
+      should follow that decision rather than precede it, since a control written now would
+      have to encode a guess about which way the question is answered.
+    not_repaired_here: >-
+      C7 does not repair the locus vocabulary. The finding is recorded and left OPEN.

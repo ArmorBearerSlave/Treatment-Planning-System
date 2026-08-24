@@ -557,6 +557,91 @@ methodological_observations:
       though it were its own CI step. It is not. Anyone reasoning about which controls run in
       CI should read the workflow rather than the command list.
 
+
+  - id: the_c6_causal_claim_about_emptying_a_branch_was_inaccurate
+    raised_by: independent review of 3e397dc
+    proposition: >-
+      NF-15 asserted at C6 that "a branch with an empty population is an untested branch, and
+      C6 is what emptied it". No such transition occurred: the prose sub-case of the repair
+      fallback had zero canonical-CLOSED members before C6, at C6, and after it.
+    independently_reproduced: >-
+      Confirmed here by classifying the register at 3188a11, 349f2dc and 3e397dc. CLOSED
+      findings reaching the prose sub-case: 0, 0, 0. CLOSED findings reaching the sha
+      sub-case: 4, 5, 5. What C6 reduced is the potential OPEN population that would depend on
+      the prose sub-case, from 7 to 1.
+    disposition: >-
+      Corrected in the controlled record at C7. NF-15 carries the accurate proposition, the
+      three-object measurement, and the withdrawn wording under withdrawn_causal_claim. Not
+      promoted to a finding of its own, because it is a defect in a finding's own statement
+      and the finding is the right place to correct it.
+    the_thing_worth_stating: >-
+      The false clause was written by the actor whose commit it credited. An implementer
+      measuring a population once, at the end, and attributing the number to its own change is
+      the shape here; the measurement was never taken before the change it was said to have
+      caused.
+
+  - id: cumulative_repair_verification_has_two_representations_and_no_binding_observer
+    raised_by: independent review of 3e397dc
+    proposition: >-
+      Cumulative repair verification is stated twice. The review side carries typed
+      verified_repairs_of and not_verified_repairs_of on REV-C5-CUMULATIVE; the finding side
+      carries prose independent_review_support on each finding. The two currently agree, and
+      nothing observes that they do.
+    why_it_is_an_observation_and_not_a_finding: >-
+      Nothing in the controlled record relies on their agreement. The typed side is what
+      completion_declaration_problems resolves; the prose side is explicitly non-authoritative
+      under the same rule that makes closure_note non-authoritative, so a divergence would
+      mislead a reader without moving any controlled state. Promoting it would also invite the
+      repair the next line refuses.
+    not_repaired_here: >-
+      No synchronization mechanism is introduced at C7. A binding observer would have to
+      decide which side is authoritative, and that decision is not the implementer's while the
+      typed side's provenance is itself under review -- see the next observation.
+
+  - id: verified_repairs_of_was_authored_by_the_remediation_actor
+    raised_by: independent review of 3e397dc
+    proposition: >-
+      verified_repairs_of and not_verified_repairs_of were written into REV-C5-CUMULATIVE by
+      the implementation and remediation actor, inside a controlled entry that represents an
+      independent review. The entry's structure does not distinguish what the reviewer
+      established from what the implementer inferred the reviewer had established.
+    what_this_does_not_establish: >-
+      That authorship is not evidence of what the independent reviewer verified. The list is a
+      claim about the review, made by someone who was not the reviewer, and it must not be
+      read as the review's own output.
+    consequence_for_the_next_review: >-
+      The next independent review determines, per finding, whether each verification
+      relationship is supported by the actual review evidence. Until then the completion model
+      must not be used to move controlled finding state, which is why C7 closes nothing.
+    why_it_is_an_observation_and_not_a_finding: >-
+      It is a provenance limitation of a record C7 deliberately leaves standing, disclosed so
+      the next reviewer can assess it. Recording it as a finding would imply a repair, and the
+      only repair is the review itself.
+    not_cured_here: >-
+      C7 does not change these records to cure the independence boundary, and no reviewer
+      identity or authorship is fabricated. REV-C5-CUMULATIVE, verified_repairs_of, the
+      finding-side independent_review_support and the C6 completion declarations are all
+      preserved as written so they can be assessed.
+
+  - id: retention_applicability_is_keyed_to_one_object_reference_field
+    raised_by: independent review of 3e397dc
+    proposition: >-
+      finding_record_completeness requires primary_artifact_retention of any finding naming a
+      reviewed_object. The requirement is keyed structurally to that field name, so a finding
+      that names an object through a different field is outside it.
+    instances_in_this_register: >-
+      NF-15, NF-16 and NF-17 each name an object through observed_at_object and are therefore
+      not subject to the requirement. Each declares no_primary_artifact_retention_is_declared
+      with a reason, which is disclosure rather than compliance -- the rule did not ask.
+    why_it_is_an_observation_and_not_a_finding: >-
+      The rule's stated scope is what it claims, and it does not overstate itself. Nothing has
+      escaped a retention obligation it was under; the question is whether the obligation
+      should reach further, which is a scoping decision about the rule.
+    not_repaired_here: >-
+      The retention model is not broadened at C7. Widening it to any object-naming field would
+      change what a large number of existing records are required to carry, which is a
+      controlled change to the rule and not an implementation detail.
+
 obligation_effect:
   mps_mat_009_hash_0:
     state: OPEN
