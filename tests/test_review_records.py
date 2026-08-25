@@ -42,6 +42,7 @@ observer.
 from __future__ import annotations
 
 import copy
+import re
 import sys
 import unittest
 from pathlib import Path
@@ -497,6 +498,214 @@ class TheExternalPrimaryBoundaryIsStated(unittest.TestCase):
             if finding["id"].startswith("RT-F-"):
                 with self.subTest(finding=finding["id"]):
                     self.assertNotIn("review-report.html", str(finding))
+
+
+
+class RetainedReviewArtifactBinding(unittest.TestCase):
+    """A review declaring `retained` must be bound to the bytes it was read from.
+
+    Every earlier review in this register is external_not_retained, and the consequence is the
+    condition REV-C5-CUMULATIVE is in: its per-finding claims cannot be checked against
+    anything, because the thing they were read from does not exist here. Retention only fixes
+    that if the binding is mechanical. A path and a hash written beside each other in a record
+    are two strings until something reads the file and compares.
+
+    So the determinations are not trusted as transcribed. They are extracted from the retained
+    bytes TWICE, by independent routes -- the per-finding section headings and the summary
+    table -- required to agree with each other, and then required to equal the record's typed
+    population exactly, in both directions. A determination the record adds and the artifact
+    does not make fails here, and so does one the artifact makes and the record drops.
+
+    The control ranges over every review declaring `retained`, derived from the register, so a
+    second retained review is bound the moment it is registered rather than when someone
+    remembers to extend a list.
+    """
+
+    DETERMINATIONS = {"SUPPORTED", "NOT SUPPORTED", "INDETERMINATE"}
+
+    def retained_reviews(self):
+        return [r for r in register()["reviews"]
+                if r.get("primary_artifact_retention") == "retained"]
+
+    def artifact_path(self, review) -> Path:
+        return REPO_ROOT / review["retained_artifact"]["path"].strip()
+
+    def artifact_bytes(self, review) -> bytes:
+        return self.artifact_path(review).read_bytes()
+
+    # ---------------------------------------------------------------- the population is real
+
+    def test_at_least_one_retained_review_exists(self):
+        """Otherwise every assertion below is vacuous and would pass over an empty set."""
+        self.assertTrue(self.retained_reviews(),
+                        "no review declares retained; this control would pass vacuously")
+
+    # ---------------------------------------------------------------- identity of the bytes
+
+    def test_the_artifact_exists_at_the_controlled_locator(self):
+        for review in self.retained_reviews():
+            with self.subTest(review=review["review_id"]):
+                path = self.artifact_path(review)
+                self.assertTrue(path.is_file(), f"{path} is not a file in this repository")
+
+    def test_the_artifact_is_tracked_so_a_clone_resolves_it(self):
+        """Retention that a clone cannot obtain is external retention with extra steps."""
+        import subprocess
+
+        tracked = subprocess.run(["git", "ls-files", "-z"], capture_output=True,
+                                 cwd=str(REPO_ROOT)).stdout.decode().split("\0")
+        for review in self.retained_reviews():
+            with self.subTest(review=review["review_id"]):
+                rel = review["retained_artifact"]["path"].strip()
+                # assertTrue, not assertIn: assertIn renders the entire tracked-file list on
+                # failure, which buries the one path that matters in several hundred lines.
+                self.assertTrue(rel in tracked,
+                                f"{rel} is declared retained but is not tracked, so a clone "
+                                f"would not carry it")
+
+    def test_the_digest_matches_the_retained_bytes(self):
+        import hashlib
+
+        for review in self.retained_reviews():
+            with self.subTest(review=review["review_id"]):
+                declared = review["retained_artifact"]["sha256"]
+                actual = hashlib.sha256(self.artifact_bytes(review)).hexdigest()
+                self.assertEqual(declared, actual, "declared digest is not of these bytes")
+
+    def test_the_byte_size_matches(self):
+        for review in self.retained_reviews():
+            with self.subTest(review=review["review_id"]):
+                self.assertEqual(review["retained_artifact"]["byte_size"],
+                                 len(self.artifact_bytes(review)))
+
+    def test_the_retained_bytes_are_what_a_clone_would_carry(self):
+        """CLAUDE.md's standing rule: hash what a clone gets, not the working copy.
+
+        MPS writes CRLF and .gitattributes declares eol=lf, so a working-copy digest can
+        verify on the machine that computed it and nowhere else. This artifact is pure LF, so
+        normalisation is a no-op -- asserted rather than assumed, because the assumption is the
+        one that failed at three scales in one session.
+        """
+        for review in self.retained_reviews():
+            with self.subTest(review=review["review_id"]):
+                raw = self.artifact_bytes(review)
+                self.assertNotIn(b"\r\n", raw,
+                                 "CRLF in a retained artifact makes its digest host-local")
+
+    # ---------------------------------------------------------------- identity of the object
+
+    def test_the_reviewed_object_matches_the_artifact_header(self):
+        for review in self.retained_reviews():
+            with self.subTest(review=review["review_id"]):
+                sha = reviewed_identity(review)[0]
+                self.assertIsNotNone(sha)
+                text = self.artifact_bytes(review).decode("utf-8")
+                header = text.split("## 1.", 1)[0]
+                self.assertIn(sha, header,
+                              "the artifact's own header does not name the object the record "
+                              "says it reviewed")
+
+    # ---------------------------------------------------------------- the determinations
+
+    def from_section_headings(self, text: str) -> dict:
+        found = {}
+        blocks = re.split(r"^### Finding:\s*", text, flags=re.M)[1:]
+        for block in blocks:
+            fid = block.split("\n", 1)[0].strip()
+            match = re.search(r"\*\*Determination:\s*([A-Z ]+?)\*\*", block)
+            if match:
+                found[fid] = match.group(1).strip()
+        return found
+
+    def from_summary_table(self, text: str) -> dict:
+        found = {}
+        for line in text.splitlines():
+            cells = [c.strip() for c in line.split("|")]
+            if len(cells) < 4:
+                continue
+            fid, determination = cells[1], cells[2]
+            if re.fullmatch(r"NF-\d+", fid) and determination in self.DETERMINATIONS:
+                found[fid] = determination
+        return found
+
+    def test_the_two_extraction_routes_agree(self):
+        """Two independent readings of the same artifact, required to say the same thing."""
+        for review in self.retained_reviews():
+            with self.subTest(review=review["review_id"]):
+                text = self.artifact_bytes(review).decode("utf-8")
+                headings = self.from_section_headings(text)
+                table = self.from_summary_table(text)
+                self.assertTrue(headings, "no per-finding sections extracted")
+                self.assertTrue(table, "no summary table extracted")
+                self.assertEqual(headings, table,
+                                 "the artifact's own two statements of its determinations "
+                                 "disagree, so neither can be transported")
+
+    def test_the_record_population_equals_the_artifact_population(self):
+        """Both directions. No extra determination introduced, none omitted."""
+        for review in self.retained_reviews():
+            with self.subTest(review=review["review_id"]):
+                text = self.artifact_bytes(review).decode("utf-8")
+                artifact = self.from_section_headings(text)
+                recorded = {d["finding"]: d["determination"]
+                            for d in review["per_finding_determinations"]["determinations"]}
+                self.assertEqual(set(artifact), set(recorded),
+                                 "the record's finding population differs from the artifact's")
+                self.assertEqual(artifact, recorded,
+                                 "a determination in the record differs from the artifact's")
+
+    def test_every_determination_is_from_the_controlled_vocabulary(self):
+        for review in self.retained_reviews():
+            for entry in review["per_finding_determinations"]["determinations"]:
+                with self.subTest(finding=entry["finding"]):
+                    self.assertIn(entry["determination"], self.DETERMINATIONS)
+
+    def test_every_determination_names_a_finding_that_exists(self):
+        known = {f["id"] for f in findings_register()["findings"]}
+        for review in self.retained_reviews():
+            for entry in review["per_finding_determinations"]["determinations"]:
+                with self.subTest(finding=entry["finding"]):
+                    self.assertIn(entry["finding"], known)
+
+    def test_every_determination_states_a_residual(self):
+        """A determination without a residual statement is half an answer."""
+        for review in self.retained_reviews():
+            for entry in review["per_finding_determinations"]["determinations"]:
+                with self.subTest(finding=entry["finding"]):
+                    self.assertTrue(str(entry.get("residual", "")).strip(),
+                                    "no residual recorded; NONE must be said, not omitted")
+
+    # ---------------------------------------------------------------- support is not closure
+
+    def test_a_supported_determination_confers_no_closure(self):
+        """The whole point of the transport boundary, asserted rather than trusted."""
+        body, register_body = findings_register(), register()
+        for review in self.retained_reviews():
+            rid = review["review_id"]
+            with self.subTest(review=rid):
+                self.assertNotIn("warrants_closure_of", review)
+                citing = [f["id"] for f in body["findings"]
+                          if f.get("closure_review") == rid]
+                self.assertEqual([], citing,
+                                 "a retained per-finding review must not become a closure "
+                                 "warrant by being cited")
+                supported = {d["finding"] for d in
+                             review["per_finding_determinations"]["determinations"]
+                             if d["determination"] == "SUPPORTED"}
+                states = {f["id"]: f.get("state") for f in body["findings"]}
+                for fid in sorted(supported):
+                    self.assertEqual("OPEN", states[fid],
+                                     f"{fid} is SUPPORTED and must still be OPEN; support is "
+                                     f"repair support, not lifecycle disposition")
+
+    def test_the_reviewer_obligation_is_not_discharged_by_retention(self):
+        for review in self.retained_reviews():
+            with self.subTest(review=review["review_id"]):
+                self.assertIs(
+                    False,
+                    review["reviewer"]["satisfies_mps_mat_009_named_reviewer_obligation"],
+                    "retaining an artifact does not name its reviewer")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -173,6 +173,9 @@ population:
     - kind: commit_scoped
       reviewed_object: 5ec6b5f540c6dd75c2c97790e61b39d2280500e4
       review: REV-C9-CUMULATIVE
+    - kind: commit_scoped
+      reviewed_object: 3188a11443e33c8c4f68933cf73282108957f356
+      review: REV-3188A11-PER-FINDING
 
   membership_kind_is_not_object_identity_strength: >-
     Two independent dimensions, deliberately not conflated. REV-F2 is record_file_backed and
@@ -628,6 +631,138 @@ reviews:
       the problem is resolved, and none of the six is closed. The next operation obtains the
       missing evidence; this transport must not simulate it.
 
+
+  - review_id: REV-3188A11-PER-FINDING
+    subject: >-
+      Historical per-finding independent review of NF-01, NF-05, NF-06, NF-10, NF-11 and
+      NF-12 at the exact repair object 3188a11, adjudicating repair support only
+    reviewed_object:
+      kind: commit
+      sha: 3188a11443e33c8c4f68933cf73282108957f356
+    verdict: INDEPENDENTLY VERIFIED
+    verdict_scope: >-
+      Repair support only; not lifecycle disposition. The artifact states this scope itself and
+      states no finding to be CLOSED.
+    verdict_note: >-
+      The artifact records no review-LEVEL verdict. It records six per-finding determinations,
+      all SUPPORTED, and an explicit scope. The register's schema requires a verdict, so
+      INDEPENDENTLY VERIFIED is the representation of "the review returned, and every
+      determination it made was SUPPORTED", bounded by verdict_scope above. This is disclosed
+      rather than presented as the reviewer's own word, because the difference between what an
+      artifact says and how a schema must encode it is exactly the kind of gap this register
+      exists to keep visible. It is not a checkpoint verdict and warrants no closure.
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: retained
+    retained_artifact:
+      path: >-
+        mps/materialization/evidence/MPS-MAT-009/per-finding-review/REV-3188A11-PER-FINDING.md
+      sha256: 266a4e935898626455b028ab1f64455e0938a1e216ce4fcdd9f2a6cfd7c58fa6
+      byte_size: 37782
+      line_count: 691
+      external_provenance: >-
+        Produced at C:\src\nltps-independent-review-evidence\REV-3188A11-PER-FINDING.md and
+        transported byte-for-byte. The external path is provenance, not the durable locator:
+        the durable locator is the repository path above, which a clone resolves.
+      canonicalization: >-
+        Already canonical under evidence_canonicalization/v1 before transport --
+        canonicalize_text returns identical bytes and the identical digest -- so no
+        transformation was applied and the retained bytes ARE the reviewer's bytes. The file is
+        pure LF, so .gitattributes eol=lf normalisation is a no-op and the digest a clone
+        computes is the digest recorded here.
+      disclosure_scan: >-
+        Scanned with the hygiene gate's own compiled patterns; no host, user-profile or secret
+        material matched. The .md suffix is not a generated-artifact type, so no
+        evidence-allowlist exemption was needed or added.
+      why_it_is_retained: >-
+        Every earlier review in this register is external_not_retained, and the consequence was
+        that REV-C5-CUMULATIVE's per-finding claims could not be checked against anything. This
+        artifact exists precisely to end that condition for the six findings, so retaining it
+        externally would have reproduced the defect it was commissioned to close.
+    per_finding_determinations:
+      binding: >-
+        Typed because the closure model reads types, not prose, and mechanically bound to the
+        artifact rather than transcribed from it. tests/test_review_records.py extracts the
+        determinations from the retained bytes twice, independently -- from the per-finding
+        section headings and from the section 7 summary table -- requires those two extractions
+        to agree, and requires the population below to equal them exactly, with no extra
+        determination introduced and none omitted.
+      not_verified_repairs_of: >-
+        Deliberately a different field name. verified_repairs_of on REV-C5-CUMULATIVE is the
+        remediation-authored list whose provenance is the problem this artifact addresses; that
+        field is untouched, and reusing its name here would blur the two.
+      determinations:
+        - finding: NF-01
+          determination: SUPPORTED
+          residual: >-
+            Latent. "all nine of them" in CLAUDE.md is a transcribed membership cardinality
+            that no dedicated control verifies. It reproduced at 3188a11 and at every later
+            object the reviewer examined, so it is accurate and unverified rather than wrong.
+        - finding: NF-05
+          determination: SUPPORTED
+          residual: NONE
+          residual_note: >-
+            Specifically, NF-05 carries no state-debt residual at the reviewed object. The
+            25-record queue belongs to NF-09. See the methodological observation below: the
+            later record diverges from this and the divergence has a determinable cause.
+        - finding: NF-06
+          determination: SUPPORTED
+          residual: >-
+            RT-F-06's closure predates its warrant -- disclosed by the reviewer and undetectable
+            by the mechanism, which has no timestamp input. Support is materially conditional on
+            NF-10 and NF-11.
+          conditionality_note: >-
+            The reviewer demonstrated that at C1/63694e5 NF-06's rule existed but the governed
+            population was not yet trustworthy, and that at exactly 3188a11 NF-10 and NF-11 make
+            it trustworthy, which is why SUPPORTED holds there. NF-06's historical introduction
+            commit is not rewritten and no claim is made that it was independently supportable
+            at C1.
+        - finding: NF-10
+          determination: SUPPORTED
+          residual: >-
+            25 records remain state debt and unadjudicated, and the observer does not judge the
+            quality of an exception's reason. NF-10's mechanism being supported is a different
+            proposition from NF-09's residual queue being resolved; neither is adjudicated here.
+        - finding: NF-11
+          determination: SUPPORTED
+          residual: NONE
+        - finding: NF-12
+          determination: SUPPORTED
+          residual: >-
+            NF-12's own claim carries an unscoped historical cardinality, 39/14/25, which
+            reproduces at 1db9948 but not at the later repair object or the current one. Not
+            repaired here.
+    scope_note: >-
+      The reviewer's independence limitation, recorded as disclosed and not strengthened. The
+      reviewer did not author C1 through C9, did not transport findings or reviews, and authored
+      neither REV-C5-CUMULATIVE, nor verified_repairs_of, nor the finding-side
+      independent_review_support records -- so it created none of the assertions it was asked to
+      verify. It DID perform the C7, C8 and C9 independent reviews, and is therefore the actor
+      that returned INDETERMINATE for these same six findings at all three. That is a material
+      limitation: it arrives with a prior expectation, formed at 2f10b3e, that several of these
+      mechanisms hold. The artifact records two mitigations -- every proposition derived from
+      3188a11 alone by reading and executing that object, and active falsification which did
+      find residuals in four of the six plus the NF-05 divergence. The artifact states in its
+      own words that a reviewer with no prior role in this sequence would still be preferable.
+      Account-level separation is not demonstrable and is not claimed: every commit in this
+      lineage carries one Git identity, and independence is asserted on participation, never
+      inferred from author metadata.
+    warrants_closure_of_note: >-
+      Deliberately absent. Six SUPPORTED determinations are repair support, not lifecycle
+      disposition, and the artifact says so itself. No finding names this review as its
+      closure_review, no warrants_closure_of key is written, and no finding state moves. A
+      separate governance disposition actor weighs support against residual and
+      acceptance-blocking status; converting support into closure here would be the transport
+      actor making that decision by writing a field.
+    what_this_does_not_repair: >-
+      REV-C5-CUMULATIVE is untouched. Its unretained primary and its remediation-authored
+      verified_repairs_of remain exactly as recorded, and this artifact is a separate evidence
+      object rather than a retrofit that would make the old review look as though it had always
+      been supported. The historical provenance problem is now answered by new evidence, not
+      erased.
+
 methodological_observations:
 
   - id: git_clean_does_not_establish_execution_cold
@@ -863,6 +998,42 @@ methodological_observations:
       NF-16 now records the mutation verbatim, including the spelling, states why the spelling
       is load-bearing, and binds each discriminator set to the object at which those controls
       exist.
+
+
+  - id: the_25_record_queue_was_attached_to_nf_05_by_a_misplaced_edit
+    raised_by: >-
+      REV-3188A11-PER-FINDING found the divergence; the mechanical cause was established during
+      this transport
+    proposition: >-
+      NF-05's independent_review_support carries a block about adjudicating "the 25 state-debt
+      records". The retained review found that at 3188a11 NF-05 has no residual key and makes no
+      reference to that population in any field, and that the queue belongs to NF-09 -- as
+      NF-10's residual states in the same register. A disposition actor relying on the later
+      prose would apply to NF-05 a residual NF-05 does not carry.
+    the_divergence_is_confirmed_and_its_cause_is_determinable: >-
+      NF-05 has no residual key. Two blocks that were written for NF-09 --
+      why_no_completion_object_is_declared and
+      what_would_make_a_completion_object_truthful_later -- are present on NF-05 and absent from
+      NF-09. They were introduced at 3e397dc by an edit that anchored on the closing sentence of
+      NF-09's why_this_does_not_close_the_finding and replaced the FIRST occurrence; NF-05
+      carries closing text the anchor also matched, and NF-05 precedes NF-09 in the file. So the
+      addition landed on the wrong finding and NF-09 never received it.
+    why_this_is_recorded_rather_than_repaired: >-
+      This is record transport. Moving the blocks is a record repair, and §9 of the governing
+      brief requires the contradiction to be stated rather than history silently rewritten. The
+      misplacement is left exactly where it is, NF-05 carries a pointer to this observation, and
+      whoever disposes of NF-05 or NF-09 relocates them deliberately.
+    what_it_means_for_disposition: >-
+      NF-05's SUPPORTED determination carries residual NONE. Any disposition of NF-05 that
+      declines closure on the strength of a 25-record queue would be declining on NF-09's
+      residual. Equally, NF-09 is currently missing the abstention text that explains why it
+      takes no completion object, which does not change NF-09's state but does make its record
+      less self-explanatory than it was written to be.
+    the_generalisation: >-
+      An anchored first-occurrence replacement is a population selection, and this register's
+      recurring defect is a population that is not what its author believed. The same failure
+      shape as NF-20 and NF-27, in an editing script rather than an observer, and it went
+      unnoticed for three checkpoints because nothing reads a finding's prose.
 
 obligation_effect:
   mps_mat_009_hash_0:

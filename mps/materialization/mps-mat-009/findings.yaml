@@ -1560,6 +1560,16 @@ findings:
         property that holds and names the function that decides it.
 
   - id: NF-05
+    superseded_by_retained_review: >-
+      REV-3188A11-PER-FINDING determines this finding's repair SUPPORTED at 3188a11 with
+      residual NONE, and specifically found that NF-05 carries no state-debt residual there.
+      The independent_review_support block below refers to adjudicating the 25 state-debt
+      records; that text was written for NF-09 and landed here through a misplaced
+      first-occurrence edit at 3e397dc. It is deliberately NOT moved during record transport.
+      Where the two conflict, the retained review governs on residual, and the register's
+      methodological observation
+      "the_25_record_queue_was_attached_to_nf_05_by_a_misplaced_edit" records the cause. This
+      finding remains OPEN and no state moves on the strength of either.
     origin: independent review of 58d18db
     reviewed_object: 58d18db1f952ff18f9853161eb979048483e4bc5
     primary_artifact_retention: external_not_retained
