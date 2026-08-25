@@ -3122,3 +3122,171 @@ findings:
       turns RED. Restored byte-identically.
     residual: >-
       Open. Closure requires independent review of C9.
+
+  - id: NF-28
+    origin: independent review of 5ec6b5f, returned INDEPENDENTLY VERIFIED
+    observed_at_object: 5ec6b5f540c6dd75c2c97790e61b39d2280500e4
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository. Both the evasion and its unoccupancy were
+      reproduced here before transport.
+    acceptance_blocking: false
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      The uniformity observer resolves only literal field spellings while its invariant is
+      stated without that qualification
+    claim: >-
+      The controlled-field uniformity observer recognises a field name written as a string
+      literal or as the COMPLETION_FIELD constant. Its stated invariant is that no consumer
+      reads a controlled presence field by truthiness, with no such qualification. A call whose
+      argument is any other expression is outside what it resolves, so the observer's claim is
+      wider than its reach.
+    independently_reproduced:
+      at_object: 5ec6b5f540c6dd75c2c97790e61b39d2280500e4
+      method: >-
+        Each spelling passed to the observer directly and its detection count read back.
+      evading_forms:
+        - a local binding, field = "sha" followed by obj.get(field)
+        - an index into the module's own exported tuple, obj.get(IDENTITY_FIELDS[0])
+      recognised_forms:
+        - obj.get("sha")
+        - obj.get(COMPLETION_FIELD)
+      why_the_second_evading_form_is_the_notable_one: >-
+        IDENTITY_FIELDS is exported by the shared controlled-semantics module itself, so the
+        evasion can be written entirely in the vocabulary that module provides, without
+        importing anything the observer does not already know about.
+    occupancy_established_separately: >-
+      Unoccupied. Fourteen non-literal .get() argument sites exist across the derived consumer
+      population, and every one resolves to a field that is not controlled -- the canonical
+      state field, the two legacy fields, and the closure-reference field -- so no current
+      non-literal call reaches a controlled presence field. The committed uniformity verdict is
+      clean, and it is clean truthfully rather than by omission.
+    why_it_is_not_acceptance_blocking:
+      determination: false
+      reasoning: >-
+        Prospective rather than occupied, which is the distinction the register already draws
+        between NF-27 and NF-20. NF-27 was non-blocking because its blind spot existed and
+        nothing sat in it; NF-20 was blocking because a real reintroduction had passed a
+        519-test suite. This is NF-27's shape exactly: the observer's population is narrower
+        than its claim, and the difference is empty. No control has reported a result it could
+        not support.
+      classification_not_inherited_from_the_review: >-
+        The review characterised it as prospective and unoccupied. That characterisation was
+        reproduced here rather than adopted, and the blocking determination was then made
+        against the register's own convention, which is why NF-27 and NF-20 are named as the
+        governing precedents rather than the review's wording.
+    not_repaired_here: >-
+      This is record transport. Extending resolution to arbitrary symbolic expressions is not
+      done, and neither is any narrowing of the stated invariant. Both are open questions for
+      whoever disposes of this finding, and they are genuinely different repairs: one widens
+      the observer, the other admits what it covers.
+    residual: >-
+      Open.
+
+  - id: NF-29
+    origin: independent review of 5ec6b5f, returned INDEPENDENTLY VERIFIED
+    observed_at_object: 5ec6b5f540c6dd75c2c97790e61b39d2280500e4
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository. The predicate's behaviour and the
+      workflow's current content were both reproduced here before transport.
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE]
+    title: >-
+      The workflow control-shape predicate does not recognise two real control invocation
+      forms, weakening the out-of-scope boundary check
+    claim: >-
+      The predicate that decides whether a workflow command is a control recognises a check
+      flag in either spelling, a tool whose basename begins with check_, the regression suite,
+      and the terminal cleanliness diff. Two forms the repository actually uses elsewhere are
+      not recognised.
+    independently_reproduced:
+      at_object: 5ec6b5f540c6dd75c2c97790e61b39d2280500e4
+      unrecognised_forms:
+        - python tools/mps/headless_build.py --validate-only
+        - python -m tools.spec.check_approval_state
+      both_forms_present_in_the_workflow_today: false
+    where_the_exposure_is_and_is_not:
+      governed_side_is_protected: >-
+        The enforced job is covered by the complementary control requiring every command in it
+        to be control-shaped. An unrecognised control form introduced there fails that control
+        rather than passing silently. Reproduced: zero unrecognised commands in the enforced
+        job today, so that control is currently green for the right reason.
+      out_of_scope_side_is_the_weakness: >-
+        The boundary control asserts that no job outside the enforced scope carries a
+        control-shaped command. A mandatory control introduced into document-build using one
+        of the unrecognised forms would not be recognised as control-shaped, so the boundary
+        check would not report it and the NF-25 scope narrowing would quietly stop holding.
+        The two controls fail in opposite directions, and only one of them fails safe.
+    why_it_is_not_acceptance_blocking:
+      determination: false
+      reasoning: >-
+        Prospective and unoccupied: neither form appears in the workflow, no control currently
+        sits outside the enforced job, and nothing has been established falsely about any
+        control. This follows NF-25, which was non-blocking because no declared control failed
+        to establish what it is declared to establish, and NF-27's prospective-gap basis. The
+        asymmetry between the two boundary controls is recorded because it is the part a
+        disposition needs, not because it is currently load-bearing.
+    not_repaired_here: >-
+      This is record transport. The predicate is not widened. Widening it is not obviously the
+      whole repair either, since the boundary control's fail-open direction is the actual
+      weakness and would remain after any finite list of recognised forms.
+    residual: >-
+      Open.
+
+  - id: NF-30
+    origin: independent review of 5ec6b5f, returned INDEPENDENTLY VERIFIED
+    observed_at_object: 5ec6b5f540c6dd75c2c97790e61b39d2280500e4
+    no_primary_artifact_retention_is_declared: >-
+      The review's report is not in this repository. The measurement was reproduced here at
+      2f10b3e before transport.
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE]
+    title: >-
+      The rationale for an already-withdrawn measurement attributes it to a spelling the
+      measurement cannot distinguish
+    claim: >-
+      NF-16's withdrawn_unit_note says of the nine-subtest-failure-record figure that "the
+      figure was taken under the other spelling, and it described a set of methods that was
+      itself wrong". The second clause is established. The first is not, and cannot be: both
+      spellings of the mutation produce nine failure records over three methods, so the count
+      carries no information about which spelling produced it.
+    independently_reproduced:
+      at_object: 2f10b3e97e7461870700afb69db0ec6401326518
+      method: >-
+        Each spelling of the mutation applied in a detached worktree at that object and
+        CompletionPresenceSemantics executed, counting runner failure records and distinct
+        methods.
+      literal_spelling: 9 failure records over 3 distinct methods
+      constant_spelling: 9 failure records over 3 distinct methods
+      consequence: >-
+        The two are indistinguishable by this count, so no attribution of the figure to either
+        spelling is supportable. The METHODS differ between the spellings even though the
+        counts do not, which is why the second clause of the sentence stands.
+    what_is_and_is_not_wrong: >-
+      The withdrawal itself remains correct and is not disturbed. What is inaccurate is one
+      clause of the sentence explaining why the figure was withdrawn. This is an error inside
+      the rationale for an already-withdrawn measurement, not a live mechanism defect, and
+      nothing reads the withdrawn figure or its rationale.
+    why_it_is_not_acceptance_blocking:
+      determination: false
+      reasoning: >-
+        The minimum classification the convention supports, and independently supported rather
+        than assumed: the statement is about a measurement already withdrawn, no mechanism
+        consumes it, no control resolves it, and the conclusion it supports is unaffected
+        because that conclusion rests on the differing method identities and not on the count.
+        NF-26 was non-blocking on the same basis and this finding is about the same record.
+    the_pattern_this_continues: >-
+      Worth a reviewer's attention more than the clause itself. NF-22 recorded that NF-16's
+      evidence was wrong; NF-26 recorded that NF-22's repair of it was wrong; this records that
+      NF-26's repair introduced an unestablishable clause in turn. Three successive corrections
+      of one record have each carried a new inaccuracy, every one found by review rather than
+      by any control, and the errors are getting smaller each time -- from a wrong population
+      count, to a wrong discriminator identity, to an unsupportable attribution inside a
+      withdrawal notice.
+    not_repaired_here: >-
+      This is record transport. The sentence is not rewritten, the historical evidence chain is
+      not otherwise touched, and nothing is added to NF-16 beyond leaving it as it stands.
+    residual: >-
+      Open.

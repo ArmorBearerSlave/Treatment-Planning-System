@@ -170,6 +170,9 @@ population:
     - kind: commit_scoped
       reviewed_object: 0db0213be250a05bf32b9466ee836a6ebf31eb19
       review: REV-C8-CUMULATIVE
+    - kind: commit_scoped
+      reviewed_object: 5ec6b5f540c6dd75c2c97790e61b39d2280500e4
+      review: REV-C9-CUMULATIVE
 
   membership_kind_is_not_object_identity_strength: >-
     Two independent dimensions, deliberately not conflated. REV-F2 is record_file_backed and
@@ -571,6 +574,59 @@ reviews:
       verified_repairs_of, does not reinterpret the remediation-authored
       independent_review_support prose as independent evidence, and closes none of the six.
       Missing historical reviewer evidence is not repairable by changing metadata.
+
+
+  - review_id: REV-C9-CUMULATIVE
+    subject: >-
+      C9A identity and consumer uniformity repair and C9B value-semantic workflow
+      reachability repair, reviewed as the cumulative remediation checkpoint C1 through C9
+    reviewed_object:
+      kind: commit
+      sha: 5ec6b5f540c6dd75c2c97790e61b39d2280500e4
+    verdict: INDEPENDENTLY VERIFIED
+    verdict_label_as_returned: >-
+      C9 / CUMULATIVE REMEDIATION CHECKPOINT -- INDEPENDENTLY VERIFIED
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: external_not_retained
+    primary_artifact_retention_note: >-
+      The report is not in this repository and is not claimed to be. No path is cited for it,
+      and nothing was reconstructed after the fact to stand in for it.
+    scope_note: >-
+      The reviewer's own independence disclosure, recorded as made and not strengthened. The
+      reviewer did not author or transport C9A or C9B. The reviewer DID author the earlier C7
+      and C8 independent reviews, whose findings C9 repaired, so the independence claimed here
+      is from the implementation of the reviewed object and not from the finding history that
+      produced it. No account-level independence can be demonstrated, because every commit in
+      this repository carries the same Git identity; the independence asserted is
+      implementation-, session- and derivation-based, and is not Git-author based. This
+      disclosure is carried verbatim in substance because a reader assessing a passing verdict
+      needs the shape of the independence behind it, and because the register's convention is
+      that a limitation is recorded rather than reasoned away.
+    findings_returned:
+      - NEW-C9-01 transported as NF-28
+      - NEW-C9-02 transported as NF-29
+      - NEW-C9-03 transported as NF-30
+    warrants_closure_of_note: >-
+      Deliberately absent, and its absence is the point of this transport. INDEPENDENTLY
+      VERIFIED is a closing verdict, so this is the first passing cumulative review since
+      REV-C5-CUMULATIVE and the first opportunity in several checkpoints to close something.
+      Nothing is closed. No finding names this review as its closure_review, no
+      warrants_closure_of key is written, and no per-finding verification list is derived from
+      the report's prose. A verdict on a cumulative checkpoint is not a per-finding
+      determination, and manufacturing one from a favourable review is the exact defect
+      REV-C5-CUMULATIVE's per-finding list is under review for.
+    per_finding_support_determinations_unchanged: >-
+      NF-01, NF-05, NF-06, NF-10, NF-11 and NF-12 remain INDETERMINATE for the per-finding
+      substance claimed by REV-C5-CUMULATIVE, and this passing verdict does not touch that. The
+      historical problem is unchanged and is not repairable from here: that review's primary
+      artifact was not retained, its per-finding list was authored afterwards by an
+      implementation actor, and no retained reviewer substance establishes that the reviewer
+      made those determinations. verified_repairs_of is not altered, no prose is added claiming
+      the problem is resolved, and none of the six is closed. The next operation obtains the
+      missing evidence; this transport must not simulate it.
 
 methodological_observations:
 
