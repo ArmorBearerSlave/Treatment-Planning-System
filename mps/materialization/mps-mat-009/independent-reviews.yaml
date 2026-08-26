@@ -1035,6 +1035,60 @@ methodological_observations:
       shape as NF-20 and NF-27, in an editing script rather than an observer, and it went
       unnoticed for three checkpoints because nothing reads a finding's prose.
 
+
+  - id: a_transport_step_control_had_encoded_its_own_step_as_a_permanent_invariant
+    raised_by: the governance disposition actor, on its own prior work
+    proposition: >-
+      The retained-artifact binding control added at the evidence-transport step asserted two
+      things that were true of that commit and are not rules of the model: that no finding may
+      cite a retained per-finding review as its closure_review, and that every SUPPORTED
+      finding must still be OPEN. The first is contradicted by the closure rule itself, which
+      expressly matches a finding's closure_review against a review whose reviewed object
+      equals the finding's closure target. The second denies the disposition authority the
+      transport step was explicitly deferring to.
+    how_it_surfaced: >-
+      It blocked the first legitimate disposition. Four findings whose closure mechanics
+      resolve exactly, on a warrant the control itself had just verified, could not be closed
+      without the control failing.
+    a_second_instance_in_the_same_commit: >-
+      CompletionObjectMutations carried the same defect from three checkpoints earlier, under
+      the docstring "C6 changes the model; it performs no closure transition": it asserted
+      that every finding declaring a repair_completion_object must be OPEN. A completion
+      object exists so that such a finding can eventually close against exactly that object,
+      so the assertion made C6's own mechanism permanently unusable and would have been
+      satisfied forever by never dispositioning anything. Amended to the property C6 actually
+      built -- a finding that has left OPEN must have closed against its DECLARED completion
+      object and nothing else -- which constrains the transition rather than forbidding it.
+      Sensitivity demonstrated both ways: repointing a closed finding at a review of another
+      object, and stripping its warrant entirely, are each refused by the amended control and
+      independently by the closure observer.
+    two_instances_one_shape: >-
+      Both controls were written by an actor that was, at the time, correctly forbidden from
+      moving state, and both wrote that prohibition into a permanent invariant instead of into
+      the commit. Neither was detectable while no one tried to act, which is why both surfaced
+      on the same day the next authority in the sequence first exercised its own.
+    what_was_done: >-
+      The control was amended, not removed, and the amendment is disclosed in its docstring.
+      What it asserts now is the property that is actually permanent and is strictly stronger:
+      a SUPPORTED determination alone never moves a finding out of OPEN, and any finding that
+      has left OPEN must carry a typed closure_review that resolves under the closure rule,
+      with the closure observer -- untouched -- deciding whether it resolves. Failure
+      sensitivity was demonstrated by forcing a SUPPORTED finding to CLOSED with no warrant:
+      the amended control and the closure observer both refuse it, where the previous version
+      could not tell an unwarranted closure from a warranted one because it forbade both.
+    why_this_is_not_weakening_a_control_to_pass_a_disposition: >-
+      The substantive closure controls are untouched and now carry the weight. The amended
+      clause moved from "this transition may not happen" to "this transition may happen only
+      through a resolving warrant", which is a narrower permission and a wider detection. A
+      control that forbids a legitimate authority from acting is not a strong control; it is a
+      control measuring the wrong proposition, and it would have been satisfied forever by
+      never dispositioning anything.
+    the_generalisation: >-
+      A control written at step N can silently encode step N's own invariant as the model's.
+      The same shape as NF-20 and NF-27 -- a claim wider than the mechanism, or a mechanism
+      narrower than its claim -- appearing this time in a control the author wrote one commit
+      earlier, and caught only because the next authority in the sequence tried to act.
+
 obligation_effect:
   mps_mat_009_hash_0:
     state: OPEN

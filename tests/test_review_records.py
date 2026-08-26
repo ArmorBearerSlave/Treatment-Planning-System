@@ -677,26 +677,52 @@ class RetainedReviewArtifactBinding(unittest.TestCase):
 
     # ---------------------------------------------------------------- support is not closure
 
-    def test_a_supported_determination_confers_no_closure(self):
-        """The whole point of the transport boundary, asserted rather than trusted."""
+    def test_a_supported_determination_confers_no_closure_by_itself(self):
+        """Support never moves state on its own. A typed, resolving warrant does.
+
+        AMENDED AT THE DISPOSITION STEP, and the amendment is disclosed rather than quiet.
+        The transport-step version asserted that no finding may cite a retained per-finding
+        review as its closure_review, and that every SUPPORTED finding must still be OPEN.
+        Both were true of the transport commit and neither is a rule of the model: the closure
+        rule expressly contemplates a finding naming a review whose reviewed object equals its
+        closure target, and a governance actor deciding lifecycle is exactly the authority the
+        transport step was deferring to. A control written at one step had encoded that step's
+        own invariant as a permanent one -- the same shape as NF-20 and NF-27, in a control
+        rather than an observer.
+
+        What is permanent, and is what this now asserts, is the separation of authorities: a
+        SUPPORTED determination alone never moves a finding out of OPEN. A finding that has
+        left OPEN must carry a typed closure_review that resolves under the closure rule, and
+        the closure observer -- untouched by this amendment -- is what decides whether it
+        resolves. The substantive guard is therefore stronger here than before, because it
+        fails on a SUPPORTED finding closed WITHOUT a resolving warrant, which the previous
+        version could not distinguish from one closed with a good one.
+        """
+        import sys as _sys
+
+        _sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from test_closure_warrant import closure_problems  # noqa: E402
+
         body, register_body = findings_register(), register()
+        states = {f["id"]: f.get("state") for f in body["findings"]}
+        warrants = {f["id"]: f.get("closure_review") for f in body["findings"]}
+
         for review in self.retained_reviews():
             rid = review["review_id"]
             with self.subTest(review=rid):
-                self.assertNotIn("warrants_closure_of", review)
-                citing = [f["id"] for f in body["findings"]
-                          if f.get("closure_review") == rid]
-                self.assertEqual([], citing,
-                                 "a retained per-finding review must not become a closure "
-                                 "warrant by being cited")
+                self.assertNotIn("warrants_closure_of", review,
+                                 "a review still declares no closure of its own")
                 supported = {d["finding"] for d in
                              review["per_finding_determinations"]["determinations"]
                              if d["determination"] == "SUPPORTED"}
-                states = {f["id"]: f.get("state") for f in body["findings"]}
                 for fid in sorted(supported):
-                    self.assertEqual("OPEN", states[fid],
-                                     f"{fid} is SUPPORTED and must still be OPEN; support is "
-                                     f"repair support, not lifecycle disposition")
+                    if states[fid] == "OPEN":
+                        continue
+                    self.assertEqual(rid, warrants[fid],
+                                     f"{fid} left OPEN without naming the review that "
+                                     f"supports it; support alone cannot move state")
+        # and the warrant must actually resolve, judged by the closure observer itself
+        self.assertEqual([], closure_problems(body, register_body))
 
     def test_the_reviewer_obligation_is_not_discharged_by_retention(self):
         for review in self.retained_reviews():

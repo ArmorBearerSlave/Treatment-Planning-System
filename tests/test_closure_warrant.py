@@ -1039,13 +1039,39 @@ class CompletionObjectMutations(unittest.TestCase):
                 self.assertNotEqual(finding["repair_introduced_object"], completion)
                 self.assertEqual(before[finding["id"]]["repair"], finding["repair"])
 
-    def test_no_completion_declaration_moved_a_finding_to_closed(self):
-        """C6 changes the model; it performs no closure transition."""
+    def test_a_completion_declaration_closes_only_against_its_own_object(self):
+        """A declared completion object binds where the finding may close, not whether.
+
+        AMENDED AT THE DISPOSITION STEP, and disclosed. The C6 version asserted that every
+        finding declaring a completion object must be OPEN, under the docstring "C6 changes
+        the model; it performs no closure transition". That was a true statement about C6 and
+        it is not a rule: the completion object exists so that such a finding can eventually
+        close against exactly that object, so an assertion that it must stay OPEN forever
+        makes the mechanism permanently unusable and would have been satisfied by never
+        dispositioning anything. The second instance in this commit of a control encoding its
+        own step's invariant as the model's; both are recorded in the register.
+
+        The permanent property, asserted here, is the one C6 actually built: if such a finding
+        has left OPEN, it must have closed against its DECLARED COMPLETION OBJECT and nothing
+        else. That is a real constraint on the transition rather than a prohibition of it, and
+        the closure observer -- untouched -- independently checks that the named review
+        resolves.
+        """
         # C7/NF-16. Population by declaration. A falsy-but-present completion object is
         # still a completion declaration, and must not exempt a record from this check.
-        for finding in findings_declaring_completion(load(FINDINGS)):
+        body, register_body = load(FINDINGS), load(REVIEWS)
+        by_id = {r["review_id"]: r for r in register_body["reviews"]}
+        for finding in findings_declaring_completion(body):
             with self.subTest(finding=finding["id"]):
-                self.assertEqual("OPEN", finding.get("state"))
+                if finding.get("state") == "OPEN":
+                    continue
+                reference = finding.get(register_body["closure_rule"]["requires_field"])
+                self.assertIn(reference, by_id,
+                              "left OPEN without a closure warrant in the register")
+                self.assertEqual(finding[COMPLETION_FIELD],
+                                 reviewed_sha(by_id[reference]),
+                                 "closed against something other than its declared "
+                                 "completion object")
 
     def test_nf_09_has_no_completion_object(self):
         """Its mechanism was verified; its state-debt queue was not discharged."""
@@ -1174,7 +1200,7 @@ class CompletionPresenceSemantics(unittest.TestCase):
                     safety.add(f"{cls_name}.{attr}")
         self.assertTrue(safety, "the derived safety-control population must not be empty")
         for name in ("CompletionObjectMutations.test_the_original_repair_field_was_never_rewritten",
-                     "CompletionObjectMutations.test_no_completion_declaration_moved_a_finding_to_closed"):
+                     "CompletionObjectMutations.test_a_completion_declaration_closes_only_against_its_own_object"):
             with self.subTest(control=name):
                 self.assertIn(name, safety,
                               "this control must resolve the declared-completion population")

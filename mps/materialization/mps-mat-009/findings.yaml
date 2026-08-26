@@ -1494,6 +1494,44 @@ findings:
     primary_artifact_retention: external_not_retained
     acceptance_blocking: false
     state: OPEN
+    governance_disposition:
+      decided_by: governance disposition actor; not the reviewer
+      prior_state: OPEN
+      new_state: OPEN
+      repair_support_determination: SUPPORTED
+      review_id: REV-3188A11-PER-FINDING
+      closure_target_would_be: 3188a11443e33c8c4f68933cf73282108957f356
+      closure_mechanics_resolve: >-
+        Yes. The declared repair_completion_object is exactly the reviewed object, and the
+        review's verdict is a closing one. Closure is mechanically available and is declined
+        on substance, which is the distinction this step exists to make: the rule permits it
+        and the proposition does not.
+      residual_considered: >-
+        The reviewer recorded a latent residual against this finding: "all nine of them" in
+        CLAUDE.md is a transcribed membership cardinality that no dedicated control verifies.
+        Independently confirmed during this disposition -- the sentence is live at CLAUDE.md
+        line 380, carries no measurement scope, and is currently ACCURATE: the population
+        function resolves 9 of 9. So it is right and unprotected, which is precisely the
+        condition this finding was raised about.
+      why_it_remains_open: >-
+        The residual is a live, unscoped instance of the exact defect class this finding names,
+        sitting in the same sentence this finding's own repair rewrote. The repair removed the
+        105 literal and pointed at the function; it left a second transcribed cardinality in
+        the same statement. Closing on the ground that the claim named only the 105 would be
+        closing on a scope technicality while the thing the finding is about is still there
+        and still unprotected. It would also orphan the residual: no CLOSED finding in this
+        register carries one, and discarding it is expressly not permitted.
+      what_would_permit_closure: >-
+        Either a control that verifies membership statements about that population against the
+        function, or an explicit governance decision to carry this residual as separate named
+        debt. The second is a scoping decision that should be taken deliberately and recorded,
+        not taken silently by closing this finding. No new finding is created here to enable
+        closure, because creating one to unblock a transition is how a residual gets laundered
+        into a formality.
+      not_acceptance_blocking: >-
+        This finding is classified non-blocking and remains so. Remaining OPEN is not an
+        assertion that it blocks acceptance; it is an assertion that its proposition is not
+        yet fully discharged.
     locus: [EVIDENCE]
     title: A scanned-population cardinality in CLAUDE.md was stale and did not reproduce
     claim: >-
@@ -1574,7 +1612,31 @@ findings:
     reviewed_object: 58d18db1f952ff18f9853161eb979048483e4bc5
     primary_artifact_retention: external_not_retained
     acceptance_blocking: true
-    state: OPEN
+    state: CLOSED
+    closure_review: REV-3188A11-PER-FINDING
+    governance_disposition:
+      decided_by: governance disposition actor; not the reviewer
+      prior_state: OPEN
+      new_state: CLOSED
+      repair_support_determination: SUPPORTED
+      review_id: REV-3188A11-PER-FINDING
+      closure_target: 3188a11443e33c8c4f68933cf73282108957f356
+      closure_target_basis: >-
+        The finding's declared repair_completion_object, which is exactly the object the
+        review reviewed. Verified as exact equality, not ancestry, prefix or descendant.
+      residual_considered: >-
+        NONE. The reviewer found no residual at the reviewed object, and specifically found
+        that NF-05 carries no state-debt residual there. The 25-record queue belongs to NF-09.
+        The remediation-authored prose in this record's independent_review_support that refers
+        to adjudicating those records was written for NF-09 and landed here through a
+        misplaced first-occurrence edit; it is superseded for residual purposes by the
+        retained review and is not treated as evidence of a residual NF-05 does not have.
+      rationale: >-
+        The finding's own proposition is that closure warrant was unresolved prose no observer
+        read. It is resolved: closure is a typed reference resolved against the register, the
+        prose is retained as explicitly non-authoritative closure_note, and the repair is
+        independently supported at the closure target. Nothing this finding claims remains
+        unmet.
     locus: [MEASUREMENT_PATH]
     title: Closure warrant was carried as prose that no observer resolved
     claim: >-
@@ -1634,7 +1696,41 @@ findings:
     reviewed_object: 58d18db1f952ff18f9853161eb979048483e4bc5
     primary_artifact_retention: external_not_retained
     acceptance_blocking: true
-    state: OPEN
+    state: CLOSED
+    closure_review: REV-3188A11-PER-FINDING
+    governance_disposition:
+      decided_by: governance disposition actor; not the reviewer
+      prior_state: OPEN
+      new_state: CLOSED
+      repair_support_determination: SUPPORTED
+      review_id: REV-3188A11-PER-FINDING
+      closure_target: 3188a11443e33c8c4f68933cf73282108957f356
+      dependency_considered: >-
+        Support is materially conditional on NF-10 and NF-11, and this was checked before
+        deciding rather than assumed: both are SUPPORTED by the same retained review at the
+        same object. The reviewer demonstrated that at C1/63694e5 this finding's rule existed
+        while the governed population was not yet trustworthy, and that at exactly 3188a11
+        NF-10 and NF-11 make it trustworthy. The dependency is therefore SATISFIED AT THE
+        CLOSURE TARGET rather than outstanding. No claim is made, here or anywhere, that this
+        finding was independently supportable at 63694e5; its supported completion object is
+        3188a11 and the record already says so.
+      residual_considered: >-
+        RT-F-06's closure precedes its warrant in time. Disclosed by the reviewer and
+        undetectable by the mechanism, which takes no timestamp input. Weighed and found not
+        to be an unmet part of this finding's proposition: the claim is that a convincing
+        string could suffice to close a finding, and after the repair every CLOSED finding
+        must carry a warrant that resolves NOW, which RT-F-06's does. The temporal ordering of
+        a historical closure is a disclosed limitation of what the mechanism can see, not a
+        promise this finding made and did not keep.
+      what_would_change_this: >-
+        If the register ever required closure to have been warranted at the time it occurred,
+        rather than to be warranted when observed, this decision would need revisiting. It
+        does not, and extending it that way is a rule change and not a disposition.
+      rationale: >-
+        The proposition -- that a finding could be moved to CLOSED by asserting a review had
+        occurred -- is resolved by a population-driven observer with mutation controls over
+        each failure mode, independently supported at the closure target with its dependencies
+        satisfied there.
     locus: [MEASUREMENT_PATH]
     title: A finding could be moved to CLOSED by writing a convincing string
     claim: >-
@@ -1749,7 +1845,35 @@ findings:
     reviewed_object: 63694e5f514b12852cec5524db841bb12a52df69
     primary_artifact_retention: external_not_retained
     acceptance_blocking: true
-    state: OPEN
+    state: CLOSED
+    closure_review: REV-3188A11-PER-FINDING
+    governance_disposition:
+      decided_by: governance disposition actor; not the reviewer
+      prior_state: OPEN
+      new_state: CLOSED
+      repair_support_determination: SUPPORTED
+      review_id: REV-3188A11-PER-FINDING
+      closure_target: 3188a11443e33c8c4f68933cf73282108957f356
+      residual_considered: >-
+        Two components, and the question is whether either is unresolved IN THIS FINDING.
+        Neither is. First, 25 records remain state debt: this finding's own residual text says
+        "NF-09 still carries that queue", so the finding disclaims ownership in its own words,
+        and NF-09 remains OPEN carrying it. Keeping this finding OPEN for it would duplicate
+        one residual across two findings and make the queue look like two obligations. Second,
+        the observer does not judge whether an exception's reason is a good one: this finding
+        never claimed it would. Its claim is that an exception ASSERTED ITS OWN CONTENT
+        unchecked, and the repair is that the declaration is now checked against the record by
+        digest, per legacy field. Correspondence is what was promised and correspondence is
+        what was delivered.
+      segregation_basis: >-
+        Read from both findings' controlled propositions rather than from any later summary.
+        This finding's claim is about unchecked declarations; NF-09's is about heterogeneous
+        state representation with a 25-record adjudication queue as its residual. They are
+        different propositions and the queue sits on exactly one of them.
+      rationale: >-
+        The mechanism this finding names is completely repaired and independently supported at
+        the closure target. The residual that remains is another finding's, and that finding
+        is OPEN.
     locus: [MEASUREMENT_PATH]
     title: >-
       State exceptions asserted their own content, so a legacy closure claim could hide
@@ -1824,7 +1948,24 @@ findings:
     reviewed_object: 1db99482ce894606ca68ec67a832cb1351369d68
     primary_artifact_retention: external_not_retained
     acceptance_blocking: true
-    state: OPEN
+    state: CLOSED
+    closure_review: REV-3188A11-PER-FINDING
+    governance_disposition:
+      decided_by: governance disposition actor; not the reviewer
+      prior_state: OPEN
+      new_state: CLOSED
+      repair_support_determination: SUPPORTED
+      review_id: REV-3188A11-PER-FINDING
+      closure_target: 3188a11443e33c8c4f68933cf73282108957f356
+      residual_considered: >-
+        NONE. The reviewer independently demonstrated the absent / present-and-null /
+        present-and-empty / ordinary-value distinctions rather than accepting the repair's own
+        account of them.
+      rationale: >-
+        The proposition -- that presence was determined by value truthiness, so a field
+        physically present and null satisfied a declaration of absent -- is resolved. Presence
+        is key membership, the value encoding is declared once so both sides agree on what is
+        hashed, and exact digest comparison is preserved for every field declared present.
     locus: [MEASUREMENT_PATH]
     title: >-
       The presence check conflated an absent legacy field with one present and null
@@ -1888,6 +2029,39 @@ findings:
     primary_artifact_retention: external_not_retained
     acceptance_blocking: false
     state: OPEN
+    governance_disposition:
+      decided_by: governance disposition actor; not the reviewer
+      prior_state: OPEN
+      new_state: OPEN
+      repair_support_determination: SUPPORTED
+      review_id: REV-3188A11-PER-FINDING
+      closure_target_would_be: 3188a11443e33c8c4f68933cf73282108957f356
+      closure_mechanics_resolve: >-
+        Yes, exactly as for the four findings closed at this disposition. Closure is declined
+        on substance.
+      residual_considered: >-
+        The reviewer recorded that this finding's OWN claim carries an unscoped historical
+        cardinality, 39 records / 14 canonical / 25 in debt, which reproduces at 1db9948 and
+        not later. Independently confirmed during this disposition: at 1db9948 the population
+        is 39 / 14 / 25, and at the current object it is 59 / 34 / 25. Two of the three
+        figures no longer describe the register, and the claim states them with no measurement
+        scope, so it reads as current.
+      why_it_remains_open: >-
+        This finding is the finding about controlled narrative going stale, and its own claim
+        has gone stale in exactly that way. The register already knows how to state a frozen
+        measurement -- finding_state_control.observed_baseline carries an explicit note that
+        its figures describe the population AT DISCOVERY and deliberately do not track the
+        file -- and this claim carries no such qualifier. Closing it would leave the register
+        asserting, in the record of the stale-narrative finding, three numbers that are two
+        thirds wrong and unmarked. The repair this finding delivered is supported; the finding
+        is not discharged while it is an instance of itself.
+      what_would_permit_closure: >-
+        Binding those figures to the object they were taken at, in the same form the register
+        already uses for frozen baselines. That is a record repair and is deliberately NOT
+        performed here: this is a disposition step, and repairing a finding in order to close
+        it in the same commit would collapse the two authorities this sequence keeps apart.
+      not_acceptance_blocking: >-
+        Classified non-blocking and remains so.
     locus: [EVIDENCE]
     title: Controlled narrative in the finding register had gone stale
     claim: >-
