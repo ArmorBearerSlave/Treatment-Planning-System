@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import collections
 import contextlib
+import copy
 import os
 import sys
 import unittest
@@ -50,13 +51,18 @@ from controlled_field_semantics import (  # noqa: E402
     FULL_OBJECT,
     IDENTITY_FIELDS,
     IDENTITY_FIELD_BY_KIND,
+    authority_reconciliation_problems,
+    authority_vocabulary_problems,
+    closure_authority_problems,
     identity_consumer_modules,
     identity_declaration_problems,
+    mechanism_verification_problems,
     reviewed_identity,
     reviewed_sha,
     truthiness_declaration_sites,
     uniformity_problems,
     usable_object,
+    verifies_repair,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -190,8 +196,19 @@ def completion_declaration_problems(findings_body: dict, register_body: dict) ->
         # Exactly one registered review must BOTH have verified this finding's repair and
         # have reviewed the completion object. A generic review of a commit is never
         # reinterpreted as verification of every finding in the repository.
+        #
+        # NF-36 / IR-06. The support determination is read from the canonical per-finding
+        # structure, not from verified_repairs_of. That field is a list the remediation actor
+        # wrote after the fact, over a review whose primary artifact was never retained, and the
+        # independent reviewer classified its per-finding claims INDETERMINATE at three separate
+        # checkpoints -- yet it was the sole thing establishing repair support for all six
+        # findings, because it was the field the observer happened to read. The retained review
+        # that actually carries determinations extracted from its own bytes was read by nothing.
+        # Both reviewed 3188a11, so both are candidates at the completion object and the
+        # canonical structure is what separates them: one records VERIFIED, the other
+        # INDETERMINATE.
         supporting = [r for r in reviews
-                      if fid in (r.get("verified_repairs_of") or [])
+                      if verifies_repair(r, fid, register_body)
                       and reviewed_sha(r) == completion]
         if not supporting:
             problems.append(f"{fid}: no registered review both verified this finding's repair "
@@ -880,6 +897,23 @@ class CompletionObjectMutations(unittest.TestCase):
     ORIGIN = "c2175bbcb798cf1a12a69d26a1504d973e76c284"
     COMPLETION = "3188a11443e33c8c4f68933cf73282108957f356"
 
+    @property
+    def SUBJECT(self) -> str:
+        """A finding declaring the completion object, SELECTED FROM THE RECORD.
+
+        NF-38 / IR-08. Not a literal id. The controls below previously named NF-01, which was the
+        subject only because it is the first finding in file order carrying the anchor and
+        `mutated` replaces the first occurrence -- so a control's fixture depended on a governed
+        value it never declared, and a legitimate closure of NF-01 would have broken controls that
+        have nothing to do with NF-01. The selection is now derived and stable under reordering,
+        renaming and lifecycle movement, and it asserts that it found something rather than
+        quietly ranging over nothing.
+        """
+        declared = sorted(f["id"] for f in findings_declaring_completion(load(FINDINGS))
+                          if f[COMPLETION_FIELD] == self.COMPLETION)
+        self.assertTrue(declared, "no finding declares the completion object under test")
+        return declared[0]
+
     def observe(self):
         return completion_declaration_problems(load(FINDINGS), load(REVIEWS))
 
@@ -899,14 +933,35 @@ class CompletionObjectMutations(unittest.TestCase):
         self.assertTrue(declared)
         self.assertEqual([], self.observe())
 
+    # ------------------------------------------------------- completion support, C10B onward
+    #
+    # NF-36 / IR-06 moved the source of completion support from verified_repairs_of to the
+    # canonical per_finding_authority structure, so four controls below were mutating a field the
+    # observer no longer reads and had stopped biting. They now mutate the canonical structure,
+    # and they select the supporting review MECHANICALLY rather than by position or by literal
+    # id: the previous versions worked only because REV-C5-CUMULATIVE happened to be the first
+    # review carrying the completion sha, and `mutated` replaces the first occurrence.
+    #
+    # They also mutate in memory. NF-35 / IR-05 records that on-disk mutation restored only in a
+    # Python finally block leaves controlled files modified when the process dies, and these four
+    # had to be rewritten anyway; rewriting them back into the pattern under repair would have
+    # been a choice.
+
+    def supporting_review(self, register_body: dict) -> dict:
+        """The review the completion observer actually consults, resolved from the record."""
+        candidates = [r for r in register_body["reviews"]
+                      if reviewed_sha(r) == self.COMPLETION
+                      and verifies_repair(r, self.SUBJECT, register_body)]
+        self.assertEqual(1, len(candidates),
+                         f"expected exactly one review verifying {self.SUBJECT} at the "
+                         f"completion object, found {[r['review_id'] for r in candidates]}")
+        return candidates[0]
+
     def test_a_review_of_the_original_repair_only_fails(self):
         """The review verified the repair, but reviewed the introduction commit."""
-        with mutated(REVIEWS,
-                     "      sha: " + self.COMPLETION + "\n    verdict: INDEPENDENTLY VERIFIED\n"
-                     "    reviewer:",
-                     "      sha: " + self.ORIGIN + "\n    verdict: INDEPENDENTLY VERIFIED\n"
-                     "    reviewer:"):
-            problems = self.observe()
+        body, register_body = load(FINDINGS), copy.deepcopy(load(REVIEWS))
+        self.supporting_review(register_body)["reviewed_object"]["sha"] = self.ORIGIN
+        problems = completion_declaration_problems(body, register_body)
         self.assertTrue(any("no registered review both verified" in p for p in problems),
                         problems[:2])
 
@@ -970,35 +1025,50 @@ class CompletionObjectMutations(unittest.TestCase):
         self.assertTrue(any("no completion reason" in p for p in problems))
 
     def test_a_completion_reference_resolving_zero_times_fails(self):
-        with mutated(REVIEWS, "    verified_repairs_of:\n      - NF-01\n",
-                     "    verified_repairs_of:\n"):
-            problems = self.observe()
-        self.assertTrue(any("NF-01" in p and "no registered review both verified" in p
-                            for p in problems))
+        body, register_body = load(FINDINGS), copy.deepcopy(load(REVIEWS))
+        self.supporting_review(register_body)["per_finding_authority"].pop(self.SUBJECT)
+        problems = completion_declaration_problems(body, register_body)
+        self.assertTrue(any(self.SUBJECT in p and "no registered review both verified" in p
+                            for p in problems), problems[:2])
+
+    def test_a_support_determination_short_of_verified_resolves_zero_times(self):
+        """INDETERMINATE is not a weaker yes. It supplies no support at all.
+
+        This is the shape NF-36 is about: REV-C5-CUMULATIVE's per-finding claims are exactly
+        INDETERMINATE, and while the observer read verified_repairs_of they were nonetheless the
+        thing establishing support for all six findings.
+        """
+        for value in ("INDETERMINATE", "NOT_VERIFIED"):
+            with self.subTest(repair_support=value):
+                body, register_body = load(FINDINGS), copy.deepcopy(load(REVIEWS))
+                review = self.supporting_review(register_body)
+                review["per_finding_authority"][self.SUBJECT]["repair_support"] = value
+                problems = completion_declaration_problems(body, register_body)
+                self.assertTrue(any(self.SUBJECT in p and "no registered review both verified" in p
+                                    for p in problems), problems[:2])
 
     def test_a_completion_reference_resolving_more_than_once_fails(self):
-        duplicate = ("  - review_id: REV-C5-DUPLICATE\n"
-                     "    subject: synthetic duplicate verifier\n"
-                     "    reviewed_object:\n"
-                     "      kind: commit\n"
-                     "      sha: " + self.COMPLETION + "\n"
-                     "    verdict: INDEPENDENTLY VERIFIED\n"
-                     "    verified_repairs_of:\n      - NF-01\n"
-                     "    reviewer:\n"
-                     "      relationship: r\n"
-                     "      identity: unnamed\n"
-                     "      satisfies_mps_mat_009_named_reviewer_obligation: false\n"
-                     "    primary_artifact_retention: external_not_retained\n\n")
-        with mutated(REVIEWS, "  - review_id: REV-C5-CUMULATIVE",
-                     duplicate + "  - review_id: REV-C5-CUMULATIVE"):
-            problems = self.observe()
+        body, register_body = load(FINDINGS), copy.deepcopy(load(REVIEWS))
+        register_body["reviews"].append({
+            "review_id": "REV-SYNTHETIC-DUPLICATE",
+            "subject": "synthetic duplicate verifier",
+            "reviewed_object": {"kind": "commit", "sha": self.COMPLETION},
+            "verdict": "INDEPENDENTLY VERIFIED",
+            "per_finding_authority": {
+                self.SUBJECT: {"repair_support": "VERIFIED",
+                               "closure_authority": "DENIED",
+                               "basis": "synthetic"}},
+            "reviewer": {"relationship": "r", "identity": "unnamed",
+                         "satisfies_mps_mat_009_named_reviewer_obligation": False},
+            "primary_artifact_retention": "external_not_retained",
+        })
+        problems = completion_declaration_problems(body, register_body)
         self.assertTrue(any("ambiguity is surfaced" in p for p in problems), problems[:2])
 
     def test_a_completion_review_with_a_non_closing_verdict_fails(self):
-        with mutated(REVIEWS,
-                     "      sha: " + self.COMPLETION + "\n    verdict: INDEPENDENTLY VERIFIED",
-                     "      sha: " + self.COMPLETION + "\n    verdict: FAIL"):
-            problems = self.observe()
+        body, register_body = load(FINDINGS), copy.deepcopy(load(REVIEWS))
+        self.supporting_review(register_body)["verdict"] = "FAIL"
+        problems = completion_declaration_problems(body, register_body)
         self.assertTrue(any("not a closing verdict" in p for p in problems), problems[:2])
 
     def test_a_completion_object_one_commit_away_fails(self):

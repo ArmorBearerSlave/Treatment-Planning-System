@@ -30,8 +30,21 @@ closure_rule:
     reviewed the right object, or returned a passing verdict.
   invariant: >-
     For every applicable CLOSED finding f there must exist exactly one review r in this
-    register such that closure_review(f) = r, reviewed_object(r) = closure_target(f), and
-    verdict(r) is a closing verdict.
+    register such that closure_review(f) = r, reviewed_object(r) = closure_target(f),
+    verdict(r) is a closing verdict, AND r explicitly grants closure authority for f.
+  invariant_amended_at_c10b: >-
+    NF-33 / IR-03. The final clause is new and every earlier clause is untouched. All of them
+    together were satisfiable by a review that had said nothing whatever about the finding,
+    because closure authority was read off the review-LEVEL verdict: at 00c6e2f a review whose
+    own retained artifact declares "repair support only; not lifecycle disposition" served as
+    the warrant for four findings and the observer reported clean. The grant is now positive,
+    per finding, and read from per_finding_authority -- see per_finding_authority_model. A
+    closing verdict remains necessary and is no longer sufficient. The identity clause is NOT
+    relaxed in either direction: this is an additional conjunct, not a substitution, and the
+    relation between the old rule and the new one is a strict strengthening. That is stated
+    deliberately, because NF-34 records this register describing a weakening as a strengthening
+    one checkpoint ago; here every record the new rule accepts was accepted by the old one, and
+    the converse fails.
   invariant_note: >-
     Amended at C6, and the amendment is to the target only. closure_target(f) is repair(f)
     unless f declares a repair_completion_object, in which case it is that object. The
@@ -104,6 +117,231 @@ repair_completion_rule:
     would now make a finding mechanically closable, its state is left OPEN: a changed closure
     model must itself be independently verified before it is used to move controlled finding
     state.
+
+per_finding_authority_model:
+  purpose: >-
+    NF-33 / IR-03 and NF-36 / IR-06. Six overlapping representations answered questions about
+    what a review established for a finding -- verified_repairs_of, per_finding_determinations,
+    warrants_closure_of, the finding-side independent_review_support, the review-level verdict,
+    and the narrative verdict_scope and scope_note. No two of them were reconciled against each
+    other, and authority drifted into whichever one an observer happened to read. At 00c6e2f a
+    review whose own artifact says "repair support only; not lifecycle disposition" served as the
+    closure warrant for four findings, and every control reported clean.
+  the_two_questions_and_where_each_is_answered:
+    did_this_review_verify_this_findings_repair: >-
+      Answered ONLY by per_finding_authority[<finding>].repair_support on the review record.
+    did_this_review_grant_authority_to_close_this_finding: >-
+      Answered ONLY by per_finding_authority[<finding>].closure_authority on the review record.
+  why_they_are_separate: >-
+    They are different propositions with different authorities behind them. A reviewer can
+    establish that a repair does what it claims without deciding that the finding should leave
+    OPEN -- residuals, dependencies and acceptance-blocking status are a governance judgement, not
+    a technical one. REV-3188A11-PER-FINDING is the live case: its retained artifact determines
+    six repairs SUPPORTED and states in its own words that it declares no finding CLOSED.
+    Collapsing the two would make every competent technical review a closing instrument.
+  canonical_location: reviews[].per_finding_authority
+  canonical_shape: >-
+    A mapping from finding id to a record carrying repair_support, closure_authority, and a basis
+    for each. Absence of a finding from a review's mapping means that review answers neither
+    question for that finding -- it is not a silent grant and not a silent denial.
+  repair_support_values:
+    VERIFIED: >-
+      The review established that this finding's repair does what the finding claims, at the
+      object the review reviewed.
+    NOT_VERIFIED: >-
+      The review examined the repair and did not establish it.
+    INDETERMINATE: >-
+      The review's record cannot establish the determination one way or the other. Used where a
+      per-finding claim exists but its provenance does not support it.
+  closure_authority_values:
+    GRANTED: >-
+      The review explicitly authorizes moving this finding to CLOSED at the object it reviewed.
+    DENIED: >-
+      The review explicitly declines to authorize closure of this finding.
+    INDETERMINATE: >-
+      The review's scope does not reach the question. Never a grant.
+  closure_requires: GRANTED
+  closure_requires_note: >-
+    A hard invariant. GRANTED is the only value that permits closure; DENIED, INDETERMINATE and
+    absence all refuse it. A closing review-LEVEL verdict is necessary and is not sufficient: it
+    says the review passed, not that it authorized anything about a particular finding.
+  exact_object_identity_is_unchanged: >-
+    This model adds a positive per-finding requirement ON TOP of exact object identity. It
+    removes nothing. reviewed_object(r) must still equal closure_target(f) exactly -- no
+    ancestry, no prefix, no abbreviated equivalence, no case normalisation, no latest review, no
+    nearest descendant, no promotion.
+  derived_and_reconciled_fields:
+    warrants_closure_of:
+      status: derived
+      rule: >-
+        Where present, it must equal exactly the set of findings for which this review declares
+        closure_authority GRANTED, in both directions. It is a reading convenience and never an
+        independent authority source; a control refuses any divergence.
+    verified_repairs_of:
+      status: historical_non_authoritative
+      rule: >-
+        Retained for provenance and read by nothing. It is not permitted to answer either
+        question, and where it diverges from the canonical structure the divergence must be
+        declared on the review record rather than silently tolerated. See
+        REV-C5-CUMULATIVE.verified_repairs_of_authority.
+    per_finding_determinations:
+      status: canonical_source_for_retained_reviews
+      rule: >-
+        Where a review declares primary_artifact_retention `retained`, its per-finding
+        determinations are extracted from the retained bytes and must agree with
+        per_finding_authority[<finding>].repair_support through the controlled mapping below.
+        The retained artifact is the evidence; per_finding_authority is the typed reading of it.
+    retained_determination_to_repair_support:
+      SUPPORTED: VERIFIED
+      NOT_SUPPORTED: NOT_VERIFIED
+      INDETERMINATE: INDETERMINATE
+  prose_is_never_authority: >-
+    The finding-side independent_review_support, closure_note, governance_disposition rationale
+    and every scope_note remain in the record as context. No observer parses them and no closure
+    rests on them. A control asserts that the authority observers name none of those fields.
+
+mechanism_verification_model:
+  purpose: >-
+    NF-31 / IR-01. repair_completion_rule.no_closure_transition_in_c6 required that a changed
+    closure model be independently verified before it is next used to move lifecycle state. That
+    requirement had no mechanism: no review declared what it verified, so the condition could only
+    ever be satisfied by implication from a later cumulative review of a descendant object. That is
+    ancestry reasoning, which this register refuses everywhere else.
+  the_safety_property_retained: >-
+    A changed closure or authorization mechanism must be independently verified BEFORE it is next
+    used to move lifecycle state.
+  what_is_relaxed_and_why: >-
+    A dedicated review of every intermediate commit that introduced part of a mechanism is NOT
+    required. An explicitly scoped cumulative review may satisfy the condition. What is no longer
+    permitted is satisfying it silently: the review must say so.
+  a_cumulative_review_satisfies_it_only_if_it_declares: >-
+    mechanism, introduced_at, verified_at_checkpoint as an exact object, that the mechanism is
+    present and effective at that checkpoint, and its verdict on the mechanism. All five, typed.
+  ancestry_is_never_sufficient: >-
+    That a verified object descends from the object introducing a mechanism establishes nothing
+    about whether the review looked at it. A cumulative review with no mechanisms_verified entry
+    does not verify any mechanism, however recent and however favourable.
+  depends_when_vocabulary:
+    always: >-
+      Every lifecycle transition made at or after this mechanism's introduction depends on
+      it.
+    finding_declares_completion_object: >-
+      Only a closure whose finding declares repair_completion_object depends on it.
+    note: >-
+      Typed because the observer must decide dependency mechanically. The prose key
+      a_closure_depends_on_it_when states the same thing for a reader and is not read by any
+      observer.
+  what_this_observer_cannot_establish: >-
+    The object at which a lifecycle transition was made is not recorded in the finding record,
+    so `first used for state movement` cannot be resolved from the register alone. The
+    observer therefore enforces the checkable half -- that every mechanism a CLOSED finding
+    depends on is declared verified by some registered review at an exact object where the
+    mechanism exists -- and reports the unresolvable half as a stated limitation rather than
+    as an observation it made. This is deliberate: an observer that inferred transition order
+    from Git committer timestamps would be treating metadata as controlled evidence, which no
+    controlled process here declares it to be.
+  three_states_kept_distinct:
+    introduced: the object at which the mechanism first exists
+    independently_verified: an exact object at which a review declares it verified
+    first_used_for_state_movement: the transition that relies on it
+  ordering_evidence: >-
+    Ordering between two exact objects is taken from repository ancestry, which is a structural
+    fact about the object graph. Git author and committer timestamps are NOT consulted and are not
+    declared authoritative by any controlled process here. Where ordering cannot be established
+    from ancestry -- unrelated objects, or an object not yet in the repository -- the observer
+    reports the limitation as UNRESOLVED and counts it against the requirement rather than
+    treating it as satisfied.
+  applies_prospectively: >-
+    To lifecycle transitions made at or after a mechanism's introduction. Closures that predate a
+    mechanism are named explicitly in grandfathered_closures below rather than exempted silently;
+    adding to that list is a visible controlled change.
+  grandfathered_closures:
+    findings: [RT-F-03, RT-F-04, RT-F-05, RT-F-06, NF-13]
+    why: >-
+      These five were CLOSED before any mechanism-verification requirement existed, and none of
+      them depends on the closure-completion model: not one declares a repair_completion_object,
+      so each closed against its own repair object under the original rule. They are listed
+      individually rather than derived from a date, and each still satisfies every other closure
+      predicate including the new per-finding authority requirement.
+    what_this_is_not: >-
+      Not an assertion that those closures were reviewed against the new model. It is an explicit
+      statement of which closures the new mechanism requirement does not reach, so that the
+      exemption is visible instead of implied by the requirement's start date.
+
+mechanisms:
+  closure-completion-model:
+    what_it_is: >-
+      The interpretation of repair_completion_object as the object a closure review must have
+      reviewed, in place of the repair field.
+    introduced_at: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+    introduced_at_phase: C6
+    a_closure_depends_on_it_when: the finding declares repair_completion_object
+    depends_when: finding_declares_completion_object
+    verification_state: UNVERIFIED
+    verification_state_basis: >-
+      Derived, not declared: no registered review carries a mechanisms_verified entry naming this
+      mechanism. REV-C9-CUMULATIVE returned INDEPENDENTLY VERIFIED against 5ec6b5f, a descendant of
+      the introducing object, and says nothing about this mechanism. Under ancestry_is_never_
+      sufficient that establishes nothing about it.
+  per-finding-closure-authority:
+    what_it_is: >-
+      The requirement that a closure warrant explicitly grant closure authority for the finding it
+      is cited to close, and the canonical per-finding authority representation it reads.
+    introduced_at: pending
+    introduced_at_phase: C10B
+    introduced_at_note: >-
+      Deliberately unresolved. A record cannot name the commit that contains it, and writing a
+      placeholder object would be a false identity. The next independent review binds this to the
+      exact C10B object it reviews. Until then the observer treats it as introduced at this
+      checkpoint and unverified, which is the conservative direction.
+    a_closure_depends_on_it_when: >-
+      always, for any lifecycle transition made at or after its introduction
+    depends_when: always
+    verification_state: UNVERIFIED
+    verification_state_basis: >-
+      Introduced by this checkpoint and reviewed by nobody yet. This is the intended state: C10
+      must itself be independently verified before the model it introduces may be used.
+  repair-completion-declarations:
+    what_it_is: >-
+      The six repair_completion_object declarations naming 3188a11 as the object at which each
+      repair became complete.
+    introduced_at: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+    introduced_at_phase: C6
+    a_closure_depends_on_it_when: the finding declares repair_completion_object
+    depends_when: finding_declares_completion_object
+    verification_state: UNVERIFIED
+    verification_state_basis: >-
+      NF-37 / IR-07. These declarations did not exist at 3188a11 -- zero findings declare the field
+      at that object, and the six first appear at 3e397dc -- so the retained review of 3188a11
+      cannot have verified them, and no later review has. Whether each declaration truthfully
+      identifies 3188a11 is an open question owed to a future reviewer.
+
+three_propositions_kept_separate:
+  purpose: >-
+    NF-37 / IR-07. The record offered one review as support for three different claims. They are
+    separated here so that no future reader can take the first as evidence of the other two.
+  A_repair_mechanism_was_valid_at_3188a11:
+    established_by: REV-3188A11-PER-FINDING
+    status: ESTABLISHED
+    scope: repair support only, per the retained artifact's own statement of its scope
+  B_the_later_declaration_truthfully_identifies_3188a11:
+    established_by: nothing
+    status: NOT ESTABLISHED
+    why: >-
+      The declarations were introduced at 3e397dc, after the reviewed object. A review of 3188a11
+      could not have examined an artifact that did not exist there.
+    owed_to: the next independent review, explicitly
+  C_the_model_interpreting_that_declaration_is_verified:
+    established_by: nothing
+    status: NOT ESTABLISHED
+    why: >-
+      The closure-completion model was introduced at 3e397dc and no review declares it verified.
+    owed_to: the next independent review, explicitly
+  no_retroactive_claim_is_made: >-
+    Nothing here asserts that a later review retroactively satisfied a pre-use condition. The
+    failed disposition at 00c6e2f remains failed, NF-31 remains open, and the revised rule applies
+    prospectively.
+
 
 verdict_vocabulary:
   PENDING: reviewed object exists; independent review has not returned
@@ -406,6 +644,34 @@ reviews:
       - RT-F-04
       - RT-F-05
       - RT-F-06
+    per_finding_authority:
+      RT-F-03:
+        repair_support: VERIFIED
+        closure_authority: GRANTED
+        basis: >-
+          This review's subject is the correction of these four findings and it returned a closing
+          verdict on them by name. The pre-existing warrants_closure_of list is the historical
+          expression of the same grant and reconciles with this mapping exactly.
+      RT-F-04:
+        repair_support: VERIFIED
+        closure_authority: GRANTED
+        basis: as RT-F-03; named in this review's subject and in its closure grant.
+      RT-F-05:
+        repair_support: VERIFIED
+        closure_authority: GRANTED
+        basis: as RT-F-03; named in this review's subject and in its closure grant.
+      RT-F-06:
+        repair_support: VERIFIED
+        closure_authority: GRANTED
+        basis: >-
+          As RT-F-03. The reviewer's disclosed limitation that this closure preceded its warrant in
+          time is recorded on the finding and is not repaired by this mapping; it is a limit on what
+          a mechanism with no timestamp input can see, and it is not restated here as a grant it
+          did not make.
+    per_finding_authority_note: >-
+      Written at C10B from this review's own existing closure grant, not invented for it. Nothing
+      is added to the population and nothing is removed: warrants_closure_of and this mapping
+      express the same four grants, and a control refuses any divergence between them.
     controlled_support:
       - mps/materialization/mps-mat-009/findings.yaml
       - tests/test_review_records.py
@@ -464,6 +730,63 @@ reviews:
       - NF-11
       - NF-12
       - NF-13
+    per_finding_authority:
+      NF-13:
+        repair_support: VERIFIED
+        closure_authority: GRANTED
+        basis: >-
+          This review's declared subject is the NF-13 path-citation repair, and its pre-existing
+          warrants_closure_of names NF-13 alone. The grant is this review's own and is transcribed
+          from the field it already carried.
+      NF-01:
+        repair_support: INDETERMINATE
+        closure_authority: DENIED
+        basis: >-
+          NF-36 / IR-06. The claim that this review verified this repair rests on
+          verified_repairs_of, a list authored after the review by the remediation actor, over a
+          review whose primary artifact was not retained. The independent reviewer classified those
+          per-finding claims INDETERMINATE at C7, C8 and C9 and that classification is unchanged.
+          The determination is therefore INDETERMINATE here -- not NOT_VERIFIED, because nothing
+          establishes that the repair fails; the record simply cannot establish that this review
+          made the determination. Closure authority is DENIED because this review's own
+          warrants_closure_of names NF-13 and nothing else.
+      NF-05:
+        repair_support: INDETERMINATE
+        closure_authority: DENIED
+        basis: as NF-01; the same authored list and the same INDETERMINATE classification.
+      NF-06:
+        repair_support: INDETERMINATE
+        closure_authority: DENIED
+        basis: as NF-01; the same authored list and the same INDETERMINATE classification.
+      NF-10:
+        repair_support: INDETERMINATE
+        closure_authority: DENIED
+        basis: as NF-01; the same authored list and the same INDETERMINATE classification.
+      NF-11:
+        repair_support: INDETERMINATE
+        closure_authority: DENIED
+        basis: as NF-01; the same authored list and the same INDETERMINATE classification.
+      NF-12:
+        repair_support: INDETERMINATE
+        closure_authority: DENIED
+        basis: as NF-01; the same authored list and the same INDETERMINATE classification.
+    verified_repairs_of_authority:
+      status: historical_non_authoritative
+      declared_divergence_from_canonical:
+        field_lists: [NF-01, NF-05, NF-06, NF-10, NF-11, NF-12, NF-13]
+        canonical_repair_support_VERIFIED: [NF-13]
+        diverges_on: [NF-01, NF-05, NF-06, NF-10, NF-11, NF-12]
+      why_the_divergence_is_declared_rather_than_resolved: >-
+        NF-36 / IR-06. Deleting the list would destroy the provenance record that makes the problem
+        legible; silently treating it as authority is what produced the failed disposition. So it is
+        retained, marked non-authoritative, and the exact six findings on which it diverges from the
+        canonical structure are named here. A control refuses any observer that reads this field for
+        either authority question, and refuses an undeclared divergence.
+      what_replaced_it_as_evidence: >-
+        REV-3188A11-PER-FINDING, which reviewed the same object, retained its primary artifact, and
+        carries real per-finding determinations extracted from the retained bytes. That review is
+        now the one supplying repair support at 3188a11. It grants no closure authority, and that
+        is deliberate.
     verified_repairs_of_note: >-
       Distinct from warrants_closure_of, and deliberately larger than it. This review
       expressly verified the repair of each finding named here, by independent derivation and
@@ -737,6 +1060,45 @@ reviews:
             NF-12's own claim carries an unscoped historical cardinality, 39/14/25, which
             reproduces at 1db9948 but not at the later repair object or the current one. Not
             repaired here.
+    per_finding_authority:
+      NF-01:
+        repair_support: VERIFIED
+        closure_authority: DENIED
+        basis: >-
+          repair_support is the typed reading of this review's own retained determination
+          SUPPORTED, through the controlled retained_determination_to_repair_support mapping, and
+          is bound to the artifact's bytes rather than transcribed. closure_authority is DENIED
+          because the retained artifact states its scope as repair support only and states no
+          finding to be CLOSED; DENIED records what the artifact says rather than leaving the
+          question unanswered.
+      NF-05:
+        repair_support: VERIFIED
+        closure_authority: DENIED
+        basis: as NF-01; SUPPORTED in the retained bytes, and lifecycle disposition disclaimed.
+      NF-06:
+        repair_support: VERIFIED
+        closure_authority: DENIED
+        basis: as NF-01; SUPPORTED in the retained bytes, and lifecycle disposition disclaimed.
+      NF-10:
+        repair_support: VERIFIED
+        closure_authority: DENIED
+        basis: as NF-01; SUPPORTED in the retained bytes, and lifecycle disposition disclaimed.
+      NF-11:
+        repair_support: VERIFIED
+        closure_authority: DENIED
+        basis: as NF-01; SUPPORTED in the retained bytes, and lifecycle disposition disclaimed.
+      NF-12:
+        repair_support: VERIFIED
+        closure_authority: DENIED
+        basis: as NF-01; SUPPORTED in the retained bytes, and lifecycle disposition disclaimed.
+    per_finding_authority_note: >-
+      NF-33 / IR-03 and NF-36 / IR-06. This is the review that now supplies repair support at
+      3188a11, in place of REV-C5-CUMULATIVE.verified_repairs_of, and it is the one review in the
+      register whose determinations are bound to retained bytes. The closure_authority column is
+      uniformly DENIED and that is the whole point of the model: at 00c6e2f this review was used as
+      the closure warrant for four findings while its own artifact disclaimed exactly that, and no
+      control could see the contradiction because closure authority was inferred from the
+      review-LEVEL verdict. It is now stated per finding, and it says no.
     scope_note: >-
       The reviewer's independence limitation, recorded as disclosed and not strengthened. The
       reviewer did not author C1 through C9, did not transport findings or reviews, and authored
@@ -1208,6 +1570,52 @@ methodological_observations:
       The same shape as NF-20 and NF-27 -- a claim wider than the mechanism, or a mechanism
       narrower than its claim -- appearing this time in a control the author wrote one commit
       earlier, and caught only because the next authority in the sequence tried to act.
+
+  - id: a_third_control_had_encoded_its_own_step_as_a_permanent_invariant
+    raised_by: the C10B remediation actor, on the control amended one checkpoint earlier
+    proposition: >-
+      test_a_supported_determination_confers_no_closure_by_itself, as amended at the disposition
+      step, asserted that a SUPPORTED finding which has left OPEN must name THAT retained review
+      as its warrant. True of the disposition, and not a rule: under the authority model a
+      SUPPORTED finding closes against whichever review GRANTS it closure authority, and the
+      retained review grants none -- so the clause required precisely the warrant the model now
+      forbids. It was written in the same commit whose register observation recorded two earlier
+      instances of this exact shape.
+    the_ordering_relation: >-
+      Incomparable, and stated as such rather than as a strengthening. The old clause accepts a
+      SUPPORTED finding closed against the retained review, which the new one refuses; the new one
+      accepts a SUPPORTED finding closed against another granting review, which the old one
+      refused. Neither implies the other. NF-34 exists because the previous checkpoint claimed a
+      strengthening it did not have, so the relation is named here rather than characterised.
+    what_it_asserts_now: >-
+      That the retained review grants closure authority to nothing, and that any SUPPORTED finding
+      which has left OPEN carries a warrant that both resolves under the closure rule and grants
+      authority for that finding. Both halves are executed against the observers rather than
+      asserted from the control's own reading.
+    why_three_instances_matter_more_than_three_fixes: >-
+      Every one was written by an actor correctly forbidden from moving state at the time, and
+      every one wrote that prohibition into a permanent invariant instead of into its commit. None
+      was detectable while nobody tried to act. The pattern is now named in the register rather
+      than rediscovered a fourth time: a control written at step N must assert what is true of the
+      MODEL, and if the author cannot separate that from what is true of step N, the control
+      belongs in the commit message.
+
+  - id: the_authority_model_freezes_closure_until_c10_is_reviewed
+    raised_by: the C10B remediation actor
+    proposition: >-
+      With per-finding closure authority required and every declared mechanism UNVERIFIED, no new
+      lifecycle closure can pass the controls. That is the intended state and not a side effect:
+      C10 introduces the authorization model, so C10 must not also be the checkpoint that uses it.
+    how_it_is_asserted: >-
+      Not left implicit. A control asserts that every mechanism reads UNVERIFIED and that no
+      registered review declares any mechanism verified, so the freeze is observed rather than
+      assumed, and lifting it requires a review to say what it verified.
+    what_lifting_it_requires: >-
+      An independent review of the C10 object that declares, per mechanism, which mechanism, its
+      introduction object, the exact checkpoint reviewed, that the mechanism is present and
+      effective there, and its verdict. Then a separate lifecycle-authority review granting or
+      denying closure per finding. Then a separate disposition commit. Three acts, three
+      authorities, in that order.
 
 obligation_effect:
   mps_mat_009_hash_0:

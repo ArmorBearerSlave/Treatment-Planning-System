@@ -236,3 +236,277 @@ def uniformity_problems(target=None) -> list[str]:
         problems.extend(truthiness_declaration_sites(
             path.read_text(encoding="utf-8"), unit))
     return problems
+
+
+# ==========================================================================================
+# per-finding review authority -- NF-33 / IR-03, NF-36 / IR-06, NF-31 / IR-01
+#
+# One implementation, imported by every consumer, for the same reason the identity semantics
+# above live here: NF-23 recorded what happens when one controlled representation acquires two
+# readings, and the answer was that the more permissive reading survives and the register calls
+# it verified.
+#
+# Two questions, deliberately separate, each with exactly one machine-authoritative answer:
+#
+#   "Did this review verify this finding's repair?"    -> repair_support
+#   "Did this review authorize closing this finding?"  -> closure_authority
+#
+# Both are read ONLY from reviews[].per_finding_authority. verified_repairs_of is historical and
+# non-authoritative, warrants_closure_of is derived and reconciled, and no prose field is ever
+# consulted. AUTHORITY_SOURCE_FIELD names the one location, so a consumer that reads anything
+# else is visible to the uniformity control rather than merely discouraged.
+# ==========================================================================================
+
+AUTHORITY_SOURCE_FIELD = "per_finding_authority"
+LEGACY_SUPPORT_FIELD = "verified_repairs_of"
+DERIVED_GRANT_FIELD = "warrants_closure_of"
+RETAINED_DETERMINATION_FIELD = "per_finding_determinations"
+
+
+def authority_model(register_body: dict) -> dict:
+    """The controlled model. Read from the register, never duplicated as literals in code.
+
+    The closing value, both vocabularies and the retained-determination mapping are controlled
+    data. A control that carries its own copy of a rule stops testing the rule and starts
+    testing its copy, and the two agree until they do not -- closing_verdicts is already
+    handled this way and this follows it.
+    """
+    return register_body["per_finding_authority_model"]
+
+
+def per_finding_authority(review: dict, finding_id: str):
+    """What this review declares about this finding, or None if it declares nothing.
+
+    Absence is not a grant and not a denial. A review that says nothing about a finding has
+    answered neither question, and the caller must treat that as unauthorized rather than as
+    permission -- which is what makes the requirement positive.
+    """
+    table = review.get(AUTHORITY_SOURCE_FIELD)
+    if not isinstance(table, dict):
+        return None
+    entry = table.get(finding_id)
+    return entry if isinstance(entry, dict) else None
+
+
+def grants_closure(review: dict, finding_id: str, register_body: dict) -> bool:
+    """The one predicate that decides whether a review authorizes closing a finding."""
+    entry = per_finding_authority(review, finding_id)
+    if entry is None:
+        return False
+    return entry.get("closure_authority") == authority_model(register_body)["closure_requires"]
+
+
+def verifies_repair(review: dict, finding_id: str, register_body: dict) -> bool:
+    """The one predicate that decides whether a review verified a finding's repair."""
+    entry = per_finding_authority(review, finding_id)
+    if entry is None:
+        return False
+    return entry.get("repair_support") == "VERIFIED"
+
+
+def authority_vocabulary_problems(register_body: dict) -> list[str]:
+    """Every declared value comes from the controlled vocabulary, and the shape is a mapping."""
+    model = authority_model(register_body)
+    support = set(model["repair_support_values"])
+    grants = set(model["closure_authority_values"])
+    problems: list[str] = []
+    for review in register_body.get("reviews") or []:
+        rid = review.get("review_id")
+        table = review.get(AUTHORITY_SOURCE_FIELD)
+        if table is None:
+            continue
+        if not isinstance(table, dict):
+            problems.append(f"{rid}: {AUTHORITY_SOURCE_FIELD} is not a finding-keyed mapping")
+            continue
+        for fid, entry in table.items():
+            if not isinstance(entry, dict):
+                problems.append(f"{rid}/{fid}: authority entry is not a record")
+                continue
+            rs, ca = entry.get("repair_support"), entry.get("closure_authority")
+            if rs not in support:
+                problems.append(f"{rid}/{fid}: repair_support {rs!r} is not in the controlled "
+                                f"vocabulary")
+            if ca not in grants:
+                problems.append(f"{rid}/{fid}: closure_authority {ca!r} is not in the "
+                                f"controlled vocabulary")
+            if not str(entry.get("basis", "")).strip():
+                problems.append(f"{rid}/{fid}: authority determination states no basis")
+            # A grant over a repair the same review could not verify is self-contradictory.
+            if ca == model["closure_requires"] and rs == "NOT_VERIFIED":
+                problems.append(f"{rid}/{fid}: grants closure authority while recording the "
+                                f"repair NOT_VERIFIED; the determinations contradict")
+    return problems
+
+
+def authority_reconciliation_problems(register_body: dict) -> list[str]:
+    """The convenience lists may not diverge from the canonical structure.
+
+    warrants_closure_of is DERIVED: it must equal exactly the set of findings this review grants,
+    in both directions. verified_repairs_of is HISTORICAL: it is permitted to disagree, because
+    deleting it would destroy the provenance record that makes NF-36 legible, but the
+    disagreement must be declared on the review rather than sitting there looking like authority.
+    """
+    model = authority_model(register_body)
+    derived = model["derived_and_reconciled_fields"]
+    problems: list[str] = []
+    for review in register_body.get("reviews") or []:
+        rid = review.get("review_id")
+        table = review.get(AUTHORITY_SOURCE_FIELD) or {}
+        granted = {f for f, e in table.items()
+                   if isinstance(e, dict)
+                   and e.get("closure_authority") == model["closure_requires"]}
+
+        if DERIVED_GRANT_FIELD in review:
+            listed = set(review[DERIVED_GRANT_FIELD] or [])
+            if listed != granted:
+                problems.append(
+                    f"{rid}: {DERIVED_GRANT_FIELD} {sorted(listed)} does not equal the findings "
+                    f"this review grants closure authority {sorted(granted)}; the convenience "
+                    f"list is derived and may not diverge")
+        elif granted:
+            problems.append(f"{rid}: grants closure authority for {sorted(granted)} but declares "
+                            f"no {DERIVED_GRANT_FIELD}; the derived list must be present when "
+                            f"the review grants anything")
+
+        if LEGACY_SUPPORT_FIELD in review:
+            status = (review.get(f"{LEGACY_SUPPORT_FIELD}_authority") or {})
+            if status.get("status") != derived[LEGACY_SUPPORT_FIELD]["status"]:
+                problems.append(
+                    f"{rid}: carries {LEGACY_SUPPORT_FIELD} without declaring it "
+                    f"{derived[LEGACY_SUPPORT_FIELD]['status']}; a field that answers no "
+                    f"controlled question must say so")
+                continue
+            verified = {f for f, e in table.items()
+                        if isinstance(e, dict) and e.get("repair_support") == "VERIFIED"}
+            listed = set(review[LEGACY_SUPPORT_FIELD] or [])
+            declared = status.get("declared_divergence_from_canonical") or {}
+            actual = listed - verified
+            stated = set(declared.get("diverges_on") or [])
+            if actual != stated:
+                problems.append(
+                    f"{rid}: {LEGACY_SUPPORT_FIELD} diverges from the canonical structure on "
+                    f"{sorted(actual)}, but the record declares the divergence as "
+                    f"{sorted(stated)}; an undeclared divergence is how this field became "
+                    f"authority in the first place")
+    return problems
+
+
+def closure_authority_problems(findings_body: dict, register_body: dict) -> list[str]:
+    """NF-33 / IR-03. Closure requires a POSITIVE per-finding grant from the selected review.
+
+    A closing review-LEVEL verdict is necessary and never sufficient. Every one of these fails:
+    a review that verifies the repair and grants nothing; a review whose scope declares it makes
+    no lifecycle disposition; a review silent about the finding; a review that grants only some
+    other finding. Each of those returned zero problems at 00c6e2f, and the four transitions this
+    checkpoint is recovering from went through the first two.
+    """
+    model = authority_model(register_body)
+    required = model["closure_requires"]
+    rule = register_body["closure_rule"]
+    state_field = findings_body["finding_state_control"]["canonical_field"]
+    by_id = {r.get("review_id"): r for r in register_body.get("reviews") or []}
+
+    problems: list[str] = []
+    for finding in findings_body["findings"]:
+        if finding.get(state_field) != rule["applies_to_finding_state"]:
+            continue
+        fid = finding["id"]
+        reference = finding.get(rule["requires_field"])
+        review = by_id.get(reference)
+        if review is None:
+            continue  # absent or unresolvable warrant is closure_problems' report, not restated
+        entry = per_finding_authority(review, fid)
+        if entry is None:
+            problems.append(
+                f"{fid}: closure warrant {reference} declares no per-finding authority for it. "
+                f"A review-level verdict is not a closure grant, and silence is not permission")
+            continue
+        actual = entry.get("closure_authority")
+        if actual != required:
+            problems.append(
+                f"{fid}: closure warrant {reference} records closure_authority {actual!r}; only "
+                f"{required!r} authorizes a closure")
+    return problems
+
+
+def _mechanism_applies(mechanism: dict, finding: dict, completion_field: str) -> bool:
+    when = mechanism.get("depends_when")
+    if when == "always":
+        return True
+    if when == "finding_declares_completion_object":
+        return completion_field in finding
+    return True  # an unrecognised dependency rule fails closed: assume it applies
+
+
+def mechanism_verification_problems(findings_body: dict, register_body: dict) -> list[str]:
+    """NF-31 / IR-01. A changed mechanism must be DECLARED verified before it closes anything.
+
+    The safety property is kept and the over-strict reading is dropped: no dedicated review of
+    every intermediate commit is required, and an explicitly scoped cumulative review satisfies
+    the condition. What is no longer permitted is satisfying it silently. A review verifies a
+    mechanism only by declaring, in mechanisms_verified, which mechanism, where it was introduced,
+    the exact checkpoint reviewed, that it is present and effective there, and its verdict.
+
+    Ancestry is never sufficient. REV-C9-CUMULATIVE returned a closing verdict against 5ec6b5f,
+    a descendant of the object that introduced the closure-completion model, and says nothing
+    about that mechanism -- so it verifies nothing about it, which is exactly the inference
+    00c6e2f made and this refuses.
+    """
+    model = register_body["mechanism_verification_model"]
+    mechanisms = register_body.get("mechanisms") or {}
+    closing = set(register_body["closure_rule"]["closing_verdicts"])
+    state_field = findings_body["finding_state_control"]["canonical_field"]
+    applicable = register_body["closure_rule"]["applies_to_finding_state"]
+    completion_field = COMPLETION_FIELD
+    grandfathered = set(model["grandfathered_closures"]["findings"])
+
+    verified_by: dict[str, list[str]] = {}
+    unresolved: list[str] = []
+    for review in register_body.get("reviews") or []:
+        for entry in review.get("mechanisms_verified") or []:
+            name = entry.get("mechanism")
+            problem = _mechanism_declaration_problem(entry, mechanisms, closing)
+            if problem:
+                unresolved.append(f"{review.get('review_id')}: {problem}")
+                continue
+            verified_by.setdefault(name, []).append(review.get("review_id"))
+
+    problems = list(unresolved)
+    for finding in findings_body["findings"]:
+        if finding.get(state_field) != applicable:
+            continue
+        fid = finding["id"]
+        if fid in grandfathered:
+            continue
+        for name, mechanism in sorted(mechanisms.items()):
+            if not _mechanism_applies(mechanism, finding, completion_field):
+                continue
+            if not verified_by.get(name):
+                problems.append(
+                    f"{fid}: its closure depends on mechanism {name!r}, which no registered "
+                    f"review declares verified. A cumulative review of a descendant object does "
+                    f"not verify a mechanism it does not name")
+    return problems
+
+
+def _mechanism_declaration_problem(entry: dict, mechanisms: dict, closing: set):
+    """All five clauses, typed. A partial declaration verifies nothing rather than something."""
+    name = entry.get("mechanism")
+    if name not in mechanisms:
+        return f"mechanisms_verified names {name!r}, which is not a declared mechanism"
+    for key in ("introduced_at", "verified_at_checkpoint", "verdict"):
+        if not str(entry.get(key, "")).strip():
+            return f"mechanism {name!r} declares no {key}"
+    if entry.get("present_and_effective_at_checkpoint") is not True:
+        return (f"mechanism {name!r} does not assert it is present and effective at the "
+                f"checkpoint; a review of an object where a mechanism is absent verifies nothing")
+    if entry.get("verdict") not in closing:
+        return f"mechanism {name!r} carries verdict {entry.get('verdict')!r}, which is not verifying"
+    declared = mechanisms[name].get("introduced_at")
+    if FULL_OBJECT.match(str(declared or "")) and entry["introduced_at"] != declared:
+        return (f"mechanism {name!r} is declared introduced at {entry['introduced_at']!r} but the "
+                f"register records {declared!r}; the two must be the same object")
+    if not FULL_OBJECT.match(str(entry["verified_at_checkpoint"])):
+        return (f"mechanism {name!r} names a checkpoint that is not a full object; an "
+                f"abbreviation can never establish which object was reviewed")
+    return None

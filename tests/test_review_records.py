@@ -697,32 +697,131 @@ class RetainedReviewArtifactBinding(unittest.TestCase):
         resolves. The substantive guard is therefore stronger here than before, because it
         fails on a SUPPORTED finding closed WITHOUT a resolving warrant, which the previous
         version could not distinguish from one closed with a good one.
+
+        AMENDED AGAIN AT C10B, and this amendment is the third instance of one shape. The
+        disposition-step version asserted that a SUPPORTED finding which has left OPEN must name
+        THIS review as its warrant. That was true of the disposition and is not a rule: a
+        SUPPORTED finding may legitimately close against a different review that grants closure
+        authority for it, and this review grants none, so the old clause would have required the
+        one warrant the model now forbids. The relation between the two propositions is
+        INCOMPARABLE and is stated as such rather than as a strengthening -- NF-34 / IR-04 is
+        precisely the finding about describing such a change inaccurately. The old clause accepts
+        a SUPPORTED finding closed against this review, which the new one refuses; the new one
+        accepts a SUPPORTED finding closed against another granting review, which the old one
+        refused. Neither implies the other.
         """
         import sys as _sys
 
         _sys.path.insert(0, str(Path(__file__).resolve().parent))
         from test_closure_warrant import closure_problems  # noqa: E402
+        from controlled_field_semantics import (  # noqa: E402
+            closure_authority_problems, grants_closure)
 
         body, register_body = findings_register(), register()
         states = {f["id"]: f.get("state") for f in body["findings"]}
         warrants = {f["id"]: f.get("closure_review") for f in body["findings"]}
+        by_id = {r["review_id"]: r for r in register_body["reviews"]}
 
         for review in self.retained_reviews():
             rid = review["review_id"]
             with self.subTest(review=rid):
-                self.assertNotIn("warrants_closure_of", review,
-                                 "a review still declares no closure of its own")
                 supported = {d["finding"] for d in
                              review["per_finding_determinations"]["determinations"]
                              if d["determination"] == "SUPPORTED"}
+                self.assertTrue(supported, "no SUPPORTED determination to bite on")
                 for fid in sorted(supported):
+                    self.assertFalse(
+                        grants_closure(review, fid, register_body),
+                        f"{rid} determines {fid} SUPPORTED and also grants it closure "
+                        f"authority; the artifact declares repair support only")
                     if states[fid] == "OPEN":
                         continue
-                    self.assertEqual(rid, warrants[fid],
-                                     f"{fid} left OPEN without naming the review that "
-                                     f"supports it; support alone cannot move state")
-        # and the warrant must actually resolve, judged by the closure observer itself
+                    warrant = by_id.get(warrants[fid])
+                    self.assertIsNotNone(
+                        warrant,
+                        f"{fid} left OPEN with no resolving warrant; support alone cannot "
+                        f"move state")
+                    self.assertTrue(
+                        grants_closure(warrant, fid, register_body),
+                        f"{fid} left OPEN on a warrant that grants it no closure authority")
+        # and the warrant must actually resolve, judged by the observers themselves
         self.assertEqual([], closure_problems(body, register_body))
+        self.assertEqual([], closure_authority_problems(body, register_body))
+
+    def test_the_retained_determinations_bind_to_the_typed_authority_reading(self):
+        """Section 12. The typed reading is DERIVED from the retained bytes, not authored.
+
+        NF-36 / IR-06. per_finding_authority.repair_support is what the completion observer now
+        consumes, so if it could drift from the artifact it would be the same defect one level
+        along: a remediation-authored value standing where retained reviewer substance belongs.
+        The determinations are extracted from the artifact and mapped through the register's own
+        controlled retained_determination_to_repair_support table, and the result must equal the
+        typed reading exactly, in both directions.
+        """
+        register_body = register()
+        mapping = register_body["per_finding_authority_model"][
+            "derived_and_reconciled_fields"]["retained_determination_to_repair_support"]
+        for review in self.retained_reviews():
+            with self.subTest(review=review["review_id"]):
+                text = self.artifact_bytes(review).decode("utf-8")
+                artifact = self.from_section_headings(text)
+                self.assertEqual(artifact, self.from_summary_table(text),
+                                 "the artifact's two statements disagree")
+                expected = {fid: mapping[d] for fid, d in artifact.items()}
+                typed = {fid: e["repair_support"]
+                         for fid, e in (review.get("per_finding_authority") or {}).items()}
+                self.assertEqual(expected, typed,
+                                 "the typed repair_support reading is not the retained "
+                                 "determination mapped through the controlled table")
+
+    def test_the_binding_fails_when_the_typed_reading_diverges(self):
+        """Failure sensitivity for the binding above, in memory.
+
+        Not an on-disk mutation: NF-35 / IR-05 records that restoring a controlled file only in a
+        Python finally block leaves it modified if the process dies, and a control added to
+        observe that defect should not enlarge it.
+        """
+        import copy as _copy
+
+        register_body = _copy.deepcopy(register())
+        mapping = register_body["per_finding_authority_model"][
+            "derived_and_reconciled_fields"]["retained_determination_to_repair_support"]
+        review = next(r for r in register_body["reviews"]
+                      if r.get("primary_artifact_retention") == "retained")
+        text = self.artifact_bytes(review).decode("utf-8")
+        artifact = self.from_section_headings(text)
+        subject = sorted(artifact)[0]
+        review["per_finding_authority"][subject]["repair_support"] = "INDETERMINATE"
+        expected = {fid: mapping[d] for fid, d in artifact.items()}
+        typed = {fid: e["repair_support"] for fid, e in review["per_finding_authority"].items()}
+        self.assertNotEqual(expected, typed,
+                            "altering the typed reading must break the binding")
+
+    def test_a_retained_review_grants_no_closure_authority(self):
+        """The artifact says repair support only; the typed record must say the same.
+
+        This is the proposition 00c6e2f contradicted. It used this review as the closure warrant
+        for four findings while the artifact it is bound to disclaimed exactly that, and nothing
+        could see the contradiction because closure authority was never asked for per finding.
+        """
+        import sys as _sys
+
+        _sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from controlled_field_semantics import closure_authority_problems  # noqa: E402
+
+        register_body = register()
+        for review in self.retained_reviews():
+            with self.subTest(review=review["review_id"]):
+                table = review.get("per_finding_authority") or {}
+                self.assertTrue(table, "a retained review declares no per-finding authority")
+                for fid, entry in table.items():
+                    self.assertNotEqual(
+                        "GRANTED", entry.get("closure_authority"),
+                        f"{review['review_id']} grants closure authority for {fid} while its "
+                        f"retained artifact declares no lifecycle disposition")
+                self.assertNotIn("warrants_closure_of", review)
+                self.assertEqual([], closure_authority_problems(findings_register(),
+                                                                register_body))
 
     def test_the_reviewer_obligation_is_not_discharged_by_retention(self):
         for review in self.retained_reviews():
