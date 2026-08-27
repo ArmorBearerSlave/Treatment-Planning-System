@@ -176,6 +176,9 @@ population:
     - kind: commit_scoped
       reviewed_object: 3188a11443e33c8c4f68933cf73282108957f356
       review: REV-3188A11-PER-FINDING
+    - kind: commit_scoped
+      reviewed_object: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+      review: REV-POST-C9-DISPOSITION
 
   membership_kind_is_not_object_identity_strength: >-
     Two independent dimensions, deliberately not conflated. REV-F2 is record_file_backed and
@@ -763,6 +766,75 @@ reviews:
       been supported. The historical provenance problem is now answered by new evidence, not
       erased.
 
+  - review_id: REV-POST-C9-DISPOSITION
+    subject: >-
+      The post-C9 disposition checkpoint, reviewed as the cumulative object at which four
+      findings were moved to CLOSED and two controls were amended
+    reviewed_object:
+      kind: commit
+      sha: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+    verdict: FAIL
+    verdict_label_as_returned: >-
+      00c6e2f / POST-C9 DISPOSITION CHECKPOINT -- NOT INDEPENDENTLY VERIFIED
+    verdict_note: >-
+      FAIL is this register's existing non-closing verdict value and is used unchanged; the
+      reviewer's literal wording is preserved beside it in verdict_label_as_returned. No new
+      verdict value was invented for this result and closing_verdicts is untouched.
+    reviewer:
+      relationship: reviewer did not implement the reviewed object
+      identity: unnamed technical reviewer / not a named human reviewer
+      satisfies_mps_mat_009_named_reviewer_obligation: false
+    primary_artifact_retention: external_not_retained
+    primary_artifact_retention_note: >-
+      The report is not in this repository and is not claimed to be. No path is cited for it and
+      nothing was reconstructed after the fact to stand in for it. This record deliberately does
+      NOT declare `retained`: that value means a primary artifact was transported under the F1
+      rule and bound by the digest of its retained bytes, and no such transport happened here.
+    what_it_found_about_the_four_mechanisms: >-
+      The substantive repairs named by NF-05, NF-06, NF-10 and NF-11 were independently
+      reproduced and found technically sound. That determination is recorded because it is what
+      the reviewer said, and it is deliberately not converted into anything else: technical
+      soundness of a repair is not authority to move lifecycle state, and treating the reviewer's
+      approval of four mechanisms as a warrant would reproduce the exact defect this review
+      returned. See warrants_closure_of_note below.
+    findings_returned:
+      - IR-01 transported as NF-31
+      - IR-02 transported as NF-32
+      - IR-03 transported as NF-33
+      - IR-04 transported as NF-34
+      - IR-05 transported as NF-35
+      - IR-06 transported as NF-36
+      - IR-07 transported as NF-37
+      - IR-08 transported as NF-38
+      - IR-09 transported as NF-39
+    findings_returned_note: >-
+      Classification of each as acceptance-blocking or not was decided against this register's
+      own convention -- a finding is blocking when a declared control cannot establish what it is
+      declared to establish, and the occupied/unoccupied distinction of NF-20 against NF-27
+      settles the marginal cases. Severity was not copied from the review's prose. Five are
+      blocking and four are not, and each carries its reasoning.
+    warrants_closure_of_note: >-
+      Absent, and necessarily so. This is a failing verdict, which is not in closing_verdicts, so
+      it confers no closure on anything. It also confers no repair support: no verified_repairs_of
+      key is written and none may be derived from its favourable technical findings about the four
+      mechanisms. A failed checkpoint review is not a per-finding repair review, and the technical
+      praise inside it is not a lifecycle instrument.
+    verified_repairs_of_note: >-
+      Deliberately absent for the same reason. The reviewer reproduced four repairs and found them
+      sound; that is recorded in what_it_found_about_the_four_mechanisms as narrative, not as a
+      typed authority field, because this review's object is the disposition checkpoint and its
+      verdict on that object is FAIL.
+    consequence_for_lifecycle_state: >-
+      The four findings moved CLOSED at the reviewed object are returned to OPEN at C10A under a
+      typed lifecycle_quarantine that preserves every repair field, the completion declarations and
+      the historical independent-review support. This withdraws a lifecycle claim, not a technical
+      one.
+    obligation_effect: >-
+      None. MPS-MAT-009#0 remains OPEN: this reviewer is unnamed, and an unnamed technical review
+      establishes independence from the implementer and nothing about named human authority. No
+      acceptance item, evidence obligation, metric or model artifact is altered by this record.
+
+
 methodological_observations:
 
   - id: git_clean_does_not_establish_execution_cold
@@ -1069,17 +1141,65 @@ methodological_observations:
       on the same day the next authority in the sequence first exercised its own.
     what_was_done: >-
       The control was amended, not removed, and the amendment is disclosed in its docstring.
-      What it asserts now is the property that is actually permanent and is strictly stronger:
-      a SUPPORTED determination alone never moves a finding out of OPEN, and any finding that
-      has left OPEN must carry a typed closure_review that resolves under the closure rule,
-      with the closure observer -- untouched -- deciding whether it resolves. Failure
-      sensitivity was demonstrated by forcing a SUPPORTED finding to CLOSED with no warrant:
-      the amended control and the closure observer both refuse it, where the previous version
-      could not tell an unwarranted closure from a warranted one because it forbade both.
+      What it asserts now is that a SUPPORTED determination alone never moves a finding out of
+      OPEN, and that any finding which has left OPEN must carry a typed closure_review that
+      resolves under the closure rule, with the closure observer -- untouched -- deciding
+      whether it resolves. Failure sensitivity was demonstrated by forcing a SUPPORTED finding
+      to CLOSED with no warrant: the amended control and the closure observer both refuse it,
+      where the previous version could not tell an unwarranted closure from a warranted one
+      because it forbade both.
+    withdrawn_ordering_claim:
+      withdrawn_wording: >-
+        "What it asserts now is the property that is actually permanent and is strictly
+        stronger", and, of the same change, "which is a narrower permission and a wider
+        detection".
+      why_it_is_withdrawn: >-
+        NF-34 / IR-04. Neither amendment was strictly stronger, and describing a weakening as a
+        strengthening is the defect class this register exists to catch -- here inside the
+        rationale for the change that produced a disposition which then failed independent
+        review. The wording is preserved above rather than deleted, and the actual ordering
+        relation of each amendment is stated below.
+      control_A_completion_object_mutations:
+        relation: strict weakening
+        old_proposition: >-
+          Every finding declaring a repair_completion_object must be OPEN.
+        new_proposition: >-
+          A finding declaring a repair_completion_object that has left OPEN must have closed
+          against exactly that declared object.
+        why_this_ordering: >-
+          The old proposition refused every state in which such a finding is not OPEN. The new
+          one admits a proper subset of those refused states -- the warranted closures. Every
+          record the new proposition accepts, the old one rejected; the converse does not hold.
+          That is a strict weakening. It is defended as CORRECTLY SCOPED rather than as
+          stronger: the old proposition was wrong, because it made C6's own mechanism
+          permanently unusable and would have been satisfied forever by never dispositioning
+          anything. A wrong proposition can be strictly stronger, and this one was.
+      control_B_retained_artifact_binding:
+        relation: incomparable
+        old_proposition: >-
+          No finding may cite a retained per-finding review as its closure_review, and every
+          finding carrying a SUPPORTED determination must still be OPEN.
+        new_proposition: >-
+          A SUPPORTED determination alone never moves a finding out of OPEN, and a finding that
+          has left OPEN must carry a typed closure_review that resolves under the closure rule.
+        why_this_ordering: >-
+          Neither proposition implies the other. The old one detects any citation of a retained
+          review as warrant, which the new one permits; the new one detects an unwarranted
+          closure of a SUPPORTED finding, which the old one could not distinguish from a
+          warranted one because it forbade both. One detection direction was traded for
+          another. The two are incomparable, and no ordering claim is available in either
+          direction.
+      what_this_correction_does_not_say: >-
+        It does not say the amendments were wrong to make, and it does not restore either old
+        proposition. It says the record described the change inaccurately. Whether a correctly
+        scoped weakening was the right change is a question for review; asserting it was a
+        strengthening removed that question from the reader.
     why_this_is_not_weakening_a_control_to_pass_a_disposition: >-
       The substantive closure controls are untouched and now carry the weight. The amended
       clause moved from "this transition may not happen" to "this transition may happen only
-      through a resolving warrant", which is a narrower permission and a wider detection. A
+      through a resolving warrant". That is a weakening of the clause, correctly scoped and not
+      a strengthening; the ordering relation of both amendments is stated in
+      withdrawn_ordering_claim above and the earlier characterisation is withdrawn there. A
       control that forbids a legitimate authority from acting is not a strong control; it is a
       control measuring the wrong proposition, and it would have been satisfied forever by
       never dispositioning anything.

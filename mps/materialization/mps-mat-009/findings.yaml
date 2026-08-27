@@ -1564,9 +1564,24 @@ findings:
       statement that reproduces from a clone -- did not exist until C5.
     repair_completion_note: >-
       The repair field above is preserved exactly as written and still identifies C2 as
-      where this repair was introduced. The completion object does not replace it, and C6
-      performs no closure transition: this finding remains OPEN until the changed closure
-      model has itself been independently verified.
+      where this repair was introduced. The completion object does not replace it.
+    repair_completion_note_scope:
+      statement_is_historical: true
+      object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+      phase: C6
+      as_recorded_at_that_object: >-
+        At C6 / 3e397dc, this finding remained OPEN pending independent verification of the
+        changed closure model, and C6 performed no closure transition.
+      why_it_is_scoped_now: >-
+        IR-02. The sentence was written at C6 as a statement about C6 and was left in the
+        present tense, so it continued to read as a current assertion about lifecycle state.
+        At 00c6e2f four findings carrying this note were CLOSED while the note still said they
+        remained OPEN, and the record asserted both at once. The statement is not deleted --
+        it was true of the object it describes -- it is bound to that object, so that current
+        lifecycle state is read from the state field and nowhere else.
+      current_lifecycle_state_is_not_stated_here: >-
+        This block makes no claim about the finding's present state. It is a historical record
+        of what was true at 3e397dc.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -1606,37 +1621,69 @@ findings:
       first-occurrence edit at 3e397dc. It is deliberately NOT moved during record transport.
       Where the two conflict, the retained review governs on residual, and the register's
       methodological observation
-      "the_25_record_queue_was_attached_to_nf_05_by_a_misplaced_edit" records the cause. This
-      finding remains OPEN and no state moves on the strength of either.
+      "the_25_record_queue_was_attached_to_nf_05_by_a_misplaced_edit" records the cause.
+    superseded_by_retained_review_scope:
+      statement_is_historical: true
+      object: e617728b8c1071368a638e57a5d0ef2f81b1afe9
+      as_recorded_at_that_object: >-
+        At e617728, the evidence-transport checkpoint, this finding was OPEN and no state moved
+        on the strength of either the retained determination or the superseded prose.
+      why_it_is_scoped_now: >-
+        IR-02. The clause was written as a transport-time statement and left in the present
+        tense, so it survived into 00c6e2f as a current assertion that this finding remained
+        OPEN while the same record carried state: CLOSED. Current lifecycle state is read from
+        the state field; this block records only what was true at the object named.
     origin: independent review of 58d18db
     reviewed_object: 58d18db1f952ff18f9853161eb979048483e4bc5
     primary_artifact_retention: external_not_retained
     acceptance_blocking: true
-    state: CLOSED
-    closure_review: REV-3188A11-PER-FINDING
-    governance_disposition:
-      decided_by: governance disposition actor; not the reviewer
-      prior_state: OPEN
-      new_state: CLOSED
-      repair_support_determination: SUPPORTED
-      review_id: REV-3188A11-PER-FINDING
-      closure_target: 3188a11443e33c8c4f68933cf73282108957f356
-      closure_target_basis: >-
-        The finding's declared repair_completion_object, which is exactly the object the
-        review reviewed. Verified as exact equality, not ancestry, prefix or descendant.
-      residual_considered: >-
-        NONE. The reviewer found no residual at the reviewed object, and specifically found
-        that NF-05 carries no state-debt residual there. The 25-record queue belongs to NF-09.
-        The remediation-authored prose in this record's independent_review_support that refers
-        to adjudicating those records was written for NF-09 and landed here through a
-        misplaced first-occurrence edit; it is superseded for residual purposes by the
-        retained review and is not treated as evidence of a residual NF-05 does not have.
-      rationale: >-
-        The finding's own proposition is that closure warrant was unresolved prose no observer
-        read. It is resolved: closure is a typed reference resolved against the register, the
-        prose is retained as explicitly non-authoritative closure_note, and the repair is
-        independently supported at the closure target. Nothing this finding claims remains
-        unmet.
+    state: OPEN
+    lifecycle_quarantine:
+      repair_status: independently supported
+      lifecycle_status: quarantined pending valid closure authority
+      previous_disposition: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+      previous_state: CLOSED
+      previous_closure_review: REV-3188A11-PER-FINDING
+      reason: >-
+        The post-C9 disposition checkpoint 00c6e2f, which moved this finding to CLOSED, was
+        independently reviewed and returned NOT INDEPENDENTLY VERIFIED. The substantive repair
+        this finding names was independently reproduced as technically sound and that is not
+        withdrawn; what failed was the authority and record chain used to move the state. The
+        finding therefore returns to OPEN, carrying its repair evidence intact, until a closure
+        authority exists that the controlled model recognises.
+      this_is_not_a_finding_regression: >-
+        No repair was undone, no mechanism was withdrawn and no evidence was deleted. The repair,
+        repair_introduced_object, repair_completion_object, repair_completion_reason and the
+        historical independent-review support are all preserved unchanged. What is withdrawn is a
+        lifecycle claim, not a technical one.
+      what_would_permit_closure: >-
+        C10 must first be independently verified. A later reviewer must then assess lifecycle
+        closure for this finding at an exact object and record an explicit per-finding closure
+        authority grant. REV-3188A11-PER-FINDING cannot supply it: its retained artifact states
+        its own scope as repair support only and expressly not lifecycle disposition.
+      historical_disposition_at_00c6e2f:
+        decided_by: governance disposition actor; not the reviewer
+        prior_state: OPEN
+        new_state: CLOSED
+        repair_support_determination: SUPPORTED
+        review_id: REV-3188A11-PER-FINDING
+        closure_target: 3188a11443e33c8c4f68933cf73282108957f356
+        closure_target_basis: >-
+          The finding's declared repair_completion_object, which is exactly the object the
+          review reviewed. Verified as exact equality, not ancestry, prefix or descendant.
+        residual_considered: >-
+          NONE. The reviewer found no residual at the reviewed object, and specifically found
+          that NF-05 carries no state-debt residual there. The 25-record queue belongs to NF-09.
+          The remediation-authored prose in this record's independent_review_support that refers
+          to adjudicating those records was written for NF-09 and landed here through a
+          misplaced first-occurrence edit; it is superseded for residual purposes by the
+          retained review and is not treated as evidence of a residual NF-05 does not have.
+        rationale: >-
+          The finding's own proposition is that closure warrant was unresolved prose no observer
+          read. It is resolved: closure is a typed reference resolved against the register, the
+          prose is retained as explicitly non-authoritative closure_note, and the repair is
+          independently supported at the closure target. Nothing this finding claims remains
+          unmet.
     locus: [MEASUREMENT_PATH]
     title: Closure warrant was carried as prose that no observer resolved
     claim: >-
@@ -1653,9 +1700,24 @@ findings:
       became meaningful once the population it applied to was controlled.
     repair_completion_note: >-
       The repair field above is preserved exactly as written and still identifies C1 as
-      where this repair was introduced. The completion object does not replace it, and C6
-      performs no closure transition: this finding remains OPEN until the changed closure
-      model has itself been independently verified.
+      where this repair was introduced. The completion object does not replace it.
+    repair_completion_note_scope:
+      statement_is_historical: true
+      object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+      phase: C6
+      as_recorded_at_that_object: >-
+        At C6 / 3e397dc, this finding remained OPEN pending independent verification of the
+        changed closure model, and C6 performed no closure transition.
+      why_it_is_scoped_now: >-
+        IR-02. The sentence was written at C6 as a statement about C6 and was left in the
+        present tense, so it continued to read as a current assertion about lifecycle state.
+        At 00c6e2f four findings carrying this note were CLOSED while the note still said they
+        remained OPEN, and the record asserted both at once. The statement is not deleted --
+        it was true of the object it describes -- it is bound to that object, so that current
+        lifecycle state is read from the state field and nowhere else.
+      current_lifecycle_state_is_not_stated_here: >-
+        This block makes no claim about the finding's present state. It is a historical record
+        of what was true at 3e397dc.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -1696,41 +1758,63 @@ findings:
     reviewed_object: 58d18db1f952ff18f9853161eb979048483e4bc5
     primary_artifact_retention: external_not_retained
     acceptance_blocking: true
-    state: CLOSED
-    closure_review: REV-3188A11-PER-FINDING
-    governance_disposition:
-      decided_by: governance disposition actor; not the reviewer
-      prior_state: OPEN
-      new_state: CLOSED
-      repair_support_determination: SUPPORTED
-      review_id: REV-3188A11-PER-FINDING
-      closure_target: 3188a11443e33c8c4f68933cf73282108957f356
-      dependency_considered: >-
-        Support is materially conditional on NF-10 and NF-11, and this was checked before
-        deciding rather than assumed: both are SUPPORTED by the same retained review at the
-        same object. The reviewer demonstrated that at C1/63694e5 this finding's rule existed
-        while the governed population was not yet trustworthy, and that at exactly 3188a11
-        NF-10 and NF-11 make it trustworthy. The dependency is therefore SATISFIED AT THE
-        CLOSURE TARGET rather than outstanding. No claim is made, here or anywhere, that this
-        finding was independently supportable at 63694e5; its supported completion object is
-        3188a11 and the record already says so.
-      residual_considered: >-
-        RT-F-06's closure precedes its warrant in time. Disclosed by the reviewer and
-        undetectable by the mechanism, which takes no timestamp input. Weighed and found not
-        to be an unmet part of this finding's proposition: the claim is that a convincing
-        string could suffice to close a finding, and after the repair every CLOSED finding
-        must carry a warrant that resolves NOW, which RT-F-06's does. The temporal ordering of
-        a historical closure is a disclosed limitation of what the mechanism can see, not a
-        promise this finding made and did not keep.
-      what_would_change_this: >-
-        If the register ever required closure to have been warranted at the time it occurred,
-        rather than to be warranted when observed, this decision would need revisiting. It
-        does not, and extending it that way is a rule change and not a disposition.
-      rationale: >-
-        The proposition -- that a finding could be moved to CLOSED by asserting a review had
-        occurred -- is resolved by a population-driven observer with mutation controls over
-        each failure mode, independently supported at the closure target with its dependencies
-        satisfied there.
+    state: OPEN
+    lifecycle_quarantine:
+      repair_status: independently supported
+      lifecycle_status: quarantined pending valid closure authority
+      previous_disposition: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+      previous_state: CLOSED
+      previous_closure_review: REV-3188A11-PER-FINDING
+      reason: >-
+        The post-C9 disposition checkpoint 00c6e2f, which moved this finding to CLOSED, was
+        independently reviewed and returned NOT INDEPENDENTLY VERIFIED. The substantive repair
+        this finding names was independently reproduced as technically sound and that is not
+        withdrawn; what failed was the authority and record chain used to move the state. The
+        finding therefore returns to OPEN, carrying its repair evidence intact, until a closure
+        authority exists that the controlled model recognises.
+      this_is_not_a_finding_regression: >-
+        No repair was undone, no mechanism was withdrawn and no evidence was deleted. The repair,
+        repair_introduced_object, repair_completion_object, repair_completion_reason and the
+        historical independent-review support are all preserved unchanged. What is withdrawn is a
+        lifecycle claim, not a technical one.
+      what_would_permit_closure: >-
+        C10 must first be independently verified. A later reviewer must then assess lifecycle
+        closure for this finding at an exact object and record an explicit per-finding closure
+        authority grant. REV-3188A11-PER-FINDING cannot supply it: its retained artifact states
+        its own scope as repair support only and expressly not lifecycle disposition.
+      historical_disposition_at_00c6e2f:
+        decided_by: governance disposition actor; not the reviewer
+        prior_state: OPEN
+        new_state: CLOSED
+        repair_support_determination: SUPPORTED
+        review_id: REV-3188A11-PER-FINDING
+        closure_target: 3188a11443e33c8c4f68933cf73282108957f356
+        dependency_considered: >-
+          Support is materially conditional on NF-10 and NF-11, and this was checked before
+          deciding rather than assumed: both are SUPPORTED by the same retained review at the
+          same object. The reviewer demonstrated that at C1/63694e5 this finding's rule existed
+          while the governed population was not yet trustworthy, and that at exactly 3188a11
+          NF-10 and NF-11 make it trustworthy. The dependency is therefore SATISFIED AT THE
+          CLOSURE TARGET rather than outstanding. No claim is made, here or anywhere, that this
+          finding was independently supportable at 63694e5; its supported completion object is
+          3188a11 and the record already says so.
+        residual_considered: >-
+          RT-F-06's closure precedes its warrant in time. Disclosed by the reviewer and
+          undetectable by the mechanism, which takes no timestamp input. Weighed and found not
+          to be an unmet part of this finding's proposition: the claim is that a convincing
+          string could suffice to close a finding, and after the repair every CLOSED finding
+          must carry a warrant that resolves NOW, which RT-F-06's does. The temporal ordering of
+          a historical closure is a disclosed limitation of what the mechanism can see, not a
+          promise this finding made and did not keep.
+        what_would_change_this: >-
+          If the register ever required closure to have been warranted at the time it occurred,
+          rather than to be warranted when observed, this decision would need revisiting. It
+          does not, and extending it that way is a rule change and not a disposition.
+        rationale: >-
+          The proposition -- that a finding could be moved to CLOSED by asserting a review had
+          occurred -- is resolved by a population-driven observer with mutation controls over
+          each failure mode, independently supported at the closure target with its dependencies
+          satisfied there.
     locus: [MEASUREMENT_PATH]
     title: A finding could be moved to CLOSED by writing a convincing string
     claim: >-
@@ -1749,9 +1833,24 @@ findings:
       test it depends on. The complete repaired mechanism first existed at C5.
     repair_completion_note: >-
       The repair field above is preserved exactly as written and still identifies C1 as
-      where this repair was introduced. The completion object does not replace it, and C6
-      performs no closure transition: this finding remains OPEN until the changed closure
-      model has itself been independently verified.
+      where this repair was introduced. The completion object does not replace it.
+    repair_completion_note_scope:
+      statement_is_historical: true
+      object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+      phase: C6
+      as_recorded_at_that_object: >-
+        At C6 / 3e397dc, this finding remained OPEN pending independent verification of the
+        changed closure model, and C6 performed no closure transition.
+      why_it_is_scoped_now: >-
+        IR-02. The sentence was written at C6 as a statement about C6 and was left in the
+        present tense, so it continued to read as a current assertion about lifecycle state.
+        At 00c6e2f four findings carrying this note were CLOSED while the note still said they
+        remained OPEN, and the record asserted both at once. The statement is not deleted --
+        it was true of the object it describes -- it is bound to that object, so that current
+        lifecycle state is read from the state field and nowhere else.
+      current_lifecycle_state_is_not_stated_here: >-
+        This block makes no claim about the finding's present state. It is a historical record
+        of what was true at 3e397dc.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -1845,35 +1944,57 @@ findings:
     reviewed_object: 63694e5f514b12852cec5524db841bb12a52df69
     primary_artifact_retention: external_not_retained
     acceptance_blocking: true
-    state: CLOSED
-    closure_review: REV-3188A11-PER-FINDING
-    governance_disposition:
-      decided_by: governance disposition actor; not the reviewer
-      prior_state: OPEN
-      new_state: CLOSED
-      repair_support_determination: SUPPORTED
-      review_id: REV-3188A11-PER-FINDING
-      closure_target: 3188a11443e33c8c4f68933cf73282108957f356
-      residual_considered: >-
-        Two components, and the question is whether either is unresolved IN THIS FINDING.
-        Neither is. First, 25 records remain state debt: this finding's own residual text says
-        "NF-09 still carries that queue", so the finding disclaims ownership in its own words,
-        and NF-09 remains OPEN carrying it. Keeping this finding OPEN for it would duplicate
-        one residual across two findings and make the queue look like two obligations. Second,
-        the observer does not judge whether an exception's reason is a good one: this finding
-        never claimed it would. Its claim is that an exception ASSERTED ITS OWN CONTENT
-        unchecked, and the repair is that the declaration is now checked against the record by
-        digest, per legacy field. Correspondence is what was promised and correspondence is
-        what was delivered.
-      segregation_basis: >-
-        Read from both findings' controlled propositions rather than from any later summary.
-        This finding's claim is about unchecked declarations; NF-09's is about heterogeneous
-        state representation with a 25-record adjudication queue as its residual. They are
-        different propositions and the queue sits on exactly one of them.
-      rationale: >-
-        The mechanism this finding names is completely repaired and independently supported at
-        the closure target. The residual that remains is another finding's, and that finding
-        is OPEN.
+    state: OPEN
+    lifecycle_quarantine:
+      repair_status: independently supported
+      lifecycle_status: quarantined pending valid closure authority
+      previous_disposition: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+      previous_state: CLOSED
+      previous_closure_review: REV-3188A11-PER-FINDING
+      reason: >-
+        The post-C9 disposition checkpoint 00c6e2f, which moved this finding to CLOSED, was
+        independently reviewed and returned NOT INDEPENDENTLY VERIFIED. The substantive repair
+        this finding names was independently reproduced as technically sound and that is not
+        withdrawn; what failed was the authority and record chain used to move the state. The
+        finding therefore returns to OPEN, carrying its repair evidence intact, until a closure
+        authority exists that the controlled model recognises.
+      this_is_not_a_finding_regression: >-
+        No repair was undone, no mechanism was withdrawn and no evidence was deleted. The repair,
+        repair_introduced_object, repair_completion_object, repair_completion_reason and the
+        historical independent-review support are all preserved unchanged. What is withdrawn is a
+        lifecycle claim, not a technical one.
+      what_would_permit_closure: >-
+        C10 must first be independently verified. A later reviewer must then assess lifecycle
+        closure for this finding at an exact object and record an explicit per-finding closure
+        authority grant. REV-3188A11-PER-FINDING cannot supply it: its retained artifact states
+        its own scope as repair support only and expressly not lifecycle disposition.
+      historical_disposition_at_00c6e2f:
+        decided_by: governance disposition actor; not the reviewer
+        prior_state: OPEN
+        new_state: CLOSED
+        repair_support_determination: SUPPORTED
+        review_id: REV-3188A11-PER-FINDING
+        closure_target: 3188a11443e33c8c4f68933cf73282108957f356
+        residual_considered: >-
+          Two components, and the question is whether either is unresolved IN THIS FINDING.
+          Neither is. First, 25 records remain state debt: this finding's own residual text says
+          "NF-09 still carries that queue", so the finding disclaims ownership in its own words,
+          and NF-09 remains OPEN carrying it. Keeping this finding OPEN for it would duplicate
+          one residual across two findings and make the queue look like two obligations. Second,
+          the observer does not judge whether an exception's reason is a good one: this finding
+          never claimed it would. Its claim is that an exception ASSERTED ITS OWN CONTENT
+          unchecked, and the repair is that the declaration is now checked against the record by
+          digest, per legacy field. Correspondence is what was promised and correspondence is
+          what was delivered.
+        segregation_basis: >-
+          Read from both findings' controlled propositions rather than from any later summary.
+          This finding's claim is about unchecked declarations; NF-09's is about heterogeneous
+          state representation with a 25-record adjudication queue as its residual. They are
+          different propositions and the queue sits on exactly one of them.
+        rationale: >-
+          The mechanism this finding names is completely repaired and independently supported at
+          the closure target. The residual that remains is another finding's, and that finding
+          is OPEN.
     locus: [MEASUREMENT_PATH]
     title: >-
       State exceptions asserted their own content, so a legacy closure claim could hide
@@ -1906,9 +2027,24 @@ findings:
       afterwards.
     repair_completion_note: >-
       The repair field above is preserved exactly as written and still identifies C3 as
-      where this repair was introduced. The completion object does not replace it, and C6
-      performs no closure transition: this finding remains OPEN until the changed closure
-      model has itself been independently verified.
+      where this repair was introduced. The completion object does not replace it.
+    repair_completion_note_scope:
+      statement_is_historical: true
+      object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+      phase: C6
+      as_recorded_at_that_object: >-
+        At C6 / 3e397dc, this finding remained OPEN pending independent verification of the
+        changed closure model, and C6 performed no closure transition.
+      why_it_is_scoped_now: >-
+        IR-02. The sentence was written at C6 as a statement about C6 and was left in the
+        present tense, so it continued to read as a current assertion about lifecycle state.
+        At 00c6e2f four findings carrying this note were CLOSED while the note still said they
+        remained OPEN, and the record asserted both at once. The statement is not deleted --
+        it was true of the object it describes -- it is bound to that object, so that current
+        lifecycle state is read from the state field and nowhere else.
+      current_lifecycle_state_is_not_stated_here: >-
+        This block makes no claim about the finding's present state. It is a historical record
+        of what was true at 3e397dc.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -1948,24 +2084,46 @@ findings:
     reviewed_object: 1db99482ce894606ca68ec67a832cb1351369d68
     primary_artifact_retention: external_not_retained
     acceptance_blocking: true
-    state: CLOSED
-    closure_review: REV-3188A11-PER-FINDING
-    governance_disposition:
-      decided_by: governance disposition actor; not the reviewer
-      prior_state: OPEN
-      new_state: CLOSED
-      repair_support_determination: SUPPORTED
-      review_id: REV-3188A11-PER-FINDING
-      closure_target: 3188a11443e33c8c4f68933cf73282108957f356
-      residual_considered: >-
-        NONE. The reviewer independently demonstrated the absent / present-and-null /
-        present-and-empty / ordinary-value distinctions rather than accepting the repair's own
-        account of them.
-      rationale: >-
-        The proposition -- that presence was determined by value truthiness, so a field
-        physically present and null satisfied a declaration of absent -- is resolved. Presence
-        is key membership, the value encoding is declared once so both sides agree on what is
-        hashed, and exact digest comparison is preserved for every field declared present.
+    state: OPEN
+    lifecycle_quarantine:
+      repair_status: independently supported
+      lifecycle_status: quarantined pending valid closure authority
+      previous_disposition: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+      previous_state: CLOSED
+      previous_closure_review: REV-3188A11-PER-FINDING
+      reason: >-
+        The post-C9 disposition checkpoint 00c6e2f, which moved this finding to CLOSED, was
+        independently reviewed and returned NOT INDEPENDENTLY VERIFIED. The substantive repair
+        this finding names was independently reproduced as technically sound and that is not
+        withdrawn; what failed was the authority and record chain used to move the state. The
+        finding therefore returns to OPEN, carrying its repair evidence intact, until a closure
+        authority exists that the controlled model recognises.
+      this_is_not_a_finding_regression: >-
+        No repair was undone, no mechanism was withdrawn and no evidence was deleted. The repair,
+        repair_introduced_object, repair_completion_object, repair_completion_reason and the
+        historical independent-review support are all preserved unchanged. What is withdrawn is a
+        lifecycle claim, not a technical one.
+      what_would_permit_closure: >-
+        C10 must first be independently verified. A later reviewer must then assess lifecycle
+        closure for this finding at an exact object and record an explicit per-finding closure
+        authority grant. REV-3188A11-PER-FINDING cannot supply it: its retained artifact states
+        its own scope as repair support only and expressly not lifecycle disposition.
+      historical_disposition_at_00c6e2f:
+        decided_by: governance disposition actor; not the reviewer
+        prior_state: OPEN
+        new_state: CLOSED
+        repair_support_determination: SUPPORTED
+        review_id: REV-3188A11-PER-FINDING
+        closure_target: 3188a11443e33c8c4f68933cf73282108957f356
+        residual_considered: >-
+          NONE. The reviewer independently demonstrated the absent / present-and-null /
+          present-and-empty / ordinary-value distinctions rather than accepting the repair's own
+          account of them.
+        rationale: >-
+          The proposition -- that presence was determined by value truthiness, so a field
+          physically present and null satisfied a declaration of absent -- is resolved. Presence
+          is key membership, the value encoding is declared once so both sides agree on what is
+          hashed, and exact digest comparison is preserved for every field declared present.
     locus: [MEASUREMENT_PATH]
     title: >-
       The presence check conflated an absent legacy field with one present and null
@@ -1998,9 +2156,24 @@ findings:
       the regression failure that prevented the suite completing from a clone at all.
     repair_completion_note: >-
       The repair field above is preserved exactly as written and still identifies C4 as
-      where this repair was introduced. The completion object does not replace it, and C6
-      performs no closure transition: this finding remains OPEN until the changed closure
-      model has itself been independently verified.
+      where this repair was introduced. The completion object does not replace it.
+    repair_completion_note_scope:
+      statement_is_historical: true
+      object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+      phase: C6
+      as_recorded_at_that_object: >-
+        At C6 / 3e397dc, this finding remained OPEN pending independent verification of the
+        changed closure model, and C6 performed no closure transition.
+      why_it_is_scoped_now: >-
+        IR-02. The sentence was written at C6 as a statement about C6 and was left in the
+        present tense, so it continued to read as a current assertion about lifecycle state.
+        At 00c6e2f four findings carrying this note were CLOSED while the note still said they
+        remained OPEN, and the record asserted both at once. The statement is not deleted --
+        it was true of the object it describes -- it is bound to that object, so that current
+        lifecycle state is read from the state field and nowhere else.
+      current_lifecycle_state_is_not_stated_here: >-
+        This block makes no claim about the finding's present state. It is a historical record
+        of what was true at 3e397dc.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -2084,9 +2257,24 @@ findings:
       C5.
     repair_completion_note: >-
       The repair field above is preserved exactly as written and still identifies C4 as
-      where this repair was introduced. The completion object does not replace it, and C6
-      performs no closure transition: this finding remains OPEN until the changed closure
-      model has itself been independently verified.
+      where this repair was introduced. The completion object does not replace it.
+    repair_completion_note_scope:
+      statement_is_historical: true
+      object: 3e397dcbdb63bc30a7d19372ac1d00713bd8f17d
+      phase: C6
+      as_recorded_at_that_object: >-
+        At C6 / 3e397dc, this finding remained OPEN pending independent verification of the
+        changed closure model, and C6 performed no closure transition.
+      why_it_is_scoped_now: >-
+        IR-02. The sentence was written at C6 as a statement about C6 and was left in the
+        present tense, so it continued to read as a current assertion about lifecycle state.
+        At 00c6e2f four findings carrying this note were CLOSED while the note still said they
+        remained OPEN, and the record asserted both at once. The statement is not deleted --
+        it was true of the object it describes -- it is bound to that object, so that current
+        lifecycle state is read from the state field and nowhere else.
+      current_lifecycle_state_is_not_stated_here: >-
+        This block makes no claim about the finding's present state. It is a historical record
+        of what was true at 3e397dc.
     independent_review_support:
       review: REV-C5-CUMULATIVE
       established: >-
@@ -3474,3 +3662,292 @@ findings:
       not otherwise touched, and nothing is added to NF-16 beyond leaving it as it stands.
     residual: >-
       Open.
+
+  - id: NF-31
+    origin: independent review of 00c6e2f, transported as IR-01
+    reviewed_object: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH, EVIDENCE]
+    title: >-
+      A changed closure model was used to move lifecycle state without the controlled pre-use
+      independent-verification condition being demonstrably satisfied
+    claim: >-
+      repair_completion_rule.no_closure_transition_in_c6 states that a changed closure model must
+      itself be independently verified before it is used to move controlled finding state. At
+      00c6e2f that model was used to move four findings to CLOSED. No registered review declares
+      that it verified the changed mechanism. The condition could therefore only have been
+      satisfied by implication -- a later cumulative review of a descendant object that happens to
+      contain the mechanism -- which is ancestry reasoning, and this register forbids ancestry as a
+      substitute for exact object identity everywhere else.
+    independently_reproduced: >-
+      Reproduced at 00c6e2f before any repair. Zero of the thirteen registered reviews carry any
+      mechanism-verification declaration under any key; the count is derived by scanning review
+      record keys rather than by reading prose. There is consequently no artifact stating that the
+      C6 mechanism was verified, at which object, or with what verdict.
+    why_it_is_acceptance_blocking:
+      determination: true
+      reasoning: >-
+        The register's convention marks a finding blocking when a declared control cannot establish
+        what it is declared to establish. This control is declared in the controlled rule text and
+        has no mechanism at all: nothing reads it, nothing enforces it, and the one occasion it
+        governed passed unobserved. The gap is occupied rather than prospective, which is the NF-20
+        basis for blocking rather than the NF-27 basis for non-blocking.
+    not_repaired_by_reopening: >-
+      Quarantining the four findings withdraws the state movement. It does not supply the missing
+      mechanism, and this finding stays open until the pre-use condition is typed and observed.
+
+  - id: NF-32
+    origin: independent review of 00c6e2f, transported as IR-02
+    reviewed_object: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: true
+    state: OPEN
+    locus: [EVIDENCE]
+    title: >-
+      Controlled prose asserting a finding remained OPEN survived into the record that stated the
+      same finding CLOSED
+    claim: >-
+      Four findings moved to CLOSED at 00c6e2f while continuing to carry repair_completion_note
+      text reading "this finding remains OPEN until the changed closure model has itself been
+      independently verified". The record asserted both states of the same governed property at
+      once. The sentence was written at C6 as a true statement about C6 and was left in the present
+      tense, so it silently became a false current assertion at the first disposition.
+    independently_reproduced: >-
+      Reproduced at 00c6e2f: six findings carried the note, four of them with state CLOSED. No
+      control compared controlled prose against the controlled state field, so the contradiction
+      was invisible to every observer that ran.
+    why_it_is_acceptance_blocking:
+      determination: true
+      reasoning: >-
+        The contradiction is about the state field itself, which is this register's primary
+        governed property, and the gap was occupied at the moment it mattered. NF-20's
+        occupied-gap basis applies rather than NF-27's unoccupied-gap basis. It is distinguished
+        from NF-01 and NF-12, which are stale-narrative findings about cardinalities that no
+        lifecycle decision consumed.
+    repair: >-
+      C10A. Every instance is rewritten as an explicitly historical statement bound to the object
+      it describes, under repair_completion_note_scope and superseded_by_retained_review_scope. The
+      statements are not deleted, because they were true of the objects they describe. Current
+      lifecycle state is read from the state field and nowhere else.
+    repair_is_prospective: >-
+      Applied even though C10A reopens the four findings, which would make the original wording
+      accidentally true again. Leaving it would reproduce the defect at the next legitimate
+      disposition.
+
+  - id: NF-33
+    origin: independent review of 00c6e2f, transported as IR-03
+    reviewed_object: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      Review scope and per-finding lifecycle authority are not positively enforced, so the suite
+      accepted finding-review warrant pairings the reviews never authorized
+    claim: >-
+      The closure observer requires a resolving review reference, exact object identity and a
+      closing review-LEVEL verdict. It requires nothing from the review about the finding. A review
+      whose own declared scope is "repair support only; not lifecycle disposition", and which
+      grants closure authority to nothing, therefore served as the closure warrant for four
+      findings with zero reported problems. Closure authority was inferred from a review-level
+      verdict rather than granted per finding.
+    independently_reproduced: >-
+      Reproduced twice at 00c6e2f, in memory, against the committed records. First, the record as
+      committed: closure_problems returns an empty list while the named warrant declares "not
+      lifecycle disposition" and carries no warrants_closure_of key at all. Second, an arbitrary
+      pairing: NF-12, a finding that review adjudicates for no closure, was set CLOSED against the
+      same review and the observer again returned zero problems.
+    why_it_is_acceptance_blocking:
+      determination: true
+      reasoning: >-
+        A declared control -- the closure warrant rule -- cannot establish the thing it exists to
+        establish, and the gap is occupied: it admitted the four transitions this checkpoint is
+        recovering from. Blocking on the NF-20 basis.
+    what_the_repair_must_not_do: >-
+      Exact object identity is not to be weakened in either direction. The repair adds a positive
+      per-finding authority requirement on top of exact identity; it removes nothing.
+
+  - id: NF-34
+    origin: independent review of 00c6e2f, transported as IR-04
+    reviewed_object: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE]
+    title: >-
+      The disposition record described two amended controls as strictly stronger when one was a
+      strict weakening and the other was incomparable
+    claim: >-
+      The register observation added at 00c6e2f states that the amended control "asserts now the
+      property that is actually permanent and is strictly stronger". Neither amendment was strictly
+      stronger. Control A replaced "every finding declaring a completion object must be OPEN" with
+      "a finding that has left OPEN must have closed against its declared completion object": the
+      old proposition was wrong but strictly stronger, and the new one admits states the old
+      refused, so the change is a weakening that happens to be correctly scoped. Control B traded
+      one detection direction for another and is incomparable, not ordered.
+    why_it_matters: >-
+      Describing a weakening as a strengthening is the defect class this register exists to catch,
+      appearing in the rationale for the change that produced the failed disposition. A reader
+      auditing whether a control was relaxed to permit a transition is told it was not.
+    why_it_is_not_acceptance_blocking:
+      determination: false
+      reasoning: >-
+        The minimum the convention supports. The claim is narrative inside a methodological
+        observation; no mechanism consumes it, no control resolves it, and the amended controls are
+        separately observed. NF-26 and NF-30 were non-blocking on the same basis -- an inaccuracy
+        inside a rationale rather than in a mechanism.
+    repair: >-
+      C10A. The claim is amended in place to state the actual ordering relation of each amendment,
+      and the historical wording is preserved as withdrawn rather than deleted.
+
+  - id: NF-35
+    origin: independent review of 00c6e2f, transported as IR-05
+    reviewed_object: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: false
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      Committed mutation controls edit controlled files in place and restore only in a Python
+      finally block, so process termination can leave controlled state modified
+    claim: >-
+      The mutation helper writes a modified controlled file to disk, yields, and restores in
+      finally. A SIGKILL, a power loss or an interpreter crash between those points leaves a
+      tracked controlled file modified, and the next actor inherits a dirty tree whose contents
+      look authored. The restoration is only as reliable as the process performing it.
+    independently_reproduced: >-
+      Established by inspection of the helper and by the absence of any recovery path outside the
+      interpreter: there is no pre-image on disk, no journal, and no check at import that a prior
+      run left the tree modified.
+    why_it_is_not_acceptance_blocking:
+      determination: false
+      reasoning: >-
+        Prospective and unoccupied. No run has been observed to terminate mid-mutation, every
+        committed control asserts byte-identical restoration, and the tree has been verified clean
+        after every suite execution. NF-27's basis: a gap that is real, unoccupied, and closed
+        anyway, because a population narrower than its claim is unsound independently of what
+        happens to be sitting in the difference.
+
+  - id: NF-36
+    origin: independent review of 00c6e2f, transported as IR-06
+    reviewed_object: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: true
+    state: OPEN
+    locus: [MEASUREMENT_PATH, EVIDENCE]
+    title: >-
+      Completion support is read from a remediation-authored list that was independently classified
+      INDETERMINATE, while the retained review's actual determinations are consumed by nothing
+    claim: >-
+      completion_declaration_problems requires that exactly one registered review both lists the
+      finding in verified_repairs_of and reviewed the completion object. The only field satisfying
+      that for the six findings is REV-C5-CUMULATIVE.verified_repairs_of -- a list written by the
+      remediation actor, whose review is external_not_retained, and which the independent reviewer
+      classified INDETERMINATE as per-finding review authority. The retained artifact that does
+      carry real per-finding determinations records them under per_finding_determinations, which no
+      observer reads for authority.
+    independently_reproduced: >-
+      Reproduced at 00c6e2f. The source of completion_declaration_problems contains
+      verified_repairs_of and does not contain per_finding_determinations. Resolving the supporting
+      review for NF-05 at the completion object returns REV-C5-CUMULATIVE, whose
+      primary_artifact_retention is external_not_retained -- not the retained review.
+    why_it_is_acceptance_blocking:
+      determination: true
+      reasoning: >-
+        The observer establishes repair support from an object whose provenance is the exact problem
+        the retained review was commissioned to answer, and the gap is occupied: every one of the
+        four transitions ran through it. Blocking on the NF-20 basis.
+    what_the_repair_must_not_do: >-
+      SUPPORTED is repair support and is not closure authority. The retained artifact disclaims
+      lifecycle disposition in its own words, and binding its determinations to the observer must
+      not convert them into a closing warrant.
+
+  - id: NF-37
+    origin: independent review of 00c6e2f, transported as IR-07
+    reviewed_object: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: true
+    state: OPEN
+    locus: [EVIDENCE, MEASUREMENT_PATH]
+    title: >-
+      The repair_completion_object declarations did not exist at the object the retained review
+      reviewed, so that review cannot have verified them
+    claim: >-
+      Three propositions were treated as one. That the repair mechanism was valid at 3188a11 is what
+      the retained review establishes. That a later declaration truthfully identifies 3188a11 as the
+      completion object, and that the model interpreting such a declaration is itself independently
+      verified, are separate propositions about artifacts that did not exist when that review was
+      performed. The record offered the 3188a11 review as support for all three.
+    independently_reproduced: >-
+      Reproduced by counting the declarations at each object. At 3188a11, zero findings declare
+      repair_completion_object. At 349f2dc, zero. They first appear at 3e397dc, six of them, and
+      persist unchanged to 00c6e2f. The reviewed object predates every declaration it was cited to
+      support.
+    why_it_is_acceptance_blocking:
+      determination: true
+      reasoning: >-
+        A declared control cannot establish what it is declared to establish, and the gap is
+        occupied: the four transitions rested on the conflation. Blocking on the NF-20 basis.
+    what_the_repair_must_not_do: >-
+      No historical claim may be added pretending the 3188a11 review verified the later
+      declarations. The propositions are separated and the two unverified ones are named as owed to
+      a future review.
+
+  - id: NF-38
+    origin: independent review of 00c6e2f, transported as IR-08
+    reviewed_object: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: false
+    state: OPEN
+    locus: [MEASUREMENT_PATH]
+    title: >-
+      A real finding is hard-coded as a lifecycle-sensitive mutation fixture, coupling that
+      finding's eventual legitimate closure to unrelated controls
+    claim: >-
+      Several completion-model controls select NF-01 by literal id as their mutation subject, and
+      the mutation helper replaces only the first occurrence of the anchor, so the fixture is NF-01
+      by virtue of its position in the file and its OPEN state. A control asserting that removing
+      the typed field leaves no closure problem holds only while NF-01 is OPEN. A future actor with
+      the authority to close NF-01 would have to edit controls that have nothing to do with NF-01.
+    independently_reproduced: >-
+      Established by reading the controls: the literal id appears as the fixture selector, and the
+      helper's replacement count of one makes file position load-bearing.
+    why_it_is_not_acceptance_blocking:
+      determination: false
+      reasoning: >-
+        Prospective and unoccupied. NF-01 is OPEN, is not proposed for closure, and no control has
+        yet obstructed a legitimate transition. NF-27's basis. It is recorded and repaired anyway,
+        because a control whose correctness depends on a governed value it does not declare is
+        unsound independently of that value's current state.
+    deliberately_not_done: >-
+      NF-01 is not closed, and its lifecycle state is not changed to make any control convenient.
+
+  - id: NF-39
+    origin: independent review of 00c6e2f, transported as IR-09
+    reviewed_object: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+    primary_artifact_retention: external_not_retained
+    acceptance_blocking: false
+    state: OPEN
+    locus: [EVIDENCE]
+    title: >-
+      A governance disposition cites a live line number with no object scope
+    claim: >-
+      NF-01's disposition records that the residual sentence "is live at CLAUDE.md line 380". A line
+      number is not a semantic reference: it is invalidated by any edit above it, it carries no
+      object scope, and it cannot be resolved by a reader at any object other than the one the
+      writer happened to have. The finding this citation appears in is itself the finding about
+      transcribed values that go stale without announcing that they have.
+    independently_reproduced: >-
+      Reproduced by reading the citation and attempting to resolve it: the number is unscoped, and
+      the record names no object against which a later reader could check whether it still points at
+      the sentence intended.
+    why_it_is_not_acceptance_blocking:
+      determination: false
+      reasoning: >-
+        A narrative citation defect inside a disposition rationale; no mechanism consumes it. The
+        same basis as NF-01 and NF-12, which are non-blocking stale-citation findings.
+    repair_must_not_be: >-
+      Updating the number to its current location. That preserves the defect with a fresher value,
+      which is the correction this register has already recorded getting wrong twice.
