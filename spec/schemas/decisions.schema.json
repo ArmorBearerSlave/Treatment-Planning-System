@@ -1,15 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:gcpl:nltps:schema:decisions:0.2",
+  "$id": "urn:gcpl:nltps:schema:decisions:0.3",
   "title": "GCPL / NL-TPS architecture decision specification",
   "type": "object",
   "required": ["schema_version", "decisions"],
   "properties": {
-    "schema_version": {"const": "0.2"},
+    "schema_version": {"const": "0.3"},
     "decisions": {
       "type": "array",
-      "minItems": 2,
-      "maxItems": 2,
+      "minItems": 3,
+      "maxItems": 3,
       "items": {
         "type": "object",
         "required": [
@@ -25,7 +25,7 @@
           "recorded_approvals"
         ],
         "properties": {
-          "id": {"enum": ["ADR-001", "ADR-002"]},
+          "id": {"enum": ["ADR-001", "ADR-002", "ADR-003"]},
           "title": {"type": "string", "minLength": 1},
           "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+$"},
           "date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
@@ -33,6 +33,7 @@
           "approval_state": {"enum": ["pending_named_approval", "approved", "withdrawn"]},
           "owner": {"type": "string", "minLength": 1},
           "human_readable_source": {"type": "string", "minLength": 1},
+          "human_readable_source_state": {"enum": ["authored", "not_yet_authored"]},
           "recorded_approvals": {"type": "array"}
         }
       }

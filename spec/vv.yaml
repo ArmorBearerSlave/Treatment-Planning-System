@@ -13,3 +13,4 @@ requirements:
   - Parent PASS requires direct emergent-outcome evidence in addition to child closure.
   - A model or generator cannot approve a result, anomaly, residual risk, commissioning state, or release.
   - Claim identifiers remain unique even when executable suites are consolidated.
+  - A cross-host equivalence claim requires the workload-class-specific criteria the workload itself declares; computational success on two hosts is not an equivalence result.

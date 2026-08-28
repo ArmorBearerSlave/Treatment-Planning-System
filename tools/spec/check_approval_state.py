@@ -12,6 +12,10 @@ import yaml
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+# Every controlled decision record. ADR-003 (ARCH-DGX-01) joined at the computational
+# hosting amendment; the per-record checks below have always been generic, and only this
+# completeness assertion had to learn about it.
+REGISTERED_DECISIONS = {"ADR-001", "ADR-002", "ADR-003"}
 
 
 def approval_authorities(records: list[dict[str, Any]]) -> set[str]:
@@ -34,8 +38,10 @@ def main() -> int:
     baseline = architecture["baseline"]
     architecture_approvals = architecture["recorded_approvals"]
     decision_records = {record["id"]: record for record in decisions["decisions"]}
-    if set(decision_records) != {"ADR-001", "ADR-002"}:
-        errors.append("decision register must contain exactly ADR-001 and ADR-002")
+    if set(decision_records) != REGISTERED_DECISIONS:
+        errors.append(
+            f"decision register must contain exactly {sorted(REGISTERED_DECISIONS)}"
+        )
 
     approval_objects = [
         ("ENG-PKG-01", baseline["approval_state"], architecture_approvals),
@@ -82,10 +88,9 @@ def main() -> int:
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         return 1
-    print(
-        f"PASS: Stage {args.stage} approval state is explicit; "
-        "ENG-PKG-01, ADR-001, and ADR-002 remain pending with zero recorded approvals"
-    )
+    named = ", ".join(identifier for identifier, _, _ in approval_objects)
+    state = "pending with zero recorded approvals" if args.stage in {"A", "B"} else "approved"
+    print(f"PASS: Stage {args.stage} approval state is explicit; {named} are {state}")
     return 0
 
 

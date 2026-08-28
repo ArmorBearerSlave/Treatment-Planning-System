@@ -104,6 +104,9 @@ jobs:
       - name: Check controlled specification reconciliation
         run: python tools/spec/check_controlled_specs.py
 
+      - name: Check governed computational hosting structure and its claim boundary
+        run: python tools/spec/check_computational_hosting.py
+
       - name: Check explicit Stage A approval state
         run: python tools/spec/check_approval_state.py --stage A
 

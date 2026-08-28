@@ -87,6 +87,25 @@ def main() -> int:
     if expected_entities != 2144:
         errors.append(f"allocation entity count is {expected_entities}, expected 2144")
 
+    # A decision record names the human-readable rendering it mirrors. Where that
+    # rendering has not been authored yet the record must say so, and the declaration is
+    # checked against the filesystem rather than against itself: a record silently citing
+    # a document nobody wrote reads exactly like one citing a document that exists.
+    for record in documents["decisions.yaml"]["decisions"]:
+        source = REPO_ROOT / record["human_readable_source"]
+        declared = record.get("human_readable_source_state", "authored")
+        if declared == "authored" and not source.is_file():
+            errors.append(
+                f"{record['id']} cites {record['human_readable_source']}, which does not "
+                f"exist; declare human_readable_source_state: not_yet_authored or write it"
+            )
+        if declared == "not_yet_authored" and source.is_file():
+            errors.append(
+                f"{record['id']} declares its human-readable source not yet authored, but "
+                f"{record['human_readable_source']} now exists; the declaration has "
+                f"outlived its reason"
+            )
+
     architecture = documents["architecture.yaml"]
     terminology = documents["terminology.yaml"]
     skeleton = json.loads((REPO_ROOT / "mps" / "bootstrap" / "language-skeleton.json").read_text(encoding="utf-8"))

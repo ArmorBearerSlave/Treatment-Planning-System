@@ -1,4 +1,4 @@
-schema_version: "0.5"
+schema_version: "0.6"
 
 baseline:
   id: ENG-PKG-01-ARCH
@@ -69,6 +69,27 @@ invariants:
         With Zone 0 disabled, equivalent typed intent produces the same Zone 1
         decision and eligible Zone 2 behavior; no professional authority is
         added or removed.
+
+  - id: ARCH-INVARIANT-002
+    name: no_authority_by_computational_host
+    amendment: ARCH-DGX-01
+    statement: >-
+      Migration or dispatch of a governed workload to another computational host
+      shall not confer, enlarge, transfer, substitute, or recreate clinical or
+      professional authority. The authority applying to a governed workload is
+      the authority determined before dispatch, and it is unchanged by where the
+      workload executes, on what platform, at what scale, or with what
+      computational success.
+    verification:
+      method: architecture_fitness_test
+      expected_result: >-
+        For one governed workload authorized once, execution on the local
+        reference host and on a qualified remote provider yields the same
+        authority determination, the same required ProfessionalDecision
+        references, and the same acceptance verdict. On both, a returned result
+        whose bound workload digest differs from the authorization-bound digest
+        is rejected, and so is one that matches the digest while failing the
+        output contract the workload declared.
 
 architecture_decisions:
   - id: AB-001
@@ -312,6 +333,37 @@ architecture_decisions:
       - no bulk rename is authorized
       - naming does not change intended use, authority, regulatory status, or clinical authorization
 
+  - id: AB-013
+    name: governed_computational_hosting
+    status: baselined_for_controlled_nonclinical_architecture
+    decision_record: ADR-003
+    amendment_id: ARCH-DGX-01
+    structure: governed_computational_hosting
+    statement: >-
+      A governed NL-TPS workload is a provider-neutral object whose authorized
+      identity is bound by digest before dispatch. A compute provider executes it
+      and returns results together with an execution attestation, and acquires no
+      authority by doing so. The DGX Spark is the first reference complete
+      computational host; the abstraction that lets it host the complete NL-TPS
+      computational runtime is the same abstraction by which an oversized governed
+      workload leaves it for a larger qualified computational platform.
+    consequences:
+      - authorization binds a workload digest, and scheduling selects a provider while changing nothing the authorization bound
+      - a matching digest establishes that a result is offered for the authorized workload and that no intermediary substituted a different workload reference
+      - a matching digest does not establish that the authorized workload is what executed, because the digest is a label the executing host copies back
+      - what executed is reachable only through authenticated execution attestation or through independent checking of the returned artifacts
+      - returned artifacts are checked against the output and acceptance contracts the workload itself declared, as an acceptance step distinct from digest binding and from provenance
+      - remotely supplied execution facts are attestations until a qualification rule authenticates them
+      - a provider-specific governed workload envelope is prohibited and provider mechanics live in adapters
+      - cross-host equivalence is a workload-class-specific V&V result, never an inference from computational success
+      - designating a computational host changes no clinical, dose, record, or approval authority
+    corpus_representation_note: >-
+      The producer and consumer boundary is represented here rather than in
+      spec/interfaces.yaml or spec/components.yaml. Those catalogs mirror the
+      controlled corpus by count and family and hold no per-interface or
+      per-component record; adding one would assert a change to source documents
+      this amendment does not amend.
+
 mps_authority_transition:
   decision_record: ADR-001
   current_stage: A_mirror
@@ -409,6 +461,1507 @@ mps_language_constraints:
     patient_data_permitted: false
     clinical_credentials_permitted: false
     direct_persistence_xml_edit_permitted: false
+
+governed_computational_hosting:
+  amendment_id: ARCH-DGX-01
+  decision_record: ADR-003
+  architecture_decision: AB-013
+  invariant: ARCH-INVARIANT-002
+  status: represented_and_allocated_not_verified
+  scope: >-
+    Where a governed NL-TPS workload executes, how the authorization that
+    permitted it is bound to an immutable identity of that workload, what a
+    returned result must satisfy before acceptance, and how model development,
+    inference, and clinical language services share one hosting mechanism without
+    sharing one lifecycle, across one product architecture deployed as a clinic
+    appliance, a hybrid, or a managed cloud service. This section decides nothing about clinical
+    correctness, dose authority, model qualification, risk acceptability, or
+    approval.
+
+  proposition_states:
+    ordered:
+      - REPRESENTED
+      - ALLOCATED
+      - VERIFIED
+      - COMMISSIONED
+    definitions:
+      REPRESENTED: the proposition exists as controlled structure in this baseline
+      ALLOCATED: a named responsibility, contract, profile, or structural control owns it
+      VERIFIED: required objective evidence demonstrates the proposition
+      COMMISSIONED: site-specific and platform-specific qualification and acceptance have completed
+    max_state_at_this_checkpoint: ALLOCATED
+    prohibition: >-
+      Presence in spec/architecture.yaml establishes REPRESENTED and nothing
+      further. Structural inspection by a gate establishes ALLOCATED and nothing
+      further. Neither is operational verification, and neither may be reported
+      as mechanically proven.
+    relationship_to_evidence_obligation_states: >-
+      These four states describe an architecture proposition. The five obligation
+      states used by the materialization evidence reconciler, DECLARED, OPEN,
+      ATTESTED, OBSERVED and DISCHARGED, describe an evidence obligation. The
+      vocabularies are related and are not merged: a proposition reaching
+      VERIFIED requires a DISCHARGED obligation, but no obligation state is a
+      proposition state and no proposition state closes an obligation.
+
+  claim_boundary:
+    may_claim:
+      - ARCH-DGX-01 is structurally represented and allocated.
+      - DGX Spark is designated the first reference complete computational host in the controlled architecture.
+      - DGX Spark is designated the first reference AI development, model-training and fine-tuning, validation, and inference host in the controlled architecture.
+      - DGX Spark is designated the first reference host for locally executed NL-TPS clinical language-model services.
+      - Governed workload integrity binding and scale-out interfaces are structurally specified.
+      - Model development, inference, and language-service workloads are structurally specified as distinct classes over one common integrity and dispatch mechanism.
+      - Required cross-host qualification and V&V is defined.
+      - Clinic Standalone, Clinic and Cloud Hybrid, and Managed Cloud Service are structurally specified as deployment profiles of one governed runtime.
+      - Workload data locality is structurally specified as a policy-controlled, digest-bound property of the workload contract.
+    may_not_claim:
+      - Workload integrity across remote execution is established.
+      - DGX Spark deployment is commissioned.
+      - DGX and cloud outputs are equivalent.
+      - DGX Spark and larger compute produce clinically equivalent models.
+      - A remote GPU compute provider is qualified.
+      - Remote execution attestation is validated.
+      - Clinical operation on DGX is approved.
+      - Any AI model is clinically qualified.
+      - Any hosted language model is clinically qualified.
+      - Any training dataset is clinically representative.
+      - A trained model is safe for treatment planning.
+      - Locally hosting a language service confers any authority on its output.
+      - Tenant isolation is implemented or qualified.
+      - Any deployment profile is commissioned.
+      - The clinic standalone appliance has been shown to host the complete runtime.
+      - The same runtime has been shown to run materially unchanged across deployment profiles.
+      - Any ARCH-DGX-01 proposition is mechanically proven by its presence in this baseline.
+
+  governed_workload:
+    id: GW-ENVELOPE-01
+    name: provider_neutral_governed_workload
+    provider_neutral: true
+    format_owner: nltps_governed_architecture
+    format_owner_is_a_provider: false
+    integrity_binding:
+      field: governed_workload_digest
+      computed_over: W_canonical
+      digest_function_selection: deferred_to_platform_qualification
+      selection_constraints:
+        - collision resistance appropriate to a governed integrity binding
+        - one function per governed release, named in the release manifest
+        - a change of digest function is a controlled change, not an implementation detail
+      binding_rule: >-
+        An AuthorizationDecision binds governed_workload_digest to the digest of
+        the workload it authorized. Dispatch carries the same value. A returned
+        result carries the value it claims to have executed. The three values are
+        reconciled before the result is considered further.
+    canonical_fields:
+      - {name: typed_intent, authorization_relevant: true, in_digest: true}
+      - {name: authorization_relevant_parameters, authorization_relevant: true, in_digest: true}
+      - {name: policy_identity, authorization_relevant: true, in_digest: true}
+      - {name: software_runtime_identity, authorization_relevant: true, in_digest: true}
+      - {name: model_identities, authorization_relevant: true, in_digest: true}
+      - {name: input_identities, authorization_relevant: true, in_digest: true}
+      - {name: configuration, authorization_relevant: true, in_digest: true}
+      - {name: stochastic_parameters_and_seeds, authorization_relevant: true, in_digest: true}
+      - {name: requested_computational_operation, authorization_relevant: true, in_digest: true}
+      - {name: required_output_contract, authorization_relevant: true, in_digest: true}
+      - {name: acceptance_tolerance_contract, authorization_relevant: true, in_digest: true}
+      - {name: evidence_requirements, authorization_relevant: true, in_digest: true}
+      - {name: destination_and_security_context, authorization_relevant: true, in_digest: true}
+      - {name: workload_class, authorization_relevant: true, in_digest: true}
+      - {name: equivalence_acceptance_class, authorization_relevant: true, in_digest: true}
+      - {name: data_locality_classification, authorization_relevant: true, in_digest: true}
+      - {name: frozen_governed_fields, authorization_relevant: true, in_digest: true}
+    transport_fields:
+      - {name: transport_packaging, authorization_relevant: false, in_digest: false}
+      - {name: scheduling_priority, authorization_relevant: false, in_digest: false}
+      - {name: retry_attempt_counter, authorization_relevant: false, in_digest: false}
+      - {name: provider_queue_metadata, authorization_relevant: false, in_digest: false}
+    field_partition_rule: >-
+      The digest identifies the governed proposition, not the envelope that
+      carried it. An authorization-relevant field is in the digest and a
+      transport field is not, with no field in both sets and no field in neither.
+
+  canonicalization:
+    id: CANON-DGX-01
+    rule: >-
+      The workload digest is computed over a deterministic canonical
+      representation of W_canonical. A digest without a canonical representation
+      is not a stable identity.
+    requirements:
+      deterministic_field_ordering: required
+      deterministic_value_representation: required
+      explicit_schema_and_version_identity: required
+      normalized_representation_of_equivalent_values: required
+      host_local_paths_in_semantic_identity: prohibited_unless_semantically_required
+      unknown_or_unbound_authorization_relevant_field: reject
+      incidental_transport_packaging_in_digest: excluded
+    serialization_technology: not_selected_at_this_checkpoint
+    selection_obligation: >-
+      A qualified deployment names one canonical serialization and one digest
+      function. This checkpoint freezes the properties the representation must
+      have, not the technology that provides them.
+
+  provider_neutrality:
+    envelope: GW-ENVELOPE-01
+    provider_specific_tokens:
+      - dgx
+      - spark
+      - nvidia
+      - cuda
+      - brev
+      - grace
+      - blackwell
+    rule: >-
+      No governed-workload field, and no field a governed contract binds, may
+      carry a provider-specific token in its name. Provider mechanics are
+      confined to a compute-provider adapter and never appear in the envelope.
+    permitted_locations:
+      - governed_computational_hosting.compute_provider_profiles
+      - governed_computational_hosting.compute_provider_abstraction.adapters
+    prohibited_construct: dgx_specific_or_provider_specific_workload_envelope
+
+  workload_classes:
+    common_mechanism: GW-ENVELOPE-01
+    common_integrity_binding: governed_workload_digest
+    class_extension_rule: >-
+      A workload class extends the common canonical field set with the semantic
+      inputs and outputs it binds. It does not define its own integrity binding,
+      its own dispatch contract, or its own acceptance path. Every additional
+      field a class declares is authorization-relevant and enters the same
+      digest, so the class-specific semantics travel under the same identity as
+      the common core.
+    lifecycle_separation: >-
+      Model development and clinical inference are distinct lifecycles that share
+      one computational hosting mechanism. Collapsing them would make a training
+      result look like an inference authorization.
+    classes:
+      - id: WLC-MODELDEV-01
+        name: ModelDevelopmentWorkload
+        purpose: creation of an NL-TPS model from controlled datasets
+        common_mechanism: GW-ENVELOPE-01
+        produces: [ModelArtifact, EvaluationOutputs]
+        confers_authorization_for_use: false
+        reproducibility_class: reproducible_protocol_with_statistical_acceptance
+        bitwise_output_identity_required: false
+        additional_canonical_fields:
+          - {name: dataset_identity, authorization_relevant: true, in_digest: true}
+          - {name: dataset_version, authorization_relevant: true, in_digest: true}
+          - {name: dataset_manifest_digest, authorization_relevant: true, in_digest: true}
+          - {name: inclusion_exclusion_definition, authorization_relevant: true, in_digest: true}
+          - {name: partition_identity, authorization_relevant: true, in_digest: true}
+          - {name: label_annotation_provenance, authorization_relevant: true, in_digest: true}
+          - {name: preprocessing_pipeline_identity, authorization_relevant: true, in_digest: true}
+          - {name: augmentation_pipeline_identity, authorization_relevant: true, in_digest: true}
+          - {name: training_code_identity, authorization_relevant: true, in_digest: true}
+          - {name: runtime_container_digest, authorization_relevant: true, in_digest: true}
+          - {name: base_model_identity, authorization_relevant: true, in_digest: true}
+          - {name: model_architecture_configuration, authorization_relevant: true, in_digest: true}
+          - {name: hyperparameters, authorization_relevant: true, in_digest: true}
+          - {name: optimizer_and_scheduler_configuration, authorization_relevant: true, in_digest: true}
+          - {name: random_seeds, authorization_relevant: true, in_digest: true}
+          - {name: numerical_precision, authorization_relevant: true, in_digest: true}
+          - {name: hardware_execution_profile, authorization_relevant: true, in_digest: true}
+          - {name: loss_and_objective_definitions, authorization_relevant: true, in_digest: true}
+          - {name: stopping_criteria, authorization_relevant: true, in_digest: true}
+          - {name: output_model_contract, authorization_relevant: true, in_digest: true}
+          - {name: required_evaluation_suite, authorization_relevant: true, in_digest: true}
+        authorization_record_binds_digest: true
+        result_binds:
+          - governed_workload_digest
+          - model_artifact_digest
+          - dataset_manifest_digest
+          - partition_identity
+          - training_code_identity
+          - runtime_container_digest
+          - base_model_identity
+          - final_training_configuration
+          - evaluation_outputs
+          - run_identity
+          - execution_attestation_identity
+      - id: WLC-INFERENCE-01
+        name: InferenceWorkload
+        purpose: execution of a previously qualified model over governed inputs
+        common_mechanism: GW-ENVELOPE-01
+        produces: [InferenceOutputs]
+        confers_authorization_for_use: false
+        reproducibility_class: deterministic_or_declared_tolerance
+        bitwise_output_identity_required: false
+        additional_canonical_fields:
+          - {name: qualified_model_digest, authorization_relevant: true, in_digest: true}
+          - {name: model_configuration, authorization_relevant: true, in_digest: true}
+          - {name: inference_runtime_container_digest, authorization_relevant: true, in_digest: true}
+          - {name: input_artifact_identities, authorization_relevant: true, in_digest: true}
+          - {name: preprocessing_identity, authorization_relevant: true, in_digest: true}
+          - {name: inference_parameters, authorization_relevant: true, in_digest: true}
+          - {name: inference_numerical_precision, authorization_relevant: true, in_digest: true}
+          - {name: applicable_acceptance_and_safety_rules, authorization_relevant: true, in_digest: true}
+        result_binds:
+          - governed_workload_digest
+          - qualified_model_digest
+          - input_artifact_digests
+          - run_identity
+          - output_artifact_digests
+          - execution_attestation_identity
+      - id: WLC-LANGSVC-01
+        name: LanguageServiceWorkload
+        purpose: locally executed NL-TPS clinical language-model services
+        common_mechanism: GW-ENVELOPE-01
+        produces: [UntrustedCandidateIntent, UntrustedRetrievalResult, UntrustedDecisionSupportContent]
+        confers_authorization_for_use: false
+        trust_zone: Z0-LANG
+        authority: none
+        reproducibility_class: declared_tolerance_with_recorded_decoding_parameters
+        bitwise_output_identity_required: false
+        additional_canonical_fields:
+          - {name: language_model_digest, authorization_relevant: true, in_digest: true}
+          - {name: language_model_configuration, authorization_relevant: true, in_digest: true}
+          - {name: decoding_parameters, authorization_relevant: true, in_digest: true}
+          - {name: language_runtime_container_digest, authorization_relevant: true, in_digest: true}
+          - {name: context_snapshot_identity, authorization_relevant: true, in_digest: true}
+          - {name: retrieval_corpus_identity, authorization_relevant: true, in_digest: true}
+          - {name: prompt_or_template_identity, authorization_relevant: true, in_digest: true}
+          - {name: language_numerical_precision, authorization_relevant: true, in_digest: true}
+          - {name: candidate_output_schema, authorization_relevant: true, in_digest: true}
+        result_binds:
+          - governed_workload_digest
+          - language_model_digest
+          - context_snapshot_identity
+          - retrieval_corpus_identity
+          - run_identity
+          - output_artifact_digests
+          - execution_attestation_identity
+
+  dataset_governance:
+    id: DS-MANIFEST-01
+    name: controlled_dataset_manifest
+    dataset_is_a_first_class_governed_asset: true
+    identity_by_path_or_directory_name: prohibited
+    identity_rule: >-
+      A dataset is identified by a controlled manifest, never by a directory
+      name, mount point, or filename. A change to the effective dataset produces
+      a different dataset identity and therefore a different workload digest.
+    effective_change_produces_new_identity: true
+    required_bindings:
+      - constituent_data_identities
+      - dataset_version_identity
+      - provenance_and_source
+      - labeling_provenance
+      - permitted_use
+      - preprocessing_state
+      - inclusion_exclusion_criteria
+      - partition_assignment
+      - integrity_digest
+    permitted_use_is_authorization_relevant: true
+    note: >-
+      permitted_use travels with the dataset identity so that a use a dataset was
+      never permitted for cannot be reached by re-pointing a path.
+
+  partition_integrity:
+    id: PART-DGX-01
+    partitions:
+      - training
+      - validation
+      - test
+      - external_independent_test
+    partition_identity_field: partition_identity
+    participates_in_workload_identity: true
+    silent_movement_after_freeze: prohibited
+    freeze_point: model_development_experiment_freeze
+    rule: >-
+      Training, validation, test, and external independent test populations are
+      explicitly identifiable and their assignment is part of the
+      model-development workload identity. After an experiment is frozen, moving
+      a case between partitions changes the partition identity, therefore the
+      workload digest, therefore the experiment. There is no path by which a case
+      moves and the identity stays the same.
+    detects_by_construction:
+      - a case silently promoted from training into the test population
+      - an independent test set that overlaps the training population
+      - a partition redefined after results were seen
+
+  model_artifact:
+    id: MA-IDENTITY-01
+    identity_basis: immutable_content_identity
+    identity_by_filename: prohibited
+    prohibited_identity_forms:
+      - a training output named only by file, such as a weights file, a checkpoint file, or an exported graph file
+      - a version implied by directory, timestamp, or run folder
+    required_bindings:
+      - resulting_model_digest
+      - architecture_identity
+      - originating_training_workload_digest
+      - training_dataset_manifest_digest
+      - partition_identity
+      - training_code_identity
+      - runtime_container_digest
+      - base_model_digest
+      - final_training_configuration
+      - evaluation_outputs
+      - execution_provenance_or_attestation
+    reconstructable_question: >-
+      Which exact data and which exact training process produced this exact
+      model? The bindings above exist so that this question is answerable from
+      the record rather than from someone remembering.
+    base_model_digest_applicability: required_where_a_base_model_was_used
+
+  model_promotion:
+    id: PROMO-DGX-01
+    rule: >-
+      A successfully trained model is a computational output. It is not an NL-TPS
+      inference model authorized for use, and no computational result promotes
+      it.
+    ordered_distinctions:
+      - training_success
+      - validation_success
+      - qualification
+      - clinical_authorization
+    non_implication:
+      - {from: training_success, to: validation_success}
+      - {from: validation_success, to: qualification}
+      - {from: qualification, to: clinical_authorization}
+    stages:
+      - id: PROMO-STAGE-01
+        state: produced_model_artifact
+        conferred_by: WLC-MODELDEV-01
+        authority: none
+        governed_by: AB-013
+      - id: PROMO-STAGE-02
+        state: evaluated_model_artifact
+        conferred_by: required_evaluation_suite
+        authority: none
+        governed_by: AB-007
+        note: an evaluation result is evidence, never approval
+      - id: PROMO-STAGE-03
+        state: qualified_inference_model
+        conferred_by: controlled_verification_and_validation_and_commissioning
+        authority: none
+        governed_by: AB-007
+      - id: PROMO-STAGE-04
+        state: authorized_inference_model
+        conferred_by: ProfessionalDecision
+        authority: authenticated_human_authority_action
+        governed_by: AB-004
+    reuses_existing_authority_structures:
+      - AB-004
+      - AB-008
+      - AB-010
+      - AB-011
+      - ADR-001
+    existing_noncollapsible_boundary: model ownership versus model release authority
+    parallel_approval_mechanism: prohibited
+    parallel_mechanism_rationale: >-
+      The repository already carries the lifecycle and authority objects a model
+      promotion needs: ProfessionalDecision, AuthorityPolicy, Evidence, Review,
+      StateTransition, Invalidation, and the AB-010 boundary between model
+      ownership and model release authority. Inventing a second approval path for
+      models would create two answers to who authorized a model, which is the
+      failure the single-authority design exists to prevent.
+    ai_may_promote_a_model: false
+
+  model_substitution:
+    id: SUBST-DGX-01
+    rule: >-
+      Compute dispatch, resource availability, capacity, cost, or queue state
+      shall not substitute any of the following. Each is an authorization-relevant
+      field inside the workload digest, so a substitution changes the identity and
+      is refused at reconciliation rather than discovered later.
+    prohibited_silent_substitutions:
+      - another model
+      - another model version
+      - another checkpoint
+      - another precision mode
+      - another preprocessing pipeline
+      - another inference implementation
+    permitted_only_when: explicitly_authorized_by_the_governed_workload_contract
+    model_identity_in_authorization_bound_digest: true
+    identity_fields:
+      - qualified_model_digest
+      - model_configuration
+      - inference_numerical_precision
+      - preprocessing_identity
+      - inference_runtime_container_digest
+
+  multi_dataset_development:
+    id: MULTIDS-DGX-01
+    supported_source_classes:
+      - single institutional dataset
+      - multiple institutional datasets
+      - public or research dataset
+      - synthetic dataset
+      - federated or externally supplied dataset, where later authorized
+    constituent_identity_retained: true
+    composite_identity:
+      field: dataset_identity
+      derived_from: constituent dataset manifest identities and their partition assignments
+      reproducible: true
+      erases_constituent_identity: false
+    rule: >-
+      A combined training population has a reproducible composite identity that
+      is derived from its constituents and does not replace them. Each
+      contributing dataset keeps its own manifest, provenance, labeling
+      provenance, and permitted use, so a later question about one contributor is
+      answerable without unpicking the combination.
+    permitted_use_composition: >-
+      A composite population is usable only for a use every constituent permits.
+      Combination does not create permission that no constituent granted.
+
+  reproducibility:
+    id: REPRO-DGX-01
+    bitwise_identical_trained_weights_required: false
+    rationale: >-
+      Training is frequently nondeterministic at the level of accumulated
+      floating-point reductions and scheduler nondeterminism. Requiring bitwise
+      identical weights would either be routinely violated or would force a
+      determinism claim that the platform does not support. Reproducibility is
+      required at the level the workload class can actually carry.
+    required_evidence:
+      - exact identity of inputs and configuration
+      - retained seeds where the seed is meaningful to the result
+      - runtime and hardware identity
+      - a reproducible training protocol
+      - precommitted evaluation criteria
+      - statistical or performance acceptance where exact equality is inappropriate
+    precommitment_rule: >-
+      Evaluation criteria are committed in the workload before execution. A
+      criterion chosen after results were seen is not an acceptance criterion.
+    class_bindings:
+      - workload_class: WLC-MODELDEV-01
+        equivalence_acceptance_class: EQ-STATISTICAL-01
+        bitwise_output_identity_required: false
+      - workload_class: WLC-INFERENCE-01
+        equivalence_acceptance_class: EQ-NUMERIC-01
+        bitwise_output_identity_required: false
+      - workload_class: WLC-LANGSVC-01
+        equivalence_acceptance_class: EQ-SEMANTIC-01
+        bitwise_output_identity_required: false
+    control_artifact_exception: >-
+      Deterministic canonical control artifacts produced alongside a model,
+      such as a manifest or a configuration export, remain under EQ-EXACT-01.
+      Relaxing determinism for weights does not relax it for records.
+
+  scale_out_invariance:
+    id: SCALEOUT-DGX-01
+    rule: >-
+      Model development uses the same provider-neutral governed workload
+      abstraction as inference. A workload that exceeds the capacity of the
+      reference host is dispatched unchanged to a qualified larger compute
+      provider; the authorization-bound workload digest is the cross-host
+      identity.
+    may_alter:
+      - execution resources
+      - provider selection
+      - transport packaging
+      - scheduling priority
+    may_not_alter:
+      - dataset
+      - partitions
+      - base model
+      - training code
+      - hyperparameters
+      - objective
+      - seeds and configuration
+      - required validation
+      - output contract
+    enforcement: >-
+      Every field under may_not_alter is an authorization-relevant field of its
+      workload class and therefore inside the digest. Altering one produces a
+      different digest, which fails reconciliation. The prohibition is a
+      consequence of the identity, not an additional promise.
+    reference_host_capacity_overflow_target: PLAT-REMOTE-QUALIFIED-01
+
+  language_service_hosting:
+    id: LANGSVC-DGX-01
+    reference_host: PLAT-DGX-SPARK-01
+    workload_class: WLC-LANGSVC-01
+    trust_zone: Z0-LANG
+    authority: none
+    governed_by: [AB-003, AB-004, AB-006, AB-011]
+    services:
+      - id: LSVC-NLI-01
+        name: natural_language_interpretation
+        emits: untrusted_candidate_plan_intent
+        authority: none
+      - id: LSVC-RETRIEVAL-01
+        name: controlled_retrieval
+        emits: untrusted_retrieval_result
+        authority: none
+        constraint: >-
+          Retrieval runs over an approved evidence corpus. A retrieved passage is
+          a pointer for a person to evaluate, never an evidence determination and
+          never a rule.
+      - id: LSVC-INTENT-01
+        name: structured_intent_generation
+        emits: untrusted_candidate_plan_intent
+        authority: none
+      - id: LSVC-CDS-01
+        name: approved_clinical_decision_support
+        emits: untrusted_decision_support_content
+        authority: none
+        constraint: >-
+          Presented for professional consideration. It is not a decision, not an
+          eligibility result, and not a substitute for the deterministic
+          derivation Z1 performs from trusted inputs.
+    subordination:
+      statement: >-
+        Language-model output is subordinate to deterministic NL-TPS
+        authorization and to applicable human authority. It is an input to the
+        Z1 kernel, never a substitute for a Z1 decision and never a substitute
+        for a ProfessionalDecision.
+      output_class: untrusted_candidate
+      may_produce_authorization_decision: false
+      may_produce_execution_capability: false
+      may_satisfy_professional_decision: false
+      readiness_derivation: AB-006
+      prohibited_actions_inherited_from: AB-004
+    local_hosting_consequence: >-
+      Hosting the language service on the reference host allows a controlled
+      minimum-necessary context snapshot to remain inside the directly observed
+      boundary, which strengthens the Z0-LANG prohibition on uncontrolled
+      external egress. It is not an authority change. A locally hosted model has
+      exactly the authority a remotely hosted one has, which is none.
+    invariant_unaffected: ARCH-INVARIANT-001
+    invariant_note: >-
+      ARCH-INVARIANT-001 continues to require that every state-changing workflow
+      be executable from valid hand-authored typed intent with the language
+      service absent. Making the service locally available is the condition under
+      which that invariant is easiest to lose by accretion, so it is the
+      condition under which it most needs to be tested.
+    model_lifecycle: >-
+      A language model in service is a qualified model under PROMO-DGX-01 and is
+      subject to SUBST-DGX-01. Local availability does not exempt it from
+      promotion, and dispatch may not silently swap its version, checkpoint,
+      precision, or decoding configuration.
+  deployment_profiles:
+    id: DEPL-DGX-01
+    product_architecture: one_governed_runtime_many_profiles
+    runtime: RT-NLTPS-01
+    rule: >-
+      The profiles below are deployment profiles of one product architecture. A
+      profile selects where the governed runtime runs and under what operational
+      configuration. It does not fork the product, and it does not carry its own
+      clinical intent, authorization, workload, provenance, model-identity or
+      evidence semantics.
+    may_vary:
+      - compute provider
+      - resource limits
+      - storage topology
+      - network topology
+      - data-residency policy
+      - tenant configuration
+      - remote-attestation mechanism
+      - service availability
+    may_not_vary:
+      - clinical intent
+      - authorization semantics
+      - model identity
+      - workload semantics
+      - acceptance criteria
+      - evidence obligations
+      - external TPS authority
+    silent_variation: prohibited
+    preserved_across_profiles:
+      - typed intent identity
+      - authorization binding
+      - governed workload digest
+      - software and container identity
+      - model identity
+      - dataset and input identity
+      - output contract
+      - provenance
+      - evidence
+      - clinical authority boundaries
+    profiles:
+      - id: DEPL-STANDALONE-01
+        name: Clinic Standalone
+        runtime: RT-NLTPS-01
+        workload_envelope: GW-ENVELOPE-01
+        abstraction: CP-ABSTRACTION-01
+        reference_compute_profile: PLAT-DGX-SPARK-01
+        hosts_complete_runtime: true
+        remote_dispatch_permitted: none
+        commissioning_state: not_commissioned
+        external_authoritative_systems_remain_external: true
+      - id: DEPL-HYBRID-01
+        name: Clinic and Cloud Hybrid
+        runtime: RT-NLTPS-01
+        workload_envelope: GW-ENVELOPE-01
+        abstraction: CP-ABSTRACTION-01
+        reference_compute_profile: PLAT-DGX-SPARK-01
+        remote_compute_profile: PLAT-REMOTE-QUALIFIED-01
+        hosts_complete_runtime: true
+        remote_dispatch_permitted: explicitly_authorized_workloads_only
+        commissioning_state: not_commissioned
+        external_authoritative_systems_remain_external: true
+      - id: DEPL-MANAGED-CLOUD-01
+        name: Managed Cloud Service
+        runtime: RT-NLTPS-01
+        workload_envelope: GW-ENVELOPE-01
+        abstraction: CP-ABSTRACTION-01
+        reference_compute_profile: PLAT-REMOTE-QUALIFIED-01
+        hosts_complete_runtime: true
+        remote_dispatch_permitted: explicitly_authorized_workloads_only
+        commissioning_state: not_commissioned
+        tenancy: multi_tenant
+        external_authoritative_systems_remain_external: true
+
+  product_invariant:
+    id: PROD-DGX-01
+    statement: >-
+      The abstraction that permits the complete NL-TPS runtime to execute on a
+      clinic DGX Spark is the same abstraction that permits that runtime, or an
+      oversized governed workload leaving it, to execute on qualified larger
+      NVIDIA infrastructure.
+    reference_profile: DEPL-STANDALONE-01
+    reference_compute_profile: PLAT-DGX-SPARK-01
+    scale_out_compute_profile: PLAT-REMOTE-QUALIFIED-01
+    shared_abstraction: CP-ABSTRACTION-01
+    shared_envelope: GW-ENVELOPE-01
+    dgx_is_a_special_case_product_architecture: false
+
+  standalone_runtime_services:
+    id: RT-NLTPS-01
+    name: complete_nltps_computational_runtime
+    reference_appliance: PLAT-DGX-SPARK-01
+    external_authoritative_systems_remain_external: true
+    authority_rule: >-
+      A hosted service holds only the authority its trust zone already holds, and
+      most hold none. Hosting a service on the appliance grants it nothing. No
+      runtime service is placed in the system-of-record zone, because that is the
+      zone whose occupancy would make the appliance the authoritative clinical
+      system rather than a computational host for it.
+    services:
+      - {id: SVC-LLM-01, name: local_clinical_language_model_services, authority: none, trust_zone: Z0-LANG}
+      - {id: SVC-RAG-01, name: controlled_institutional_retrieval, authority: none, trust_zone: Z0-LANG}
+      - {id: SVC-AUTHZ-01, name: deterministic_authorization, authority: deterministic_eligibility_decision, trust_zone: Z1-KERNEL}
+      - {id: SVC-INFER-01, name: ai_inference, authority: none, trust_zone: Z2-EXEC}
+      - {id: SVC-DICOM-01, name: dicom_and_dicom_rt_services, authority: none, trust_zone: Z2-EXEC}
+      - {id: SVC-IMG-01, name: image_processing_and_registration, authority: none, trust_zone: Z2-EXEC}
+      - {id: SVC-MODELDEV-01, name: model_development_workflows, authority: none, trust_zone: Z2-EXEC}
+      - {id: SVC-PROV-01, name: provenance_and_audit, authority: none, trust_zone: Z2-EXEC}
+      - {id: SVC-VERIFY-01, name: verification_services, authority: none, trust_zone: Z2-EXEC}
+    prohibited_zone: Z3-SOR
+
+  workload_locality:
+    id: LOCAL-DGX-01
+    classification_field: data_locality_classification
+    policy_controlled: true
+    capacity_may_override_locality: false
+    crossing_institutional_boundary_by_scheduling: prohibited
+    classes:
+      - {id: LOC-LOCAL-ONLY, name: local_only, may_leave_institutional_boundary: false}
+      - {id: LOC-APPROVED-REMOTE, name: approved_remote, may_leave_institutional_boundary: true}
+      - {id: LOC-DEIDENTIFIED-RESEARCH, name: de_identified_research, may_leave_institutional_boundary: true}
+      - {id: LOC-PROVIDER-QUALIFIED, name: provider_qualified, may_leave_institutional_boundary: true}
+    rule: >-
+      Locality is a property of the governed workload contract, decided by policy
+      before dispatch. A workload classified local_only is not dispatched
+      remotely because remote capacity exists, because a queue is long, or
+      because a provider is cheaper. Locality is an authorization-relevant field
+      inside the digest, so a dispatcher that changes it has produced a different
+      workload and fails reconciliation rather than succeeding quietly.
+    dispatch_rule: >-
+      A dispatcher may select among providers whose qualification satisfies the
+      locality class the workload already carries. It may not select a locality.
+
+  tenant_isolation:
+    id: TENANT-DGX-01
+    applies_to: DEPL-MANAGED-CLOUD-01
+    isolation_model: explicit_per_tenant_isolation
+    isolated_subjects:
+      - clinical data
+      - models
+      - configuration
+      - institutional knowledge
+      - credentials
+      - audit records
+    cross_tenant_context_access: prohibited
+    implementation_state: not_implemented
+    qualification_state: not_qualified
+    claimable_now: false
+    claim_rule: >-
+      Representing tenant isolation here establishes that the architecture
+      requires it. It does not establish that it exists, that it works, or that
+      it has been qualified, and none of those may be claimed from this section.
+
+  runtime_packaging:
+    id: PKG-DGX-01
+    runtime: RT-NLTPS-01
+    package_identity_basis: immutable_content_identity
+    reproducible_deployment: required
+    product_forks: prohibited
+    rule: >-
+      Clinic standalone, hybrid execution and the managed cloud service run
+      materially the same qualified runtime, delivered as an immutable package
+      whose identity is derived from its content. Separately maintained product
+      forms would make every equivalence, qualification and evidence claim
+      profile-specific, and would do so without anyone deciding to.
+    identity_fields:
+      - software_runtime_identity
+      - runtime_container_digest
+      - inference_runtime_container_digest
+      - language_runtime_container_digest
+
+  release_and_rollback:
+    id: REL-DGX-01
+    required_capabilities:
+      - versioned_release_identity
+      - controlled_upgrade
+      - model_version_control
+      - rollback
+      - configuration_provenance
+      - evidence_continuity
+    silent_runtime_advance: prohibited
+    silent_clinical_model_advance: prohibited
+    availability_is_not_authorization: >-
+      A newer runtime or a newer clinical model being available is not an
+      authorization to run it. A managed cloud deployment is not exempt, and the
+      convenience of central update is exactly why that needs saying.
+    applies_to_profiles:
+      - DEPL-STANDALONE-01
+      - DEPL-HYBRID-01
+      - DEPL-MANAGED-CLOUD-01
+    exemptions: []
+
+  responsibility_boundary:
+    rule: >-
+      Authorization, dispatch, and execution are distinct responsibilities with a
+      producer and consumer relationship, not a single service with three
+      concerns. Exactly one responsibility may produce an AuthorizationDecision,
+      and it is not the one that selects where the work runs.
+    responsibilities:
+      - id: RB-AUTHZ-01
+        role: authorization_kernel
+        authority: deterministic_eligibility_decision
+        trust_zone: Z1-KERNEL
+        consumes: [GovernedWorkload]
+        produces: [AuthorizationDecision]
+        may_set_authorization_relevant_fields: true
+        may_select_compute_provider: false
+        may_execute_workload: false
+      - id: RB-DISPATCH-01
+        role: scheduler_dispatcher
+        authority: none
+        trust_zone: Z2-EXEC
+        consumes: [AuthorizationDecision]
+        produces: [DispatchContract]
+        may_set_authorization_relevant_fields: false
+        may_select_compute_provider: true
+        may_execute_workload: false
+      - id: RB-PROVIDER-01
+        role: compute_provider
+        authority: none
+        trust_zone: Z2-EXEC
+        consumes: [DispatchContract]
+        produces: [ResultContract, ExecutionAttestation]
+        may_set_authorization_relevant_fields: false
+        may_select_compute_provider: false
+        may_execute_workload: true
+
+  contracts:
+    AuthorizationDecision:
+      produced_by: RB-AUTHZ-01
+      ai_creatable: false
+      binds:
+        - governed_workload_digest
+        - authorization_policy_identity
+        - kernel_and_rule_versions
+        - required_professional_decision_references
+      note: >-
+        The workload digest originates here. Every later object carries a copy.
+    DispatchContract:
+      produced_by: RB-DISPATCH-01
+      consumes_already_authorized_workload: true
+      binds:
+        - governed_workload_digest
+        - authorization_decision_reference
+        - compute_provider_id
+        - platform_qualification_identity
+      mutable_fields:
+        - transport_packaging
+        - scheduling_priority
+        - retry_attempt_counter
+        - provider_queue_metadata
+      immutable_field_class: authorization_relevant
+      mutation_rule: >-
+        Dispatch may change how a workload is carried and where it is sent. It
+        may not change what was authorized. A dispatch contract that permits an
+        authorization-relevant field to differ from the authorized value is
+        rejected by construction, not by review.
+    ExecutionAttestation:
+      produced_by: RB-PROVIDER-01
+      binds:
+        - governed_workload_digest
+        - run_identity
+        - execution_attestation_identity
+        - executing_platform_identity
+      epistemic_class: EC-REMOTE-ATTESTED
+      authentication_required: true
+    ResultContract:
+      produced_by: RB-PROVIDER-01
+      binds:
+        - governed_workload_digest
+        - run_identity
+        - output_artifact_digests
+        - execution_attestation_identity
+
+  reconciliation:
+    id: RECON-DGX-01
+    name: workload_reference_reconciliation
+    required_equalities:
+      - [AuthorizationDecision.governed_workload_digest, DispatchContract.governed_workload_digest]
+      - [DispatchContract.governed_workload_digest, ExecutionAttestation.governed_workload_digest]
+      - [ExecutionAttestation.governed_workload_digest, ResultContract.governed_workload_digest]
+    on_mismatch: reject_result_as_not_offered_for_the_authorized_workload
+    sufficiency: necessary_not_sufficient
+    establishes:
+      - the returned result is offered for the authorized governed workload
+      - no intermediary substituted a different governed workload reference between authorization, dispatch, and return
+    does_not_establish:
+      - that the authorized governed workload is what actually executed
+      - that the returned artifacts satisfy what the governed workload required
+    rationale: >-
+      The digest travelling with a workload is a label the executing host copies
+      back. A host that receives a workload bearing one digest, executes
+      something else, and returns results carrying that same digest satisfies
+      every equality above. What actually executed is reachable only through an
+      authenticated execution attestation or through independent checking of the
+      returned artifacts, which is why both are required acceptance steps rather
+      than supplementary evidence.
+
+  output_contract_conformance:
+    id: CONFORM-DGX-01
+    name: result_verification_against_the_declared_contract
+    performed_by: nltps_result_verification
+    performed_over: the returned artifacts themselves
+    scope: single_host
+    checked_against:
+      - required_output_contract
+      - acceptance_tolerance_contract
+    distinct_from:
+      - RECON-DGX-01
+      - PROV-DGX-01
+    rule: >-
+      Every returned artifact is checked against the output contract and the
+      acceptance and tolerance contract that the governed workload itself
+      declared, before acceptance and on a single host. Digest binding
+      establishes that a result is for the authorized workload; this establishes
+      that the result is what the workload required. Neither implies the other,
+      and a correctly bound result can be garbage.
+    not_a_cross_host_comparison: >-
+      This is single-host conformance against a declared contract. Comparing two
+      hosts is EQUIV-DGX-01 and is a separate proposition with separate criteria.
+    detects:
+      - an honest executor whose environment was wrong, such as a mismatched runtime or accelerator library version
+      - a truncated, partial, or malformed returned artifact
+      - a silently degraded or substituted model whose outputs fall outside the declared acceptance contract
+      - a result outside declared tolerance that an execution attestation would confirm as a successful run
+    attestation_cannot_substitute: >-
+      An execution environment that believes its own claims attests successfully
+      to a broken run. Conformance is checked over the artifact, never over the
+      claim about the artifact.
+
+  result_acceptance:
+    id: ACCEPT-DGX-01
+    rule: >-
+      A returned result is accepted as the authorized computation only when every
+      step below succeeds. The steps establish different propositions, none
+      implies another, and no step may be skipped because another passed.
+    steps:
+      - id: ACC-STEP-01
+        name: workload_reference_reconciliation
+        mechanism: RECON-DGX-01
+        establishes: the result is offered for the authorized governed workload
+        independently_establishable_by_nltps: true
+        required: true
+      - id: ACC-STEP-02
+        name: output_contract_conformance
+        mechanism: CONFORM-DGX-01
+        establishes: the result is what the governed workload required
+        independently_establishable_by_nltps: true
+        required: true
+      - id: ACC-STEP-03
+        name: execution_provenance_evaluation
+        mechanism: PROV-DGX-01
+        establishes: what the executing environment claims happened, at its declared evidence class
+        independently_establishable_by_nltps: false
+        required: true
+    non_implication:
+      - {from: ACC-STEP-01, to: ACC-STEP-02}
+      - {from: ACC-STEP-02, to: ACC-STEP-01}
+      - {from: ACC-STEP-03, to: ACC-STEP-02}
+      - {from: ACC-STEP-01, to: ACC-STEP-03}
+
+  provenance:
+    id: PROV-DGX-01
+    object_model:
+      - id: OBJ-AUTHORIZATION-BINDING
+        name: authorization_binding
+        holds: what NL-TPS authorized
+        established_by: nltps
+        carries_workload_digest: true
+      - id: OBJ-EXECUTION-ATTESTATION
+        name: execution_attestation
+        holds: what the executing host claims happened
+        established_by: executing_platform
+        carries_workload_digest: true
+      - id: OBJ-RESULT-VERIFICATION
+        name: result_verification
+        holds: what NL-TPS can independently establish over the returned artifacts
+        established_by: nltps
+        carries_workload_digest: true
+    digest_origin: OBJ-AUTHORIZATION-BINDING
+    distinction:
+      workload_integrity_binding: what was authorized and sent
+      execution_provenance: what the execution environment reports happened
+      both_required: true
+    evidence_classes:
+      - id: EC-LOCAL-OBSERVED
+        name: locally_observed
+        definition: >-
+          Recorded by instrumentation inside the directly observed execution
+          boundary of the governed system.
+        independently_establishable: true
+      - id: EC-REMOTE-ATTESTED
+        name: remotely_attested
+        definition: >-
+          Asserted by an execution environment outside the directly observed
+          boundary of the governed system. A claim is not an observation because
+          it was machine generated.
+        independently_establishable: false
+      - id: EC-RETURN-CHECKED
+        name: independently_recheckable_after_return
+        definition: >-
+          Recomputable or inspectable by the governed system over the returned
+          artifact itself, without trusting the executing environment.
+        independently_establishable: true
+    execution_claim_classification:
+      local_execution:
+        model_digest: EC-LOCAL-OBSERVED
+        container_digest: EC-LOCAL-OBSERVED
+        accelerator_and_runtime_identity: EC-LOCAL-OBSERVED
+        seed: EC-LOCAL-OBSERVED
+        effective_parameters: EC-LOCAL-OBSERVED
+        execution_timestamps: EC-LOCAL-OBSERVED
+        output_digest: EC-RETURN-CHECKED
+      remote_execution:
+        model_digest: EC-REMOTE-ATTESTED
+        container_digest: EC-REMOTE-ATTESTED
+        accelerator_and_runtime_identity: EC-REMOTE-ATTESTED
+        seed: EC-REMOTE-ATTESTED
+        effective_parameters: EC-REMOTE-ATTESTED
+        execution_timestamps: EC-REMOTE-ATTESTED
+        output_digest: EC-RETURN-CHECKED
+    authenticated_attestation_requirement:
+      statement: >-
+        Remotely supplied execution provenance shall be attributable to the
+        executing platform or provider through an authenticated integrity
+        mechanism appropriate to the qualified deployment.
+      mechanism_selection: not_frozen_at_this_checkpoint
+      candidate_mechanisms:
+        - signed execution receipts
+        - provider-attested workload and run identity
+        - authenticated API records
+        - confidential-computing attestation
+        - signed manifests
+      promotion_rule: >-
+        A remote claim is not an independently established fact. It is promoted
+        only by a qualification rule that names the mechanism, states how it is
+        authenticated, and states which claims are independently rechecked after
+        return.
+    qualification_obligation:
+      - define which attestations a qualified provider supplies
+      - define how each attestation is authenticated
+      - define which claims are independently checkable after return
+      - define what a failed or absent attestation causes, which is never silent acceptance
+
+  compute_provider_abstraction:
+    id: CP-ABSTRACTION-01
+    name: ComputeProvider
+    workload_format_owner: GW-ENVELOPE-01
+    knows_provider_api_mechanics: false
+    authority: none
+    required_attributes:
+      - capabilities
+      - platform_qualification_identity
+    operations:
+      - submit_workload
+      - query_execution_status
+      - retrieve_result
+      - retrieve_execution_attestation
+    adapters:
+      - id: ADPT-DGX-SPARK-01
+        provider_profile: PLAT-DGX-SPARK-01
+      - id: ADPT-REMOTE-QUALIFIED-01
+        provider_profile: PLAT-REMOTE-QUALIFIED-01
+    adapter_rule: >-
+      An adapter translates the provider-neutral envelope into the API of one
+      provider and back. It shall not add, remove, or reinterpret an
+      authorization-relevant field, and its existence shall not be visible in
+      the envelope.
+    clinical_intent_separation: >-
+      Provider APIs are not referenced from clinical intent. A governed workload
+      names a computational operation; it never names a vendor mechanism.
+
+  compute_provider_profiles:
+    - id: PLAT-DGX-SPARK-01
+      name: DGX Spark reference complete computational host
+      abstraction: CP-ABSTRACTION-01
+      workload_envelope: GW-ENVELOPE-01
+      adapter: ADPT-DGX-SPARK-01
+      role: first_reference_complete_computational_host
+      locality: local_directly_observed_boundary
+      platform_class: linux_arm64_nvidia
+      qualification_state: not_commissioned
+      authority: none
+      semantic_owner_of_workload_format: false
+    - id: PLAT-REMOTE-QUALIFIED-01
+      name: qualified remote GPU compute provider
+      abstraction: CP-ABSTRACTION-01
+      workload_envelope: GW-ENVELOPE-01
+      adapter: ADPT-REMOTE-QUALIFIED-01
+      role: scale_out_target_class
+      locality: remote_attested_boundary
+      platform_class: qualified_remote_gpu
+      qualification_state: not_qualified
+      authority: none
+      semantic_owner_of_workload_format: false
+      candidate_instances_none_qualified:
+        - vendor-managed GPU instance service, for example Brev
+        - external institutional GPU cluster
+        - qualified NVIDIA cluster or cloud
+
+  cross_host_equivalence:
+    id: EQUIV-DGX-01
+    workload_contract_must_identify_class: true
+    identifying_field: equivalence_acceptance_class
+    equivalence_claim_state: not_performed
+    acceptance_classes:
+      - id: EQ-EXACT-01
+        name: exact_hash_identity
+        applies_to: deterministic canonical control artifacts where byte identity is the property
+      - id: EQ-SEMANTIC-01
+        name: canonical_semantic_equality
+        applies_to: structured artifacts where byte identity is incidental
+      - id: EQ-NUMERIC-01
+        name: numerical_tolerance
+        applies_to: floating-point or accelerator-dependent calculation
+      - id: EQ-STATISTICAL-01
+        name: statistical_acceptance
+        applies_to: stochastic or Monte Carlo workloads
+    prohibition: >-
+      Two hosts are not equivalent because both completed. An equivalence claim
+      requires that the workload-class-specific V&V named by the acceptance class
+      of the workload has been performed and reviewed.
+
+  authority_retention:
+    rule: >-
+      Each subject below is retained where the existing architecture already
+      places it. Designating, selecting, or qualifying a computational host does
+      not move any of them.
+    subjects:
+      - subject: authoritative_clinical_tps
+        retained_by: Z3-SOR
+        architecture_decision: AB-001
+        may_be_reassigned_to_compute_host: false
+      - subject: professional_approval
+        retained_by: ProfessionalDecision
+        architecture_decision: AB-004
+        may_be_reassigned_to_compute_host: false
+      - subject: dose_and_record_authority
+        retained_by: commissioned_system_of_record
+        architecture_decision: AB-001
+        may_be_reassigned_to_compute_host: false
+      - subject: deterministic_eligibility_decision
+        retained_by: Z1-KERNEL
+        architecture_decision: AB-003
+        may_be_reassigned_to_compute_host: false
+    downstream_controls_unchanged:
+      - validation
+      - reconciliation
+      - professional authorization
+      - external TPS import
+      - downstream QA
+      - site commissioning
+
+  structural_controls:
+    gate: tools/spec/check_computational_hosting.py
+    rule: >-
+      Every control below is derived from structured records and relationships in
+      this section. None is satisfied by the presence of a sentence. The gate
+      enumerates the control identifiers it implements and refuses any difference
+      from this list in either direction, so a control cannot be declared here
+      without existing and cannot exist without being declared.
+    controls:
+      - id: CDH-01
+        name: workload_digest_binding_exists
+        detects: a governed workload exists but has no canonical digest binding
+      - id: CDH-02
+        name: authorization_bound_to_workload_digest
+        detects: an authorization decision is not bound to the workload digest
+      - id: CDH-03
+        name: dispatch_cannot_mutate_authorization_relevant_fields
+        detects: a dispatch contract permits an authorization-relevant field to mutate
+      - id: CDH-04
+        name: result_binds_authorized_workload_digest
+        detects: a result does not carry or bind the authorized workload digest
+      - id: CDH-05
+        name: envelope_is_provider_neutral
+        detects: provider-specific fields leak into the provider-neutral workload envelope
+      - id: CDH-06
+        name: compute_provider_holds_no_authorization_authority
+        detects: a compute provider or dispatcher is assigned authorization authority
+      - id: CDH-07
+        name: external_authority_not_reassigned_to_compute_host
+        detects: external TPS or professional authority is reassigned to a compute host
+      - id: CDH-08
+        name: scale_out_interface_accompanies_the_reference_profile
+        detects: a DGX profile is present but no common scale-out interface exists
+      - id: CDH-09
+        name: output_contract_conformance_is_a_distinct_acceptance_step
+        detects: returned artifacts are never checked against the contracts the workload declared, or that check is folded into provenance
+      - id: CDH-10
+        name: digest_chain_sufficiency_not_overclaimed
+        detects: the record claims the digest chain establishes what actually executed, or makes it the only required acceptance step
+      - id: CDH-11
+        name: workload_classes_share_one_integrity_mechanism
+        detects: a workload class defines its own integrity or dispatch mechanism, or the development and inference lifecycles are collapsed into one class
+      - id: CDH-12
+        name: dataset_identity_is_a_manifest_not_a_path
+        detects: a dataset is identified by directory or filename, or a dataset manifest binds no integrity digest, or an effective dataset change does not change identity
+      - id: CDH-13
+        name: partition_identity_participates_in_workload_identity
+        detects: partition identity is absent from the model-development workload identity, or silent movement between partitions after freeze is permitted
+      - id: CDH-14
+        name: model_artifact_has_content_identity_and_origin
+        detects: a model artifact is identified by filename, or is not bound to the training workload, dataset, code, and container that produced it
+      - id: CDH-15
+        name: model_creation_is_separated_from_model_promotion
+        detects: a computational or evaluation result is treated as conferring qualification or clinical authorization, or a parallel approval mechanism is introduced for models
+      - id: CDH-16
+        name: model_identity_is_authorization_bound
+        detects: a model identity field sits outside the authorization-bound digest, or a substitution class is permitted without explicit contract authorization
+      - id: CDH-17
+        name: composite_dataset_identity_preserves_constituents
+        detects: a combined training population whose composite identity erases the identities of its constituent datasets
+      - id: CDH-18
+        name: reproducibility_expectation_matches_the_workload_class
+        detects: bitwise output identity required of a nondeterministic training workload, or a workload class with no declared reproducibility expectation
+      - id: CDH-19
+        name: language_service_holds_no_authority
+        detects: a language service assigned authority, permitted to produce an authorization decision or execution capability, permitted to satisfy a professional decision, or declared to affect the no-language-equivalence invariant
+      - id: CDH-20
+        name: deployment_profiles_share_one_runtime
+        detects: a deployment profile that forks the product, carries its own workload envelope or abstraction, or lets an invariant semantic vary by profile
+      - id: CDH-21
+        name: workload_locality_is_policy_controlled
+        detects: data locality decided by scheduling or capacity rather than by policy, or a locality classification that sits outside the authorization-bound digest
+      - id: CDH-22
+        name: tenant_isolation_represented_without_being_claimed
+        detects: tenant isolation recorded as implemented or qualified, or a tenancy model that permits cross-tenant context access
+      - id: CDH-23
+        name: runtime_packaging_prevents_product_forks
+        detects: profiles delivered as separately maintained product forms, or a runtime whose package identity is not content-derived
+      - id: CDH-24
+        name: release_advance_is_never_silent
+        detects: a runtime or clinical model that may advance because a newer version is available, or a profile exempted from controlled upgrade and rollback
+      - id: CDH-25
+        name: hosted_runtime_services_hold_no_clinical_authority
+        detects: a hosted runtime service holding more authority than its trust zone, placed in the system-of-record zone, or displacing an external authoritative system
+
+  acceptance_propositions:
+    - id: ARCH-DGX-01-A1
+      statement: DGX Spark is the first reference complete computational host.
+      class: design_proposition
+      verification_state: REPRESENTED
+      represented_by: [PLAT-DGX-SPARK-01]
+      structural_control: null
+      future_verification_obligation: >-
+        Platform commissioning and site acceptance for the reference host.
+        Nothing here establishes that the host can run the complete runtime.
+    - id: ARCH-DGX-01-A2
+      statement: Linux ARM64 and NVIDIA portability is an architectural requirement.
+      class: design_proposition
+      verification_state: REPRESENTED
+      represented_by: [PLAT-DGX-SPARK-01, CP-ABSTRACTION-01]
+      structural_control: null
+      future_verification_obligation: >-
+        Executed portability verification on the target platform class. A
+        declared platform_class is not a portability result.
+    - id: ARCH-DGX-01-A3
+      statement: A host-independent governed workload representation exists.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [GW-ENVELOPE-01, CANON-DGX-01]
+      structural_control: CDH-05
+      future_verification_obligation: >-
+        Executed verification that a real workload round-trips through two
+        provider adapters with an unchanged canonical representation.
+    - id: ARCH-DGX-01-A4
+      statement: Authorization and scheduling or dispatch are distinct responsibilities and interfaces.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [RB-AUTHZ-01, RB-DISPATCH-01, RB-PROVIDER-01]
+      structural_control: CDH-06
+      future_verification_obligation: >-
+        Executed verification that a dispatcher cannot produce an authorization
+        decision and cannot alter an authorization-relevant field at runtime.
+    - id: ARCH-DGX-01-A5
+      statement: Remote compute cannot expand authority.
+      class: design_proposition
+      verification_state: REPRESENTED
+      represented_by: [ARCH-INVARIANT-002, authority_retention]
+      structural_control: null
+      future_verification_obligation: >-
+        The ARCH-INVARIANT-002 architecture fitness test, executed on a local
+        host and a qualified remote provider. The invariant is stated here and
+        demonstrated nowhere.
+    - id: ARCH-DGX-01-A6
+      statement: >-
+        Workload, software, model, input, output, and evidence identities are
+        represented across the dispatch and result contracts.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [GW-ENVELOPE-01, DispatchContract, ResultContract, ExecutionAttestation]
+      structural_control: CDH-04
+      future_verification_obligation: >-
+        Executed verification that each identity is populated, transported, and
+        reconciled on a real dispatch and return.
+    - id: ARCH-DGX-01-A7
+      statement: External TPS authority remains external.
+      class: design_proposition
+      verification_state: REPRESENTED
+      represented_by: [authority_retention, AB-001]
+      structural_control: null
+      future_verification_obligation: >-
+        Executed verification that a candidate artifact computed on a governed
+        host still traverses validation, reconciliation, professional
+        authorization, external TPS import, downstream QA, and site
+        commissioning.
+    - id: ARCH-DGX-01-A8
+      statement: >-
+        The local DGX Spark and larger qualified compute use the same governed
+        workload and compute-provider abstraction.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [CP-ABSTRACTION-01, PLAT-DGX-SPARK-01, PLAT-REMOTE-QUALIFIED-01]
+      structural_control: CDH-08
+      future_verification_obligation: >-
+        Executed verification that one unchanged governed workload is accepted by
+        both adapters.
+    - id: ARCH-DGX-01-A9
+      statement: >-
+        Cross-host equivalence uses semantic, numerical, or statistical criteria
+        appropriate to the workload class.
+      class: design_proposition
+      verification_state: REPRESENTED
+      represented_by: [EQUIV-DGX-01]
+      structural_control: null
+      future_verification_obligation: >-
+        Workload-class-specific V&V performed and reviewed per acceptance class.
+        No equivalence between any two hosts is claimed here.
+    - id: ARCH-DGX-01-A10
+      statement: >-
+        ARCH-DGX-01 traces and allocates into the controlled architecture and V&V
+        structure to the extent the current trace model supports it.
+      class: design_proposition
+      verification_state: REPRESENTED
+      represented_by: [AB-013, ADR-003, ARCH-INVARIANT-002]
+      structural_control: null
+      future_verification_obligation: >-
+        Allocation into the entity and V&V-claim trace model, which today
+        enumerates the 2,144 controlled corpus entities and contains no
+        computational-hosting entity. Extending that population is a controlled
+        corpus change and is not performed by this checkpoint.
+    - id: ARCH-DGX-01-A11
+      statement: >-
+        Model development, inference, and clinical language services are distinct
+        governed workload classes over one common integrity and dispatch
+        mechanism.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [WLC-MODELDEV-01, WLC-INFERENCE-01, WLC-LANGSVC-01]
+      structural_control: CDH-11
+      future_verification_obligation: >-
+        Executed verification that one dispatch and reconciliation implementation
+        serves all three classes without a class-specific bypass.
+    - id: ARCH-DGX-01-A12
+      statement: >-
+        A dataset is a first-class governed asset identified by a controlled
+        manifest, not by a path.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [DS-MANIFEST-01]
+      structural_control: CDH-12
+      future_verification_obligation: >-
+        Executed verification that altering the effective dataset produces a
+        different dataset identity and a different workload digest.
+    - id: ARCH-DGX-01-A13
+      statement: >-
+        Training, validation, test, and external independent test populations are
+        explicitly identifiable, and partition identity participates in the
+        model-development workload identity.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [PART-DGX-01]
+      structural_control: CDH-13
+      future_verification_obligation: >-
+        Executed verification that moving a case between partitions after freeze
+        is detected rather than absorbed.
+    - id: ARCH-DGX-01-A14
+      statement: >-
+        A model artifact carries immutable content identity bound to the data and
+        training process that produced it.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [MA-IDENTITY-01]
+      structural_control: CDH-14
+      future_verification_obligation: >-
+        Executed verification that the question of which data and which process
+        produced a given model is answerable from the record alone.
+    - id: ARCH-DGX-01-A15
+      statement: >-
+        Model creation is separated from model promotion, and promotion runs
+        through the existing controlled authority structures.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [PROMO-DGX-01]
+      structural_control: CDH-15
+      future_verification_obligation: >-
+        Executed verification that no computational or evaluation result advances
+        a model to authorized use without a ProfessionalDecision.
+    - id: ARCH-DGX-01-A16
+      statement: >-
+        Model identity participates in the authorization-bound workload digest,
+        so silent model substitution is refused rather than reviewed.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [SUBST-DGX-01]
+      structural_control: CDH-16
+      future_verification_obligation: >-
+        Executed verification that a substituted model, version, checkpoint,
+        precision mode, preprocessing pipeline, or inference implementation fails
+        reconciliation.
+    - id: ARCH-DGX-01-A17
+      statement: >-
+        A combined training population has a reproducible composite identity that
+        preserves the identity of each contributing dataset.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [MULTIDS-DGX-01]
+      structural_control: CDH-17
+      future_verification_obligation: >-
+        Executed verification over a real multi-dataset population, including
+        that permitted use composes rather than accumulates.
+    - id: ARCH-DGX-01-A18
+      statement: >-
+        Reproducibility expectations match the workload class, and bitwise
+        identical trained weights are not required of a nondeterministic training
+        process.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [REPRO-DGX-01]
+      structural_control: CDH-18
+      future_verification_obligation: >-
+        Executed reproducibility verification under the declared protocol, with
+        precommitted evaluation criteria and statistical acceptance.
+    - id: ARCH-DGX-01-A19
+      statement: >-
+        Locally hosted clinical language-model services hold no authority and
+        their output remains subordinate to deterministic authorization and human
+        authority.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [LANGSVC-DGX-01, WLC-LANGSVC-01]
+      structural_control: CDH-19
+      future_verification_obligation: >-
+        The ARCH-INVARIANT-001 architecture fitness test executed with the local
+        language service present and then disabled, showing the same state-changing
+        workflows remain executable from hand-authored typed intent.
+    - id: ARCH-DGX-01-A20
+      statement: >-
+        Clinic Standalone, Clinic and Cloud Hybrid, and Managed Cloud Service are
+        deployment profiles of one governed runtime and do not diverge in
+        clinical-intent, authorization, workload, provenance, model-identity or
+        evidence semantics.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [DEPL-DGX-01, PROD-DGX-01]
+      structural_control: CDH-20
+      future_verification_obligation: >-
+        Executed verification that one governed workload produces the same
+        authorization determination and the same acceptance verdict under each
+        profile.
+    - id: ARCH-DGX-01-A21
+      statement: >-
+        Workload data locality is policy-controlled and digest-bound, so data does
+        not cross the institutional boundary as a consequence of scheduling.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [LOCAL-DGX-01]
+      structural_control: CDH-21
+      future_verification_obligation: >-
+        Executed verification that a local_only workload is refused remote
+        dispatch under capacity pressure, and that altering its locality fails
+        reconciliation.
+    - id: ARCH-DGX-01-A22
+      statement: >-
+        The managed cloud profile isolates each tenant clinical data set, models,
+        configuration, institutional knowledge, credentials and audit records.
+      class: design_proposition
+      verification_state: REPRESENTED
+      represented_by: [TENANT-DGX-01]
+      structural_control: null
+      future_verification_obligation: >-
+        Implementation, then security and privacy qualification of the isolation
+        boundary. The architecture requires isolation; nothing here establishes
+        that it exists or works, and it may not be claimed.
+    - id: ARCH-DGX-01-A23
+      statement: >-
+        One reproducibly packaged runtime with immutable content identity serves
+        every deployment profile, rather than separately maintained product forks.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [PKG-DGX-01]
+      structural_control: CDH-23
+      future_verification_obligation: >-
+        Executed verification that the package identity deployed to a clinic
+        appliance and to qualified remote infrastructure is the same identity.
+    - id: ARCH-DGX-01-A24
+      statement: >-
+        Every profile preserves versioned release identity, controlled upgrade,
+        model-version control, rollback, configuration provenance and evidence
+        continuity, and none advances silently.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [REL-DGX-01]
+      structural_control: CDH-24
+      future_verification_obligation: >-
+        Executed verification of a controlled upgrade and a rollback in each
+        profile, including that an available newer clinical model is not adopted
+        without authorization.
+    - id: ARCH-DGX-01-A25
+      statement: >-
+        Clinic Standalone on the DGX Spark hosts the complete NL-TPS computational
+        runtime as an on-premises appliance.
+      class: design_proposition
+      verification_state: REPRESENTED
+      represented_by: [DEPL-STANDALONE-01, RT-NLTPS-01]
+      structural_control: null
+      future_verification_obligation: >-
+        Platform commissioning and site acceptance demonstrating that every
+        declared runtime service actually runs on the appliance within its
+        resource envelope. The service list is an architectural requirement, not
+        an observation.
+    - id: ARCH-DGX-01-A26
+      statement: >-
+        No hosted runtime service holds clinical, professional, dose or record
+        authority, and external authoritative systems remain external.
+      class: structural
+      verification_state: ALLOCATED
+      represented_by: [RT-NLTPS-01, authority_retention]
+      structural_control: CDH-25
+      future_verification_obligation: >-
+        Executed verification that the appliance cannot act as a system of record
+        and that its outputs still traverse the external authoritative path.
 
 release_constraints:
   gate_2_configuration:

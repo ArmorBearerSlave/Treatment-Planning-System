@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:gcpl:nltps:schema:architecture:0.5",
+  "$id": "urn:gcpl:nltps:schema:architecture:0.6",
   "title": "GCPL / NL-TPS engineering architecture specification",
   "type": "object",
   "required": [
@@ -13,10 +13,11 @@
     "mps_authority_transition",
     "mps_language_constraints",
     "release_constraints",
+    "governed_computational_hosting",
     "recorded_approvals"
   ],
   "properties": {
-    "schema_version": {"const": "0.5"},
+    "schema_version": {"const": "0.6"},
     "baseline": {
       "type": "object",
       "required": [
@@ -78,6 +79,181 @@
       }
     },
     "release_constraints": {"type": "object"},
+    "governed_computational_hosting": {
+      "type": "object",
+      "required": [
+        "amendment_id",
+        "decision_record",
+        "architecture_decision",
+        "invariant",
+        "status",
+        "proposition_states",
+        "claim_boundary",
+        "governed_workload",
+        "canonicalization",
+        "provider_neutrality",
+        "workload_classes",
+        "dataset_governance",
+        "partition_integrity",
+        "model_artifact",
+        "model_promotion",
+        "model_substitution",
+        "multi_dataset_development",
+        "reproducibility",
+        "scale_out_invariance",
+        "language_service_hosting",
+        "responsibility_boundary",
+        "contracts",
+        "reconciliation",
+        "output_contract_conformance",
+        "result_acceptance",
+        "provenance",
+        "compute_provider_abstraction",
+        "compute_provider_profiles",
+        "cross_host_equivalence",
+        "authority_retention",
+        "deployment_profiles",
+        "product_invariant",
+        "standalone_runtime_services",
+        "workload_locality",
+        "tenant_isolation",
+        "runtime_packaging",
+        "release_and_rollback",
+        "structural_controls",
+        "acceptance_propositions"
+      ],
+      "properties": {
+        "amendment_id": {"const": "ARCH-DGX-01"},
+        "decision_record": {"const": "ADR-003"},
+        "architecture_decision": {"const": "AB-013"},
+        "invariant": {"const": "ARCH-INVARIANT-002"},
+        "proposition_states": {
+          "type": "object",
+          "required": [
+            "ordered",
+            "definitions",
+            "max_state_at_this_checkpoint",
+            "prohibition",
+            "relationship_to_evidence_obligation_states"
+          ],
+          "properties": {
+            "max_state_at_this_checkpoint": {"enum": ["REPRESENTED", "ALLOCATED"]}
+          }
+        },
+        "claim_boundary": {
+          "type": "object",
+          "required": ["may_claim", "may_not_claim"],
+          "properties": {
+            "may_claim": {"type": "array", "minItems": 1, "uniqueItems": true},
+            "may_not_claim": {"type": "array", "minItems": 1, "uniqueItems": true}
+          }
+        },
+        "governed_workload": {
+          "type": "object",
+          "required": [
+            "id",
+            "provider_neutral",
+            "integrity_binding",
+            "canonical_fields",
+            "transport_fields"
+          ],
+          "properties": {
+            "provider_neutral": {"const": true},
+            "canonical_fields": {"type": "array", "minItems": 1},
+            "transport_fields": {"type": "array", "minItems": 1}
+          }
+        },
+        "deployment_profiles": {
+          "type": "object",
+          "required": ["id", "runtime", "may_vary", "may_not_vary", "profiles"],
+          "properties": {
+            "profiles": {
+              "type": "array",
+              "minItems": 3,
+              "items": {
+                "type": "object",
+                "required": [
+                  "id", "name", "runtime", "workload_envelope", "abstraction",
+                  "commissioning_state", "external_authoritative_systems_remain_external"
+                ],
+                "properties": {
+                  "commissioning_state": {"const": "not_commissioned"},
+                  "external_authoritative_systems_remain_external": {"const": true}
+                }
+              }
+            }
+          }
+        },
+        "tenant_isolation": {
+          "type": "object",
+          "required": ["id", "isolated_subjects", "implementation_state",
+                       "qualification_state", "claimable_now"],
+          "properties": {
+            "implementation_state": {"const": "not_implemented"},
+            "qualification_state": {"const": "not_qualified"},
+            "claimable_now": {"const": false}
+          }
+        },
+        "workload_classes": {
+          "type": "object",
+          "required": ["common_mechanism", "common_integrity_binding", "classes"],
+          "properties": {
+            "classes": {
+              "type": "array",
+              "minItems": 3,
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "name",
+                  "common_mechanism",
+                  "confers_authorization_for_use",
+                  "additional_canonical_fields",
+                  "result_binds"
+                ],
+                "properties": {
+                  "confers_authorization_for_use": {"const": false}
+                }
+              }
+            }
+          }
+        },
+        "structural_controls": {
+          "type": "object",
+          "required": ["gate", "controls"],
+          "properties": {
+            "controls": {
+              "type": "array",
+              "minItems": 25,
+              "items": {
+                "type": "object",
+                "required": ["id", "name", "detects"]
+              }
+            }
+          }
+        },
+        "acceptance_propositions": {
+          "type": "array",
+          "minItems": 26,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "statement",
+              "class",
+              "verification_state",
+              "represented_by",
+              "structural_control",
+              "future_verification_obligation"
+            ],
+            "properties": {
+              "class": {"enum": ["structural", "design_proposition"]},
+              "verification_state": {"enum": ["REPRESENTED", "ALLOCATED"]}
+            }
+          }
+        }
+      }
+    },
     "recorded_approvals": {"type": "array"}
   }
 }

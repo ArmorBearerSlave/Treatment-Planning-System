@@ -1,4 +1,4 @@
-schema_version: "0.2"
+schema_version: "0.3"
 
 decisions:
   - id: ADR-001
@@ -97,4 +97,85 @@ decisions:
       - autonomous AI or clinical-authority claims
       - regulatory, accreditation, commissioning, or validation claims
       - repository or namespace migration without a separate decision
+    recorded_approvals: []
+
+  - id: ADR-003
+    title: Governed Computational Hosting, Workload Integrity, and the DGX Reference Host
+    version: "0.1"
+    date: "2026-08-23"
+    status: provisionally_accepted_for_controlled_nonclinical_architecture
+    approval_state: pending_named_approval
+    authority_cutover_status: no_authority_transition_proposed
+    owner: architecture_board_proposed
+    human_readable_source: overleaf/NL_TPS_ADR_003_Governed_Computational_Hosting.tex
+    human_readable_source_state: not_yet_authored
+    architecture_amendment: ARCH-DGX-01
+    structural_representation: spec/architecture.yaml
+    related_architecture_baselines:
+      - AB-001
+      - AB-003
+      - AB-004
+      - AB-005
+      - AB-010
+      - AB-011
+      - AB-013
+    decision: >-
+      Where a governed NL-TPS workload executes is an architecture decision
+      separate from what that workload is authorized to do. A governed workload
+      is a provider-neutral object whose authorized identity is bound by digest
+      before dispatch. A scheduler selects an approved execution provider and may
+      change nothing the authorization bound. An execution provider runs the
+      workload and returns results together with an execution attestation, and
+      acquires no authority by doing so. The DGX Spark is designated the first
+      reference complete computational host for NL-TPS model development,
+      inference, and locally executed clinical language-model services, and the
+      abstraction that lets it host them is the same abstraction by which an
+      oversized governed workload leaves it for a larger qualified computational
+      platform.
+    current_authority: existing_professional_and_commissioned_system_authority
+    permits_now:
+      - controlled nonclinical architecture representation of computational hosting
+      - provider-neutral governed workload contract drafting and negative-test development
+      - structural gate development for workload integrity, dispatch separation, and model-development governance
+      - nonclinical portability and capacity investigation on candidate hosts using synthetic or nonclinical data
+    does_not_permit:
+      - compute-host selection as an authorization to treat
+      - remote dispatch as an enlargement of authorized scope
+      - remote execution as a substitute for professional approval
+      - computational success as a basis for clinical authority in an artifact
+      - scale-out as an authorization for a different model, algorithm, or parameter set
+      - a DGX-specific or otherwise provider-specific governed workload envelope
+      - designation of a computational host as the authoritative clinical TPS
+      - bypass of validation, reconciliation, professional authorization, external TPS import, downstream QA, or site commissioning for an artifact computed on a governed host
+      - treating a remote execution claim as an independently established fact
+      - treating a matching workload digest as evidence that the authorized workload is what executed
+      - accepting a returned result without checking it against the output and acceptance contracts the workload declared
+      - a cross-host equivalence claim without the workload-class-specific verification and validation
+      - silent substitution of a model, model version, checkpoint, precision mode, preprocessing pipeline, or inference implementation
+      - identification of a dataset by directory name, mount point, or filename
+      - silent movement of a case between training, validation, test, or external independent test after an experiment is frozen
+      - treating training success or evaluation success as qualification or as clinical authorization
+      - a parallel approval mechanism for models outside the existing controlled authority structures
+      - clinical, professional, or release authority for language-model output
+      - patient data or clinical credentials on an unqualified compute provider
+    alternatives_considered:
+      - a DGX-specific workload envelope with one format per provider
+      - embedding vendor compute APIs directly in clinical intent
+      - treating remotely supplied execution claims as direct observations
+      - performing authorization at dispatch time inside the scheduler
+      - a single-host architecture with no scale-out path
+      - deferring any computational-hosting architecture until a platform is procured
+      - one workload class covering model development and clinical inference together
+    qualification_required_before_use:
+      - platform commissioning and site acceptance for the reference host
+      - qualification of any remote compute provider, naming its attestation mechanism, how that mechanism is authenticated, and which claims are rechecked after return
+      - workload-class-specific cross-host equivalence verification and validation
+      - model-specific qualification and professional authorization before any model is used clinically
+      - dataset governance review covering representativeness, permitted use, and labeling provenance
+    qualification_approval_required_from:
+      - architecture decision owner
+      - clinical governance
+      - quality and configuration management
+      - independent verification and validation
+      - cybersecurity and privacy
     recorded_approvals: []

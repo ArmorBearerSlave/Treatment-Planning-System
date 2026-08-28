@@ -437,6 +437,91 @@ Who may authorize a treatment plan and who accepted a Stage A obligation are dif
 questions that share a word. Conflating them would let the system's domain model govern the
 provenance of its own construction, after which the two cannot be separated.
 
+## Computational hosting is not authority
+
+`ARCH-DGX-01` lives in `spec/architecture.yaml` under `governed_computational_hosting`, with
+the invariant `ARCH-INVARIANT-002`, the baselined position `AB-013`, and the decision record
+`ADR-003` in `spec/decisions.yaml` carrying its `does_not_permit` list.
+`tools/spec/check_computational_hosting.py` enforces 25 structural controls derived from
+those records. The record declares which control identifiers it expects and the gate declares which
+it implements; a difference in either direction fails, so a control cannot be advertised
+without existing or deleted without the record noticing.
+
+**A matching workload digest does not establish what executed.** The digest travels with the
+workload and the executing host copies it back, so a host that receives one workload, runs
+another, and returns results carrying the original digest satisfies every equality in the
+chain. The chain establishes that a result is offered *for* the authorized workload and that
+no intermediary substituted a different reference. What actually ran is reachable only through
+an authenticated execution attestation or through independent checking of the returned
+artifacts, which is why result acceptance has three required steps rather than one. Writing
+the stronger claim into a controlled record is the defect this amendment was corrected for
+before it landed, and `CDH-10` exists to stop it returning.
+
+**Binding is not conformance.** `RECON-DGX-01` asks whether a result is *for* the authorized
+workload. `CONFORM-DGX-01` asks whether it *is* what that workload required, checked over the
+returned artifacts against the output and acceptance contracts the workload itself declared.
+Neither implies the other, and a correctly bound result can be garbage -- a mismatched
+accelerator library, a truncated write, a silently degraded model. That failure is far more
+likely than a dishonest executor, and an attestation confirms it happily, because the host
+believes its own claims.
+
+**Presence is not verification.** Propositions carry `REPRESENTED`, `ALLOCATED`, `VERIFIED`
+and `COMMISSIONED`, and this checkpoint may not reach past `ALLOCATED`. 18 of the 26
+propositions are structurally inspectable and `ALLOCATED`; 8 are design propositions,
+`REPRESENTED` with a named future obligation. Preserve that split -- it is what answers
+honestly when someone later asks whether ARCH-DGX-01 is done. Those two counts are checked
+against the populations they describe, because a number in prose goes stale in silence. The record's own claim boundary lists what may and may not
+be claimed, and a record whose two lists overlap is refused.
+
+**A deployment profile is configuration, not a second architecture.** Clinic Standalone,
+Clinic and Cloud Hybrid and Managed Cloud Service are three profiles of one runtime,
+`RT-NLTPS-01`, delivered as one immutably identified package. A profile may vary compute
+provider, resource limits, storage and network topology, data residency, tenant
+configuration, attestation mechanism and service availability. It may not vary clinical
+intent, authorization semantics, model identity, workload semantics, acceptance criteria,
+evidence obligations or external TPS authority, and `CDH-20` fails a record whose two lists
+overlap or whose profile carries its own workload envelope. Separately maintained product
+forks would make every equivalence, qualification and evidence claim profile-specific
+without anyone deciding to, which is why `CDH-23` exists.
+
+**Locality is policy, not capacity.** `data_locality_classification` is a common canonical
+field, so it is inside the digest for every workload class. A `local_only` workload is not
+dispatched remotely because remote capacity is free; a dispatcher that changes the
+classification has produced a different workload and fails reconciliation. A dispatcher may
+choose among providers that satisfy the locality a workload already carries -- it may not
+choose a locality. Tenant isolation for the managed-cloud profile is `not_implemented` and
+`not_qualified` in the record, and `CDH-22` refuses any edit that records otherwise:
+representing isolation is not building it.
+
+**Availability is not authorization.** No profile, managed cloud included, may advance a
+runtime or a clinical model because a newer version exists. No hosted runtime service sits
+in `Z3-SOR`; that zone is where the authoritative clinical system lives, and an appliance
+that occupied it would have become one rather than hosting computation for one.
+
+**The corpus mirrors are not the place for this.** `spec/interfaces.yaml` and
+`spec/components.yaml` carry counts and family names mirroring the controlled LaTeX corpus and
+hold no per-interface or per-component record. Adding a compute interface family there would
+assert a change to source documents this amendment does not amend, and would break the
+exact-count and 2,144-entity reconciliations. The producer and consumer boundary is
+represented in the architecture section instead, and `AB-013` records why.
+
+Model development, inference and clinical language services are three workload classes over
+one integrity and dispatch mechanism, deliberately not one lifecycle: training success is not
+validation success is not qualification is not clinical authorization, and only a
+`ProfessionalDecision` confers the last. A dataset is identified by a controlled manifest and
+never by a directory; partition identity is inside the workload digest, so a case cannot move
+between training and test without changing the experiment. A locally hosted language model has
+exactly the authority a remote one has, which is none. Local hosting improves containment of
+the context snapshot and changes nothing about `ARCH-INVARIANT-001`, which still requires
+every state-changing workflow to run from hand-authored typed intent with the service absent
+-- and easy local availability is precisely the condition under which that invariant is lost
+by accretion.
+
+This work is authored only on the `architecture/dgx-reference-host` branch and touches no
+Stage-A remediation object. Before it merges, rebase it onto the then-current verified Stage-A
+base, re-run the affected gates, and review the architecture object independently. Do not
+merge Stage-A corrections and ARCH-DGX-01 as one undifferentiated commit.
+
 ## What passing gates does and does not mean
 
 Every gate here is structural. Passing proves internal consistency and nothing else — no
@@ -465,6 +550,7 @@ python tools/mps/export_hlr_corpus.py --check
 python tools/mps/check_stage_b_equivalence.py
 python tools/spec/build_trace_graph.py --check
 python tools/spec/check_path_citations.py
+python tools/spec/check_computational_hosting.py
 ```
 
 The full suite is `.github/workflows/controlled-spec-gates.yml`; run every step listed
