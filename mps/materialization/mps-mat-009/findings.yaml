@@ -1509,10 +1509,33 @@ findings:
       residual_considered: >-
         The reviewer recorded a latent residual against this finding: "all nine of them" in
         CLAUDE.md is a transcribed membership cardinality that no dedicated control verifies.
-        Independently confirmed during this disposition -- the sentence is live at CLAUDE.md
-        line 380, carries no measurement scope, and is currently ACCURATE: the population
-        function resolves 9 of 9. So it is right and unprotected, which is precisely the
-        condition this finding was raised about.
+        Independently confirmed during this disposition -- the sentence is live, carries no
+        measurement scope, and is currently ACCURATE: the population function resolves 9 of 9.
+        So it is right and unprotected, which is precisely the condition this finding was raised
+        about. The sentence is identified in residual_locus below.
+      residual_locus:
+        artifact: CLAUDE.md
+        section: Absence of a literal reference is not absence of an observer
+        proposition: >-
+          "`check_path_citations.scanned_files()` resolves a population that contains all nine of
+          them" -- the membership cardinality "all nine of them" is the transcribed value.
+        observed_at_object: 00c6e2f097f2fbc58371ca7d019c3d0a5610eee1
+        artifact_blob_at_that_object: f8057cfd401559ed661a62596d53f6a9d43258ca
+        how_to_resolve_it: >-
+          Find the section heading, then the quoted proposition within it. Both survive edits
+          elsewhere in the file. To resolve the observation exactly as it was made, read
+          CLAUDE.md at the object above, whose blob digest is recorded so that a reader can
+          confirm they have the same bytes.
+        why_it_is_not_a_line_number:
+          finding: NF-39
+          reasoning: >-
+            The disposition originally cited "CLAUDE.md line 380". A line number carries no
+            object scope, is invalidated by any edit above it, and cannot be checked by a reader
+            at any other object -- so a finding about transcribed values going stale without
+            announcing it was itself asserted through a transcribed value that would. The repair
+            is deliberately NOT to update the number to its current location, which would
+            preserve the defect with a fresher value; it is to cite the artifact, the section and
+            the proposition, and to bind the observation to the object at which it was made.
       why_it_remains_open: >-
         The residual is a live, unscoped instance of the exact defect class this finding names,
         sitting in the same sentence this finding's own repair rewrote. The repair removed the
@@ -3821,6 +3844,39 @@ findings:
       Established by inspection of the helper and by the absence of any recovery path outside the
       interpreter: there is no pre-image on disk, no journal, and no check at import that a prior
       run left the tree modified.
+    repair: >-
+      C10C. tests/controlled_mutation.py writes the original bytes to a journal entry and flushes
+      them to the platform BEFORE the controlled file is touched, and discards that entry only
+      after byte-identical restoration is verified. recover() runs on import of any module that
+      mutates, so a run beginning after a death repairs the tree and says so rather than measuring
+      a state nobody authored. The order is the mechanism: journalling after the write would
+      reproduce the defect with more machinery.
+    failure_sensitivity_demonstrated: >-
+      A real child process journals and mutates the controlled finding register, then is killed
+      with Popen.kill -- uncatchable, so no finally, no atexit, no handler. The control asserts the
+      file is genuinely modified at that moment and that the pre-image is already journalled, then
+      requires recovery to restore it byte-identically, by digest, and to return Git's own view of
+      the path -- porcelain status and filtered blob id -- to the state captured before the
+      mutation. That comparison is against a pre-mutation snapshot and NOT against HEAD: the
+      register legitimately carries uncommitted work, so requiring a clean tree would assert the
+      commit state of unrelated edits rather than the effect of the cycle, and reported RED while
+      the mechanism was working. The blob id is what carries the observation, because the
+      porcelain flag reads the same modified value before and during the mutation; the control
+      proves on each run that the comparison can still distinguish a recovered file from an
+      unrecovered one. A torn journal entry is reported and left in place rather than applied,
+      because restoring a partial pre-image would write garbage over a good file.
+    also_repaired: >-
+      Three unjournalled writes to the controlled finding register inside the state-completeness
+      controls, which the helper never covered. A population-derived control now scans every test
+      module for writes to a controlled record path outside the journal, resolving each module's
+      own path constants from its parse tree.
+    residual: >-
+      Open. tests/test_workflow_reachability.py still restores the workflow file in its own
+      finally and was deliberately not converted: nine mutation scenarios assert byte-identity
+      inside themselves, and this finding is non-blocking. The exposure is named rather than left
+      as an oversight, and is smaller -- the workflow is not a controlled record, and a modified
+      copy fails the reachability observer loudly rather than reading as authored content. A
+      control asserts that this residual still describes the file.
     why_it_is_not_acceptance_blocking:
       determination: false
       reasoning: >-
@@ -3914,6 +3970,23 @@ findings:
     independently_reproduced: >-
       Established by reading the controls: the literal id appears as the fixture selector, and the
       helper's replacement count of one makes file position load-bearing.
+    repair: >-
+      C10C. Every fixture subject is derived from the record -- the findings declaring the
+      completion object under test, sorted, first -- rather than named. The presence-semantics
+      fixtures also stopped touching disk: the defect they reproduce exists once YAML has loaded
+      the value, so the mutation is in memory and never reaches the filesystem.
+    failure_sensitivity_demonstrated: >-
+      A dedicated control closes the fixture subject IN MEMORY under a valid warrant -- one that
+      resolves and carries a per-finding closure grant, not a forced state -- and requires the
+      completion, closure, authority, state-completeness and presence-semantics observers all to
+      remain clean. A second control derives the subject from the record and requires its id to
+      appear nowhere in this module as a string literal, so the coupling cannot return quietly.
+      The two controls that previously asserted the subject was OPEN now assert what they actually
+      measure: that the record stays in the population the control ranges over.
+    deliberately_not_done: >-
+      NF-01 is not closed, and its lifecycle state is unchanged -- and specifically not changed
+      to make any control convenient. The repair is that closing it would no longer require
+      editing controls that have nothing to do with it.
     why_it_is_not_acceptance_blocking:
       determination: false
       reasoning: >-
@@ -3921,8 +3994,6 @@ findings:
         yet obstructed a legitimate transition. NF-27's basis. It is recorded and repaired anyway,
         because a control whose correctness depends on a governed value it does not declare is
         unsound independently of that value's current state.
-    deliberately_not_done: >-
-      NF-01 is not closed, and its lifecycle state is not changed to make any control convenient.
 
   - id: NF-39
     origin: independent review of 00c6e2f, transported as IR-09
@@ -3943,6 +4014,18 @@ findings:
       Reproduced by reading the citation and attempting to resolve it: the number is unscoped, and
       the record names no object against which a later reader could check whether it still points at
       the sentence intended.
+    repair: >-
+      C10C. The citation is replaced by a semantic locus under NF-01's governance disposition:
+      artifact, section, the quoted proposition, the object the observation was made at, and the
+      artifact's blob digest at that object so a reader can confirm they hold the same bytes. The
+      line number is not updated to its current location; the original wording is preserved inside
+      the withdrawal notice.
+    failure_sensitivity_demonstrated: >-
+      Controls resolve every declared locus rather than inspecting it: the object must resolve to
+      a commit, the recorded blob digest must equal the artifact at that object, and both the
+      section heading and every quoted fragment must be present in those bytes. A further control
+      refuses any locus field that reintroduces a line-number reference, excepting the withdrawal
+      notice that quotes the old one.
     why_it_is_not_acceptance_blocking:
       determination: false
       reasoning: >-

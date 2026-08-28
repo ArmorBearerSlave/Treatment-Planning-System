@@ -26,6 +26,7 @@ is absent or legacy. Prose cannot move controlled finding state.
 """
 from __future__ import annotations
 
+import ast
 import collections
 import contextlib
 import copy
@@ -45,7 +46,9 @@ import yaml
 # routes that resolve a module differently is how a route ends up executing something other
 # than what the other one checked.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import controlled_mutation  # noqa: E402
 from controlled_field_semantics import (  # noqa: E402
+    AUTHORITY_SOURCE_FIELD,
     COMPLETION_FIELD,
     CONTROLLED_PRESENCE_FIELDS,
     FULL_OBJECT,
@@ -439,16 +442,18 @@ def closure_problems(findings_body: dict, register_body: dict) -> list[str]:
 
 @contextlib.contextmanager
 def mutated(path: Path, old: str, new: str):
-    """Mutate a controlled file on disk, then restore it byte-identically."""
-    original = path.read_bytes()
-    text = original.decode("utf-8")
-    assert old in text, f"mutation anchor not present in {path.name}"
-    try:
-        path.write_bytes(text.replace(old, new, 1).encode("utf-8"))
+    """Mutate a controlled file on disk, then restore it byte-identically.
+
+    NF-35 / IR-05. The restoration was a bare try/finally, which the interpreter honours only
+    while it is alive: SIGKILL between the write and the restore left a tracked controlled file
+    modified with no pre-image anywhere and nothing to notice it on the next run. The body now
+    routes through controlled_mutation, which writes and flushes the original bytes to a journal
+    BEFORE touching the file and discards that journal only after byte-identical restoration is
+    verified. The signature and the byte-identity guarantee are unchanged, so every existing
+    control keeps its meaning; what is added is that the pre-image outlives the process.
+    """
+    with controlled_mutation.mutated_text(path, old, new):
         yield
-    finally:
-        path.write_bytes(original)
-        assert path.read_bytes() == original, f"{path.name} not restored byte-identically"
 
 
 NOVEL_ANCHOR = "  - id: RT-F-01\n"
@@ -540,16 +545,12 @@ class StateCompletenessMutations(unittest.TestCase):
                  "    origin: synthetic mutation control\n")
         declared = ("    NOVEL-DEBT-01:\n" + self.ABSENT +
                     "      reason: synthetic control; representation deliberately incomplete\n")
-        original = FINDINGS.read_bytes()
-        text = original.decode("utf-8")
-        try:
+        def inject(text: str) -> str:
             text = text.replace(NOVEL_ANCHOR, novel + NOVEL_ANCHOR, 1)
-            text = text.replace("  exceptions:\n", "  exceptions:\n" + declared, 1)
-            FINDINGS.write_bytes(text.encode("utf-8"))
+            return text.replace("  exceptions:\n", "  exceptions:\n" + declared, 1)
+
+        with controlled_mutation.mutated_by(FINDINGS, inject):
             self.assertEqual([], self.observe())
-        finally:
-            FINDINGS.write_bytes(original)
-            self.assertEqual(original, FINDINGS.read_bytes())
 
     def test_a_novel_finding_with_a_truthfully_declared_legacy_disposition_passes(self):
         """Positive control, NF-10: a legacy `disposition: closed`, truthfully declared,
@@ -566,18 +567,14 @@ class StateCompletenessMutations(unittest.TestCase):
                     "        disposition:\n          present: true\n"
                     f"          sha256: {digest}\n"
                     "      reason: legacy disposition, not adjudicated; still state debt\n")
-        original = FINDINGS.read_bytes()
-        text = original.decode("utf-8")
-        try:
+        def inject(text: str) -> str:
             text = text.replace(NOVEL_ANCHOR, novel + NOVEL_ANCHOR, 1)
-            text = text.replace("  exceptions:\n", "  exceptions:\n" + declared, 1)
-            FINDINGS.write_bytes(text.encode("utf-8"))
+            return text.replace("  exceptions:\n", "  exceptions:\n" + declared, 1)
+
+        with controlled_mutation.mutated_by(FINDINGS, inject):
             self.assertEqual([], self.observe())
             # And it confers no lifecycle state: the closure layer never sees it.
             self.assertEqual([], closure_problems(load(FINDINGS), load(REVIEWS)))
-        finally:
-            FINDINGS.write_bytes(original)
-            self.assertEqual(original, FINDINGS.read_bytes())
 
     def test_declaring_absent_while_the_record_carries_a_legacy_disposition_fails(self):
         """The RED counterexample, preserved: it was true of the committed record.
@@ -608,16 +605,12 @@ class StateCompletenessMutations(unittest.TestCase):
 
     def _with_novel(self, record_lines: str, exception_lines: str):
         """Insert a synthetic finding and its exception, restoring byte-identically."""
-        original = FINDINGS.read_bytes()
-        text = original.decode("utf-8")
-        try:
+        def inject(text: str) -> str:
             text = text.replace(NOVEL_ANCHOR, record_lines + NOVEL_ANCHOR, 1)
-            text = text.replace("  exceptions:\n", "  exceptions:\n" + exception_lines, 1)
-            FINDINGS.write_bytes(text.encode("utf-8"))
+            return text.replace("  exceptions:\n", "  exceptions:\n" + exception_lines, 1)
+
+        with controlled_mutation.mutated_by(FINDINGS, inject):
             return self.observe()
-        finally:
-            FINDINGS.write_bytes(original)
-            assert FINDINGS.read_bytes() == original
 
     def test_a_present_but_null_key_declared_absent_fails(self):
         """NF-11, the independent RED: `disposition:` with no value is a key someone wrote.
@@ -921,11 +914,21 @@ class CompletionObjectMutations(unittest.TestCase):
         self.assertEqual([], self.observe())
 
     def test_the_population_is_not_a_hard_coded_id_list(self):
+        """The ids checked for are DERIVED, so the control covers findings added later.
+
+        NF-38 / IR-08. The list was six literals, which is not the population -- it is the six
+        the author had in front of them. A seventh finding declaring a completion object would
+        have been outside the control from the day it was written.
+        """
         import inspect
 
         source = inspect.getsource(completion_declaration_problems)
-        for fid in ("NF-01", "NF-05", "NF-06", "NF-10", "NF-11", "NF-12"):
-            self.assertNotIn(fid, source)
+        declared = [f["id"] for f in findings_declaring_completion(load(FINDINGS))]
+        self.assertTrue(declared, "no finding declares a completion object to check against")
+        for fid in declared:
+            self.assertNotIn(fid, source,
+                             f"{fid} is named in the observer, which makes the population a "
+                             f"list rather than a rule")
 
     def test_exact_match_to_the_registered_review_object_passes(self):
         declared = {f["id"] for f in findings_declaring_completion(load(FINDINGS))
@@ -998,12 +1001,13 @@ class CompletionObjectMutations(unittest.TestCase):
                      "    repair_completion_object: " + "0" * 40):
             body = load(FINDINGS)
             problems = self.observe()
-        mutant = [f for f in body["findings"] if f["id"] == "NF-01"][0]
+        subject = self.SUBJECT
+        mutant = [f for f in body["findings"] if f["id"] == subject][0]
         self.assertNotIsInstance(mutant["repair_completion_object"], str,
                                  "the fixture must actually reproduce the coercion")
         self.assertFalse(mutant["repair_completion_object"],
                          "and the coerced value must actually be falsy")
-        self.assertTrue(any("NF-01" in p and "is not a commit-object string" in p
+        self.assertTrue(any(subject in p and "is not a commit-object string" in p
                             for p in problems), problems[:2])
 
     def test_an_origin_that_is_not_an_ancestor_of_the_completion_fails(self):
@@ -1082,15 +1086,24 @@ class CompletionObjectMutations(unittest.TestCase):
                         "off by one commit is not a match")
 
     def test_prose_without_the_typed_field_confers_nothing(self):
-        """A sentence is not the relationship."""
+        """A sentence is not the relationship.
+
+        NF-38 / IR-08. The assertion is now scoped to the subject. It previously required the
+        WHOLE closure layer to be clean after the mutation, which held only because the subject
+        happened to be OPEN: had it been CLOSED, removing its typed field would have redirected
+        its target to the prose repair field and this control would have failed for a reason
+        having nothing to do with what it measures.
+        """
+        subject = self.SUBJECT
         with mutated(FINDINGS,
                      "    repair_completion_object: " + self.COMPLETION + "\n", ""):
             declared = [f["id"] for f in findings_declaring_completion(load(FINDINGS))]
             closure = closure_problems(load(FINDINGS), load(REVIEWS))
-        self.assertNotIn("NF-01", declared,
+        self.assertNotIn(subject, declared,
                          "removing the typed field must remove it from the population")
-        self.assertEqual([], closure,
-                         "and the finding falls back to its original repair target")
+        self.assertNotIn(subject, " ".join(closure),
+                         "and the finding falls back to its original repair target rather than "
+                         "acquiring a target it never declared")
 
     def test_the_original_repair_field_was_never_rewritten(self):
         """History preservation, checked against the record as committed at 349f2dc."""
@@ -1193,13 +1206,38 @@ class CompletionPresenceSemantics(unittest.TestCase):
     # `false` are the cases that matter: both are physically present and both are falsy.
     FALSY_YAML = {"null": "null", "empty string": '""', "zero": "0", "false": "false"}
 
+    @property
+    def SUBJECT(self) -> str:
+        """The fixture finding, SELECTED FROM THE RECORD rather than named.
+
+        NF-38 / IR-08. These controls named NF-01, which was the subject only because it is the
+        first finding in file order carrying the completion anchor. Two consequences, both real:
+        the fixture depended on a governed value it never declared, and one control asserted the
+        subject was OPEN -- so a future actor with the authority to close NF-01 would have had to
+        edit presence-semantics controls that have nothing to do with NF-01.
+        """
+        declared = sorted(f["id"] for f in findings_declaring_completion(load(FINDINGS))
+                          if f[COMPLETION_FIELD] == self.COMPLETION)
+        self.assertTrue(declared, "no finding declares the completion object under test")
+        return declared[0]
+
+    def falsy_body(self, literal: str) -> dict:
+        """The register as it would load with a falsy completion declaration. In memory.
+
+        NF-35 / IR-05: nothing is written to disk. The defect these controls reproduce exists
+        once YAML has loaded the value, so the record never needs to reach the filesystem, and a
+        control that observes a mutation-safety finding should not widen it.
+        """
+        text = FINDINGS.read_text(encoding="utf-8")
+        anchor = "    repair_completion_object: " + self.COMPLETION
+        assert anchor in text, "mutation anchor not present in the finding register"
+        return yaml.safe_load(text.replace(anchor,
+                                           "    repair_completion_object: " + literal, 1))
+
     def falsy_record(self, literal: str) -> dict:
-        """NF-01 with its completion object replaced by a falsy YAML literal."""
-        with mutated(FINDINGS,
-                     "    repair_completion_object: " + self.COMPLETION,
-                     "    repair_completion_object: " + literal):
-            body = load(FINDINGS)
-        return [f for f in body["findings"] if f["id"] == "NF-01"][0]
+        """The fixture finding with its completion object replaced by a falsy YAML literal."""
+        subject = self.SUBJECT
+        return [f for f in self.falsy_body(literal)["findings"] if f["id"] == subject][0]
 
     # ---------------------------------------------------------------- the fixtures are real
 
@@ -1239,13 +1277,12 @@ class CompletionPresenceSemantics(unittest.TestCase):
     # ------------------------------------------------- the population every consumer resolves
 
     def test_the_declared_population_includes_every_falsy_declaration(self):
+        subject = self.SUBJECT
         for label, literal in self.FALSY_YAML.items():
             with self.subTest(value=label):
-                with mutated(FINDINGS,
-                             "    repair_completion_object: " + self.COMPLETION,
-                             "    repair_completion_object: " + literal):
-                    population = {f["id"] for f in findings_declaring_completion(load(FINDINGS))}
-                self.assertIn("NF-01", population,
+                population = {f["id"] for f in
+                              findings_declaring_completion(self.falsy_body(literal))}
+                self.assertIn(subject, population,
                               "a falsy declaration must not drop out of the population that "
                               "the history and state safety controls range over")
 
@@ -1281,19 +1318,25 @@ class CompletionPresenceSemantics(unittest.TestCase):
                 finding = self.falsy_record(literal)
                 # history preservation still evaluates for this record
                 self.assertNotEqual(finding["repair"], finding[COMPLETION_FIELD])
-                # the no-transition control still evaluates for this record
-                self.assertEqual("OPEN", finding.get("state"))
+                # NF-38 / IR-08. The closure-target control also evaluates for this record, and
+                # the assertion is now about the CONTROL rather than about the subject's
+                # lifecycle state. The previous version asserted the subject was OPEN, which was
+                # a fact about a governed value the control never declared and would have had to
+                # be edited the day someone closed that finding.
+                self.assertIn(COMPLETION_FIELD, finding,
+                              "the record must remain in the declared-completion population "
+                              "that the closure-target control ranges over")
+                self.assertIs(True, declares_completion(finding))
 
     # ---------------------------------------------------------------- the observers still fail
 
     def test_every_falsy_declaration_is_rejected_by_the_declaration_observer(self):
+        subject = self.SUBJECT
         for label, literal in self.FALSY_YAML.items():
             with self.subTest(value=label):
-                with mutated(FINDINGS,
-                             "    repair_completion_object: " + self.COMPLETION,
-                             "    repair_completion_object: " + literal):
-                    problems = completion_declaration_problems(load(FINDINGS), load(REVIEWS))
-                self.assertTrue(any("NF-01" in p and "is not a commit-object string" in p
+                problems = completion_declaration_problems(self.falsy_body(literal),
+                                                           load(REVIEWS))
+                self.assertTrue(any(subject in p and "is not a commit-object string" in p
                                     for p in problems), problems[:2])
 
     def test_a_falsy_declaration_on_a_closed_finding_is_reported_as_declared_not_as_absent(self):
@@ -1645,6 +1688,115 @@ class ConsumerPopulationUniformity(unittest.TestCase):
         noise = ('def f(d):\n'
                  '    return d.get("kind"), d.get("verdict"), d.get("state")\n')
         self.assertEqual([], truthiness_declaration_sites(noise, "synthetic"))
+
+
+class TheFixtureFindingCanStillMoveLifecycleState(unittest.TestCase):
+    """NF-38 / IR-08. A real finding used as a fixture must not be frozen by that use.
+
+    The completion-model controls took NF-01 as their mutation subject, selected by literal id
+    and, through a replace-count of one, by its position in the file. Two of them then asserted
+    facts that hold only while that finding is OPEN. Nothing was exploitable, because nobody had
+    tried to close it -- which is the same shape as the three controls this register has already
+    recorded encoding their own step's invariant as the model's, and it fails the same way: it
+    would surface only on the day a legitimate authority tried to act, and it would look like the
+    authority being wrong rather than the control.
+
+    So the property asserted here is the one that matters: the fixture subject can move to CLOSED
+    under a valid warrant and every control that merely USES it as a fixture still behaves. The
+    subject is not actually closed in the record -- this is entirely in memory, and NF-01's
+    lifecycle state is untouched.
+    """
+
+    COMPLETION = "3188a11443e33c8c4f68933cf73282108957f356"
+
+    def subject(self, body: dict) -> str:
+        declared = sorted(f["id"] for f in findings_declaring_completion(body)
+                          if f[COMPLETION_FIELD] == self.COMPLETION)
+        self.assertTrue(declared, "no finding declares the completion object under test")
+        return declared[0]
+
+    def closed_in_memory(self):
+        """The record as it would read if the fixture subject were legitimately CLOSED.
+
+        A legitimate closure needs a warrant that resolves AND grants per-finding authority, so
+        the fixture builds one rather than forcing the state and leaving the record incoherent.
+        Forcing it would prove only that a broken record breaks things.
+        """
+        body, register_body = load(FINDINGS), load(REVIEWS)
+        fid = self.subject(body)
+        warrant = next(r for r in register_body["reviews"]
+                       if reviewed_sha(r) == self.COMPLETION
+                       and verifies_repair(r, fid, register_body))
+        warrant[AUTHORITY_SOURCE_FIELD][fid]["closure_authority"] = "GRANTED"
+        warrant["warrants_closure_of"] = sorted(
+            f for f, e in warrant[AUTHORITY_SOURCE_FIELD].items()
+            if e.get("closure_authority") == "GRANTED")
+        for finding in body["findings"]:
+            if finding["id"] == fid:
+                finding["state"] = "CLOSED"
+                finding["closure_review"] = warrant["review_id"]
+        return fid, body, register_body
+
+    def test_the_fixture_subject_is_currently_open(self):
+        """Stated, because everything below is about what happens when that changes."""
+        body = load(FINDINGS)
+        fid = self.subject(body)
+        state = body["finding_state_control"]["canonical_field"]
+        current = next(f for f in body["findings"] if f["id"] == fid)
+        self.assertEqual("OPEN", current.get(state),
+                         "the fixture subject is no longer OPEN; this class exists to make that "
+                         "a non-event, but the premise it is written against has changed")
+
+    def test_closing_the_fixture_subject_breaks_no_completion_control(self):
+        fid, body, register_body = self.closed_in_memory()
+        self.assertEqual([], completion_declaration_problems(body, register_body),
+                         f"closing {fid} broke the completion declaration observer")
+        self.assertEqual([], closure_problems(body, register_body),
+                         f"closing {fid} broke the closure observer")
+        self.assertEqual([], closure_authority_problems(body, register_body),
+                         f"closing {fid} broke the authority observer")
+        self.assertEqual([], state_completeness_problems(body),
+                         f"closing {fid} broke the state representation observer")
+
+    def test_closing_the_fixture_subject_breaks_no_presence_semantics_control(self):
+        """The two controls that previously asserted the subject was OPEN."""
+        fid, body, _register = self.closed_in_memory()
+        record = next(f for f in body["findings"] if f["id"] == fid)
+        self.assertTrue(declares_completion(record),
+                        "the closed subject left the declared-completion population")
+        self.assertEqual(self.COMPLETION, closure_target(record),
+                         "the closed subject's target is no longer its declared completion "
+                         "object")
+        self.assertIn(fid, {f["id"] for f in findings_declaring_completion(body)},
+                      "the safety controls no longer range over the closed subject")
+
+    def test_the_original_repair_field_survives_the_hypothetical_closure(self):
+        fid, body, _register = self.closed_in_memory()
+        record = next(f for f in body["findings"] if f["id"] == fid)
+        self.assertTrue(str(record.get("repair", "")).strip(),
+                        "the repair field was lost")
+        self.assertNotEqual(record["repair"], record[COMPLETION_FIELD],
+                            "the completion object replaced the repair field")
+
+    def test_no_control_names_the_fixture_subject_as_a_literal(self):
+        """The durable form of the repair: the id may not reappear as a selector.
+
+        Derived over this module's parse tree rather than over a remembered pair of methods --
+        NF-20 is the finding about a control whose population was the two cases its author wrote
+        down. Docstrings and comments are excluded: naming the finding while explaining the
+        repair is not the defect.
+        """
+        subject = self.subject(load(FINDINGS))
+        source = Path(__file__).read_text(encoding="utf-8")
+        tree = ast.parse(source)
+        offenders = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Constant) and isinstance(node.value, str):
+                if node.value == subject:
+                    offenders.append(f"line {node.lineno}")
+        self.assertEqual([], offenders,
+                         f"{subject} is used as a literal selector at {offenders}; the fixture "
+                         f"must be derived from the record")
 
 
 # NF-18. The guard is the LAST thing in this module, and stays last.

@@ -29,6 +29,8 @@ from __future__ import annotations
 import ast
 import copy
 import inspect
+import re
+import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -60,6 +62,11 @@ FINDINGS = RECORD_DIR / "findings.yaml"
 
 def load(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def git_out(*args: str) -> tuple[int, str]:
+    proc = subprocess.run(["git", *args], capture_output=True, text=True, cwd=REPO_ROOT)
+    return proc.returncode, proc.stdout.strip()
 
 
 class _DuplicateKeyLoader(yaml.SafeLoader):
@@ -564,6 +571,172 @@ class ExactObjectIdentityIsUnweakened(unittest.TestCase):
                     self.assertNotIn(node.func.attr, {"startswith", "lower", "casefold"},
                                      f"{predicate.__name__} performs prefix or case matching on "
                                      f"an object identity")
+
+
+class ControlledProseDoesNotContradictControlledState(unittest.TestCase):
+    """NF-32 / IR-02. The record may not assert a lifecycle state its state field denies.
+
+    Four findings were CLOSED at 00c6e2f while still carrying "this finding remains OPEN until
+    the changed closure model has itself been independently verified". Both statements were in
+    the same record, and no control compared them, so the contradiction was invisible to every
+    observer that ran. The sentence had been true when it was written -- at C6, about C6 -- and
+    was left in the present tense, which is how a true statement becomes a false one without
+    anybody editing it.
+
+    The repair is not deletion. A statement that was true of an object is bound to that object
+    and marked historical; what is forbidden is an unscoped present-tense claim about lifecycle
+    state anywhere except the state field itself.
+    """
+
+    STATE_CLAIM = re.compile(
+        r"\bthis finding (?:remains|stays|is still)\s+(OPEN|CLOSED)\b", re.IGNORECASE)
+
+    # A block whose key or whose own declaration marks it historical is exempt: it is describing
+    # an object, not asserting the present.
+    HISTORICAL_MARKERS = ("_scope", "historical", "withdrawn", "superseded", "previous_",
+                          "as_recorded_at", "at_that_object")
+
+    def setUp(self):
+        self.body = load(FINDINGS)
+        self.state_field = self.body["finding_state_control"]["canonical_field"]
+
+    def walk(self, node, trail=()):
+        if isinstance(node, dict):
+            for key, value in node.items():
+                yield from self.walk(value, trail + (str(key),))
+        elif isinstance(node, list):
+            for index, value in enumerate(node):
+                yield from self.walk(value, trail + (str(index),))
+        elif isinstance(node, str):
+            yield trail, node
+
+    def historical(self, trail) -> bool:
+        joined = " ".join(trail).lower()
+        return any(marker in joined for marker in self.HISTORICAL_MARKERS)
+
+    def claims(self, finding: dict):
+        for trail, text in self.walk(finding):
+            if self.historical(trail):
+                continue
+            for match in self.STATE_CLAIM.finditer(text):
+                yield ".".join(trail), match.group(1).upper()
+
+    def test_no_unscoped_prose_contradicts_the_state_field(self):
+        offenders = []
+        for finding in self.body["findings"]:
+            actual = finding.get(self.state_field)
+            for where, claimed in self.claims(finding):
+                if actual is not None and claimed != actual:
+                    offenders.append(f"{finding['id']}.{where} claims {claimed} while the state "
+                                     f"field says {actual}")
+        self.assertEqual([], offenders, f"prose contradicts controlled state: {offenders}")
+
+    def test_the_historical_statements_are_bound_to_an_object(self):
+        """A statement exempted as historical must say WHICH object it describes.
+
+        Otherwise the exemption is a way of keeping an unscoped claim by renaming its key.
+        """
+        full_object = re.compile(r"^[0-9a-f]{40}$")
+        checked = 0
+        for finding in self.body["findings"]:
+            for key, value in finding.items():
+                if not key.endswith("_scope") or not isinstance(value, dict):
+                    continue
+                checked += 1
+                self.assertIs(True, value.get("statement_is_historical"),
+                              f"{finding['id']}.{key} does not declare itself historical")
+                self.assertTrue(full_object.match(str(value.get("object", ""))),
+                                f"{finding['id']}.{key} names no exact object")
+        self.assertGreater(checked, 0, "no historical scope block to range over")
+
+    def test_the_control_detects_a_reintroduced_contradiction(self):
+        """Failure sensitivity, in memory."""
+        body = copy.deepcopy(self.body)
+        subject = next(f for f in body["findings"] if f.get(self.state_field) == "CLOSED")
+        subject["synthetic_note"] = ("this finding remains OPEN until somebody checks it")
+        offenders = []
+        for finding in body["findings"]:
+            actual = finding.get(self.state_field)
+            for where, claimed in self.claims(finding):
+                if actual is not None and claimed != actual:
+                    offenders.append(f"{finding['id']}.{where}")
+        self.assertTrue(offenders, "a reintroduced contradiction was not detected")
+
+    def test_a_historically_scoped_statement_is_not_flagged(self):
+        """The exemption must actually exempt, or the repair would force deletion of history."""
+        body = copy.deepcopy(self.body)
+        subject = next(f for f in body["findings"] if f.get(self.state_field) == "CLOSED")
+        subject["synthetic_note_scope"] = {
+            "statement_is_historical": True,
+            "object": "0" * 40,
+            "as_recorded": "this finding remains OPEN pending independent verification",
+        }
+        for finding in body["findings"]:
+            actual = finding.get(self.state_field)
+            for where, claimed in self.claims(finding):
+                self.assertEqual(actual, claimed,
+                                 f"a historically scoped statement was flagged at {where}")
+
+
+class GovernanceCitationsResolveAtANamedObject(unittest.TestCase):
+    """NF-39 / IR-09. A citation must be resolvable by a reader who is not the writer.
+
+    The disposition cited "CLAUDE.md line 380". A line number carries no object scope, is
+    invalidated by any edit above it, and cannot be checked at any object other than the writer's
+    -- so a finding about transcribed values going stale was asserted through a transcribed value
+    that would. The repair is a semantic locus: artifact, section, quoted proposition, and the
+    object the observation was made at, with the artifact's blob digest so a reader can confirm
+    they hold the same bytes.
+    """
+
+    def loci(self):
+        body = load(FINDINGS)
+        for finding in body["findings"]:
+            disposition = finding.get("governance_disposition") or {}
+            locus = disposition.get("residual_locus")
+            if isinstance(locus, dict):
+                yield finding["id"], locus
+
+    def test_there_is_a_locus_to_check(self):
+        self.assertTrue(list(self.loci()), "no residual locus is declared")
+
+    def test_every_locus_names_an_object_and_a_matching_blob(self):
+        for fid, locus in self.loci():
+            with self.subTest(finding=fid):
+                obj = locus["observed_at_object"]
+                self.assertRegex(obj, r"^[0-9a-f]{40}$", "the object is not a full identity")
+                code, kind = git_out("cat-file", "-t", obj)
+                self.assertEqual(("commit", 0), (kind, code), "the object does not resolve")
+                code, blob = git_out("rev-parse", f"{obj}:{locus['artifact']}")
+                self.assertEqual(0, code, "the artifact does not exist at that object")
+                self.assertEqual(locus["artifact_blob_at_that_object"], blob,
+                                 "the recorded blob digest is not the artifact at that object")
+
+    def test_every_locus_resolves_semantically_at_its_object(self):
+        """The section and the quoted proposition must both be findable in those bytes."""
+        for fid, locus in self.loci():
+            with self.subTest(finding=fid):
+                code, text = git_out("show", f"{locus['observed_at_object']}:{locus['artifact']}")
+                self.assertEqual(0, code)
+                self.assertIn(locus["section"], text,
+                              "the cited section is not present at the cited object")
+                quoted = re.findall(r'"([^"]{12,})"', locus["proposition"])
+                self.assertTrue(quoted, "the locus quotes no proposition to resolve")
+                for fragment in quoted:
+                    self.assertIn(fragment, text,
+                                  f"the quoted proposition is not present at the cited object: "
+                                  f"{fragment!r}")
+
+    def test_no_locus_relies_on_a_line_number(self):
+        for fid, locus in self.loci():
+            with self.subTest(finding=fid):
+                for key, value in locus.items():
+                    if key == "why_it_is_not_a_line_number":
+                        continue          # the withdrawal notice quotes the old citation
+                    self.assertNotRegex(
+                        str(value), r"\bline\s+\d+\b",
+                        f"{fid}.{key} cites a line number, which no reader at another object "
+                        f"can resolve")
 
 
 if __name__ == "__main__":
