@@ -9,6 +9,7 @@ verdicts:
   derived_executable_restoration: PASS
 
 tracked_state_restoration:
+  authority: ADJ-F2-002
   criterion_replaced: >-
     The earlier criterion "git status --porcelain must be empty" was replaced, not waived.
     It tested a property that is not the controlled object: git's stat-cache observation of

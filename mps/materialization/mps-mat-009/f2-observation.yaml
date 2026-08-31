@@ -1,15 +1,19 @@
 schema_version: "0.1"
 register_id: MPS-MAT-009-F2-OBSERVATION
 title: GOV-C-004 literal example, rule-specific observation and foreign-rule control
-status: observed_restoration_incomplete
+status: observed_restoration_complete
 depends_on:
   adjudication: ADJ-F2-001
+  restoration_adjudication: ADJ-F2-002
   design: MPS-MAT-009-F2-DESIGN
+  restoration: MPS-MAT-009-F2-RESTORATION
 
-not_yet_evidence_against_the_baseline: >-
-  The restoration is not complete (see restoration below), so nothing in this file may yet be
-  described as evidence against the baseline model tree. It is retained now because the
-  observation is transient and must not be lost, not because it has been accepted.
+evidence_status: >-
+  This observation was retained before restoration acceptance and was not evidence against the
+  baseline at that time. Restoration was subsequently completed in
+  MPS-MAT-009-F2-RESTORATION under the repository-content criterion authorized by ADJ-F2-002.
+  The historical pre-acceptance state is preserved in the restoration record rather than left
+  as the current status of this file.
 
 workspace_provenance:
   demonstration_ran_in: separate MPS-attached producer clone
@@ -192,6 +196,9 @@ restoration:
       under this prefix is the expected state rather than a defect.
 
   decision_required:
+    status: decided
+    adjudication: ADJ-F2-002
+    determination: repository_content_identity
     question: >-
       Does restoration acceptance key on the project's controlled invariant -- index and
       committed content identity, which is restored and verified four independent ways -- or
@@ -203,6 +210,7 @@ restoration:
       with ADR-001. Choosing the controlled invariant accepts a git status that is not empty
       as a normal post-session state. Either is defensible; both change what "restored" means
       for every future experiment, not just this one.
-    not_done_pending_that_decision: >-
+    action_at_time_of_observation: >-
       No normalisation, checkout, reset or other operation was performed to make git status
-      report empty. The discrepancy is reported rather than erased.
+      report empty. The discrepancy was reported rather than erased, and ADJ-F2-002
+      subsequently ratified repository content identity as the controlled criterion.

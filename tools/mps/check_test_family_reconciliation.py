@@ -11,12 +11,11 @@ So every blueprint family must carry exactly one explicit disposition, and every
 family absent from the blueprint must declare itself newly introduced with a basis. Nothing
 crosses by omission in either direction.
 
-undecided is a first-class disposition on purpose. Forcing a disposition would invite
-inferring one, and three of these need an engineering decision rather than an implementer's
-guess -- notably ARCH-INVARIANT-001-no-language-equivalence, where dropping an architectural
-invariant from a test taxonomy may be perfectly correct but dropping it from controlled
-scope is not. An undecided entry passes structurally and is reported by name every run, so
-the absence stays visible instead of being resolved by relabelling.
+undecided and materialize are first-class dispositions on purpose. An undecided entry records
+that an engineering decision is still required. A materialize entry records that the owner
+has decided an explicit operational family is required, but it does not pretend that family
+already exists. Both pass this correspondence check structurally and are reported by name
+every run, so the open work stays visible instead of being resolved by relabelling.
 
 This gate compares two artifacts against each other, which is ordinarily the shape that
 verifies neither. It is legitimate here only because the object under control IS the
@@ -35,7 +34,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 BLUEPRINT = REPO_ROOT / "mps" / "bootstrap" / "language-skeleton.json"
 PLAN = REPO_ROOT / "mps" / "materialization" / "stage-a-checklist.yaml"
 
-DISPOSITIONS = {"carried", "renamed", "retired", "undecided"}
+DISPOSITIONS = {"carried", "renamed", "retired", "undecided", "materialize"}
 NEEDS_LEDGER = {"carried", "renamed"}
 
 
@@ -118,6 +117,13 @@ def main() -> int:
         if disposition == "undecided" and not str(entry.get("awaiting", "")).strip():
             problems.append(name + " is undecided with nothing recorded about what it "
                             "awaits, which makes it indistinguishable from an oversight")
+        if disposition == "materialize":
+            if not str(entry.get("adjudication", "")).strip():
+                problems.append(name + " is to be materialized with no adjudication, so the "
+                                "new obligation has no decision authority")
+            if not str(entry.get("requirement", "")).strip():
+                problems.append(name + " is to be materialized with no requirement, so the "
+                                "future family has no controlled acceptance boundary")
 
     for extra in sorted(seen):
         if extra not in blueprint:
@@ -149,12 +155,17 @@ def main() -> int:
 
     undecided = [name for name, entry in sorted(seen.items())
                  if entry.get("disposition") == "undecided"]
+    to_materialize = [name for name, entry in sorted(seen.items())
+                      if entry.get("disposition") == "materialize"]
     print("PASS: all " + str(len(blueprint)) + " blueprint families carry exactly one "
           "disposition, and all " + str(len(ledger_names)) + " operational families are "
           "either a disposition target or declared newly introduced")
     if undecided:
         print("      OPEN: " + str(len(undecided)) + " awaiting an engineering decision, "
               "not resolved by this gate: " + ", ".join(undecided))
+    if to_materialize:
+        print("      OPEN: " + str(len(to_materialize)) + " authorized for materialization, "
+              "not yet an operational family: " + ", ".join(to_materialize))
     return 0
 
 

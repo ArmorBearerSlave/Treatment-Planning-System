@@ -3,6 +3,15 @@
 Controls that must survive a session boundary. The gate suite enforces most structure
 mechanically; what follows is what a gate cannot check.
 
+## Agent skill entry point
+
+Read `AGENTS.md` and load `.agents/skills/mps-mcp-workflow/SKILL.md` before
+model-aware work. For completion, assurance, evidence, or acceptance work, also
+load `.agents/skills/nltps-mps-completion/SKILL.md`. The completion coordinator
+may implement and verify work, but it may not approve its own work, provide a
+human reviewer identity, amend frozen acceptance criteria, or declare an
+authority transition.
+
 ## Workspace
 
 This repository is the engineering workspace: a space-free path outside any
@@ -74,9 +83,12 @@ not.
 `build/nltps-headless-build.xml` drives MPS's own `<mps.make>`, run by
 `python tools/mps/headless_build.py`. The toolchain is entirely the pinned installation:
 Ant from `MPS_HOME/lib/ant`, the JDK from `MPS_HOME/jbr`, tasks from
-`lib/ant/lib/ant-mps.jar`. A system Ant or an ambient `JAVA_HOME` would make the result
-depend on the host, so neither is consulted, and `MPS_HOME/build.txt` is compared with
-the pinned build number and a mismatch refused. Two things are not optional:
+`lib/ant/lib/ant-mps.jar`. On macOS, the bundled JDK executable is under
+`MPS_HOME/jbr/Contents/Home` and the build identity is under
+`MPS_HOME/Resources`. A system Ant or an ambient `JAVA_HOME` would make the
+result depend on the host, so neither is consulted, and the packaged build
+identity is compared with the pinned build number and a mismatch refused. Two
+things are not optional:
 `ant-mps.jar` needs `org.jdom` from `lib/util-8.jar` **on the taskdef classpath rather
 than Ant's own**, and the worker needs its own `idea.system`/`config`/`log` paths or it
 tries to write into Program Files. `autoPluginDiscovery="true"` crashes CoreWorker in

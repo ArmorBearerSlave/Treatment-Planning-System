@@ -2707,29 +2707,25 @@ acceptance_items:
                     style. Recorded as a rename with a noted scope difference rather than as a
                     clean carry.
                 - blueprint: typesystem-and-unit-tests
-                  disposition: undecided
-                  awaiting: >-
-                    An engineering decision. Not inferred here. The nine languages carry
-                    typesystem rules that the model checker evaluates, but whether that
-                    constitutes this family, or whether the family intended executable
-                    typesystem tests distinct from node-and-constraint tests, is a question
-                    about intent that the implementer should not answer alone.
+                  disposition: materialize
+                  adjudication: ADJ-TEST-FAMILY-001
+                  requirement: >-
+                    Explicit executable typesystem and unit tests distinct from the existing
+                    node-and-constraint population, with attributable authored, discovered,
+                    and executed identities.
                 - blueprint: trace-relation-negative-tests
-                  disposition: undecided
-                  awaiting: >-
-                    An engineering decision. GOV-C-002 governs trace-link relation validity and
-                    negative examples exist for it in the controlled record, but whether those
-                    discharge this family or whether it intended executable negative tests is
-                    not settled here.
+                  disposition: materialize
+                  adjudication: ADJ-TEST-FAMILY-002
+                  requirement: >-
+                    A distinct executable negative-test population for trace-relation validity,
+                    with attributable authored, discovered, and executed identities. Existing
+                    GOV-C-002 examples remain evidence for their original constraint claim.
                 - blueprint: ARCH-INVARIANT-001-no-language-equivalence
-                  disposition: undecided
-                  awaiting: >-
-                    An engineering decision, and this one needs the most care. Excluding an
-                    architectural invariant from a test-case taxonomy may be entirely correct;
-                    disappearing from controlled scope is not. If it ceases to be a test family
-                    its disposition must name the architectural control that supersedes it. No
-                    such control is currently identified, and that absence is recorded here
-                    rather than settled by labelling the entry retired.
+                  disposition: materialize
+                  adjudication: ADJ-TEST-FAMILY-003
+                  requirement: >-
+                    An explicit executable architectural-invariant test for no language
+                    equivalence, with attributable authored, discovered, and executed identity.
                 newly_introduced:
                 - ledger: editor-tests
                   basis: >-

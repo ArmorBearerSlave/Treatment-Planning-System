@@ -1,0 +1,8 @@
+schema_version: "0.1"
+record_id: MPS-MAT-008-AUTHORING-HISTORY-MANIFEST
+artifacts:
+  - path: mps/materialization/evidence/MPS-MAT-008/authoring-history/inspection.yaml
+    sha256: 1f3b7bb2d4d763a1cf44eb92320cd491b44f1ad2ff08edec51d0794bcd0c5b46
+    role: controlled-history inspection over the complete MPS-0 through MPS-4 population
+result: NOT_ESTABLISHED
+obligation_state: OPEN

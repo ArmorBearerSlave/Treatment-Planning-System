@@ -122,3 +122,147 @@ adjudications:
       An MPS-attached demonstration of Hazard --MITIGATES--> VerificationClaim against the
       unchanged GOV-C-002 mechanism, negative example first, in the proof sandbox, with the
       model restored to its base tree afterwards and the restoration verified by hash.
+
+  - id: ADJ-F2-002
+    finding: F2
+    question: >-
+      Does restoration acceptance key on repository and index content identity, or on literal
+      git status emptiness when MPS has rewritten controlled persistence with equivalent line
+      endings?
+    decided_after_observation: true
+    reason_timing_is_admissible: >-
+      F2 recorded both alternatives and explicitly deferred the governance choice. The
+      behavioral experiment and restoration measurements were already complete; this decision
+      does not choose whether an obligation exists or pre-approve an unperformed demonstration.
+      It selects which previously measured property is the controlled restoration invariant.
+    decided_by:
+      role: engineering_owner
+      authenticated_identity: ArmorBearerSlave
+      not: MPS-MAT-009 independent reviewer
+    decision_date: "2026-08-31"
+    determination: repository_content_identity
+    rationale: >-
+      Restoration is accepted when the index and committed content identities match the
+      baseline and every status-named MPS persistence path hashes to the same blob as the index
+      and baseline. Expected working-tree line-ending differences written by MPS do not make
+      semantically identical persistence unrestored. Literal empty git status is not required
+      because achieving it would require a non-model-aware normalization step that the
+      controlled MPS workflow otherwise prohibits.
+    required_observations:
+      - git diff --exit-code is clean
+      - git diff --cached --exit-code is clean
+      - model_tree_sha256 equals the controlled baseline
+      - >-
+        every status-named MPS persistence path has equal worktree-normalized, index, and
+        baseline blob identity
+    authority_boundary:
+      authorized: the repository-content restoration criterion
+      not_authorized:
+        - approval of the F2 behavioral result
+        - closure of MPS-MAT-009
+        - substitution for named independent human review
+
+  - id: ADJ-MAT008-001
+    finding: MPS-MAT-008#1
+    question: >-
+      May a retained, attributable, hash-bound inspection of controlled Git history be used
+      to test the statement that prior materialization checkpoints used MCP for authoring while
+      the accepted headless build is reproducible without MCP?
+    decided_before: any controlled-history inspection intended to satisfy the obligation
+    decided_by:
+      role: engineering_owner
+      authenticated_identity: ArmorBearerSlave
+      not: MPS-MAT-009 independent reviewer
+    decision_date: "2026-08-31"
+    determination: authorize_controlled_history_inspection
+    disposition_rule: >-
+      Inspect the controlled commits and retained records, identify the population and evidence
+      for each checkpoint, and retain the inspection with its own content hash. The obligation
+      remains OPEN unless that evidence establishes the complete frozen claim. Absence,
+      ambiguity, or an incomplete checkpoint population is a non-passing result and must not be
+      repaired by inference.
+    authority_boundary:
+      authorized: an observation of the controlled history
+      not_authorized:
+        - assuming that authoring used MCP because the repository required it
+        - reclassifying the declaration as a non-obligation
+        - discharging MPS-MAT-008#1 without evidence over the complete checkpoint population
+        - closing MPS-MAT-009
+
+  - id: ADJ-TEST-FAMILY-001
+    finding: typesystem-and-unit-tests disposition
+    question: >-
+      Do the existing checker rules and node-and-constraint tests satisfy the frozen
+      typesystem-and-unit-tests family, or is a distinct executable family required?
+    decided_before: authoring any test presented as satisfying this family
+    decided_by:
+      role: engineering_owner
+      authenticated_identity: ArmorBearerSlave
+      not: MPS-MAT-009 independent reviewer
+    decision_date: "2026-08-31"
+    determination: distinct_executable_family_required
+    rationale: >-
+      Existing checking rules and node tests establish behavior for their own declared
+      population. They are not silently relabelled as a separately frozen test family. The
+      typesystem-and-unit-tests family requires explicit executable tests with attributable
+      authored, discovered, and executed identities.
+    authorizes: >-
+      Design and implementation of an explicit typesystem-and-unit-test population through
+      MPS-aware tooling, followed by independent test discovery and execution evidence.
+    does_not_establish:
+      - the required test inventory or cardinality
+      - successful implementation
+      - satisfaction of the family
+      - closure of MPS-MAT-009
+
+  - id: ADJ-TEST-FAMILY-002
+    finding: trace-relation-negative-tests disposition
+    question: >-
+      Do the existing GOV-C-002 negative examples satisfy the frozen
+      trace-relation-negative-tests family, or is a distinct executable family required?
+    decided_before: authoring any test presented as satisfying this family
+    decided_by:
+      role: engineering_owner
+      authenticated_identity: ArmorBearerSlave
+      not: MPS-MAT-009 independent reviewer
+    decision_date: "2026-08-31"
+    determination: distinct_executable_family_required
+    rationale: >-
+      Existing GOV-C-002 examples remain evidence for the generalized constraint behavior,
+      but they are not silently promoted into a separately frozen operational family. Trace
+      relation validity requires its own executable negative-test population with attributable
+      identities.
+    authorizes: >-
+      Design and implementation of explicit trace-relation negative tests through MPS-aware
+      tooling, followed by independent discovery and execution evidence.
+    does_not_establish:
+      - the required test inventory or cardinality
+      - successful implementation
+      - satisfaction of the family
+      - closure of MPS-MAT-009
+
+  - id: ADJ-TEST-FAMILY-003
+    finding: ARCH-INVARIANT-001-no-language-equivalence disposition
+    question: >-
+      Does ARCH-INVARIANT-001 leave the controlled test-family population, move to a
+      non-test structural gate, or remain as an explicit executable architectural test?
+    decided_before: authoring or retiring any mechanism presented as its disposition
+    decided_by:
+      role: engineering_owner
+      authenticated_identity: ArmorBearerSlave
+      not: MPS-MAT-009 independent reviewer
+    decision_date: "2026-08-31"
+    determination: explicit_executable_test_required
+    rationale: >-
+      The no-language-equivalence invariant remains in controlled test scope. It is not retired
+      by omission and is not moved to a differently governed population. An explicit executable
+      architectural-invariant test is required.
+    authorizes: >-
+      Design and implementation of an executable test for
+      ARCH-INVARIANT-001-no-language-equivalence through MPS-aware tooling, followed by
+      independent discovery and execution evidence.
+    does_not_establish:
+      - the required test shape or cardinality
+      - successful implementation
+      - satisfaction of the invariant
+      - closure of MPS-MAT-009

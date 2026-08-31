@@ -42,6 +42,7 @@ PROJECT_DIR = REPO_ROOT / "mps" / "NLTPSGovernance"
 PLAN_PATH = REPO_ROOT / "mps" / "materialization" / "stage-a-checklist.yaml"
 PROVENANCE = REPO_ROOT / "mps" / "materialization" / "headless-build-provenance.json"
 DEFAULT_MPS_HOME = Path(r"C:\Program Files\JetBrains\MPS 2026.1")
+MACOS_MPS_HOME = Path("/Applications/MPS.app/Contents")
 
 # Derived output. Excluded from the model-tree hash because regenerating it must not make
 # the recorded build evidence look stale, and included in .gitignore for the same reason.
@@ -136,7 +137,22 @@ def pinned_build() -> str:
 
 def mps_home() -> Path:
     raw = os.environ.get("MPS_HOME")
-    return Path(raw) if raw else DEFAULT_MPS_HOME
+    if raw:
+        return Path(raw)
+    if sys.platform == "darwin":
+        return MACOS_MPS_HOME
+    return DEFAULT_MPS_HOME
+
+
+def required_installation_file(home: Path, candidates: tuple[Path, ...],
+                               what: str) -> Path:
+    """Resolve a required file across the Windows/Linux and macOS MPS layouts."""
+    for relative_path in candidates:
+        path = home / relative_path
+        if path.is_file():
+            return path
+    searched = ", ".join(str(home / path) for path in candidates)
+    raise ToolchainError(f"{what} is missing; checked {searched}")
 
 
 def validate_toolchain(home: Path) -> dict:
@@ -146,10 +162,8 @@ def validate_toolchain(home: Path) -> dict:
             f"MPS installation not found at {home}. Set MPS_HOME to the pinned "
             f"installation, or install it.")
 
-    build_txt = home / "build.txt"
-    if not build_txt.is_file():
-        raise ToolchainError(f"{home} has no build.txt; it does not look like an MPS "
-                             f"installation")
+    build_txt = required_installation_file(
+        home, (Path("build.txt"), Path("Resources/build.txt")), "MPS build identity")
     with io.open(build_txt, encoding="utf-8") as handle:
         actual = handle.read().strip()
     expected = pinned_build()
@@ -159,12 +173,17 @@ def validate_toolchain(home: Path) -> dict:
             f"different build is a separate qualification decision, not a substitution "
             f"this build may make.")
 
-    java = home / "jbr" / "bin" / ("java.exe" if os.name == "nt" else "java")
+    java = required_installation_file(
+        home,
+        (Path("jbr/bin/java.exe"),) if os.name == "nt" else
+        (Path("jbr/bin/java"), Path("jbr/Contents/Home/bin/java")),
+        "bundled JDK",
+    )
     ant = home / "lib" / "ant" / "lib" / "ant.jar"
     launcher = home / "lib" / "ant" / "lib" / "ant-launcher.jar"
     tasks = home / "lib" / "ant" / "lib" / "ant-mps.jar"
-    for path, what in ((java, "bundled JDK"), (ant, "bundled Ant"),
-                       (launcher, "bundled Ant launcher"), (tasks, "MPS Ant tasks")):
+    for path, what in ((ant, "bundled Ant"), (launcher, "bundled Ant launcher"),
+                       (tasks, "MPS Ant tasks")):
         if not path.is_file():
             raise ToolchainError(f"{what} is missing at {path}")
 

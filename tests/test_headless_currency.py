@@ -380,15 +380,51 @@ class TestFamilyReconciliationTest(unittest.TestCase):
         result = self._run()
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
 
-    def test_reports_undecided_families_every_run(self):
-        """An undecided disposition must stay visible, not merely pass.
+    def test_reports_families_awaiting_materialization_every_run(self):
+        """An authorized materialization must stay visible, not merely pass.
 
-        The whole reason undecided is allowed is that inferring a disposition would be
-        worse. That only holds while the gate keeps saying which ones are open.
+        The decision settles the disposition, not the implementation. The gate must keep
+        reporting the missing operational families until they actually exist.
         """
         result = self._run()
         self.assertIn("OPEN:", result.stdout)
+        self.assertIn("authorized for materialization", result.stdout)
         self.assertIn("ARCH-INVARIANT-001-no-language-equivalence", result.stdout)
+
+    def test_materialization_without_adjudication_fails(self):
+        original = PLAN.read_text(encoding="utf-8")
+        anchor = "                  adjudication: ADJ-TEST-FAMILY-001\n"
+        self.assertIn(anchor, original)
+        try:
+            PLAN.write_text(original.replace(anchor, "", 1),
+                            encoding="utf-8", newline="")
+            result = self._run()
+            self.assertEqual(1, result.returncode,
+                             "materialization without decision authority was accepted")
+            self.assertIn("with no adjudication", result.stderr)
+        finally:
+            PLAN.write_text(original, encoding="utf-8", newline="")
+        self.assertEqual(original, PLAN.read_text(encoding="utf-8"))
+
+    def test_materialization_without_requirement_fails(self):
+        original = PLAN.read_text(encoding="utf-8")
+        anchor = (
+            "                  requirement: >-\n"
+            "                    Explicit executable typesystem and unit tests distinct from the existing\n"
+            "                    node-and-constraint population, with attributable authored, discovered,\n"
+            "                    and executed identities.\n"
+        )
+        self.assertIn(anchor, original)
+        try:
+            PLAN.write_text(original.replace(anchor, "", 1),
+                            encoding="utf-8", newline="")
+            result = self._run()
+            self.assertEqual(1, result.returncode,
+                             "materialization without an acceptance boundary was accepted")
+            self.assertIn("with no requirement", result.stderr)
+        finally:
+            PLAN.write_text(original, encoding="utf-8", newline="")
+        self.assertEqual(original, PLAN.read_text(encoding="utf-8"))
 
     def test_a_blueprint_family_without_a_disposition_fails(self):
         original = self.BLUEPRINT.read_text(encoding="utf-8")

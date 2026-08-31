@@ -5,8 +5,10 @@ modules.xml. It did not exist. Written now, together with the dependency-closure
 that the NOT_IN_REPO defect recorded at 875fcee showed was missing, and with negative
 controls for both -- a gate never shown to fail is indistinguishable from one that cannot.
 """
+import re
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -74,6 +76,48 @@ class ModuleListScopeTest(unittest.TestCase):
 
         self.assertEqual(sorted(headless_build.module_list()),
                          sorted(check_headless_coverage.project_modules().values()))
+
+
+class ToolchainLayoutTest(unittest.TestCase):
+    def test_resolves_standard_installation_file(self):
+        import headless_build
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            home = Path(temporary_directory)
+            expected = home / "build.txt"
+            expected.touch()
+            actual = headless_build.required_installation_file(
+                home, (Path("build.txt"), Path("Resources/build.txt")), "build identity")
+            self.assertEqual(expected, actual)
+
+    def test_resolves_macos_bundle_installation_file(self):
+        import headless_build
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            home = Path(temporary_directory)
+            expected = home / "jbr" / "Contents" / "Home" / "bin" / "java"
+            expected.parent.mkdir(parents=True)
+            expected.touch()
+            actual = headless_build.required_installation_file(
+                home,
+                (Path("jbr/bin/java"), Path("jbr/Contents/Home/bin/java")),
+                "bundled JDK",
+            )
+            self.assertEqual(expected, actual)
+
+    def test_missing_installation_file_reports_every_candidate(self):
+        import headless_build
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            home = Path(temporary_directory)
+            standard = re.escape(str(home / "build.txt"))
+            macos = re.escape(str(home / "Resources" / "build.txt"))
+            with self.assertRaisesRegex(headless_build.ToolchainError,
+                                        rf"build identity is missing; checked "
+                                        rf"{standard}, {macos}"):
+                headless_build.required_installation_file(
+                    home, (Path("build.txt"), Path("Resources/build.txt")),
+                    "build identity")
 
 
 if __name__ == "__main__":

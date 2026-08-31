@@ -1,0 +1,92 @@
+schema_version: "0.1"
+record_id: MPS-MAT-008-AUTHORING-HISTORY
+acceptance_item: MPS-MAT-008
+obligation: MPS-MAT-008#1
+authorization: ADJ-MAT008-001
+observed_at: "2026-08-31"
+observer_role: completion_agent
+result: NOT_ESTABLISHED
+
+question: >-
+  Does controlled Git history establish that every materialization checkpoint MPS-0 through
+  MPS-4 used MCP for authoring, while the accepted headless build is reproducible without MCP?
+
+population:
+  definition: the five controlled materialization checkpoints MPS-0 through MPS-4
+  count: 5
+  members:
+    - checkpoint: MPS-0
+      closure_commit: 0b9f731e878c97118b83facb6a0e5ca3b2a93b27
+    - checkpoint: MPS-1
+      closure_commit: 9569efd47dcdd0f09189d142bc9314bb4c34b698
+    - checkpoint: MPS-2
+      closure_commit: 7d2ddb4838dddca1123ed129cedb4cd3ffa44974
+    - checkpoint: MPS-3
+      closure_commit: 9be0d218a2df6947ec75e657e3c43c8a15cd37f1
+    - checkpoint: MPS-4
+      closure_commit: 1593416fbcbbc6227487a10051425a16fbf17fcd
+
+observations:
+  - checkpoint: MPS-0
+    mcp_authoring_established: false
+    evidence:
+      - >-
+        Closure commit 0b9f731e says all persistence was created by MPS and was not
+        hand-authored or patched. It does not identify MCP as the authoring route.
+      - >-
+        Commit 9afd41cac95753a9e0885de64858abcecbb5e0e0 registered the project-scoped MPS
+        MCP endpoint after the MPS-0 closure commit.
+    conclusion: >-
+      MPS-aware authorship is established, but MCP authorship is not. Registration after
+      closure is not evidence that MCP was used before registration.
+
+  - checkpoint: MPS-1
+    mcp_authoring_established: true
+    evidence:
+      - >-
+        mps/materialization/stage-a-checklist.yaml records 40 concepts materialized through
+        MPS MCP model-aware operations and 40 editors created through
+        mps_mcp_scaffold_editor.
+
+  - checkpoint: MPS-2
+    mcp_authoring_established: true
+    evidence:
+      - >-
+        mps/materialization/stage-a-checklist.yaml records 26 concepts materialized through
+        MPS MCP model-aware operations and 26 editors created through
+        mps_mcp_scaffold_editor.
+
+  - checkpoint: MPS-3
+    mcp_authoring_established: true
+    evidence:
+      - >-
+        mps/materialization/stage-a-checklist.yaml records 12 concepts materialized through
+        MPS MCP model-aware operations.
+
+  - checkpoint: MPS-4
+    mcp_authoring_established: true
+    evidence:
+      - >-
+        mps/materialization/stage-a-checklist.yaml identifies the MPS-4 materialization
+        session as operating through MCP and records specific mps_mcp_* mutations.
+
+headless_build_without_mcp:
+  result: separately_observed
+  evidence:
+    - mps/materialization/headless-acceptance-evidence.json
+    - mps/materialization/evidence/MPS-MAT-008/green/cold-build.log
+  scope_note: >-
+    This inspection does not re-adjudicate the headless-build observation. The authoring-route
+    claim fails independently because one member of its checkpoint population is not
+    established.
+
+conclusion: >-
+  Four of five checkpoint members have explicit controlled MCP-authoring evidence. MPS-0 has
+  evidence of MPS-aware authorship but not of MCP authorship, and the endpoint registration
+  follows its closure. The complete frozen claim is therefore NOT ESTABLISHED. The obligation
+  remains unsatisfied; no inference or acceptance-basis amendment is made.
+
+limitations:
+  - Commit history records outcomes and selected mechanisms, not a complete execution trace.
+  - Absence of MCP evidence for MPS-0 is not proof that MCP was not used.
+  - The result is insufficiency of evidence, not a finding of prohibited text editing.

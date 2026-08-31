@@ -232,10 +232,11 @@ obligations:
         being reproducible without it
       observer: unobserved
       why: >-
-        This declaration is a note about scope rather than an evidence obligation, and it is
-        recorded as unobserved rather than reclassified. Deciding that a line in a frozen
-        evidence_required list is not really an obligation is a change to the freeze, which
-        belongs to whoever owns the item and not to the remediation actor.
+        ADJ-MAT008-001 authorized a retained controlled-history inspection. That inspection
+        established explicit MCP authoring evidence for MPS-1 through MPS-4 but not MPS-0:
+        the MPS-0 closure records MPS-aware creation, and the project-scoped MCP endpoint was
+        registered only after that closure. The complete claim therefore remains unobserved
+        and is not reclassified or inferred.
 
   MPS-MAT-009:
     - declaration: a named reviewer, since this item is a human judgement and no gate can stand in for it
@@ -328,15 +329,19 @@ dispositions:
       note that every prior checkpoint used MCP for authoring; this item is about the build
       being reproducible without it
     disposition: >-
-      Determine first whether a retained, attributable, hash-bound inspection record grounded
-      in controlled history can satisfy it. If the controlled history does not establish the
-      claim, it stays OPEN.
+      ADJ-MAT008-001 authorized a retained, attributable, hash-bound inspection grounded in
+      controlled history. The inspection covered MPS-0 through MPS-4 and returned
+      NOT_ESTABLISHED because MPS-0 lacks explicit MCP-authoring evidence. The obligation
+      stays OPEN.
     freeze_not_amended: >-
       This obligation reads as a scope note rather than an evidence obligation, and that is
       not sufficient reason to amend the freeze. Amending it would require a separately
       demonstrated defect in the obligation itself, which has not been established. It is
       left OPEN and reported, not reclassified.
-    candidate_artifact: none
+    candidate_artifact:
+      inspection: mps/materialization/evidence/MPS-MAT-008/authoring-history/inspection.yaml
+      manifest: mps/materialization/evidence/MPS-MAT-008/authoring-history/manifest.yaml
+      result: NOT_ESTABLISHED
     mechanically_bindable_now: false
 
   MPS-MAT-009#0:
