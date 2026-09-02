@@ -2,15 +2,15 @@
   "artifact_policy": "Every artifact this record references lives under mps/materialization/evidence/ and is committed, so its hash is verifiable from a fresh clone. An earlier version pointed the two primary hashes into build/work/, which is gitignored and which the test target deletes on every run: those hashes were dangling references to files a reviewer could not obtain, while the two supporting controls verified. All retained artifacts are stored with LF endings so git normalisation is a no-op and the bytes a reviewer clones are the bytes hashed.",
   "build": {
     "cold": true,
-    "drift": "clean",
+    "drift": "M mps/NLTPSGovernance/tests/nltps.modeltests/models/nltps.modeltests.headless@tests.mps",
     "exit_code": 0,
     "log": "mps/materialization/evidence/MPS-MAT-008/green/cold-build.log",
     "log_canonicalization": {
-      "as_produced_sha256": "a709703c91a4b9969a2cca88ea7c094f640d412a364b459c9d91b6af64e872ce",
+      "as_produced_sha256": "e958326c9772acb5719349574a6cb29be1893ecee152e8621fd6e9dbc4e7aa92",
       "rule": "evidence_canonicalization/v1"
     },
-    "log_sha256": "a709703c91a4b9969a2cca88ea7c094f640d412a364b459c9d91b6af64e872ce",
-    "model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
+    "log_sha256": "e958326c9772acb5719349574a6cb29be1893ecee152e8621fd6e9dbc4e7aa92",
+    "model_tree_sha256": "03fd5c8f1582222d0f07e120b295385fa7352ba138550a11919af64e01ea7ca2",
     "modules": [
       "nltps.foundation.mpl",
       "nltps.governance.mpl",
@@ -53,7 +53,7 @@
       "perturbed_model_tree_sha256": "df52b5e1dc7b7b2b8ee19c62ab8ed25fae9bbc3d35b0e0aa76d8e3584ee8ffa7",
       "report": "mps/materialization/evidence/MPS-MAT-008/failure-sensitivity/junit.xml",
       "report_canonicalization": {
-        "as_produced_sha256": "143aecd40c84cdea2d45e265b6f0f335fe7c02c595b42a559ff97e31bce22baf",
+        "as_produced_sha256": "a348d238febbfd03579880ab8aefacc4e346a1edaf229d03af2a9f9c16a9faac",
         "rule": "evidence_canonicalization/v1"
       },
       "report_sha256": "a348d238febbfd03579880ab8aefacc4e346a1edaf229d03af2a9f9c16a9faac",
@@ -86,7 +86,7 @@
       "perturbed_model_tree_sha256": "2308bbb60b40e54e5ceba4d7d874adfdd1b97a4065993efa53386748afafbf7a",
       "report": "mps/materialization/evidence/MPS-MAT-008/foreign-rule-discrimination/junit.xml",
       "report_canonicalization": {
-        "as_produced_sha256": "340a4850b7b27aa4efc6d8e3c021e8a8354c548db6ac91c2b9cdf2c4d7f720c0",
+        "as_produced_sha256": "550e0aa9a4a3a44d882c4ee0783529999f0507fb3d34a354f54bab41bb4ba366",
         "rule": "evidence_canonicalization/v1"
       },
       "report_sha256": "550e0aa9a4a3a44d882c4ee0783529999f0507fb3d34a354f54bab41bb4ba366",
@@ -96,28 +96,30 @@
     }
   },
   "controls_note": "Each control retains both halves of the experiment. The patch is the intervention: applying it to the base tree reproduces the perturbed hash exactly, and reversing it returns to base, both verified. The report is the observation. Without the patch a reviewer could see that S1 went red but would have to take the cause on the implementer's word, which is the one source an independent review is told not to rely on. Note that the interventions are reproducible in effect but not in bytes when performed through MPS: node ids are freshly allocated on each write, so a repeated perturbation yields a different tree hash. That is why the patch, not the procedure, is the artifact of record. These runs were re-executed on the frozen model state; they are reproducibility evidence, not archival evidence.",
-  "head": "edd6b0b1297674f73f71dd64e246bbafe3f1a8b0",
+  "head": "d049e873cb19cf8eb15f87c068bc04323dff3204",
   "model_tests": {
-    "authored": 2,
-    "discovered": 2,
+    "authored": 4,
+    "discovered": 4,
     "errors": 0,
-    "executed": 2,
+    "executed": 4,
     "failures": 0,
     "halt_on_failure": true,
     "identities": [
       "test_S1_assessed_claim_without_evidence_violates_REA_C_0021365532761392382845()",
-      "test_testAssessedClaimWithoutEvidenceIsRejected()"
+      "test_S2_passed_verdict_without_evidence_violates_REA_C_0032102985467559242594()",
+      "test_testAssessedClaimWithoutEvidenceIsRejected()",
+      "test_testPassedVerdictRuleHarness()"
     ],
-    "model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
+    "model_tree_sha256": "03fd5c8f1582222d0f07e120b295385fa7352ba138550a11919af64e01ea7ca2",
     "report": "mps/materialization/evidence/MPS-MAT-008/green/junit.xml",
     "report_canonicalization": {
-      "as_produced_sha256": "96273d00f78e5348f5de57181b5a2a46a70f119b9f5efafb5e85e79e543801cb",
+      "as_produced_sha256": "97d4702093f1c8e0ea7cc6e65e112542fe838fa4b1ac4671d366c7625c94ec77",
       "rule": "evidence_canonicalization/v1"
     },
-    "report_sha256": "72d1d14513ff38833a782ba9a3470960f958da6468a92bfa90fe461670f2453c",
+    "report_sha256": "eefc55db3146ac02c294e2bdabcc5b61bcc165c1b9dffc6c3436f28c7f770fe6",
     "verdict": "pass"
   },
   "model_tree_hash_normalises_line_endings": true,
-  "model_tree_sha256": "7a7f23626af65d467e9d72253d68f7c1819a3c1b6a9f8b7f22b1b26bde7774d3",
+  "model_tree_sha256": "03fd5c8f1582222d0f07e120b295385fa7352ba138550a11919af64e01ea7ca2",
   "mps_build": "MPS-261.25134.779"
 }

@@ -2682,10 +2682,10 @@ acceptance_items:
                   rather than in the evidence the item rests on.
                 invariant: >-
                   Every entry in initial_test_families has exactly one explicit disposition --
-                  carried, renamed, retired with rationale, or undecided pending an engineering
-                  decision. Every ledger family absent from the blueprint declares itself newly
-                  introduced and states its basis. Nothing may pass from one population to the
-                  other by silence.
+                  carried, renamed, retired with rationale, or authorized for materialization
+                  pending executable evidence. Every ledger family absent from the blueprint
+                  declares itself newly introduced and states its basis. Nothing may pass from one
+                  population to the other by silence.
                 dispositions:
                 - blueprint: node-and-constraint-tests
                   disposition: carried
@@ -2707,11 +2707,13 @@ acceptance_items:
                     style. Recorded as a rename with a noted scope difference rather than as a
                     clean carry.
                 - blueprint: typesystem-and-unit-tests
-                  disposition: materialize
+                  disposition: carried
+                  ledger: typesystem-and-unit-tests
                   adjudication: ADJ-TEST-FAMILY-001
-                  requirement: >-
-                    Explicit executable typesystem and unit tests distinct from the existing
-                    node-and-constraint population, with attributable authored, discovered,
+                  note: >-
+                    Materialized as the distinct REA_C_003_passed_verdict_typesystem_units
+                    NodesTestCase root. H2 is its unit-level harness witness and S2 is its
+                    rule-bound typesystem verdict; both have attributable authored, discovered,
                     and executed identities.
                 - blueprint: trace-relation-negative-tests
                   disposition: materialize
@@ -2755,6 +2757,23 @@ acceptance_items:
                   from the language and the antlib rather than invented, so the population is
                   checkable against MPS rather than against this document.
                 families:
+                - family: typesystem-and-unit-tests
+                  mechanism: >-
+                    jetbrains.mps.lang.test NodesTestCase with a dedicated unit-level harness
+                    method and a ReportErrorStatementReference bound to the production REA-C-003
+                    typesystem rule, executed by launchtests
+                  state: materialized
+                  population: >-
+                    2. H2 test_testPassedVerdictRuleHarness, mechanism witness only; S2
+                    test_S2_passed_verdict_without_evidence_violates_REA_C_0032102985467559242594,
+                    the REA-C-003 semantic verdict. Both belong to the distinct
+                    REA_C_003_passed_verdict_typesystem_units root and are not counted in the
+                    node-and-constraint family.
+                  evidence: >-
+                    Cold build followed by launchtests on the materialized model: the JUnit Jupiter
+                    report records 4 tests overall, including both exact H2 and S2 identities, with
+                    0 skipped, 0 failures, and 0 errors. The new family's authored = discovered =
+                    executed population is 2; the pre-existing H1 and S1 population remains 2.
                 - family: node-and-constraint-tests
                   mechanism: jetbrains.mps.lang.test NodesTestCase, executed by launchtests
                   state: materialized

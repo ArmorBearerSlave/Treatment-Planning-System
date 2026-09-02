@@ -85,10 +85,14 @@ class CurrencyGateTest(unittest.TestCase):
         with io.open(EVIDENCE, encoding="utf-8") as handle:
             evidence = json.load(handle)
         identities = evidence["model_tests"]["identities"]
-        self.assertEqual(2, len(identities))
+        self.assertEqual(4, len(identities))
         self.assertTrue(any("testAssessedClaimWithoutEvidenceIsRejected" in i
                             for i in identities), identities)
         self.assertTrue(any("REA_C_002" in i and i.startswith("test_S1")
+                            for i in identities), identities)
+        self.assertTrue(any("testPassedVerdictRuleHarness" in i
+                            for i in identities), identities)
+        self.assertTrue(any("REA_C_003" in i and i.startswith("test_S2")
                             for i in identities), identities)
 
 
@@ -146,9 +150,12 @@ class RedStateControlTest(CurrencyGateTest):
             "did not restore to the tree it perturbed from")
 
     def test_a_control_that_perturbed_nothing_is_rejected(self):
+        # Damages the control against its OWN base hash, not the top-level tree hash: the
+        # two are unrelated once the build/test verdicts are re-recorded on a later tree.
         self._damaged(
             lambda e: e["controls"]["failure_sensitivity"].update(
-                {"perturbed_model_tree_sha256": e["model_tree_sha256"]}),
+                {"perturbed_model_tree_sha256":
+                     e["controls"]["failure_sensitivity"]["base_model_tree_sha256"]}),
             "perturbed nothing")
 
     def test_a_control_where_the_harness_witness_failed_is_rejected(self):
@@ -393,7 +400,7 @@ class TestFamilyReconciliationTest(unittest.TestCase):
 
     def test_materialization_without_adjudication_fails(self):
         original = PLAN.read_text(encoding="utf-8")
-        anchor = "                  adjudication: ADJ-TEST-FAMILY-001\n"
+        anchor = "                  adjudication: ADJ-TEST-FAMILY-002\n"
         self.assertIn(anchor, original)
         try:
             PLAN.write_text(original.replace(anchor, "", 1),
@@ -410,9 +417,9 @@ class TestFamilyReconciliationTest(unittest.TestCase):
         original = PLAN.read_text(encoding="utf-8")
         anchor = (
             "                  requirement: >-\n"
-            "                    Explicit executable typesystem and unit tests distinct from the existing\n"
-            "                    node-and-constraint population, with attributable authored, discovered,\n"
-            "                    and executed identities.\n"
+            "                    A distinct executable negative-test population for trace-relation validity,\n"
+            "                    with attributable authored, discovered, and executed identities. Existing\n"
+            "                    GOV-C-002 examples remain evidence for their original constraint claim.\n"
         )
         self.assertIn(anchor, original)
         try:

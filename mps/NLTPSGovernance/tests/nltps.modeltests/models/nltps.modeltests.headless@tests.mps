@@ -103,5 +103,37 @@
       <node concept="3clFbS" id="1bNmcZ3WSdS" role="3clF47" />
     </node>
   </node>
+  <node concept="1lH9Xt" id="1OJjyg1FmHk">
+    <property role="3DII0k" value="2hh8MJdVwqX/command" />
+    <property role="TrG5h" value="REA_C_003_passed_verdict_typesystem_units" />
+    <node concept="1qefOq" id="1OJjyg1FmHl" role="1SKRRt">
+      <node concept="3hnRmG" id="1OJjyg1FmHn" role="1qenE9">
+        <property role="3hnRm_" value="passedVerdictWithoutEvidence" />
+        <property role="3hnRm$" value="1HxEvIlveq9/passed" />
+        <ref role="3gIvZZ" to="pb3e:1bNmcZ2uzo_" />
+        <ref role="3hnRmZ" to="pb3e:1bNmcZ2uzoK" />
+        <ref role="3hnRmY" to="pb3e:1bNmcZ3JGzo" />
+        <node concept="3gIvZJ" id="1OJjyg1FmHq" role="3gIvZz">
+          <property role="3gIvZX" value="REA-C-003-TEST" />
+        </node>
+        <node concept="3gIvZH" id="1OJjyg1FmHr" role="3gIvZy">
+          <property role="3gIvZS" value="0.2" />
+        </node>
+        <node concept="7CXmI" id="1OJjyg1FmHs" role="lGtFl">
+          <node concept="1TM$A" id="1OJjyg1FmHy" role="7EUXB">
+            <property role="TrG5h" value="S2_passed_verdict_without_evidence_violates_REA_C_003" />
+            <node concept="2PYRI3" id="1OJjyg1FmHz" role="3lydEf">
+              <ref role="39XzEq" to="icm7:1bNmcZ3JHZR" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="1LZb2c" id="1OJjyg1FmHt" role="1SL9yI">
+      <property role="TrG5h" value="testPassedVerdictRuleHarness" />
+      <node concept="3cqZAl" id="1OJjyg1FmHw" role="3clF45" />
+      <node concept="3clFbS" id="1OJjyg1FmHx" role="3clF47" />
+    </node>
+  </node>
 </model>
 
