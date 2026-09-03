@@ -7,6 +7,27 @@ import type { CompiledIntent, InputType, ParseResult, ParserContext } from './ty
 
 const EVIDENCE = ['NLI-001', 'NLI-002', 'NLI-003', 'NLI-005'];
 
+// Matches "structures"/"contours" optionally prefixed with the DICOM object
+// name ("RTSTRUCT contours", "rt struct structures"), "structure/contour
+// set" alone, "RTSTRUCT" alone, and an optional trailing ", whole set".
+const STRUCTURES_NOUN =
+  '(?:(?:rt\\s*struct(?:ure)?s?\\s+)?(?:structures|contours)|structure set|contour set|rt\\s*struct(?:ure)?s?)(?:,?\\s*whole set)?';
+const STRUCTURES_NOUN_RE = new RegExp(`^(?:the\\s+)?${STRUCTURES_NOUN}$`);
+const VERB_STRUCTURES_RE = new RegExp(`^(show|display|hide|remove|toggle)\\s+(?:the\\s+)?${STRUCTURES_NOUN}$`);
+
+// Matches "dose"/"rtdose" alone or followed by "overlay" ("RTDOSE overlay",
+// "dose overlay") -- bare "overlay" alone is deliberately NOT matched here,
+// since it's ambiguous with a structure/contour overlay.
+const DOSE_NOUN = '(?:(?:rt\\s*dose|dose)\\s+overlay|rt\\s*dose|dose)';
+const DOSE_NOUN_RE = new RegExp(`^(?:the\\s+)?${DOSE_NOUN}$`);
+const VERB_DOSE_RE = new RegExp(`^(show|display|hide|remove|toggle)\\s+(?:the\\s+)?${DOSE_NOUN}$`);
+
+const COMMAND_HELP =
+  'Supported commands: slice navigation ("go to slice 45", "next slice", ' +
+  '"previous 3 slices"), show/hide/toggle dose, show/hide/toggle structures ' +
+  '(or a named ROI, e.g. "hide the prostate"), reset view, zoom in/out. A ' +
+  'bare loaded ROI name or "dose"/"structures" on its own toggles it.';
+
 function baseIntent(
   action: CompiledIntent['action'],
   objects: string[],
@@ -48,18 +69,24 @@ export function parseCommand(rawInput: string, inputType: InputType, context: Pa
     return clarify('No command was recognized in an empty input. What would you like to do?');
   }
   const { negated, text: withoutNegation } = stripNegation(trimmed);
-  // Speech transcripts routinely include trailing sentence punctuation and
-  // filler words a typed command wouldn't ("please", a trailing period/
-  // question mark) -- strip those before matching so they don't block an
-  // otherwise well-formed command. This is still plain normalization, not
-  // fuzzy/ML matching (NLI-005): anything not covered below still falls
-  // through to a clarification request rather than being guessed at.
+  // Speech transcripts routinely include trailing sentence punctuation,
+  // filler words a typed command wouldn't ("please"), and hyphens where a
+  // typed command would have a space ("RT-struck" for "RT struct") --
+  // strip/normalize those before matching so they don't block an otherwise
+  // well-formed command. This is still plain normalization, not fuzzy/ML
+  // matching (NLI-005): anything not covered below still falls through to
+  // a clarification request rather than being guessed at.
   const text = withoutNegation
     .toLowerCase()
     .replace(/[.!?]+$/g, '')
     .replace(/\bplease\b/g, '')
+    .replace(/-/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+
+  if (/^(?:help|commands?|what commands?(?: can i (?:say|use))?|what can i say)$/.test(text)) {
+    return clarify(COMMAND_HELP);
+  }
 
   // --- slice navigation ---
   let m = text.match(/^(?:go to|jump to|goto)?\s*(?:the\s+)?slice\s+(\d+)$/);
@@ -120,7 +147,7 @@ export function parseCommand(rawInput: string, inputType: InputType, context: Pa
   }
 
   // --- dose visibility ---
-  m = text.match(/^(show|display|hide|remove|toggle)\s+(?:the\s+)?dose$/);
+  m = text.match(VERB_DOSE_RE);
   if (m) {
     if (!context.doseLoaded) {
       return clarify('No RTDOSE overlay is loaded yet, so there is nothing to show or hide. Load one first?');
@@ -143,7 +170,7 @@ export function parseCommand(rawInput: string, inputType: InputType, context: Pa
   }
 
   // --- structure-set (whole-set) visibility ---
-  m = text.match(/^(show|display|hide|remove|toggle)\s+(?:the\s+)?(?:structures|contours)$/);
+  m = text.match(VERB_STRUCTURES_RE);
   if (m) {
     if (!context.structuresLoaded) {
       return clarify('No RTSTRUCT contours are loaded yet, so there is nothing to show or hide. Load one first?');
@@ -158,6 +185,45 @@ export function parseCommand(rawInput: string, inputType: InputType, context: Pa
         undefined,
         ['RTSTRUCT contours are loaded'],
         [`all ROI contour outlines visibility is set to ${visible}`],
+        inputType,
+        rawInput,
+        trimmed,
+      ),
+    );
+  }
+
+  // --- bare noun, no verb: "dose" or "structures" alone default to toggle,
+  // a well-defined action rather than a guessed show/hide direction.
+  if (DOSE_NOUN_RE.test(text)) {
+    if (!context.doseLoaded) {
+      return clarify('No RTDOSE overlay is loaded yet, so there is nothing to show or hide. Load one first?');
+    }
+    return intent(
+      baseIntent(
+        'toggle_dose_visibility',
+        ['DOSE_VOLUME'],
+        { visible: 'toggle' },
+        undefined,
+        ['an RTDOSE volume is loaded'],
+        ['RTDOSE color-wash overlay visibility is toggled'],
+        inputType,
+        rawInput,
+        trimmed,
+      ),
+    );
+  }
+  if (STRUCTURES_NOUN_RE.test(text)) {
+    if (!context.structuresLoaded) {
+      return clarify('No RTSTRUCT contours are loaded yet, so there is nothing to show or hide. Load one first?');
+    }
+    return intent(
+      baseIntent(
+        'toggle_structure_visibility',
+        ['ALL_ROIS'],
+        { visible: 'toggle' },
+        undefined,
+        ['RTSTRUCT contours are loaded'],
+        ['all ROI contour outlines visibility is toggled'],
         inputType,
         rawInput,
         trimmed,
@@ -198,6 +264,36 @@ export function parseCommand(rawInput: string, inputType: InputType, context: Pa
     );
   }
 
+  // --- bare ROI name, no verb (e.g. just "prostate" or "body"): also
+  // toggle, the same well-defined default as bare "dose"/"structures"
+  // above. Require at least 3 characters so a stray short word doesn't
+  // spuriously substring-match an ROI name.
+  {
+    const nameFragment = text.replace(/^(?:the|a)\s+/, '');
+    if (nameFragment.length >= 3 && context.loadedRoiNames.length > 0) {
+      const matches = context.loadedRoiNames.filter((name) => name.toLowerCase().includes(nameFragment));
+      if (matches.length === 1) {
+        const roiName = matches[0];
+        return intent(
+          baseIntent(
+            'toggle_structure_visibility',
+            [roiName],
+            { visible: 'toggle' },
+            undefined,
+            [`ROI "${roiName}" is loaded`],
+            [`ROI "${roiName}" contour visibility is toggled`],
+            inputType,
+            rawInput,
+            trimmed,
+          ),
+        );
+      }
+      if (matches.length > 1) {
+        return clarify(`"${nameFragment}" matches multiple ROIs (${matches.join(', ')}). Which one did you mean?`);
+      }
+    }
+  }
+
   // --- reset view ---
   if (/^reset\s+(?:the\s+)?(?:view|camera)$/.test(text)) {
     return intent(
@@ -236,6 +332,6 @@ export function parseCommand(rawInput: string, inputType: InputType, context: Pa
   }
 
   return clarify(
-    `"${rawInput}" was not recognized as a supported command (slice navigation, show/hide dose, show/hide structures or a named ROI, reset view, zoom in/out). Could you rephrase it?`,
+    `"${rawInput}" was not recognized as a supported command. ${COMMAND_HELP}`,
   );
 }

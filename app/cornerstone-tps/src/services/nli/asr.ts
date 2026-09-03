@@ -5,7 +5,10 @@ import { pipeline, type AutomaticSpeechRecognitionPipeline } from '@huggingface/
 // SpeechRecognition (which streams audio to a cloud service and fails with
 // a "network" error offline). The model weights download once from the HF
 // hub CDN and are cached by the browser afterwards.
-const MODEL_ID = 'Xenova/whisper-tiny.en';
+// "tiny" produced enough transcription errors on short commands (word
+// splits like "Con Tours" for "contours") to be worth the larger download;
+// "base" is a meaningful accuracy step up for short command-length audio.
+const MODEL_ID = 'Xenova/whisper-base.en';
 
 let pipelinePromise: Promise<AutomaticSpeechRecognitionPipeline> | null = null;
 
