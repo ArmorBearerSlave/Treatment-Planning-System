@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { parseCommand } from '../services/nli/parser';
+import { COMMAND_CATEGORIES, parseCommand } from '../services/nli/parser';
 import { transcribeAudio } from '../services/nli/asr';
 import { MicRecorder } from '../services/nli/recorder';
 import type { AuditEntry, CompiledIntent, InputType, ParserContext } from '../services/nli/types';
@@ -217,6 +217,29 @@ export function NliCommandBar({ context, onExecute }: NliCommandBarProps) {
           </button>
         )}
       </form>
+
+      <details style={{ marginTop: '0.5rem' }}>
+        <summary>Commands</summary>
+        <ul style={{ paddingLeft: '1rem' }}>
+          {COMMAND_CATEGORIES.map((category) => (
+            <li key={category.label} style={{ marginBottom: '0.25rem' }}>
+              {category.label}:{' '}
+              {category.examples.map((example, i) => (
+                <span key={example}>
+                  {i > 0 && ', '}
+                  <button
+                    type="button"
+                    onClick={() => setText(example)}
+                    style={{ font: 'inherit', padding: '0 0.25rem' }}
+                  >
+                    {example}
+                  </button>
+                </span>
+              ))}
+            </li>
+          ))}
+        </ul>
+      </details>
 
       {speechError && (
         <div style={{ marginTop: '0.5rem', color: '#c77' }}>

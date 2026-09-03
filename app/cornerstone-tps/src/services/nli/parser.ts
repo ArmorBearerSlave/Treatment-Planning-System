@@ -22,11 +22,29 @@ const DOSE_NOUN = '(?:(?:rt\\s*dose|dose)\\s+overlay|rt\\s*dose|dose)';
 const DOSE_NOUN_RE = new RegExp(`^(?:the\\s+)?${DOSE_NOUN}$`);
 const VERB_DOSE_RE = new RegExp(`^(show|display|hide|remove|toggle)\\s+(?:the\\s+)?${DOSE_NOUN}$`);
 
-const COMMAND_HELP =
-  'Supported commands: slice navigation ("go to slice 45", "next slice", ' +
-  '"previous 3 slices"), show/hide/toggle dose, show/hide/toggle structures ' +
-  '(or a named ROI, e.g. "hide the prostate"), reset view, zoom in/out. A ' +
-  'bare loaded ROI name or "dose"/"structures" on its own toggles it.';
+// Single source of truth for the command menu shown in the UI, the "help"
+// command's response, and the catch-all "not recognized" message -- so
+// none of the three can silently drift out of sync with each other.
+export interface CommandCategory {
+  label: string;
+  examples: string[];
+}
+
+export const COMMAND_CATEGORIES: CommandCategory[] = [
+  { label: 'Slice navigation', examples: ['go to slice 45', 'next slice', 'previous 3 slices'] },
+  { label: 'RTDOSE overlay', examples: ['show dose', 'hide dose', 'toggle dose', 'dose'] },
+  { label: 'RTSTRUCT contours (whole set)', examples: ['show structures', 'hide structures', 'structures'] },
+  { label: 'A named ROI', examples: ['hide the prostate', 'show BODY', 'prostate'] },
+  { label: 'Camera', examples: ['reset view', 'zoom in', 'zoom out 2'] },
+  { label: 'Help', examples: ['help', 'what can I say?'] },
+];
+
+const COMMAND_HELP = 'Supported commands: ' + COMMAND_CATEGORIES.map(describeCategory).join('; ') + '.';
+
+function describeCategory(category: CommandCategory): string {
+  return `${category.label} (${category.examples.map((e) => `"${e}"`).join(', ')})`;
+}
+
 
 function baseIntent(
   action: CompiledIntent['action'],
