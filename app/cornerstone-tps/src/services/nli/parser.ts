@@ -48,10 +48,21 @@ export function parseCommand(rawInput: string, inputType: InputType, context: Pa
     return clarify('No command was recognized in an empty input. What would you like to do?');
   }
   const { negated, text: withoutNegation } = stripNegation(trimmed);
-  const text = withoutNegation.toLowerCase().replace(/\s+/g, ' ').trim();
+  // Speech transcripts routinely include trailing sentence punctuation and
+  // filler words a typed command wouldn't ("please", a trailing period/
+  // question mark) -- strip those before matching so they don't block an
+  // otherwise well-formed command. This is still plain normalization, not
+  // fuzzy/ML matching (NLI-005): anything not covered below still falls
+  // through to a clarification request rather than being guessed at.
+  const text = withoutNegation
+    .toLowerCase()
+    .replace(/[.!?]+$/g, '')
+    .replace(/\bplease\b/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 
   // --- slice navigation ---
-  let m = text.match(/^(?:go to|jump to|goto)?\s*slice\s+(\d+)$/);
+  let m = text.match(/^(?:go to|jump to|goto)?\s*(?:the\s+)?slice\s+(\d+)$/);
   if (m) {
     const requested = Number(m[1]);
     if (!Number.isInteger(requested) || requested < 1 || requested > context.totalSlices) {
@@ -109,7 +120,7 @@ export function parseCommand(rawInput: string, inputType: InputType, context: Pa
   }
 
   // --- dose visibility ---
-  m = text.match(/^(show|display|hide|remove|toggle)\s+dose$/);
+  m = text.match(/^(show|display|hide|remove|toggle)\s+(?:the\s+)?dose$/);
   if (m) {
     if (!context.doseLoaded) {
       return clarify('No RTDOSE overlay is loaded yet, so there is nothing to show or hide. Load one first?');
@@ -132,7 +143,7 @@ export function parseCommand(rawInput: string, inputType: InputType, context: Pa
   }
 
   // --- structure-set (whole-set) visibility ---
-  m = text.match(/^(show|display|hide|remove|toggle)\s+(?:structures|contours)$/);
+  m = text.match(/^(show|display|hide|remove|toggle)\s+(?:the\s+)?(?:structures|contours)$/);
   if (m) {
     if (!context.structuresLoaded) {
       return clarify('No RTSTRUCT contours are loaded yet, so there is nothing to show or hide. Load one first?');
@@ -158,7 +169,7 @@ export function parseCommand(rawInput: string, inputType: InputType, context: Pa
   m = text.match(/^(show|display|hide|remove|toggle)\s+(.+)$/);
   if (m) {
     const verb = m[1];
-    const nameFragment = m[2].trim();
+    const nameFragment = m[2].trim().replace(/^(?:the|a)\s+/, '');
     const matches = context.loadedRoiNames.filter((name) => name.toLowerCase().includes(nameFragment));
     if (matches.length === 0) {
       return clarify(
