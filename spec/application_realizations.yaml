@@ -46,6 +46,12 @@ applications:
       human_factors_evaluation: not_started
     notes: >-
       Technical feasibility spike: Cornerstone3D + Vite, hosted locally and
-      on a DGX Spark. Renders CT images from synthetic XCAT-derived DICOM
-      data. Claims no realized sub-requirement yet -- component allocation to
-      C-UX-01 records intended future scope, not completed assurance work.
+      on a DGX Spark. Renders CT volumes, an RTDOSE color-wash overlay, and
+      RTSTRUCT contour outlines from synthetic XCAT-derived DICOM data, all
+      via ad hoc manual DICOM parsing rather than a reviewed, requirement-
+      driven data pipeline. Claims no realized sub-requirement yet --
+      component allocation to C-UX-01 records intended future scope, not
+      completed assurance work. No formal traceability mapping, risk
+      analysis, verification evidence, or human factors evaluation exists
+      for this code; all such review is independent human reviewer work
+      this entry does not and cannot substitute for.
