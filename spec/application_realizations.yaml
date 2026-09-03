@@ -1,0 +1,51 @@
+schema_version: "0.1"
+status: proposed_application_realization_catalog
+purpose: >-
+  Registers concrete software applications that realize NL-TPS components,
+  distinct from spec/components.yaml (the abstract component catalog) and
+  overleaf/NL_TPS_Component_Realization.tex (the team/component allocation
+  narrative). An entry here does not constitute an approved design, risk
+  acceptance, verification, commissioning, or clinical release. The program
+  has decided to produce multiple applications from the NL-TPS controlled
+  requirements; this file exists so each one is discoverable and traceable
+  from the moment it starts, rather than retrofitted after code exists.
+
+naming_convention:
+  namespace_root: nltps.apps
+  rule: >-
+    Every registered application uses a namespace under nltps.apps.<name>,
+    per ADR-002's requirement that machine identifiers use the existing
+    nltps namespace. The namespace is assigned at registration and is a
+    configuration change like any other identifier, not an editorial detail.
+
+registration_requirements:
+  - Every application shall be registered here before its component or
+    requirement realization claims are cited elsewhere as traceable.
+  - realizes_requirements shall list only sub-requirement IDs with actual
+    attributable traceability, risk, and verification evidence for this
+    application. A component allocation alone does not populate this list.
+  - clinical_use_permitted shall be false until a named clinical, quality,
+    and regulatory approval record exists for this application specifically.
+  - Removing or renaming an application entry is a controlled change; it does
+    not delete history the entry has already accumulated.
+
+applications:
+  - id: APP-VIEWER-001
+    name: NL-TPS Cornerstone3D Viewer Prototype
+    namespace: nltps.apps.viewer
+    repo_path: app/cornerstone-tps
+    status: independent_prototype
+    clinical_use_permitted: false
+    realizes_components:
+      - C-UX-01
+    realizes_requirements: []
+    maturity:
+      formal_traceability: not_started
+      risk_analysis: not_started
+      verification_evidence: not_started
+      human_factors_evaluation: not_started
+    notes: >-
+      Technical feasibility spike: Cornerstone3D + Vite, hosted locally and
+      on a DGX Spark. Renders CT images from synthetic XCAT-derived DICOM
+      data. Claims no realized sub-requirement yet -- component allocation to
+      C-UX-01 records intended future scope, not completed assurance work.
