@@ -9,6 +9,7 @@ import {
   imageLoader,
   metaData,
   utilities,
+  geometryLoader,
   type Types,
 } from '@cornerstonejs/core';
 import { wadouri } from '@cornerstonejs/dicom-image-loader';
@@ -19,6 +20,7 @@ import {
   WindowLevelTool,
   ZoomTool,
   StackScrollTool,
+  segmentation,
 } from '@cornerstonejs/tools';
 import { ensureCornerstoneInitialized } from '../services/cornerstoneInit';
 
@@ -27,6 +29,7 @@ const VIEWPORT_ID = 'tps-volume-viewport';
 const TOOL_GROUP_ID = 'tps-tool-group';
 const CT_VOLUME_ID = 'cornerstoneStreamingImageVolume:CT_VOLUME';
 const DOSE_VOLUME_ID = 'cornerstoneStreamingImageVolume:DOSE_VOLUME';
+const RTSTRUCT_SEGMENTATION_ID = 'RTSTRUCT_SEGMENTATION';
 
 // wadouri's metaData.metaDataProvider (the bridge into core's generic
 // metaData registry, which volumes read geometry through) reads from
@@ -265,6 +268,93 @@ export function DicomViewer() {
     setStatus(`Loaded RTDOSE (${numberOfFrames} frames, scaling ${doseGridScaling.toExponential(3)} Gy/unit) as a color-wash overlay.`);
   }, []);
 
+  const onRtstructFileSelected = useCallback(async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    setStatus('Loading RTSTRUCT...');
+
+    const fileId = wadouri.fileManager.add(file);
+    const dataSet = await wadouri.dataSetCacheManager.load(fileId, wadouri.loadFileRequest, fileId);
+
+    const roiNames = new Map<number, string>();
+    for (const item of dataSet.elements['x30060020']?.items ?? []) {
+      const ds = item.dataSet;
+      if (!ds) continue;
+      roiNames.set(ds.intString('x30060022') ?? -1, ds.string('x30060026') ?? '');
+    }
+    const frameOfReferenceUID = dataSet.string('x00200052') ?? '';
+
+    // One geometryId (contour set) per ROI, each carrying its own
+    // segmentIndex/color -- referenced together by a single segmentation.
+    const geometryIds: string[] = [];
+    const segmentColors: Array<{ segmentIndex: number; color: Types.Point3 }> = [];
+    let segmentIndex = 1;
+    for (const item of dataSet.elements['x30060039']?.items ?? []) {
+      const ds = item.dataSet;
+      if (!ds) continue;
+      const referencedRoiNumber = ds.intString('x30060084') ?? -1;
+      const colorStr = ds.string('x3006002a');
+      const rgb = colorStr?.split('\\').map(Number);
+      const color: Types.Point3 = rgb && rgb.length === 3 ? [rgb[0], rgb[1], rgb[2]] : [255, 255, 0];
+
+      const contourData: Types.ContourData[] = [];
+      for (const contourItem of ds.elements['x30060040']?.items ?? []) {
+        const cds = contourItem.dataSet;
+        if (!cds) continue;
+        const dataStr = cds.string('x30060050');
+        if (!dataStr) continue;
+        const nums = dataStr.split('\\').map(Number);
+        const points: Types.Point3[] = [];
+        for (let i = 0; i + 2 < nums.length; i += 3) points.push([nums[i], nums[i + 1], nums[i + 2]]);
+        if (points.length > 0) {
+          contourData.push({ points, type: Enums.ContourType.CLOSED_PLANAR, color, segmentIndex });
+        }
+      }
+      if (contourData.length === 0) continue;
+
+      const geometryId = `rtstruct-roi-${referencedRoiNumber}`;
+      geometryLoader.createAndCacheGeometry(geometryId, {
+        type: Enums.GeometryType.CONTOUR,
+        geometryData: { id: geometryId, data: contourData, frameOfReferenceUID, color },
+      });
+      geometryIds.push(geometryId);
+      segmentColors.push({ segmentIndex, color });
+      segmentIndex += 1;
+    }
+
+    segmentation.addSegmentations([
+      {
+        segmentationId: RTSTRUCT_SEGMENTATION_ID,
+        representation: { type: ToolsEnums.SegmentationRepresentations.Contour, data: { geometryIds } },
+      },
+    ]);
+    segmentation.addContourRepresentationToViewport(VIEWPORT_ID, [
+      { segmentationId: RTSTRUCT_SEGMENTATION_ID },
+    ]);
+    // addContourRepresentationToViewport builds the geometry-derived
+    // annotations asynchronously; the per-segment color LUT entries it
+    // creates don't exist yet if set immediately afterwards.
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    // Outline only (no fill) so the CT/dose underneath stays visible, and
+    // each ROI keeps its own DICOM-authored color rather than a shared
+    // default (contour geometry's own `color` field is cosmetic metadata
+    // only -- rendering reads a separate per-segment color LUT).
+    segmentation.config.style.setStyle(
+      { type: ToolsEnums.SegmentationRepresentations.Contour },
+      { renderFill: false, outlineWidth: 2 },
+    );
+    for (const { segmentIndex: idx, color } of segmentColors) {
+      segmentation.config.color.setSegmentIndexColor(VIEWPORT_ID, RTSTRUCT_SEGMENTATION_ID, idx, [
+        color[0],
+        color[1],
+        color[2],
+        255,
+      ]);
+    }
+
+    setStatus(`Loaded RTSTRUCT with ${geometryIds.length} ROI contour(s).`);
+  }, []);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
       <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -285,6 +375,15 @@ export function DicomViewer() {
             accept=".dcm,application/dicom"
             disabled={!ready || !ctLoaded}
             onChange={(e) => onDoseFileSelected(e.target.files)}
+          />
+        </label>
+        <label style={{ fontFamily: 'sans-serif', fontSize: '0.85rem' }}>
+          RTSTRUCT:{' '}
+          <input
+            type="file"
+            accept=".dcm,application/dicom"
+            disabled={!ready || !ctLoaded}
+            onChange={(e) => onRtstructFileSelected(e.target.files)}
           />
         </label>
       </div>
