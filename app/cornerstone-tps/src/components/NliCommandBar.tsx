@@ -34,8 +34,10 @@ export function NliCommandBar({ context, onExecute }: NliCommandBarProps) {
   const [text, setText] = useState('');
   const [stage, setStage] = useState<Stage>({ kind: 'idle' });
   const [listening, setListening] = useState(false);
+  const [speechError, setSpeechError] = useState<string | null>(null);
   const [ledger, setLedger] = useState<AuditEntry[]>([]);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const gotResultRef = useRef(false);
   const speechSupported = getSpeechRecognitionConstructor() !== undefined;
 
   const appendLedger = useCallback((entry: Omit<AuditEntry, 'id' | 'timestamp'>) => {
@@ -77,30 +79,74 @@ export function NliCommandBar({ context, onExecute }: NliCommandBarProps) {
   );
 
   const startListening = useCallback(() => {
+    // Ignore a second mousedown/touchstart while already listening (e.g. a
+    // stray repeat event) rather than leaking a second recognition instance.
+    if (recognitionRef.current) return;
     const Ctor = getSpeechRecognitionConstructor();
     if (!Ctor) return;
+    setSpeechError(null);
+    gotResultRef.current = false;
     const recognition = new Ctor();
     recognition.continuous = false;
     recognition.interimResults = false;
     recognition.lang = 'en-US';
     recognition.onresult = (event) => {
+      gotResultRef.current = true;
       const last = event.results[event.results.length - 1];
       const transcript = last?.[0]?.transcript ?? '';
       if (transcript) setStage({ kind: 'confirm_transcript', rawInput: transcript, transcript });
     };
-    recognition.onerror = () => setListening(false);
-    recognition.onend = () => setListening(false);
+    // The recognition service can fail or time out on its own (denied mic
+    // permission, no microphone, silence) independent of the button being
+    // released -- surface it instead of silently reverting to "Hold to talk"
+    // with no explanation, which is indistinguishable from "broken".
+    recognition.onerror = (event) => {
+      const errorCode = (event as unknown as { error?: string }).error ?? 'unknown error';
+      setSpeechError(
+        errorCode === 'not-allowed' || errorCode === 'service-not-allowed'
+          ? 'Microphone permission was denied. Allow microphone access for this site and try again.'
+          : errorCode === 'no-speech'
+            ? 'No speech was detected. Hold the button, wait for the prompt, then speak.'
+            : `Speech recognition error: ${errorCode}.`,
+      );
+      recognitionRef.current = null;
+      setListening(false);
+    };
+    recognition.onend = () => {
+      if (!gotResultRef.current) {
+        setSpeechError((prev) => prev ?? 'No speech was detected. Hold the button, wait for the prompt, then speak.');
+      }
+      recognitionRef.current = null;
+      setListening(false);
+    };
     recognitionRef.current = recognition;
-    recognition.start();
-    setListening(true);
+    try {
+      recognition.start();
+      setListening(true);
+    } catch (err) {
+      // start() throws synchronously if a recognition is already active in
+      // this tab/frame -- without this catch, listening/recognitionRef would
+      // stay set with nothing actually running, and the button would look
+      // stuck on every subsequent press.
+      recognitionRef.current = null;
+      setListening(false);
+      setSpeechError(err instanceof Error ? err.message : 'Could not start speech recognition.');
+    }
   }, []);
 
   // Explicit user-initiated start/stop only -- never left running in the
   // background (NLI-001). Releasing the button stops listening immediately.
   const stopListening = useCallback(() => {
-    recognitionRef.current?.stop();
-    recognitionRef.current = null;
-    setListening(false);
+    try {
+      // stop() throws if called before the service has actually started
+      // (e.g. a very quick click released before start() finished, or after
+      // it already ended on its own) -- without this catch that exception
+      // was uncaught, leaving `listening` stuck true and the button unusable
+      // until the page was reloaded.
+      recognitionRef.current?.stop();
+    } catch {
+      // already stopped/not started -- nothing to do
+    }
   }, []);
 
   const confirmTranscript = useCallback(
@@ -174,7 +220,7 @@ export function NliCommandBar({ context, onExecute }: NliCommandBarProps) {
             type="button"
             onMouseDown={startListening}
             onMouseUp={stopListening}
-            onMouseLeave={() => listening && stopListening()}
+            onMouseLeave={stopListening}
             onTouchStart={startListening}
             onTouchEnd={stopListening}
           >
@@ -182,6 +228,15 @@ export function NliCommandBar({ context, onExecute }: NliCommandBarProps) {
           </button>
         )}
       </form>
+
+      {speechError && (
+        <div style={{ marginTop: '0.5rem', color: '#c77' }}>
+          {speechError}
+          <button type="button" onClick={() => setSpeechError(null)} style={{ marginLeft: '0.5rem' }}>
+            Dismiss
+          </button>
+        </div>
+      )}
 
       {stage.kind === 'confirm_transcript' && (
         <TranscriptConfirm
