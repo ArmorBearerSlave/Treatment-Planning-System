@@ -23,6 +23,8 @@ import {
   segmentation,
 } from '@cornerstonejs/tools';
 import { ensureCornerstoneInitialized } from '../services/cornerstoneInit';
+import { NliCommandBar } from './NliCommandBar';
+import type { CompiledIntent } from '../services/nli/types';
 
 const RENDERING_ENGINE_ID = 'tps-rendering-engine';
 const VIEWPORT_ID = 'tps-volume-viewport';
@@ -48,6 +50,11 @@ export function DicomViewer() {
   const [ready, setReady] = useState(false);
   const [ctLoaded, setCtLoaded] = useState(false);
   const [status, setStatus] = useState('Initializing Cornerstone3D...');
+  const [doseLoaded, setDoseLoaded] = useState(false);
+  const [structuresLoaded, setStructuresLoaded] = useState(false);
+  const [loadedRoiNames, setLoadedRoiNames] = useState<string[]>([]);
+  const [totalSlices, setTotalSlices] = useState(0);
+  const roiNameToSegmentIndexRef = useRef<Map<string, number>>(new Map());
 
   useEffect(() => {
     let cancelled = false;
@@ -145,8 +152,73 @@ export function DicomViewer() {
     renderingEngine.render();
 
     setCtLoaded(true);
+    setTotalSlices(viewport.getNumberOfSlices());
     setStatus(`Loaded ${imageIds.length} CT image(s). Left-drag: window/level, middle-drag: pan, right-drag: zoom, wheel: scroll.`);
   }, []);
+
+  const executeIntent = useCallback((intent: CompiledIntent) => {
+    const renderingEngine = getRenderingEngine(RENDERING_ENGINE_ID);
+    if (!renderingEngine) throw new Error('Viewer is not initialized.');
+    const viewport = renderingEngine.getViewport(VIEWPORT_ID) as Types.IVolumeViewport;
+    const contourSpecifier = { segmentationId: RTSTRUCT_SEGMENTATION_ID, type: ToolsEnums.SegmentationRepresentations.Contour };
+
+    switch (intent.action) {
+      case 'navigate_slice': {
+        const { targetSliceIndex, deltaSlices } = intent.parameters;
+        if (typeof targetSliceIndex === 'number') {
+          viewport.scroll(targetSliceIndex - viewport.getSliceIndex());
+        } else if (typeof deltaSlices === 'number') {
+          viewport.scroll(deltaSlices);
+        }
+        renderingEngine.render();
+        break;
+      }
+      case 'toggle_dose_visibility': {
+        const doseActor = viewport.getActors().find((a) => a.referencedId === DOSE_VOLUME_ID)?.actor as
+          | { getVisibility(): boolean; setVisibility(visible: boolean): void }
+          | undefined;
+        if (!doseActor) throw new Error('RTDOSE volume actor not found.');
+        const requested = intent.parameters.visible;
+        const nextVisible = requested === 'toggle' ? !doseActor.getVisibility() : Boolean(requested);
+        doseActor.setVisibility(nextVisible);
+        renderingEngine.render();
+        break;
+      }
+      case 'toggle_structure_visibility': {
+        const requested = intent.parameters.visible;
+        const target = intent.objects[0];
+        if (target === 'ALL_ROIS') {
+          const current = segmentation.config.visibility.getSegmentationRepresentationVisibility(VIEWPORT_ID, contourSpecifier) ?? true;
+          const nextVisible = requested === 'toggle' ? !current : Boolean(requested);
+          segmentation.config.visibility.setSegmentationRepresentationVisibility(VIEWPORT_ID, contourSpecifier, nextVisible);
+        } else {
+          const segmentIndex = roiNameToSegmentIndexRef.current.get(target);
+          if (segmentIndex === undefined) throw new Error(`Unknown ROI "${target}".`);
+          const current = segmentation.config.visibility.getSegmentIndexVisibility(VIEWPORT_ID, contourSpecifier, segmentIndex);
+          const nextVisible = requested === 'toggle' ? !current : Boolean(requested);
+          segmentation.config.visibility.setSegmentIndexVisibility(VIEWPORT_ID, contourSpecifier, segmentIndex, nextVisible);
+        }
+        renderingEngine.render();
+        break;
+      }
+      case 'reset_view': {
+        viewport.resetCamera();
+        renderingEngine.render();
+        break;
+      }
+      case 'zoom': {
+        const { direction, factor } = intent.parameters;
+        const camera = viewport.getCamera();
+        const scale = typeof factor === 'number' ? factor : 1.5;
+        const parallelScale = camera.parallelScale ?? 1;
+        const nextScale = direction === 'in' ? parallelScale / scale : parallelScale * scale;
+        viewport.setCamera({ parallelScale: nextScale });
+        renderingEngine.render();
+        break;
+      }
+    }
+  }, []);
+
 
   const onDoseFileSelected = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -265,6 +337,7 @@ export function DicomViewer() {
     );
     viewport.render();
 
+    setDoseLoaded(true);
     setStatus(`Loaded RTDOSE (${numberOfFrames} frames, scaling ${doseGridScaling.toExponential(3)} Gy/unit) as a color-wash overlay.`);
   }, []);
 
@@ -287,7 +360,7 @@ export function DicomViewer() {
     // One geometryId (contour set) per ROI, each carrying its own
     // segmentIndex/color -- referenced together by a single segmentation.
     const geometryIds: string[] = [];
-    const segmentColors: Array<{ segmentIndex: number; color: Types.Point3 }> = [];
+    const segmentColors: Array<{ segmentIndex: number; color: Types.Point3; name: string }> = [];
     let segmentIndex = 1;
     for (const item of dataSet.elements['x30060039']?.items ?? []) {
       const ds = item.dataSet;
@@ -318,7 +391,7 @@ export function DicomViewer() {
         geometryData: { id: geometryId, data: contourData, frameOfReferenceUID, color },
       });
       geometryIds.push(geometryId);
-      segmentColors.push({ segmentIndex, color });
+      segmentColors.push({ segmentIndex, color, name: roiNames.get(referencedRoiNumber) ?? `ROI ${referencedRoiNumber}` });
       segmentIndex += 1;
     }
 
@@ -352,6 +425,9 @@ export function DicomViewer() {
       ]);
     }
 
+    roiNameToSegmentIndexRef.current = new Map(segmentColors.map(({ name, segmentIndex: idx }) => [name, idx]));
+    setLoadedRoiNames(segmentColors.map(({ name }) => name));
+    setStructuresLoaded(true);
     setStatus(`Loaded RTSTRUCT with ${geometryIds.length} ROI contour(s).`);
   }, []);
 
@@ -396,6 +472,12 @@ export function DicomViewer() {
           backgroundColor: '#000',
         }}
       />
+      {ctLoaded && (
+        <NliCommandBar
+          context={{ loadedRoiNames, doseLoaded, structuresLoaded, currentSliceIndex: 0, totalSlices }}
+          onExecute={executeIntent}
+        />
+      )}
     </div>
   );
 }

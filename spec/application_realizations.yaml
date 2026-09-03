@@ -38,6 +38,7 @@ applications:
     clinical_use_permitted: false
     realizes_components:
       - C-UX-01
+      - C-VOICE-01
     realizes_requirements: []
     maturity:
       formal_traceability: not_started
@@ -49,9 +50,18 @@ applications:
       on a DGX Spark. Renders CT volumes, an RTDOSE color-wash overlay, and
       RTSTRUCT contour outlines from synthetic XCAT-derived DICOM data, all
       via ad hoc manual DICOM parsing rather than a reviewed, requirement-
-      driven data pipeline. Claims no realized sub-requirement yet --
-      component allocation to C-UX-01 records intended future scope, not
-      completed assurance work. No formal traceability mapping, risk
-      analysis, verification evidence, or human factors evaluation exists
-      for this code; all such review is independent human reviewer work
-      this entry does not and cannot substitute for.
+      driven data pipeline. Also includes a natural-language command bar
+      (typed text and user-initiated push-to-talk speech, deterministic
+      keyword/regex parsing only, a versioned typed intent compiled before
+      any state-changing action, a structured read-back requiring explicit
+      confirm-button execution, a separate explicit transcript-confirmation
+      step for speech input, and an in-memory audit ledger) built to the
+      architectural pattern of NLI-001..008 and C-VOICE-01, scoped only to
+      non-clinical viewer actions (slice navigation, dose/structure
+      visibility, camera reset/zoom) -- it makes no prescription, approval,
+      or signature claim of any kind. Claims no realized sub-requirement yet
+      -- component allocation to C-UX-01 and C-VOICE-01 records intended
+      future scope, not completed assurance work. No formal traceability
+      mapping, risk analysis, verification evidence, or human factors
+      evaluation exists for this code; all such review is independent human
+      reviewer work this entry does not and cannot substitute for.
