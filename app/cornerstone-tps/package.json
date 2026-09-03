@@ -12,9 +12,9 @@
   "dependencies": {
     "@cornerstonejs/core": "^5.8.2",
     "@cornerstonejs/dicom-image-loader": "^5.8.2",
-    "@cornerstonejs/streaming-image-volume-loader": "^1.86.1",
     "@cornerstonejs/tools": "^5.8.2",
     "dicom-parser": "^1.8.21",
+    "events": "^3.3.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
