@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { parseCommand } from '../services/nli/parser';
-import { getSpeechRecognitionConstructor, type SpeechRecognitionLike } from '../services/nli/speech';
+import { transcribeAudio } from '../services/nli/asr';
+import { MicRecorder } from '../services/nli/recorder';
 import type { AuditEntry, CompiledIntent, InputType, ParserContext } from '../services/nli/types';
 
 // NLI-001..008 (spec/risks.yaml): typed text and user-initiated
@@ -9,7 +10,10 @@ import type { AuditEntry, CompiledIntent, InputType, ParserContext } from '../se
 // structured read-back before any state-changing execution; speech
 // transcripts get an explicit confirmation step of their own; nothing is
 // ever executed directly from a spoken "yes" (no voice-only signature);
-// every step is recorded in an in-memory audit ledger.
+// every step is recorded in an in-memory audit ledger. Speech-to-text runs
+// fully in-browser via a local Whisper model (WASM/ONNX) rather than the
+// browser's built-in SpeechRecognition, which streams audio to a cloud
+// service and fails outright without network access to it.
 
 interface NliCommandBarProps {
   context: ParserContext;
@@ -34,11 +38,11 @@ export function NliCommandBar({ context, onExecute }: NliCommandBarProps) {
   const [text, setText] = useState('');
   const [stage, setStage] = useState<Stage>({ kind: 'idle' });
   const [listening, setListening] = useState(false);
+  const [transcribing, setTranscribing] = useState(false);
   const [speechError, setSpeechError] = useState<string | null>(null);
   const [ledger, setLedger] = useState<AuditEntry[]>([]);
-  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
-  const gotResultRef = useRef(false);
-  const speechSupported = getSpeechRecognitionConstructor() !== undefined;
+  const micRecorderRef = useRef<MicRecorder | null>(null);
+  const speechSupported = typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia;
 
   const appendLedger = useCallback((entry: Omit<AuditEntry, 'id' | 'timestamp'>) => {
     setLedger((prev) => [
@@ -78,74 +82,58 @@ export function NliCommandBar({ context, onExecute }: NliCommandBarProps) {
     [text, runParse],
   );
 
-  const startListening = useCallback(() => {
-    // Ignore a second mousedown/touchstart while already listening (e.g. a
-    // stray repeat event) rather than leaking a second recognition instance.
-    if (recognitionRef.current) return;
-    const Ctor = getSpeechRecognitionConstructor();
-    if (!Ctor) return;
+  const startListening = useCallback(async () => {
+    // Ignore a second mousedown/touchstart while already recording (e.g. a
+    // stray repeat event) rather than leaking a second recorder instance.
+    if (micRecorderRef.current) return;
     setSpeechError(null);
-    gotResultRef.current = false;
-    const recognition = new Ctor();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
-    recognition.onresult = (event) => {
-      gotResultRef.current = true;
-      const last = event.results[event.results.length - 1];
-      const transcript = last?.[0]?.transcript ?? '';
-      if (transcript) setStage({ kind: 'confirm_transcript', rawInput: transcript, transcript });
-    };
-    // The recognition service can fail or time out on its own (denied mic
-    // permission, no microphone, silence) independent of the button being
-    // released -- surface it instead of silently reverting to "Hold to talk"
-    // with no explanation, which is indistinguishable from "broken".
-    recognition.onerror = (event) => {
-      const errorCode = (event as unknown as { error?: string }).error ?? 'unknown error';
-      setSpeechError(
-        errorCode === 'not-allowed' || errorCode === 'service-not-allowed'
-          ? 'Microphone permission was denied. Allow microphone access for this site and try again.'
-          : errorCode === 'no-speech'
-            ? 'No speech was detected. Hold the button, wait for the prompt, then speak.'
-            : `Speech recognition error: ${errorCode}.`,
-      );
-      recognitionRef.current = null;
-      setListening(false);
-    };
-    recognition.onend = () => {
-      if (!gotResultRef.current) {
-        setSpeechError((prev) => prev ?? 'No speech was detected. Hold the button, wait for the prompt, then speak.');
-      }
-      recognitionRef.current = null;
-      setListening(false);
-    };
-    recognitionRef.current = recognition;
+    const recorder = new MicRecorder();
+    micRecorderRef.current = recorder;
     try {
-      recognition.start();
+      await recorder.start();
       setListening(true);
     } catch (err) {
-      // start() throws synchronously if a recognition is already active in
-      // this tab/frame -- without this catch, listening/recognitionRef would
-      // stay set with nothing actually running, and the button would look
-      // stuck on every subsequent press.
-      recognitionRef.current = null;
+      // getUserMedia rejects on denied/unavailable microphone permission --
+      // surface it instead of silently reverting to "Hold to talk" with no
+      // explanation, which is indistinguishable from "broken".
+      micRecorderRef.current = null;
       setListening(false);
-      setSpeechError(err instanceof Error ? err.message : 'Could not start speech recognition.');
+      setSpeechError(
+        err instanceof Error && err.name === 'NotAllowedError'
+          ? 'Microphone permission was denied. Allow microphone access for this site and try again.'
+          : 'Could not access the microphone.',
+      );
     }
   }, []);
 
   // Explicit user-initiated start/stop only -- never left running in the
-  // background (NLI-001). Releasing the button stops listening immediately.
-  const stopListening = useCallback(() => {
+  // background (NLI-001). Releasing the button stops recording immediately
+  // and transcription (local Whisper inference) begins right away.
+  const stopListening = useCallback(async () => {
+    const recorder = micRecorderRef.current;
+    if (!recorder) return;
+    micRecorderRef.current = null;
+    setListening(false);
+    setTranscribing(true);
     try {
-      // stop() throws if called before the service has actually started
-      // (e.g. a very quick click released before start() finished, or after
-      // it already ended on its own) -- without this catch that exception
-      // was uncaught, leaving `listening` stuck true and the button unusable
-      // until the page was reloaded.
-      recognitionRef.current?.stop();
-    } catch {
-      // already stopped/not started -- nothing to do
+      const samples = await recorder.stop();
+      if (samples.length === 0) {
+        setSpeechError('No audio was captured. Hold the button, wait a moment, then speak.');
+        return;
+      }
+      const transcript = await transcribeAudio(samples);
+      if (!transcript) {
+        setSpeechError('No speech was detected in the recording. Try again and speak clearly.');
+        return;
+      }
+      setStage({ kind: 'confirm_transcript', rawInput: transcript, transcript });
+    } catch (err) {
+      // The first use of the local Whisper model downloads and compiles it,
+      // which can fail (offline with nothing cached yet, WASM unsupported);
+      // surface that distinctly from a plain "no speech" result.
+      setSpeechError(err instanceof Error ? `Local transcription failed: ${err.message}` : 'Local transcription failed.');
+    } finally {
+      setTranscribing(false);
     }
   }, []);
 
@@ -218,13 +206,14 @@ export function NliCommandBar({ context, onExecute }: NliCommandBarProps) {
         {speechSupported && (
           <button
             type="button"
+            disabled={transcribing}
             onMouseDown={startListening}
             onMouseUp={stopListening}
             onMouseLeave={stopListening}
             onTouchStart={startListening}
             onTouchEnd={stopListening}
           >
-            {listening ? 'Listening... (release to stop)' : 'Hold to talk'}
+            {transcribing ? 'Transcribing locally...' : listening ? 'Listening... (release to stop)' : 'Hold to talk'}
           </button>
         )}
       </form>

@@ -51,9 +51,11 @@ applications:
       RTSTRUCT contour outlines from synthetic XCAT-derived DICOM data, all
       via ad hoc manual DICOM parsing rather than a reviewed, requirement-
       driven data pipeline. Also includes a natural-language command bar
-      (typed text and user-initiated push-to-talk speech, deterministic
-      keyword/regex parsing only, a versioned typed intent compiled before
-      any state-changing action, a structured read-back requiring explicit
+      (typed text and user-initiated push-to-talk speech transcribed fully
+      in-browser by a local Whisper model -- not the browser's built-in
+      cloud-dependent SpeechRecognition -- deterministic keyword/regex
+      parsing only, a versioned typed intent compiled before any state-
+      changing action, a structured read-back requiring explicit
       confirm-button execution, a separate explicit transcript-confirmation
       step for speech input, and an in-memory audit ledger) built to the
       architectural pattern of NLI-001..008 and C-VOICE-01, scoped only to
