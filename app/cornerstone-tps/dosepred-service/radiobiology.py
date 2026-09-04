@@ -58,6 +58,26 @@ def equivalent_uniform_dose(dose_gy: np.ndarray, mask: np.ndarray, exponent: flo
     return float(np.mean(np.maximum(values, 0) ** exponent) ** (1.0 / exponent))
 
 
+def normalize_dose(dose_gy: np.ndarray, normalization: dict[str, Any]) -> tuple[np.ndarray, dict[str, Any]]:
+    """Normalize raw Monte Carlo output using an explicit prescription policy."""
+    mode = normalization.get("mode")
+    prescription_gy = float(normalization.get("prescription_gy", 0.0))
+    if mode != "peak_to_prescription":
+        raise ValueError("normalization.mode must be peak_to_prescription")
+    if prescription_gy <= 0:
+        raise ValueError("normalization.prescription_gy must be positive")
+    raw_peak = float(np.max(dose_gy))
+    if raw_peak <= 0:
+        raise ValueError("raw dose must have a positive peak")
+    scale_factor = prescription_gy / raw_peak
+    return np.asarray(dose_gy, dtype=np.float64) * scale_factor, {
+        "mode": mode,
+        "prescription_gy": prescription_gy,
+        "raw_peak_gy": raw_peak,
+        "scale_factor": scale_factor,
+    }
+
+
 
 def lkb_ntcp(eud_gy: float, td50_gy: float, m: float, n: float) -> float:
     """Return Lyman-Kutcher-Burman NTCP from an EUD."""
@@ -71,13 +91,25 @@ def lkb_ntcp(eud_gy: float, td50_gy: float, m: float, n: float) -> float:
 def analyze_case(dose_gy: np.ndarray, masks: dict[str, np.ndarray], config: dict[str, Any]) -> dict[str, Any]:
     """Calculate configured exploratory tumor and OAR endpoints."""
     dose = np.asarray(dose_gy, dtype=np.float64)
+    dose, normalization = normalize_dose(dose, config["normalization"])
+    if not masks:
+        raise ValueError("at least one named mask is required")
+    mask_shape = next(iter(masks.values())).shape
+    if dose.shape != mask_shape:
+        if dose.shape == mask_shape[::-1]:
+            dose = np.transpose(dose, (2, 1, 0))
+        else:
+            raise ValueError(f"dose shape {dose.shape} does not match mask shape {mask_shape}")
+    if any(np.asarray(mask).shape != mask_shape for mask in masks.values()):
+        raise ValueError("all masks must have the same shape")
     tumor = config["tumor"]
     rbe = float(tumor.get("rbe", 1.0))
     tumor_values = dose[np.asarray(masks[tumor["mask"]], dtype=bool)]
     if tumor_values.size == 0:
         raise ValueError("tumor mask contains no dose voxels")
+    fraction_dose = tumor_values / int(config["fractions"])
     tumor_sf = cumulative_survival(
-        tumor_values,
+        fraction_dose,
         float(tumor["alpha_per_gy"]),
         float(tumor["beta_per_gy2"]),
         int(config["fractions"]),
@@ -88,12 +120,14 @@ def analyze_case(dose_gy: np.ndarray, masks: dict[str, np.ndarray], config: dict
         "status": "exploratory_synthetic_only",
         "endpoint_claim": "not_clinical_cancer_kill_or_tumor_control",
         "fractions": int(config["fractions"]),
+        "normalization": normalization,
         "rbe_policy": tumor.get("rbe_policy", "explicit_fixed_assumption"),
         "tumor": {
             "mask": tumor["mask"],
             "voxel_count": int(tumor_values.size),
             "mean_dose_gy": float(np.mean(tumor_values)),
             "max_dose_gy": float(np.max(tumor_values)),
+            "fraction_dose_gy": float(np.mean(fraction_dose)),
             "mean_surviving_fraction": mean_tumor_sf,
             "tcp": poisson_tcp(mean_tumor_sf, float(tumor["initial_clonogens"])),
         },
