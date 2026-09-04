@@ -451,7 +451,7 @@ export function DicomViewer() {
 
   const onLoadNativeTrainingContours = useCallback(async () => {
     if (!ctLoaded) return;
-    const response = await fetch('/sample-data/VCT-PROSTATE-001/RT/RTSTRUCT_XCAT_LABELS.dcm');
+    const response = await fetch('/training-pilot/RTSTRUCT_XCAT_LABELS.dcm');
     if (!response.ok) throw new Error(`native training RTSTRUCT returned HTTP ${response.status}`);
     const blob = await response.blob();
     const transfer = new DataTransfer();
