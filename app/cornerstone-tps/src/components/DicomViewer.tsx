@@ -449,6 +449,16 @@ export function DicomViewer() {
     setStatus(`Loaded RTSTRUCT with ${geometryIds.length} ROI contour(s).`);
   }, []);
 
+  const onLoadNativeTrainingContours = useCallback(async () => {
+    if (!ctLoaded) return;
+    const response = await fetch('/sample-data/VCT-PROSTATE-001/RT/RTSTRUCT_XCAT_LABELS.dcm');
+    if (!response.ok) throw new Error(`native training RTSTRUCT returned HTTP ${response.status}`);
+    const blob = await response.blob();
+    const transfer = new DataTransfer();
+    transfer.items.add(new File([blob], 'RTSTRUCT_XCAT_LABELS.dcm', { type: 'application/dicom' }));
+    await onRtstructFileSelected(transfer.files);
+  }, [ctLoaded, onRtstructFileSelected]);
+
   const onRunAutoSegmentation = useCallback(async () => {
     if (ctFilesRef.current.length === 0) return;
     setAutoSegStatus('running');
@@ -666,6 +676,9 @@ export function DicomViewer() {
             onChange={(e) => onRtstructFileSelected(e.target.files)}
           />
         </label>
+        <button type="button" disabled={!ctLoaded} onClick={onLoadNativeTrainingContours}>
+          Load native XCAT training contours
+        </button>
       </div>
       <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
         <button
