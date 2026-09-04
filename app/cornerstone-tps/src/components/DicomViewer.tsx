@@ -32,6 +32,10 @@ const TOOL_GROUP_ID = 'tps-tool-group';
 const CT_VOLUME_ID = 'cornerstoneStreamingImageVolume:CT_VOLUME';
 const DOSE_VOLUME_ID = 'cornerstoneStreamingImageVolume:DOSE_VOLUME';
 const RTSTRUCT_SEGMENTATION_ID = 'RTSTRUCT_SEGMENTATION';
+const AUTOSEG_SEGMENTATION_ID = 'AUTOSEG_SEGMENTATION';
+// Technical feasibility spike only: an unreviewed TotalSegmentator proposal
+// service running on the DGX Spark, not a validated NL-TPS component.
+const AUTOSEG_SERVICE_URL = 'http://192.168.1.165:8100/segment';
 
 // wadouri's metaData.metaDataProvider (the bridge into core's generic
 // metaData registry, which volumes read geometry through) reads from
@@ -54,7 +58,11 @@ export function DicomViewer() {
   const [structuresLoaded, setStructuresLoaded] = useState(false);
   const [loadedRoiNames, setLoadedRoiNames] = useState<string[]>([]);
   const [totalSlices, setTotalSlices] = useState(0);
+  const [autoSegStatus, setAutoSegStatus] = useState<'idle' | 'running' | 'error'>('idle');
+  const [autoSegLoaded, setAutoSegLoaded] = useState(false);
   const roiNameToSegmentIndexRef = useRef<Map<string, number>>(new Map());
+  const ctFilesRef = useRef<File[]>([]);
+  const ctFrameOfReferenceUidRef = useRef('');
 
   useEffect(() => {
     let cancelled = false;
@@ -115,6 +123,7 @@ export function DicomViewer() {
   const onCtFilesSelected = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     setStatus(`Loading ${files.length} CT file(s)...`);
+    ctFilesRef.current = Array.from(files);
 
     // fileManager.add already returns a fully-scoped id, e.g. "dicomfile:0" --
     // do not wrap it in an extra "wadouri:" prefix, or parseImageId reads the
@@ -131,6 +140,7 @@ export function DicomViewer() {
     // once here before the volume loader can compute the volume's geometry.
     await Promise.all(imageLoader.loadAndCacheImages(imageIds));
     await primeDataSetCache(imageIds);
+    ctFrameOfReferenceUidRef.current = metaData.get('imagePlaneModule', imageIds[0])?.frameOfReferenceUID ?? '';
 
     const volume = await volumeLoader.createAndCacheVolume(CT_VOLUME_ID, { imageIds });
     volume.load();
@@ -431,6 +441,111 @@ export function DicomViewer() {
     setStatus(`Loaded RTSTRUCT with ${geometryIds.length} ROI contour(s).`);
   }, []);
 
+  const onRunAutoSegmentation = useCallback(async () => {
+    if (ctFilesRef.current.length === 0) return;
+    setAutoSegStatus('running');
+    setStatus('Running AI auto-segmentation (TotalSegmentator, unverified proposal, ~1-2 min)...');
+    try {
+      const formData = new FormData();
+      for (const file of ctFilesRef.current) formData.append('files', file, file.name);
+      const response = await fetch(AUTOSEG_SERVICE_URL, { method: 'POST', body: formData });
+      if (!response.ok) throw new Error(`auto-segmentation service returned HTTP ${response.status}`);
+      const result = (await response.json()) as {
+        rois: Array<{ name: string; color: [number, number, number]; contours: Types.Point3[][] }>;
+        model: string;
+        unverified: boolean;
+      };
+
+      const renderingEngine = getRenderingEngine(RENDERING_ENGINE_ID);
+      if (!renderingEngine) throw new Error('viewer is not initialized');
+
+      const geometryIds: string[] = [];
+      const segmentColors: Array<{ segmentIndex: number; color: Types.Point3 }> = [];
+      let segmentIndex = 1;
+      for (const roi of result.rois) {
+        const contourData: Types.ContourData[] = roi.contours.map((points) => ({
+          points,
+          type: Enums.ContourType.CLOSED_PLANAR,
+          color: roi.color,
+          segmentIndex,
+        }));
+        const geometryId = `autoseg-roi-${roi.name}`;
+        geometryLoader.createAndCacheGeometry(geometryId, {
+          type: Enums.GeometryType.CONTOUR,
+          geometryData: {
+            id: geometryId,
+            data: contourData,
+            frameOfReferenceUID: ctFrameOfReferenceUidRef.current,
+            color: roi.color,
+            segmentIndex,
+          },
+        });
+        geometryIds.push(geometryId);
+        segmentColors.push({ segmentIndex, color: roi.color });
+        segmentIndex += 1;
+      }
+
+      if (geometryIds.length === 0) {
+        setAutoSegStatus('idle');
+        setStatus('Auto-segmentation returned no structures above the noise threshold.');
+        return;
+      }
+
+      // Allow a clean re-run: discard any previous AI proposal first.
+      try {
+        segmentation.removeSegmentation(AUTOSEG_SEGMENTATION_ID);
+      } catch {
+        // nothing to remove on the first run
+      }
+
+      segmentation.addSegmentations([
+        {
+          segmentationId: AUTOSEG_SEGMENTATION_ID,
+          representation: {
+            type: ToolsEnums.SegmentationRepresentations.Contour,
+            data: { geometryIds, annotationUIDsMap: new Map() },
+          },
+        },
+      ]);
+      segmentation.addContourRepresentationToViewport(VIEWPORT_ID, [{ segmentationId: AUTOSEG_SEGMENTATION_ID }]);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      // Dashed outline (vs. the real RTSTRUCT's solid outline) so this
+      // unreviewed AI proposal can never be visually mistaken for a
+      // clinician-authored contour.
+      segmentation.config.style.setStyle(
+        { segmentationId: AUTOSEG_SEGMENTATION_ID, type: ToolsEnums.SegmentationRepresentations.Contour },
+        { renderFill: false, outlineWidth: 2, outlineDash: '4,4' },
+      );
+      for (const { segmentIndex: idx, color } of segmentColors) {
+        segmentation.config.color.setSegmentIndexColor(VIEWPORT_ID, AUTOSEG_SEGMENTATION_ID, idx, [
+          color[0],
+          color[1],
+          color[2],
+          255,
+        ]);
+      }
+
+      renderingEngine.render();
+      setAutoSegStatus('idle');
+      setAutoSegLoaded(true);
+      setStatus(
+        `AI auto-segmentation proposed ${result.rois.length} structure(s) via ${result.model} -- ` +
+          'UNVERIFIED, shown with a dashed outline. Review before relying on it for anything.',
+      );
+    } catch (err) {
+      setAutoSegStatus('error');
+      setStatus(`Auto-segmentation failed: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }, []);
+
+  const onDiscardAutoSegmentation = useCallback(() => {
+    segmentation.removeSegmentation(AUTOSEG_SEGMENTATION_ID);
+    const renderingEngine = getRenderingEngine(RENDERING_ENGINE_ID);
+    renderingEngine?.render();
+    setAutoSegLoaded(false);
+    setStatus('Discarded the AI auto-segmentation proposal.');
+  }, []);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
       <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -462,6 +577,20 @@ export function DicomViewer() {
             onChange={(e) => onRtstructFileSelected(e.target.files)}
           />
         </label>
+      </div>
+      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        <button
+          type="button"
+          disabled={!ctLoaded || autoSegStatus === 'running'}
+          onClick={onRunAutoSegmentation}
+        >
+          {autoSegStatus === 'running' ? 'Running AI auto-segmentation...' : 'Run AI auto-segmentation (unverified)'}
+        </button>
+        {autoSegLoaded && (
+          <button type="button" onClick={onDiscardAutoSegmentation}>
+            Discard AI proposal
+          </button>
+        )}
       </div>
       <p style={{ fontFamily: 'sans-serif', fontSize: '0.9rem' }}>{status}</p>
       <div

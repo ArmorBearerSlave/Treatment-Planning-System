@@ -39,6 +39,7 @@ applications:
     realizes_components:
       - C-UX-01
       - C-VOICE-01
+      - C-SEG-01
     realizes_requirements: []
     maturity:
       formal_traceability: not_started
@@ -61,9 +62,26 @@ applications:
       architectural pattern of NLI-001..008 and C-VOICE-01, scoped only to
       non-clinical viewer actions (slice navigation, dose/structure
       visibility, camera reset/zoom) -- it makes no prescription, approval,
-      or signature claim of any kind. Claims no realized sub-requirement yet
-      -- component allocation to C-UX-01 and C-VOICE-01 records intended
-      future scope, not completed assurance work. No formal traceability
+      or signature claim of any kind. Also includes an auto-segmentation
+      feasibility spike: a separate FastAPI inference service
+      (app/cornerstone-tps/autoseg-service) running the published
+      open-source TotalSegmentator tool (not an NL-TPS-authored or
+      validated model) on a DGX Spark GPU, returning proposed contours
+      rendered as a visually distinct dashed-outline overlay, entirely
+      separate from any loaded RTSTRUCT, with an explicit discard action
+      and no automatic acceptance into any structure set. In the program's
+      own testing on this synthetic XCAT phantom, only 4 of the model's
+      104 candidate structures were returned above the noise threshold,
+      and their spatial agreement with the corresponding ground-truth
+      RTSTRUCT contours was inconsistent (reasonably close for one
+      structure, notably offset for another) -- entirely expected and
+      unsurprising for a real-CT-trained model applied to synthetic
+      phantom data, but a concrete, observed illustration of why this
+      output must never be treated as anything but an unreviewed proposal
+      requiring independent expert review before any use whatsoever.
+      Claims no realized sub-requirement yet -- component allocation to
+      C-UX-01, C-VOICE-01, and C-SEG-01 records intended future scope,
+      not completed assurance work. No formal traceability
       mapping, risk analysis, verification evidence, or human factors
       evaluation exists for this code; all such review is independent human
       reviewer work this entry does not and cannot substitute for.
