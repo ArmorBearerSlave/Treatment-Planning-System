@@ -33,9 +33,13 @@ const CT_VOLUME_ID = 'cornerstoneStreamingImageVolume:CT_VOLUME';
 const DOSE_VOLUME_ID = 'cornerstoneStreamingImageVolume:DOSE_VOLUME';
 const RTSTRUCT_SEGMENTATION_ID = 'RTSTRUCT_SEGMENTATION';
 const AUTOSEG_SEGMENTATION_ID = 'AUTOSEG_SEGMENTATION';
+const DOSEPRED_VOLUME_ID = 'DOSEPRED_VOLUME';
 // Technical feasibility spike only: an unreviewed TotalSegmentator proposal
 // service running on the DGX Spark, not a validated NL-TPS component.
 const AUTOSEG_SERVICE_URL = 'http://192.168.1.165:8100/segment';
+// Technical feasibility spike only: a 3D U-Net trained on 10 synthetic
+// cases, not a validated dose-prediction model.
+const DOSEPRED_SERVICE_URL = 'http://192.168.1.165:8101/predict_dose';
 
 // wadouri's metaData.metaDataProvider (the bridge into core's generic
 // metaData registry, which volumes read geometry through) reads from
@@ -60,8 +64,11 @@ export function DicomViewer() {
   const [totalSlices, setTotalSlices] = useState(0);
   const [autoSegStatus, setAutoSegStatus] = useState<'idle' | 'running' | 'error'>('idle');
   const [autoSegLoaded, setAutoSegLoaded] = useState(false);
+  const [dosePredStatus, setDosePredStatus] = useState<'idle' | 'running' | 'error'>('idle');
+  const [dosePredLoaded, setDosePredLoaded] = useState(false);
   const roiNameToSegmentIndexRef = useRef<Map<string, number>>(new Map());
   const ctFilesRef = useRef<File[]>([]);
+  const rtstructFileRef = useRef<File | null>(null);
   const ctFrameOfReferenceUidRef = useRef('');
 
   useEffect(() => {
@@ -353,6 +360,7 @@ export function DicomViewer() {
 
   const onRtstructFileSelected = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return;
+    rtstructFileRef.current = files[0];
     const file = files[0];
     setStatus('Loading RTSTRUCT...');
 
@@ -546,6 +554,87 @@ export function DicomViewer() {
     setStatus('Discarded the AI auto-segmentation proposal.');
   }, []);
 
+  const onRunDosePrediction = useCallback(async () => {
+    if (ctFilesRef.current.length === 0 || !rtstructFileRef.current) return;
+    setDosePredStatus('running');
+    setStatus('Running AI dose prediction (3D U-Net trained on 10 synthetic cases, unverified)...');
+    try {
+      const formData = new FormData();
+      for (const file of ctFilesRef.current) formData.append('ct_files', file, file.name);
+      formData.append('rtstruct_file', rtstructFileRef.current, rtstructFileRef.current.name);
+      const response = await fetch(DOSEPRED_SERVICE_URL, { method: 'POST', body: formData });
+      if (!response.ok) throw new Error(`dose-prediction service returned HTTP ${response.status}`);
+      const buffer = await response.arrayBuffer();
+      const predictedDose = new Float32Array(buffer);
+
+      const renderingEngine = getRenderingEngine(RENDERING_ENGINE_ID);
+      if (!renderingEngine) throw new Error('viewer is not initialized');
+      if (predictedDose.length !== totalSlices * 180 * 180) {
+        throw new Error(
+          `predicted dose has ${predictedDose.length} voxels, expected ${totalSlices * 180 * 180}`,
+        );
+      }
+
+      // Same voxel dimensions/spacing/orientation as the loaded CT, just
+      // filled with predicted values instead of streamed from DICOM.
+      const doseVolume = volumeLoader.createAndCacheDerivedVolume(CT_VOLUME_ID, {
+        volumeId: DOSEPRED_VOLUME_ID,
+        targetBuffer: { type: 'Float32Array' },
+      });
+      if (!doseVolume.voxelManager) throw new Error('derived volume has no voxel manager');
+      // setScalarData() only updates the volume-level cache; the actual
+      // per-slice image voxel managers used for rendering must be updated
+      // via setCompleteScalarDataArray, otherwise the actor renders all zeros.
+      doseVolume.voxelManager.setCompleteScalarDataArray?.(predictedDose);
+
+      let maxDoseGy = 0;
+      for (let i = 0; i < predictedDose.length; i++) {
+        if (predictedDose[i] > maxDoseGy) maxDoseGy = predictedDose[i];
+      }
+      if (maxDoseGy <= 0) maxDoseGy = 80;
+      await addVolumesToViewports(
+        renderingEngine,
+        [{ volumeId: DOSEPRED_VOLUME_ID, visibility: true }],
+        [VIEWPORT_ID],
+      );
+      const viewport = renderingEngine.getViewport(VIEWPORT_ID) as Types.IVolumeViewport;
+      viewport.setProperties(
+        {
+          colormap: {
+            name: 'dosepred-magenta',
+            opacityMapping: [
+              { value: 0, opacity: 0 },
+              { value: maxDoseGy * 0.1, opacity: 0 },
+              { value: maxDoseGy * 0.15, opacity: 0.5 },
+              { value: maxDoseGy, opacity: 0.7 },
+            ],
+          },
+          voiRange: { lower: 0, upper: maxDoseGy },
+        },
+        DOSEPRED_VOLUME_ID,
+      );
+      renderingEngine.render();
+      setDosePredStatus('idle');
+      setDosePredLoaded(true);
+      setStatus(
+        'AI dose prediction rendered (magenta/orange colormap) -- UNVERIFIED, a feasibility spike ' +
+          'trained on only 10 synthetic cases. Review before relying on it for anything.',
+      );
+    } catch (err) {
+      setDosePredStatus('error');
+      setStatus(`Dose prediction failed: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }, [totalSlices]);
+
+  const onDiscardDosePrediction = useCallback(() => {
+    const renderingEngine = getRenderingEngine(RENDERING_ENGINE_ID);
+    const viewport = renderingEngine?.getViewport(VIEWPORT_ID) as Types.IVolumeViewport | undefined;
+    const actorUid = viewport?.getActors().find((a) => a.referencedId === DOSEPRED_VOLUME_ID)?.uid;
+    if (actorUid) viewport?.removeVolumeActors([actorUid], true);
+    setDosePredLoaded(false);
+    setStatus('Discarded the AI dose prediction.');
+  }, []);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
       <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -589,6 +678,18 @@ export function DicomViewer() {
         {autoSegLoaded && (
           <button type="button" onClick={onDiscardAutoSegmentation}>
             Discard AI proposal
+          </button>
+        )}
+        <button
+          type="button"
+          disabled={!ctLoaded || !structuresLoaded || dosePredStatus === 'running'}
+          onClick={onRunDosePrediction}
+        >
+          {dosePredStatus === 'running' ? 'Running AI dose prediction...' : 'Run AI dose prediction (unverified)'}
+        </button>
+        {dosePredLoaded && (
+          <button type="button" onClick={onDiscardDosePrediction}>
+            Discard AI dose prediction
           </button>
         )}
       </div>

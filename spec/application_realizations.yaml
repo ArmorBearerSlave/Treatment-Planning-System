@@ -40,6 +40,7 @@ applications:
       - C-UX-01
       - C-VOICE-01
       - C-SEG-01
+      - C-DOSE-01
     realizes_requirements: []
     maturity:
       formal_traceability: not_started
@@ -79,9 +80,29 @@ applications:
       phantom data, but a concrete, observed illustration of why this
       output must never be treated as anything but an unreviewed proposal
       requiring independent expert review before any use whatsoever.
+      Also includes an AI dose-prediction feasibility spike: a separate
+      FastAPI inference service (app/cornerstone-tps/dosepred-service)
+      running a small custom-trained 3D U-Net (NOT a published or
+      independently validated model, unlike TotalSegmentator) trained from
+      scratch on only 10 synthetic XCAT prostate cases -- a severely small
+      dataset for a deep-learning dose-prediction task by any standard.
+      Given a loaded CT series and RTSTRUCT, the service rasterizes the
+      structure contours into label channels, runs the network, and
+      returns a predicted dose volume rendered as a visually distinct
+      magenta/orange colormap overlay, entirely separate from any real
+      RTDOSE, with an explicit discard action and no automatic acceptance
+      anywhere. Informal review of the rendered output on the program's own
+      synthetic phantom shows a plausible-magnitude but spatially very
+      confined hotspot near the GTV rather than a realistic PTV-conforming
+      dose distribution shape, consistent with training on only 10 cases;
+      the one demonstrated inference case was also a case the model was
+      trained on, not a held-out test, so no generalization claim can be
+      made even informally. This output must never be treated as anything
+      but an unreviewed, unvalidated proposal requiring independent expert
+      review before any use whatsoever.
       Claims no realized sub-requirement yet -- component allocation to
-      C-UX-01, C-VOICE-01, and C-SEG-01 records intended future scope,
-      not completed assurance work. No formal traceability
+      C-UX-01, C-VOICE-01, C-SEG-01, and C-DOSE-01 records intended future
+      scope, not completed assurance work. No formal traceability
       mapping, risk analysis, verification evidence, or human factors
       evaluation exists for this code; all such review is independent human
       reviewer work this entry does not and cannot substitute for.

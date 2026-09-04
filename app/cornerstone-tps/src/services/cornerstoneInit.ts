@@ -54,6 +54,19 @@ export function ensureCornerstoneInitialized(): Promise<void> {
           1.0, 1.0, 0.0, 0.0,
         ],
       });
+      // Visually distinct from 'dose-rainbow' (real RTDOSE) so an AI-
+      // predicted dose overlay can never be confused with it at a glance.
+      utilities.colormap.registerColormap({
+        ColorSpace: 'RGB',
+        Name: 'dosepred-magenta',
+        RGBPoints: [
+          0.0, 0.1, 0.0, 0.2,
+          0.25, 0.3, 0.0, 0.5,
+          0.5, 0.6, 0.0, 0.6,
+          0.75, 0.9, 0.2, 0.5,
+          1.0, 1.0, 0.6, 0.2,
+        ],
+      });
 
       const { PanTool, WindowLevelTool, ZoomTool, StackScrollTool, addTool } = cornerstoneTools;
       addTool(PanTool);
