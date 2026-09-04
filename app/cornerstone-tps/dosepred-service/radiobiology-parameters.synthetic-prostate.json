@@ -1,0 +1,71 @@
+{
+  "profile_id": "synthetic-prostate-radiobiology-v1",
+  "status": "exploratory_synthetic_only",
+  "purpose": "Parameter profile for pipeline testing and sensitivity analysis; not a clinical decision model.",
+  "sources": [
+    {
+      "id": "LQ-PROSTATE-RANGE",
+      "description": "Published prostate radiotherapy fractionation literature commonly evaluates low alpha/beta behavior; this profile uses a broad exploratory range rather than a validated patient-specific estimate.",
+      "reference": "Brenner DJ, Hall EJ. Fractionation and prostate cancer radiotherapy. Int J Radiat Oncol Biol Phys. 1999; https://pubmed.ncbi.nlm.nih.gov/10509876/"
+    },
+    {
+      "id": "QUANTEC",
+      "description": "QUANTEC dose-volume guidance informs the use of EUD/NTCP-style OAR analysis, but its population-level constraints are not a patient-specific NTCP model.",
+      "reference": "Marks LB et al. Use of normal tissue complication probability models in the clinic. Int J Radiat Oncol Biol Phys. 2010; https://pubmed.ncbi.nlm.nih.gov/20171514/"
+    },
+    {
+      "id": "PROTON-RBE",
+      "description": "A phenomenological proton RBE formulation is represented only as a sensitivity assumption here; the value is not patient-specific or clinically validated by this project.",
+      "reference": "McNamara AL et al. A phenomenological model of proton relative biological effectiveness. Phys Med Biol. 2015; https://pubmed.ncbi.nlm.nih.gov/26232347/"
+    }
+  ],
+  "fractionation": {
+    "fractions": 39,
+    "total_course_prescription_gy": 70.2,
+    "dose_input_semantics": "total_course_dose",
+    "normalization": {
+      "mode": "peak_to_prescription",
+      "prescription_gy": 70.2
+    }
+  },
+  "point_estimate": {
+    "tumor": {
+      "mask": "PROSTATE",
+      "alpha_per_gy": 0.15,
+      "beta_per_gy2": 0.05,
+      "alpha_beta_gy": 3.0,
+      "initial_clonogens": 100000,
+      "rbe": 1.10,
+      "rbe_policy": "fixed_exploratory_assumption_not_patient_specific"
+    },
+    "oars": {
+      "bladder": {
+        "mask": "BLADDER",
+        "td50_gy": 80.0,
+        "m": 0.25,
+        "volume_exponent_n": 0.50
+      },
+      "rectum": {
+        "mask": "RECTUM",
+        "td50_gy": 75.0,
+        "m": 0.20,
+        "volume_exponent_n": 0.15
+      }
+    }
+  },
+  "sensitivity_ranges": {
+    "tumor_alpha_per_gy": [0.05, 0.30],
+    "tumor_beta_per_gy2": [0.02, 0.10],
+    "initial_clonogens": [10000, 1000000],
+    "rbe": [1.00, 1.20],
+    "bladder_td50_gy": [70.0, 90.0],
+    "rectum_td50_gy": [65.0, 85.0]
+  },
+  "limitations": [
+    "No parameter in this profile is calibrated to the synthetic XCAT cases.",
+    "No parameter in this profile establishes cancer kill, tumor control, OAR sparing, or patient-specific RBE.",
+    "The initial clonogen count is a modeling variable, not a patient measurement.",
+    "The LKB parameters are placeholders for software and sensitivity testing, not approved QUANTEC thresholds.",
+    "The dose field is exploratory OpenTOPAS output normalized to a prescription peak and is not a commissioned clinical plan."
+  ]
+}

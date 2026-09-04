@@ -91,7 +91,9 @@ def lkb_ntcp(eud_gy: float, td50_gy: float, m: float, n: float) -> float:
 def analyze_case(dose_gy: np.ndarray, masks: dict[str, np.ndarray], config: dict[str, Any]) -> dict[str, Any]:
     """Calculate configured exploratory tumor and OAR endpoints."""
     dose = np.asarray(dose_gy, dtype=np.float64)
-    dose, normalization = normalize_dose(dose, config["normalization"])
+    fractionation = config.get("fractionation", config)
+    normalization = fractionation["normalization"]
+    dose, normalization = normalize_dose(dose, normalization)
     if not masks:
         raise ValueError("at least one named mask is required")
     mask_shape = next(iter(masks.values())).shape
@@ -102,24 +104,25 @@ def analyze_case(dose_gy: np.ndarray, masks: dict[str, np.ndarray], config: dict
             raise ValueError(f"dose shape {dose.shape} does not match mask shape {mask_shape}")
     if any(np.asarray(mask).shape != mask_shape for mask in masks.values()):
         raise ValueError("all masks must have the same shape")
-    tumor = config["tumor"]
+    point_estimate = config.get("point_estimate", config)
+    tumor = point_estimate["tumor"]
     rbe = float(tumor.get("rbe", 1.0))
     tumor_values = dose[np.asarray(masks[tumor["mask"]], dtype=bool)]
     if tumor_values.size == 0:
         raise ValueError("tumor mask contains no dose voxels")
-    fraction_dose = tumor_values / int(config["fractions"])
+    fraction_dose = tumor_values / int(fractionation["fractions"])
     tumor_sf = cumulative_survival(
         fraction_dose,
         float(tumor["alpha_per_gy"]),
         float(tumor["beta_per_gy2"]),
-        int(config["fractions"]),
+        int(fractionation["fractions"]),
         rbe,
     )
     mean_tumor_sf = float(np.mean(tumor_sf))
     result: dict[str, Any] = {
         "status": "exploratory_synthetic_only",
         "endpoint_claim": "not_clinical_cancer_kill_or_tumor_control",
-        "fractions": int(config["fractions"]),
+        "fractions": int(fractionation["fractions"]),
         "normalization": normalization,
         "rbe_policy": tumor.get("rbe_policy", "explicit_fixed_assumption"),
         "tumor": {
@@ -133,7 +136,7 @@ def analyze_case(dose_gy: np.ndarray, masks: dict[str, np.ndarray], config: dict
         },
         "oars": {},
     }
-    for name, oar in config.get("oars", {}).items():
+    for name, oar in point_estimate.get("oars", {}).items():
         mask = np.asarray(masks[oar["mask"]], dtype=bool)
         values = dose[mask]
         if values.size == 0:

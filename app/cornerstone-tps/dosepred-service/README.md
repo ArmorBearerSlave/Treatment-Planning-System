@@ -41,6 +41,10 @@ It accepts a `.npy` dose array plus named `.npz` masks and normalizes TOPAS'
 `(x, y, z)` array convention to the XCAT mask `(z, y, x)` convention when
 needed.
 
+`radiobiology-parameters.synthetic-prostate.json` provides a documented,
+literature-informed placeholder profile with sensitivity ranges. It is a
+synthetic calibration profile, not a validated clinical parameter set.
+
 Example:
 
 ```bash
