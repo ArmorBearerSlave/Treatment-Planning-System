@@ -90,14 +90,17 @@ public enum LocalHTTP {
         let session = URLSession(configuration: config, delegate: NoRedirect(), delegateQueue: nil)
         defer { session.invalidateAndCancel() }
         let (bytes, response) = try await session.bytes(for: request)
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw TPSError.invalid("Local service returned HTTP \((response as? HTTPURLResponse)?.statusCode ?? 0). Check the service and model configuration.")
-        }
+        guard let http = response as? HTTPURLResponse else { throw TPSError.invalid("Service returned a non-HTTP response.") }
         guard response.expectedContentLength <= maximumBytes else { throw TPSError.invalid("Service response exceeds size limit.") }
         var data = Data()
         for try await byte in bytes {
             guard data.count < maximumBytes else { throw TPSError.invalid("Service response exceeds size limit.") }
             data.append(byte)
+        }
+        guard (200..<300).contains(http.statusCode) else {
+            let object = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
+            let detail = (object?["error"] as? String).map { String($0.prefix(400)) } ?? "Check the service and model configuration."
+            throw TPSError.invalid("Local service returned HTTP \(http.statusCode): \(detail)")
         }
         return data
     }

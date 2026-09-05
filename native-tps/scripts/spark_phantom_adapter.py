@@ -45,6 +45,10 @@ def main():
         raise ValueError("Command requires recipe and output placeholders")
 
     class Handler(BaseHTTPRequestHandler):
+        def setup(self):
+            super().setup()
+            self.connection.settimeout(10)
+
         def send_json(self, status, value):
             data = json.dumps(value, allow_nan=False).encode()
             self.send_response(status)
@@ -62,6 +66,8 @@ def main():
         def do_POST(self):
             if self.path != "/v1/phantoms":
                 return self.send_json(404, {"error": "Not found"})
+            if self.headers.get("Origin") or self.headers.get("Content-Type", "").split(";")[0] != "application/json":
+                return self.send_json(403, {"error": "Native JSON clients only"})
             try:
                 length = int(self.headers.get("Content-Length", "0"))
                 if not 0 < length <= 16_384:

@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import numpy as np
 
 
@@ -70,15 +71,19 @@ def main():
     parser.add_argument("--task", required=True, choices=["contour", "predictDose", "syntheticCT"])
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--allow-fixture", action="store_true")
+    parser.add_argument("--validator", type=Path, default=Path(__file__).resolve().parents[1] / ".build/debug/tps-check")
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError("Choose a new output directory; existing datasets are never overwritten")
     # Validate the complete batch before writing any files.
     prepared, seen = [], set()
+    if not args.validator.is_file():
+        raise ValueError("Build the native validator first with swift build, or supply --validator")
     for path in args.bundles:
         if path.stat().st_size > 256_000_000:
             raise ValueError("Bundle too large")
         raw = path.read_bytes()
+        subprocess.run([str(args.validator.resolve()), "--validate-bundle", str(path.resolve())], check=True, capture_output=True, timeout=120)
         bundle = json.loads(raw)
         source = bundle["source"]
         if source["id"] in seen:

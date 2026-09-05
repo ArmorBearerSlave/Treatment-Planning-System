@@ -18,8 +18,8 @@ public enum LocalAgentClient {
         guard !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, prompt.count <= 8000,
               !model.isEmpty, !model.lowercased().contains("cloud") else { throw TPSError.invalid("Enter a bounded prompt and a local model name.") }
         let schema: [String: Any] = ["type": "object", "additionalProperties": false,
-            "properties": ["summary": ["type": "string", "maxLength": 2000],
-                           "operations": ["type": "array", "minItems": 1, "maxItems": 4, "uniqueItems": true,
+            "properties": ["summary": ["type": "string"],
+                           "operations": ["type": "array",
                                           "items": ["type": "string", "enum": role.allowed.map(\.rawValue).sorted()]]],
             "required": ["summary", "operations"]]
         let system = """

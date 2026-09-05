@@ -1,0 +1,9 @@
+{
+  "runtime_directory": "/home/armorbearer/hupci-sim/xcat/XCAT2/runtime/XCAT_latest",
+  "anatomy_directory": "/home/armorbearer/hupci-sim/xcat/XCAT2/anatomy/xcat_adult_nrb_files",
+  "image": null,
+  "parameter_file": "general.samp.par",
+  "xcat_arguments": null,
+  "supported_recipe": null,
+  "converter_argv": null
+}

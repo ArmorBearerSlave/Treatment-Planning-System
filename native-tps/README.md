@@ -103,6 +103,20 @@ python3 scripts/prepare_dataset.py build/smoke/research-bundle.json \
 swift run tps-check --llm-model qwen3-coder:30b
 ```
 
+An optional untrained Core ML identity-network integration test exercises the
+actual Apple runtime without downloading trained weights:
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install coremltools
+.venv/bin/python scripts/create_coreml_fixture.py --output build/coreml-fixture
+swift run tps-check --coreml-fixture build/coreml-fixture/manifest.json
+```
+
+The test accepts only identity values or their IEEE Float16-rounded equivalents,
+because accelerators may use reduced internal precision despite Float32 IO.
+The generated network is labelled `isFixture: true` and has no predictive value.
+
 The dataset converter requires NumPy, independently of the native app. Fixture
 data is rejected by default; `--allow-fixture` permits pipeline tests, not model
 validation. Dose training always requires separately identified transport

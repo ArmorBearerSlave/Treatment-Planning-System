@@ -140,4 +140,23 @@ final class TPSCoreTests: XCTestCase {
         XCTAssertNoThrow(try LocalAgentClient.loopback("http://127.0.0.1:11434"))
         XCTAssertThrowsError(try LocalAgentClient.loopback("http://192.168.1.2:11434"))
     }
+    func testResearchBundleRejectsChangedIntendedUse() throws {
+        let item = try source(); var workspace = Workspace(); workspace.cases = [item]
+        let artifact = try AnalyticInference.run(.contour, source: item)
+        workspace.artifacts = [artifact]
+        workspace.reviews = [try ReviewRecord(artifact: artifact, reviewer: "Operator", note: "Synthetic integration inspection", decision: .acceptedForResearch)]
+        var bundle = try workspace.researchExport(caseID: item.id)
+        try bundle.validate()
+        bundle.clinicalUsePermitted = true
+        XCTAssertThrowsError(try bundle.validate())
+    }
+    func testResearchBundleRejectsChangedSourceHash() throws {
+        let item = try source(); var workspace = Workspace(); workspace.cases = [item]
+        let artifact = try AnalyticInference.run(.contour, source: item)
+        workspace.artifacts = [artifact]
+        workspace.reviews = [try ReviewRecord(artifact: artifact, reviewer: "Operator", note: "Synthetic integration inspection", decision: .acceptedForResearch)]
+        var bundle = try workspace.researchExport(caseID: item.id)
+        bundle.sourceHash = "changed"
+        XCTAssertThrowsError(try bundle.validate())
+    }
 }

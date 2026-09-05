@@ -18,6 +18,7 @@ public struct LocalModelManifest: Codable, Sendable {
     public var outputOffset: Float
     public var structures: [Structure]
     public var intendedUse: String
+    public var isFixture: Bool? = nil
     public func validate() throws {
         guard schemaVersion == 1, operation != .inspect, !modelID.isEmpty, !version.isEmpty,
               intendedUse == "synthetic-research-only", modelFile.hasSuffix(".mlmodel"),
@@ -47,13 +48,24 @@ public enum CoreMLInference {
         let directory = manifestURL.deletingLastPathComponent().resolvingSymlinksInPath()
         let modelURL = directory.appendingPathComponent(manifest.modelFile).resolvingSymlinksInPath()
         guard modelURL.deletingLastPathComponent() == directory else { throw TPSError.invalid("Model must be inside its manifest directory.") }
+        // Compile the exact bytes that were hashed, even if the source file changes during a run.
+        let staging = FileManager.default.temporaryDirectory.appendingPathComponent("tps-model-"+UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: staging, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: staging) }
+        let snapshot = staging.appendingPathComponent("verified.mlmodel")
+        guard FileManager.default.createFile(atPath: snapshot.path, contents: nil) else { throw TPSError.invalid("Could not snapshot the local model.") }
+        let outputHandle = try FileHandle(forWritingTo: snapshot)
+        defer { try? outputHandle.close() }
         let handle = try FileHandle(forReadingFrom: modelURL)
         defer { try? handle.close() }
         var hasher = SHA256()
-        while let chunk = try handle.read(upToCount: 1_048_576), !chunk.isEmpty { hasher.update(data: chunk) }
+        while let chunk = try handle.read(upToCount: 1_048_576), !chunk.isEmpty {
+            hasher.update(data: chunk); try outputHandle.write(contentsOf: chunk)
+        }
+        try outputHandle.synchronize()
         let digest = hasher.finalize().map { String(format: "%02x", $0) }.joined()
         guard digest == manifest.modelSHA256.lowercased() else { throw TPSError.invalid("Local model checksum mismatch.") }
-        let compiled = try await MLModel.compileModel(at: modelURL)
+        let compiled = try await MLModel.compileModel(at: snapshot)
         defer { try? FileManager.default.removeItem(at: compiled) }
         let configuration = MLModelConfiguration()
         configuration.computeUnits = .all
@@ -81,7 +93,7 @@ public enum CoreMLInference {
         let values = (0..<output.count).map { output[$0].floatValue * manifest.outputScale + manifest.outputOffset }
         let artifact = Artifact(caseID: source.id, inputHash: try Canonical.hash(source), operation: operation,
             modelID: manifest.modelID, modelVersion: manifest.version+"@"+digest,
-            isDemo: false, volume: Volume(grid: source.ct.grid, modality: operation.modality,
+            isDemo: manifest.isFixture ?? false, volume: Volume(grid: source.ct.grid, modality: operation.modality,
                 units: operation == .contour ? "label" : operation == .predictDose ? "Gy" : "HU", values: values), structures: manifest.structures)
         try artifact.validate(for: source); return artifact
     }

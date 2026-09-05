@@ -180,6 +180,18 @@ public struct ResearchBundle: Codable, Sendable {
     public var audit: AuditLedger
     public var split: String
     public var sourceHash: String
+    public func validate() throws {
+        guard schemaVersion == 1, intendedUse == "synthetic-research-only", !clinicalUsePermitted,
+              sourceHash == (try Canonical.hash(source)), split == source.recipe.suggestedSplit, !artifacts.isEmpty else {
+            throw TPSError.invalid("Invalid research bundle identity, split or intended use.")
+        }
+        var workspace = Workspace()
+        workspace.cases = [source]; workspace.artifacts = artifacts; workspace.reviews = reviews; workspace.ledger = audit
+        try workspace.validate()
+        guard artifacts.allSatisfy({ workspace.latestReview(for: $0)?.decision == .acceptedForResearch }) else {
+            throw TPSError.invalid("Research bundle contains an output without a current acceptance.")
+        }
+    }
 }
 
 public enum WorkspaceFile {

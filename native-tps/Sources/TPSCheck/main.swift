@@ -1,9 +1,43 @@
 import Foundation
+import Darwin
 import TPSCore
 
 @main struct TPSCheck {
-    static func main() async throws {
+    static func main() async {
+        do { try await run() }
+        catch {
+            FileHandle.standardError.write(Data("FAIL: \(error.localizedDescription)\n".utf8))
+            exit(EXIT_FAILURE)
+        }
+    }
+    static func run() async throws {
+        if let flag = CommandLine.arguments.firstIndex(of: "--validate-bundle"), CommandLine.arguments.count > flag+1 {
+            let url = URL(fileURLWithPath: CommandLine.arguments[flag+1])
+            guard (try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0) <= 256_000_000 else { throw TPSError.invalid("Bundle exceeds 256 MB.") }
+            let bundle = try JSONDecoder().decode(ResearchBundle.self, from: Data(contentsOf: url))
+            try bundle.validate()
+            print("PASS: native research bundle hashes, review binding, geometry and audit chain verified.")
+            return
+        }
         let source = try PhantomFactory.analytic(PhantomRecipe(), size: 32)
+        if let flag = CommandLine.arguments.firstIndex(of: "--coreml-fixture"), CommandLine.arguments.count > flag+1 {
+            let url = URL(fileURLWithPath: CommandLine.arguments[flag+1])
+            let result = try await CoreMLInference.run(manifestURL: url, operation: .syntheticCT, source: source)
+            let maximumError = zip(result.volume.values, source.mr.values).map { abs($0 - $1) }.max() ?? 0
+            // ANE/GPU may round to Float16 internally even with Float32 IO.
+            // Accept only exact or IEEE Float16-rounded identity values, not arbitrary error.
+            var preservesOrder = true
+            for (actual, expected) in zip(result.volume.values, source.mr.values) {
+                let rounded = Float(Float16(expected))
+                let exactMatch = abs(actual - expected) < Float(0.0001)
+                let roundedMatch = abs(actual - rounded) < Float(0.0001)
+                if !exactMatch && !roundedMatch { preservesOrder = false; break }
+            }
+            guard result.isDemo, preservesOrder else {
+                throw TPSError.invalid("Core ML identity fixture: maximum error \(maximumError), fixture flag \(result.isDemo).")
+            }
+            print("PASS: real Core ML compilation/prediction preserve [1,1,Z,Y,X] ordering with exact-or-Float16-rounded identity values; max error \(maximumError). Fixture provenance verified.")
+        }
         var workspace = Workspace(); workspace.cases.append(source)
         try workspace.ledger.append(actor: "integration-check", action: "case.created", detail: source.id.uuidString)
         for operation in [TPSOperation.contour, .predictDose, .syntheticCT] {
