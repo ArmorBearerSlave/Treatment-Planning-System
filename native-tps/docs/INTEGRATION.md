@@ -62,8 +62,11 @@ Tensor contract:
 ### Supplied Docker launch template
 
 The supplied runtime/anatomy locations and `linux/amd64` invocation are captured
-in `config/spark-xcat2.example.json`. HTML spaces and escaped Markdown underscores
-from the pasted command have been normalized to literal path/argument characters.
+in `config/spark-xcat2.example.json`, a multi-stage pipeline reference supplied
+by the Spark project. It records base/lesion passes, sentinel labels, and DICOM/NPZ
+converter contracts. It is not executable by the single-job native launcher.
+`config/spark-xcat2-launcher.example.json` separately preserves the launcher schema
+and copies the supplied image pin and mount paths.
 `scripts/run_xcat2_container.py` implements this command as a subprocess argv
 array, preserving both read-only input mounts and the per-job writable `/out`
 mount. It does not execute a shell string.
@@ -72,13 +75,13 @@ Preview the normalized template on either machine without launching Docker:
 
 ```sh
 python3 scripts/run_xcat2_container.py \
-  --config config/spark-xcat2.example.json --print-template
+  --config config/spark-xcat2-launcher.example.json --print-template
 ```
 
-Before enabling execution, copy the example to `local-config.json` on the Spark
-and supply:
+Before enabling execution, copy the launcher example to `local-config.json` on
+the Spark and complete:
 
-- `image`: the actual `repository@sha256:...` reference for the amd64 image.
+- `image`: the supplied digest is populated; verify availability on the Spark.
 - `xcat_arguments`: the verified argument array; explicitly `[]` only if no
   additional arguments are needed. No XCAT flags are guessed by this project.
 - `supported_recipe`: the exact native recipe implemented by that parameter
@@ -108,10 +111,31 @@ converter. Those components remain explicit integration inputs.
 ### Service setup
 
 XCAT2 and OpenTOPAS/nBio are installed on the user's DGX Spark. Their exact
-runtime/anatomy paths and launch skeleton have been supplied; image digest,
-versions, full arguments, parameter mappings and output conversion remain
-unconfigured. `scripts/spark_phantom_adapter.py` is a runnable
-loopback-only wrapper around an explicitly configured local command.
+runtime/anatomy paths, image digest, case-001 base/lesion arguments and pipeline
+conversion contracts have been supplied. `scripts/convert_spark_case.py` converts
+the Spark CT DICOM, native XCAT mask NPZ and OpenTOPAS dose array into a native
+case JSON while recording the XCAT plan, parameter-file and image digests. The
+existing source pipeline produces DICOM/NPZ rather than the paired CT/MR/truth
+native case contract. Since it does not produce a meaningful MR acquisition,
+the converter refuses to run unless `--synthetic-mr` is explicitly supplied;
+that mode writes a zero-valued MR placeholder marked as unsuitable for MR
+training. Lymph nodes are intentionally excluded. `scripts/spark_phantom_adapter.py`
+is a runnable loopback-only wrapper around an explicitly configured local command.
+
+Example completed-case conversion on Spark:
+
+```sh
+python3 scripts/convert_spark_case.py \
+  --case-id VCT-PROSTATE-001 \
+  --ct-dir /spark/dicom/VCT-PROSTATE-001/CT/BASELINE \
+  --masks /spark/masks/VCT-PROSTATE-001/masks.npz \
+  --dose /spark/dose/VCT-PROSTATE-001/combined_dose.npy \
+  --plan-json /spark/plans/VCT-PROSTATE-001.json \
+  --parameter-file /spark/xcat/XCAT_latest/general.samp.par \
+  --image-digest ubuntu@sha256:<pinned-digest> \
+  --synthetic-mr \
+  --output /spark/native-cases/VCT-PROSTATE-001.json
+```
 
 On the Spark, prepare a JSON argv file resembling this (replace every path):
 
@@ -130,7 +154,7 @@ requests and never uses `shell=True`.
 python3 spark_phantom_adapter.py --command-file /path/to/local-command.json
 
 # On the Mac, using your actual SSH host alias:
-ssh -N -L 8105:127.0.0.1:8105 YOUR_SPARK_SSH_ALIAS
+ssh -N -L 8105:127.0.0.1:8105 spark-wired
 ```
 
 In Phantom lab, set `http://127.0.0.1:8105`. The app sends `POST /v1/phantoms`:
