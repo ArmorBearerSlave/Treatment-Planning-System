@@ -1,9 +1,82 @@
 {
   "runtime_directory": "/home/armorbearer/hupci-sim/xcat/XCAT2/runtime/XCAT_latest",
   "anatomy_directory": "/home/armorbearer/hupci-sim/xcat/XCAT2/anatomy/xcat_adult_nrb_files",
-  "image": null,
+  "image": "ubuntu@sha256:0e0a0fc6d18feda9db1590da249ac93e8d5abfea8f4c3c0c849ce512b5ef8982",
   "parameter_file": "general.samp.par",
-  "xcat_arguments": null,
-  "supported_recipe": null,
-  "converter_argv": null
+  "platform": "linux/amd64",
+  "xcat_arguments": {
+    "base": [
+      "--mode", "0", "--act_phan_each", "1", "--atten_phan_each", "1",
+      "--activ_output_format", "0", "--color_code", "0", "--energy", "120",
+      "--motion_option", "0", "--out_period", "1", "--out_frames", "1",
+      "--gender", "0", "--organ_file", "/anatomy/male_pt108.nrb",
+      "--heart_base", "/anatomy/male_pt108_heart.nrb", "--which_breast", "0",
+      "--breast_type", "0", "--pixel_width", "0.25", "--slice_width", "0.25",
+      "--subvoxel_index", "1", "--x_array_size", "180", "--y_array_size", "180",
+      "--startslice", "318", "--endslice", "413", "--prostate_activity", "31.25"
+    ],
+    "lesion": [
+      "--mode", "2", "--act_phan_each", "1", "--atten_phan_each", "1",
+      "--activ_output_format", "0", "--color_code", "0", "--energy", "120",
+      "--motion_option", "0", "--out_period", "1", "--out_frames", "1",
+      "--gender", "0", "--organ_file", "/anatomy/male_pt108.nrb",
+      "--heart_base", "/anatomy/male_pt108_heart.nrb", "--which_breast", "0",
+      "--breast_type", "0", "--pixel_width", "0.25", "--slice_width", "0.25",
+      "--subvoxel_index", "4", "--x_array_size", "180", "--y_array_size", "180",
+      "--startslice", "318", "--endslice", "413", "--tumor_filename", "lesion.nrb",
+      "--x_location", "91", "--y_location", "99", "--z_location", "48",
+      "--lesn_diameter", "8", "--lesn_activity", "45", "--tumor_location_flag", "0",
+      "--tumor_motion_flag", "0", "--tumor_rotation_flag", "0"
+    ]
+  },
+  "supported_recipe": {
+    "prostate_xcat2": {
+      "description": "Two-pass synthetic prostate phantom: mode 0 base plus mode 2 spherical lesion.",
+      "energy_kev": [120, 511],
+      "color_code": 0,
+      "shape_zyx": [96, 180, 180],
+      "spacing_mm": [2.5, 2.5, 2.5],
+      "required_outputs": ["base_act_1.bin", "base_atn_1.bin", "lesion_act_1.bin", "lesion_atn_1.bin"],
+      "validation": "run-xcat2-dgx.sh validation.json and provenance.json; reject center error >1 voxel or diameter error >10 percent"
+    },
+    "prostate_native_labels": {
+      "description": "Mode 0 color-coded XCAT2 activity labels using per-case sentinel calibration.",
+      "energy_kev": 120,
+      "color_code": 1,
+      "sentinel_parameters": {
+        "prostate_activity": 9001,
+        "bladder_activity": 9002,
+        "rectum_activity": 9003,
+        "sem_activity": 9004,
+        "asc_li_activity": 9005,
+        "desc_li_activity": 9006,
+        "sm_intest_activity": 9007
+      },
+      "lymph_nodes": "excluded",
+      "required_outputs": ["sentinel_act_1.bin", "sentinel_atn_1.bin"]
+    }
+  },
+  "converter_argv": {
+    "xcat2_runner": [
+      "bash", "/home/armorbearer/hupci-sim/brain-vct/scripts/run-xcat2-dgx.sh",
+      "<plan.json>", "<output_root>"
+    ],
+    "native_label_to_rtstruct": [
+      "python3", "/home/armorbearer/nl-tps-autoseg/xcat_label_contours.py",
+      "--labels", "<labels_act_1.bin>", "--shape", "96", "180", "180",
+      "--label-map", "<case_label_map.json>", "--ct-dir", "<ct_dir>",
+      "--mask-output", "<masks.npz>", "--rtstruct-output", "<RTSTRUCT_XCAT_LABELS.dcm>"
+    ],
+    "mc_training_archive": [
+      "python3", "/home/armorbearer/nl-tps-autoseg/prepare_mc_training_data.py",
+      "--dicom-root", "<dicom_root>", "--dose-root", "<dose_root>",
+      "--mask-root", "<mask_root>", "--output-root", "<training_output_root>"
+    ]
+  },
+  "output_contract": {
+    "raw_xcat_order": "C-order (z,y,x), float32 little-endian, headerless",
+    "topas_dose_order": "Fortran-order (x,y,z), float64 binary scorer output; converter transposes to (z,y,x)",
+    "training_archive": "compressed NPZ with ct float32, structures uint8 [roi,z,y,x], dose float32 normalized total-course fraction of 70.2 Gy",
+    "provenance_required": ["synthetic_only", "clinical_use_permitted=false", "image_digest", "plan_json", "normalization", "model_and_parameter_sources"]
+  }
 }
