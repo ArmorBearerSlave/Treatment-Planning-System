@@ -25,7 +25,7 @@ struct CTCanvas: View {
                 .scaleEffect(width / 1024 * zoom)
                 .frame(width: width, height: width * ratio)
                 .clipped()
-                .gesture(MagnifyGesture().onChanged { if !store.markup { zoom = min(max($0.magnification, 1), 3) } }.onEnded { _ in zoom = 1 })
+                .gesture(MagnifyGesture().onChanged { zoom = min(max($0.magnification, 1), 3) }.onEnded { _ in zoom = 1 }, including: store.markup ? .subviews : .all)
             }
             .clipShape(RoundedRectangle(cornerRadius: 24))
             .overlay(alignment: .topLeading) {
@@ -78,7 +78,7 @@ struct PencilSurface: UIViewRepresentable {
     var changed: () -> Void
     func makeCoordinator() -> Coordinator { Coordinator(self) }
     func makeUIView(context: Context) -> PKCanvasView {
-        let view = PKCanvasView()
+        let view = ActivePencilCanvas()
         view.backgroundColor = .clear; view.isOpaque = false; view.isScrollEnabled = false
         view.tool = PKInkingTool(.pen, color: .systemMint, width: 3)
         view.delegate = context.coordinator
@@ -90,6 +90,10 @@ struct PencilSurface: UIViewRepresentable {
         if view.drawing != drawing { view.drawing = drawing }
         view.isUserInteractionEnabled = enabled
         view.drawingPolicy = fingerInk ? .anyInput : .pencilOnly
+        view.drawingGestureRecognizer.isEnabled = enabled
+        if #available(iOS 18.0, *) { view.isDrawingEnabled = enabled }
+        if enabled, view.window != nil, !view.isFirstResponder { view.becomeFirstResponder() }
+        if !enabled, view.isFirstResponder { view.resignFirstResponder() }
         context.coordinator.updating = false
     }
     class Coordinator: NSObject, PKCanvasViewDelegate {
@@ -101,5 +105,13 @@ struct PencilSurface: UIViewRepresentable {
             parent.drawing = canvasView.drawing
             parent.changed()
         }
+    }
+}
+
+/// Restore Pencil focus when SwiftUI mounts a new canvas for another slice.
+final class ActivePencilCanvas: PKCanvasView {
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window != nil, isUserInteractionEnabled { becomeFirstResponder() }
     }
 }

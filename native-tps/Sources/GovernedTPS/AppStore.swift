@@ -4,9 +4,9 @@ import UniformTypeIdentifiers
 import TPSCore
 
 enum Screen: String, CaseIterable, Identifiable {
-    case workspace = "Workspace", agents = "Agent workbench", phantoms = "Phantom lab", models = "Local models", governance = "Review & evidence"
+    case topas = "OpenTOPAS", learning = "Dataset & learning", workspace = "Workspace", agents = "Agent workbench", phantoms = "Phantom lab", models = "Local models", governance = "Review & evidence"
     var id: String { rawValue }
-    var icon: String { switch self { case .workspace: "square.stack.3d.up"; case .agents: "point.3.connected.trianglepath.dotted"; case .phantoms: "figure.stand"; case .models: "cpu"; case .governance: "checkmark.shield" } }
+    var icon: String { switch self { case .topas: "atom"; case .learning: "chart.bar.xaxis"; case .workspace: "square.stack.3d.up"; case .agents: "point.3.connected.trianglepath.dotted"; case .phantoms: "figure.stand"; case .models: "cpu"; case .governance: "checkmark.shield" } }
 }
 enum InferenceMode: String, CaseIterable, Identifiable {
     case fixture = "Analytic fixture", coreML = "Core ML on this Mac"
@@ -97,6 +97,22 @@ enum InferenceMode: String, CaseIterable, Identifiable {
         let mode = inferenceMode, manifestURL = modelManifests[operation]
         perform(operation.title) { [self] in try await execute(operation, source: source, mode: mode, manifestURL: manifestURL, actor: "operator") }
     }
+    func runLearned(_ experiment: LearningExperiment) {
+        guard let source else { return }
+        perform("Running learned contour baseline on this Mac") { [self] in
+            let artifact = try await Task.detached(priority: .userInitiated) {
+                let model = experiment.model
+                let output = try model.predict(source)
+                return Artifact(caseID: source.id, inputHash: try Canonical.hash(source), operation: .contour,
+                                modelID: "learned-gaussian-contour/\(experiment.id)", modelVersion: try Canonical.hash(model),
+                                isDemo: false, volume: output, structures: model.structures)
+            }.value
+            try artifact.validate(for: source)
+            var next = workspace; next.artifacts.append(artifact)
+            try next.ledger.append(actor: "operator", action: "learned-baseline.proposed", detail: "\(artifact.id) · experiment=\(experiment.id) · \(try Canonical.hash(artifact))")
+            try commit(next); selectedArtifactID = artifact.id; screen = .workspace
+        }
+    }
     private func execute(_ operation: TPSOperation, source: PhantomCase, mode: InferenceMode, manifestURL: URL?, actor: String) async throws {
         if operation == .inspect {
             try source.validate()
@@ -174,7 +190,7 @@ enum InferenceMode: String, CaseIterable, Identifiable {
         } catch { self.error = error.localizedDescription }
     }
     func chooseManifest(_ operation: TPSOperation) {
-        let panel = NSOpenPanel(); panel.allowedContentTypes = [.json]; panel.message = "Select the model's TPS manifest JSON. The matching .mlmodel must be beside it."
+        let panel = NSOpenPanel(); panel.canChooseFiles = true; panel.canChooseDirectories = false; panel.allowedContentTypes = [.json]; panel.message = "Select the model's TPS manifest JSON. The matching .mlmodel must be beside it."
         guard panel.runModal() == .OK, let url = panel.url else { return }
         do {
             let manifest = try CoreMLInference.manifest(at: url)
@@ -185,7 +201,7 @@ enum InferenceMode: String, CaseIterable, Identifiable {
     }
     func importCase() {
         guard !busy else { return }
-        let panel = NSOpenPanel(); panel.allowedContentTypes = [.json]
+        let panel = NSOpenPanel(); panel.canChooseFiles = true; panel.canChooseDirectories = false; panel.allowedContentTypes = [.json]
         panel.canChooseDirectories = false; panel.allowsMultipleSelection = false
         panel.prompt = "Import case"
         panel.message = "Choose the converted native case JSON on this Mac. Copy Spark output to this Mac first. DICOM folders and NPZ arrays require conversion."

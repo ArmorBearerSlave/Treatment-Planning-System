@@ -29,7 +29,7 @@ struct WorkstationView: View {
                             HStack {
                                 Image(systemName: "sparkles").foregroundStyle(Theme.amber)
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(artifact.operation.title+" · "+(artifact.isDemo ? "analytic fixture" : "local Core ML")).font(.system(size: 12, weight: .medium))
+                                    Text(artifact.operation.title+" · "+(artifact.isDemo ? "analytic fixture" : artifact.modelID.hasPrefix("learned-gaussian-contour/") ? "learned Gaussian baseline" : "local Core ML")).font(.system(size: 12, weight: .medium))
                                     Text("\(artifact.modelID) · \(store.workspace.latestReview(for: artifact)?.decision.rawValue ?? "Awaiting human research review")").font(.system(size: 10)).foregroundStyle(Theme.muted)
                                 }
                                 Spacer()

@@ -132,3 +132,12 @@ A separate touch-first iPad prototype is in [iPad/README.md](iPad/README.md).
 Open `iPad/GovernedTPSiPad.xcodeproj` for CT review, slice-bound Pencil markup,
 offline notes and compact review handoff. Mac inference and Spark simulation
 remain in their existing environments.
+
+## Dataset & learning
+
+The Mac now supports anatomy-grouped dataset splits, a learned contour baseline,
+validation-based selection and held-out test reports. The iPad can import those
+reports through Results. See [the learning workflow](docs/LEARNING.md) for the
+completed-cohort contract and the scope of the initial baseline.
+
+Desktop Monte Carlo workflow: [OpenTOPAS integration](docs/OPENTOPAS.md) documents prepared Spark jobs, parameter review, transport logs, raw-result download, and the current nBio component blocker.

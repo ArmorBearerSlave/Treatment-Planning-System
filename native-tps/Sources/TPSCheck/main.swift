@@ -1,5 +1,6 @@
 import Foundation
 import Darwin
+import CryptoKit
 import TPSCore
 
 @main struct TPSCheck {
@@ -11,6 +12,36 @@ import TPSCore
         }
     }
     static func run() async throws {
+        if let flag = CommandLine.arguments.firstIndex(of: "--learning-smoke"), CommandLine.arguments.count > flag+1 {
+            let directory = URL(fileURLWithPath: CommandLine.arguments[flag+1], isDirectory: true)
+            guard !FileManager.default.fileExists(atPath: directory.path) else { throw TPSError.invalid("Choose a new smoke-test directory.") }
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            var entries: [LearningCase] = [], sources: [UUID:PhantomCase] = [:]
+            for index in 0..<6 {
+                var source = try PhantomFactory.analytic(PhantomRecipe(anatomyID: "LEARNING-FIXTURE-\(index)", seed: index*13, bodyScale: 0.8+Double(index)*0.08), size: 16)
+                source.mr = nil; source.sourceNotes = ["anatomyGroupID": "pipeline-fixture-\(index)", "reference": "Artificial split groups for software testing only; not evidence of independent anatomy generalization."]
+                let path = directory.appendingPathComponent("fixture-\(index).json")
+                let bytes = try Canonical.data(source)
+                try bytes.write(to: path)
+                let fileHash = SHA256.hash(data: bytes).map { String(format: "%02x",$0) }.joined()
+                entries.append(LearningCase(source: source, url: path, fileSHA256: fileHash, anatomyGroup: "pipeline-fixture-\(index)"))
+                sources[source.id] = source
+            }
+            let partition = try DatasetPartition.make(cases: entries, seed: 42)
+            let training = entries.filter { partition.assignments[$0.id.uuidString] == "train" }.map { sources[$0.id]! }
+            let model = try GaussianContourModel.fit(training, varianceFloor: 0.01)
+            var validation: [CaseEvaluation] = []
+            for split in ["validation"] {
+                for entry in entries where partition.assignments[entry.id.uuidString] == split {
+                    let source = sources[entry.id]!
+                    validation.append(try CaseEvaluation.contours(source: source, prediction: model.predict(source), split: split))
+                }
+            }
+            let experiment = LearningExperiment(cases: entries, partition: partition, model: model, selectedVarianceFloor: 0.01, validation: validation)
+            try Canonical.data(experiment).write(to: directory.appendingPathComponent("experiment.json"))
+            print("PASS: six artificial CT-only fixtures → grouped split → trained contour baseline → validation metrics. Test is reserved for app smoke check. Pipeline test only, no model performance claim.")
+            return
+        }
         if let flag = CommandLine.arguments.firstIndex(of: "--validate-case"), CommandLine.arguments.count > flag+1 {
             let url = URL(fileURLWithPath: CommandLine.arguments[flag+1])
             guard (try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0) <= 96_000_000 else { throw TPSError.invalid("Case exceeds 96 MB.") }

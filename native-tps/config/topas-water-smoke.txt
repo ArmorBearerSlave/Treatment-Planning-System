@@ -1,0 +1,25 @@
+# Desktop bridge verification only: 10 protons starting at the centre of water.
+# Not a dose calibration, beam model, or biological endpoint validation.
+d:Ge/World/HLX = 50 mm
+d:Ge/World/HLY = 50 mm
+d:Ge/World/HLZ = 50 mm
+s:Ge/Cell/Type = "TsBox"
+s:Ge/Cell/Parent = "World"
+s:Ge/Cell/Material = "G4_WATER"
+d:Ge/Cell/HLX = 10 mm
+d:Ge/Cell/HLY = 10 mm
+d:Ge/Cell/HLZ = 10 mm
+s:So/Example/Type = "Beam"
+s:So/Example/Component = "Cell"
+s:So/Example/BeamParticle = "proton"
+d:So/Example/BeamEnergy = 5 MeV
+s:So/Example/BeamPositionDistribution = "None"
+s:So/Example/BeamAngularDistribution = "None"
+i:So/Example/NumberOfHistoriesInRun = 10
+s:Sc/WaterDose/Quantity = "DoseToMedium"
+s:Sc/WaterDose/Component = "Cell"
+s:Sc/WaterDose/OutputFile = "WaterDose"
+s:Sc/WaterDose/OutputType = "csv"
+b:Sc/WaterDose/OutputToConsole = "True"
+b:Ts/PauseBeforeQuit = "False"
+i:Ts/Seed = 42

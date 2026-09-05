@@ -2,6 +2,8 @@ import SwiftUI
 import TPSCore
 
 struct RootView: View {
+    @StateObject private var topas = TopasStore()
+    @StateObject private var learning = LearningStore()
     @EnvironmentObject var store: AppStore
     var body: some View {
         HStack(spacing: 0) {
@@ -10,6 +12,8 @@ struct RootView: View {
                 topBar
                 Group {
                     switch store.screen {
+                    case .topas: TopasView(simulation: topas)
+                    case .learning: LearningView(lab: learning)
                     case .workspace: WorkstationView()
                     case .agents: AgentWorkbench()
                     case .phantoms: PhantomLab()

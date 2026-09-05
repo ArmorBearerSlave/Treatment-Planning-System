@@ -13,6 +13,9 @@ struct TabletRoot: View {
     @Environment(\.scenePhase) var scenePhase
     @State private var importing = false
     @State private var exporting = false
+    @State private var importingReport = false
+    @State private var report: LearningReport?
+    @State private var showReport = false
     @State private var document: ReviewDocument?
     @State private var tab = "Images"
     private let navy = Color(red: 0.035, green: 0.065, blue: 0.10)
@@ -40,7 +43,17 @@ struct TabletRoot: View {
             .toolbar(.hidden, for: .navigationBar)
             .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in
                 switch result {
-                case .success(let url): Task { await store.load(url) }
+                case .success(let url):
+                    if importingReport {
+                        do {
+                            let scoped = url.startAccessingSecurityScopedResource()
+                            defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+                            guard (try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0) <= 5_000_000 else { throw TPSError.invalid("Evaluation report exceeds 5 MB.") }
+                            let value = try JSONDecoder().decode(LearningReport.self, from: Data(contentsOf: url))
+                            guard value.schemaVersion == 1, !value.clinicalUsePermitted else { throw TPSError.invalid("Only research evaluation reports are supported.") }
+                            report = value; showReport = true
+                        } catch { store.error = error.localizedDescription }
+                    } else { Task { await store.load(url) } }
                 case .failure(let error): store.error = error.localizedDescription
                 }
             }
@@ -50,6 +63,7 @@ struct TabletRoot: View {
             .alert("Action could not complete", isPresented: Binding(get: { store.error != nil }, set: { if !$0 { store.error = nil } })) {
                 Button("OK") { store.error = nil }
             } message: { Text(store.error ?? "") }
+            .sheet(isPresented: $showReport) { if let report { EvaluationReportView(report: report) } }
             .task { await store.restore() }
             .onChange(of: scenePhase) { _, phase in
                 if phase != .active { do { store.stashDrawing(); try store.saveNow() } catch { store.error = error.localizedDescription } }
@@ -64,8 +78,9 @@ struct TabletRoot: View {
                 Text(store.source?.name ?? "A closer look. Anywhere.").font(.title2.bold()).lineLimit(1)
             }
             Spacer()
-            Button { importing = true } label: { Label("Import CT case", systemImage: "square.and.arrow.down") }
+            Button { importingReport = false; importing = true } label: { Label("Import CT case", systemImage: "square.and.arrow.down") }
                 .buttonStyle(.bordered).controlSize(.large).disabled(store.busy)
+            Button { importingReport = true; importing = true } label: { Label("Results", systemImage: "chart.bar.xaxis") }.buttonStyle(.bordered).disabled(store.busy)
         }
     }
     var welcome: some View {
