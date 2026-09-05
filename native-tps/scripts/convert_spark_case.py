@@ -135,6 +135,7 @@ def main():
         "recipe": {"anatomyID": args.case_id, "seed": 0, "bodyScale": 1, "targetRadiusMM": 8, "motionPhase": 0, "nBioProfile": "unbound"},
         "ct": volume(grid, "ct", "HU", ct_zyx),
         "mr": volume(grid, "mr", "a.u.", mr),
+        "mrIsPlaceholder": True,
         "truth": volume(grid, "labels", "label", labels),
         "structures": structures,
         "simulation": {

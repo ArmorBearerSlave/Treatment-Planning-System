@@ -23,7 +23,18 @@ def mount_path(value):
     return value
 
 
+def validate_launcher_format(config):
+    if not isinstance(config, dict):
+        raise ValueError("Launcher configuration must be a JSON object")
+    if any(isinstance(config.get(key), dict) for key in ["xcat_arguments", "converter_argv"]):
+        raise ValueError("This is a multi-stage Spark pipeline reference, not a single-job launcher config. "
+                         "Use spark-xcat2-launcher.example.json; a native case converter and exact recipe mapping are still required.")
+    if config.get("platform", "linux/amd64") != "linux/amd64":
+        raise ValueError("XCAT2 launcher requires platform linux/amd64")
+
+
 def validate_config(config, recipe):
+    validate_launcher_format(config)
     for key in ["runtime_directory", "anatomy_directory"]:
         mount_path(config[key])
     image = config.get("image")
@@ -51,6 +62,9 @@ def validate_config(config, recipe):
 
 
 def docker_argv(config, output_directory, image=None, arguments=None, name=None):
+    validate_launcher_format(config)
+    if arguments is not None and not isinstance(arguments, list):
+        raise ValueError("Preview arguments must be an argv array")
     command = ["docker", "run", "--rm", "--platform", "linux/amd64"]
     if name:
         command += ["--name", name]

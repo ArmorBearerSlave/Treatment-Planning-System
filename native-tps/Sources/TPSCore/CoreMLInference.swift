@@ -40,7 +40,7 @@ public enum CoreMLInference {
         try manifest.validate(); return manifest
     }
     public static func run(manifestURL: URL, operation: TPSOperation, source: PhantomCase) async throws -> Artifact {
-        try source.validate()
+        try source.validateInput(for: operation)
         let manifest = try self.manifest(at: manifestURL)
         guard manifest.operation == operation, manifest.dimensions == source.ct.grid.dimensions else {
             throw TPSError.invalid("Model operation or fixed input dimensions do not match this case. Resampling is not implicit.")

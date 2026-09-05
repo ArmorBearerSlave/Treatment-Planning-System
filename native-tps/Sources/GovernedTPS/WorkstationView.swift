@@ -50,6 +50,9 @@ struct WorkstationView: View {
                             }
                             Card(title: "Source provenance", subtitle: "Generator identity") {
                                 Text(source.generator).font(.system(size: 12))
+                                if let note = source.sourceNotes?["mr"] {
+                                    Text("MR: \(note)").font(.system(size: 12)).foregroundStyle(.orange)
+                                }
                                 Text("nBio profile: \(source.recipe.nBioProfile)").font(.system(size: 11)).foregroundStyle(Theme.muted)
                             }
                         }

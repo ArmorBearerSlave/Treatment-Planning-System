@@ -119,7 +119,11 @@ existing source pipeline produces DICOM/NPZ rather than the paired CT/MR/truth
 native case contract. Since it does not produce a meaningful MR acquisition,
 the converter refuses to run unless `--synthetic-mr` is explicitly supplied;
 that mode writes a zero-valued MR placeholder marked as unsuitable for MR
-training. Lymph nodes are intentionally excluded. `scripts/spark_phantom_adapter.py`
+training. Native import now retains `sourceNotes` and the optional
+`mrIsPlaceholder` flag. Synthetic-CT inference and training reject flagged,
+placeholder-described, or all-zero MR, even with `--allow-fixture`; CT-based
+contour workflows remain available. Notes are retained in dataset metadata.
+Lymph nodes are intentionally excluded. `scripts/spark_phantom_adapter.py`
 is a runnable loopback-only wrapper around an explicitly configured local command.
 
 Example completed-case conversion on Spark:

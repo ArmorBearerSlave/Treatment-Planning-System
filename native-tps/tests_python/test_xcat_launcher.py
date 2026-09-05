@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import sys
 from pathlib import Path
 import unittest
@@ -48,6 +49,26 @@ class XCATLauncherTests(unittest.TestCase):
         config = self.config(); config["parameter_file"] = "../outside.par"
         with self.assertRaises(ValueError):
             launcher.validate_config(config, config["supported_recipe"])
+
+    def test_pipeline_reference_cannot_be_previewed_as_single_job(self):
+        config = json.loads((ROOT / "config/spark-xcat2.example.json").read_text())
+        with self.assertRaisesRegex(ValueError, "multi-stage Spark pipeline reference"):
+            launcher.docker_argv(config, "/tmp/job")
+        with self.assertRaisesRegex(ValueError, "multi-stage Spark pipeline reference"):
+            launcher.validate_config(config, self.config()["supported_recipe"])
+
+    def test_launcher_example_preserves_pin_but_requires_mapping(self):
+        config = json.loads((ROOT / "config/spark-xcat2-launcher.example.json").read_text())
+        reference = json.loads((ROOT / "config/spark-xcat2.example.json").read_text())
+        self.assertEqual(config["image"], reference["image"])
+        self.assertIn(config["image"], launcher.docker_argv(config, "/tmp/job"))
+        with self.assertRaisesRegex(ValueError, "verified XCAT arguments"):
+            launcher.validate_config(config, self.config()["supported_recipe"])
+
+    def test_platform_is_not_silently_overridden(self):
+        config = self.config(); config["platform"] = "linux/arm64"
+        with self.assertRaisesRegex(ValueError, "linux/amd64"):
+            launcher.docker_argv(config, "/tmp/job")
 
 
 if __name__ == "__main__":

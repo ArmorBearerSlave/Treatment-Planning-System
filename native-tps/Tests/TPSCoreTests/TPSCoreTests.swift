@@ -3,6 +3,19 @@ import XCTest
 
 final class TPSCoreTests: XCTestCase {
     func source() throws -> PhantomCase { try PhantomFactory.analytic(PhantomRecipe(), size: 16) }
+    func testPlaceholderMRProvenanceSurvivesRoundTripAndBlocksSCT() throws {
+        var value = try source()
+        value.sourceNotes = ["mr": "Synthetic zero placeholder", "xcatPlanSHA256": String(repeating: "a", count: 64)]
+        value.mrIsPlaceholder = true
+        let restored = try JSONDecoder().decode(PhantomCase.self, from: Canonical.data(value))
+        XCTAssertEqual(restored.sourceNotes, value.sourceNotes)
+        XCTAssertEqual(restored.mrIsPlaceholder, true)
+        XCTAssertThrowsError(try restored.validateInput(for: .syntheticCT))
+        XCTAssertNoThrow(try restored.validateInput(for: .contour))
+        value.sourceNotes = nil; value.mrIsPlaceholder = nil
+        value.mr.values = Array(repeating: 0, count: value.mr.values.count)
+        XCTAssertThrowsError(try AnalyticInference.run(.syntheticCT, source: value))
+    }
     func testGridRejectsOversizedAndDegenerateDimensions() {
         for dimensions in [[0,2,2], [Int.max,2,2], [512,512,512], [3,3]] {
             XCTAssertThrowsError(try Grid(dimensions: dimensions, spacing: [1,1,1], origin: [0,0,0], frameID: "test").validate())

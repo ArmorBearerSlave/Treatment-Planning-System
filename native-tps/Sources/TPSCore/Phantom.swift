@@ -42,6 +42,15 @@ public struct PhantomCase: Codable, Sendable, Identifiable {
     public var truth: Volume
     public var structures: [Structure]
     public var simulation: SimulationEvidence? = nil
+    public var sourceNotes: [String: String]? = nil
+    public var mrIsPlaceholder: Bool? = nil
+    public func validateInput(for operation: TPSOperation) throws {
+        try validate()
+        let note = sourceNotes?["mr"]?.lowercased() ?? ""
+        if operation == .syntheticCT && (mrIsPlaceholder == true || note.contains("placeholder") || mr.values.allSatisfy({ $0 == 0 })) {
+            throw TPSError.invalid("Synthetic CT requires meaningful MR input; this case contains a placeholder MR channel.")
+        }
+    }
     public func validate() throws {
         guard schemaVersion == 1, syntheticOnly, !generator.isEmpty, !generatorVersion.isEmpty else {
             throw TPSError.invalid("Only version 1 synthetic research cases with generator provenance are supported.")

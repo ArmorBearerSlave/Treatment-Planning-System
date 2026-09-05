@@ -26,6 +26,16 @@ def bundle():
 
 
 class DatasetTests(unittest.TestCase):
+    def test_placeholder_mr_never_enters_sct_training(self):
+        for marker in ["flag", "note", "zeros"]:
+            value = bundle()
+            if marker == "flag": value["source"]["mrIsPlaceholder"] = True
+            if marker == "note": value["source"]["sourceNotes"] = {"mr": "Synthetic zero placeholder"}
+            if marker == "zeros": value["source"]["mr"]["values"] = [0] * 8
+            with self.assertRaisesRegex(ValueError, "Placeholder MR"):
+                dataset.training_pair(value, "syntheticCT", True)
+            dataset.training_pair(value, "contour", True)
+
     def test_fixture_rejected_by_default(self):
         with self.assertRaises(ValueError):
             dataset.training_pair(bundle(), "contour")

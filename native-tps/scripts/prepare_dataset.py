@@ -44,6 +44,9 @@ def training_pair(bundle, task, allow_fixture=False):
     if task == "contour":
         image, target = ct, labels
     elif task == "syntheticCT":
+        note = source.get("sourceNotes", {}).get("mr", "").lower()
+        if source.get("mrIsPlaceholder") is True or "placeholder" in note or not np.any(mr):
+            raise ValueError("Placeholder MR is excluded from syntheticCT training, including fixture runs")
         image, target = mr, ct
     elif task == "predictDose":
         evidence = source.get("simulation")
@@ -101,6 +104,9 @@ def main():
                      nativeSourceHash=bundle["sourceHash"], generator=source["generator"],
                      generatorVersion=source["generatorVersion"], recipe=source["recipe"],
                      grid=source["ct"]["grid"], structures=source["structures"])
+        for key in ["sourceNotes", "mrIsPlaceholder"]:
+            if key in source:
+                entry[key] = source[key]
         if source.get("simulation"):
             entry["simulation"] = {k: v for k, v in source["simulation"].items() if k != "referenceDose"}
         prepared.append((entry, arrays))

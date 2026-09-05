@@ -2,7 +2,7 @@ import Foundation
 
 public enum AnalyticInference {
     public static func run(_ operation: TPSOperation, source: PhantomCase) throws -> Artifact {
-        try source.validate()
+        try source.validateInput(for: operation)
         guard operation != .inspect else { throw TPSError.invalid("Inspection does not produce an inference artifact.") }
         var values = [Float](repeating: 0, count: source.ct.grid.count)
         switch operation {
@@ -108,6 +108,7 @@ public enum LocalHTTP {
 
 public enum ModelGateway {
     public static func infer(endpoint: String, request: InferenceRequest) async throws -> Artifact {
+        try request.source.validateInput(for: request.operation)
         var http = URLRequest(url: try LocalEndpoint.validate(endpoint).appendingPathComponent("v1/infer"))
         http.httpMethod = "POST"; http.setValue("application/json", forHTTPHeaderField: "Content-Type")
         http.httpBody = try Canonical.data(request)
