@@ -29,6 +29,9 @@ from .provenance import build_record, sha256_array, sha256_file, sha256_json
 
 REQUEST_VERSION = 1
 
+#: Identifier for a dose this package computed itself.
+PROVIDER_PYTPS = "pytps-pencilbeam"
+
 
 class PlanRequestError(ValueError):
     """Raised for a plan request this engine will not accept."""
@@ -181,6 +184,97 @@ def target_centroid(case: PlanningCase, target: str) -> tuple[float, float, floa
     return (float(x[mask].mean()), float(y[mask].mean()), float(z[mask].mean()))
 
 
+def structure_voxels(case: PlanningCase) -> dict[str, np.ndarray]:
+    """Flat voxel indices for every non-empty structure in a case."""
+    flat_labels = case.labels.reshape(-1)
+    found = {
+        structure.name: np.flatnonzero(flat_labels == np.int16(structure.label)).astype(np.int64)
+        for structure in case.structures
+    }
+    return {name: indices for name, indices in found.items() if indices.size > 0}
+
+
+def evaluate_dose(
+    case: PlanningCase, request: PlanRequest, dose: np.ndarray
+) -> tuple[dict[str, StructureDVH], list[str]]:
+    """Score any dose on a case: DVHs for every structure, plus coverage warnings.
+
+    Shared by the internal engine and by every external bridge, so a matRad
+    dose and a pytps dose are measured by exactly the same code. Any difference
+    between two plans is then a difference in dose, not in scoring.
+    """
+    dvhs = compute_dvh_set(
+        dose,
+        structure_voxels(case),
+        case.grid.voxel_volume_cm3,
+        reference_dose_gy=request.prescription_gy,
+        targets=(request.target,),
+    )
+    warnings: list[str] = []
+    target_dvh = dvhs.get(request.target)
+    if target_dvh is not None:
+        coverage = target_dvh.metrics.get("V95pct", 0.0)
+        if coverage < 0.95:
+            warnings.append(
+                f"Target V95% is {coverage:.1%}. This objective set and beam arrangement did not "
+                "produce uniform target coverage."
+            )
+    return dvhs, warnings
+
+
+def plan_provenance(
+    case: PlanningCase, request: PlanRequest, case_path: str | Path | None = None
+) -> dict[str, Any]:
+    """The provenance block every plan artifact carries, whoever computed the dose."""
+    inputs: dict[str, Any] = {
+        "caseID": case.case_id,
+        "caseCTDigest": sha256_array(case.ct_hu),
+        "caseLabelDigest": sha256_array(case.labels),
+        "caseProvenance": case.provenance,
+        "requestDigest": request.digest(),
+        "huToDensityTable": "pytps.materials.DEFAULT_HU_TO_DENSITY (generic, not scanner-specific)",
+    }
+    if case_path is not None and Path(case_path).exists():
+        inputs["caseFile"] = Path(case_path).name
+        inputs["caseFileDigest"] = sha256_file(case_path)
+    record = build_record(inputs)
+    record["planID"] = sha256_json(
+        {"case": inputs["caseCTDigest"], "request": request.digest(), "time": record["generatedUTC"]}
+    )[:32]
+    return record
+
+
+def build_plan_beams(case: PlanningCase, request: PlanRequest) -> tuple[list[Beam], tuple[float, float, float]]:
+    """Beam set and isocentre for a request, as the planner would build them."""
+    isocenter = request.isocenter or target_centroid(case, request.target)
+    target_mask = case.mask(request.target)
+    x, y, z = case.grid.meshgrid_world(dtype=np.float32)
+    target_points = np.stack([x[target_mask], y[target_mask], z[target_mask]], axis=1)
+    del x, y, z
+    beams = build_beams(
+        request.gantry_angles,
+        isocenter,
+        target_points,
+        request.bixel_width_mm,
+        request.field_margin_mm,
+        request.sad_mm,
+    )
+    return beams, tuple(float(value) for value in isocenter)
+
+
+def forward_dose(case: PlanningCase, request: PlanRequest) -> tuple[np.ndarray, list[Beam]]:
+    """Dose of a uniform open field: every bixel at weight one, nothing optimised.
+
+    The scale is arbitrary. This exists so the dose engine can be compared
+    against another code's engine without the two optimisers being part of the
+    comparison.
+    """
+    beams, _ = build_plan_beams(case, request)
+    influence = compute_influence(case, beams, request.kernel)
+    dose = influence.dose(np.ones(influence.n_bixels, dtype=np.float32))
+    return dose, beams
+
+
 @dataclass
 class PlanResult:
     """Everything a planning run produced, ready to write to disk."""
@@ -188,16 +282,41 @@ class PlanResult:
     case: PlanningCase
     request: PlanRequest
     beams: list[Beam]
-    influence: DoseInfluence
-    optimization: OptimizationResult
     dose: np.ndarray
     dvhs: dict[str, StructureDVH]
     provenance: dict[str, Any]
     warnings: list[str] = field(default_factory=list)
+    #: Which engine produced the dose. An externally computed plan carries the
+    #: bridge's identifier here and leaves the two fields below unset.
+    provider: str = PROVIDER_PYTPS
+    influence: DoseInfluence | None = None
+    optimization: OptimizationResult | None = None
+    #: Provenance of the external run, when the dose did not come from pytps.
+    external: dict[str, Any] | None = None
+    weights: np.ndarray | None = None
+
+    def __post_init__(self) -> None:
+        if self.provider == PROVIDER_PYTPS and (self.influence is None or self.optimization is None):
+            raise ValueError("a pytps plan must carry its influence matrix and optimisation result")
+        if self.provider != PROVIDER_PYTPS and self.external is None:
+            raise ValueError(f"an externally computed plan ({self.provider}) must carry its external record")
 
     @property
     def dose_volume(self) -> np.ndarray:
         return self.dose.reshape(self.case.grid.dimensions)
+
+    @property
+    def bixel_weights(self) -> np.ndarray | None:
+        if self.optimization is not None:
+            return self.optimization.weights
+        return self.weights
+
+    @property
+    def converged(self) -> bool:
+        """Whether the optimisation that produced this dose converged."""
+        if self.optimization is not None:
+            return self.optimization.converged
+        return bool((self.external or {}).get("optimizerConverged", False))
 
     def summary(self) -> dict[str, Any]:
         target = self.request.target
@@ -209,9 +328,11 @@ class PlanResult:
             "case": self.case.summary(),
             "request": self.request.to_dict(),
             "requestDigest": self.request.digest(),
+            "provider": self.provider,
             "beams": [beam.to_dict() for beam in self.beams],
-            "influence": self.influence.to_dict(),
-            "optimization": self.optimization.to_dict(),
+            "influence": self.influence.to_dict() if self.influence is not None else None,
+            "optimization": self.optimization.to_dict() if self.optimization is not None else None,
+            "external": self.external,
             "dose": {
                 "units": "total-course physical Gy",
                 "maxGy": round(float(self.dose.max()), 4),
@@ -238,10 +359,11 @@ class PlanResult:
         (directory / "request.json").write_text(
             json.dumps(self.request.to_dict(), indent=2) + "\n", encoding="utf-8"
         )
+        weights = self.bixel_weights
         np.savez_compressed(
             directory / "dose.npz",
             dose=self.dose_volume,
-            weights=self.optimization.weights,
+            weights=np.zeros(0, dtype=np.float32) if weights is None else weights,
             grid=np.asarray(json.dumps(self.case.grid.to_dict())),
             units=np.asarray("total-course physical Gy"),
         )
@@ -323,42 +445,9 @@ def run_plan(
     announce(f"optimisation finished after {optimization.iterations} iterations: {optimization.reason}")
 
     dose = optimization.dose
-    scoring = {
-        structure.name: np.flatnonzero(flat_labels == np.int16(structure.label)).astype(np.int64)
-        for structure in case.structures
-    }
-    scoring = {name: indices for name, indices in scoring.items() if indices.size > 0}
-    dvhs = compute_dvh_set(
-        dose,
-        scoring,
-        case.grid.voxel_volume_cm3,
-        reference_dose_gy=request.prescription_gy,
-        targets=(request.target,),
-    )
-
-    target_dvh = dvhs[request.target]
-    coverage = target_dvh.metrics.get("V95pct", 0.0)
-    if coverage < 0.95:
-        warnings.append(
-            f"Target V95% is {coverage:.1%}. This objective set and beam arrangement did not "
-            "produce uniform target coverage."
-        )
-
-    inputs: dict[str, Any] = {
-        "caseID": case.case_id,
-        "caseCTDigest": sha256_array(case.ct_hu),
-        "caseLabelDigest": sha256_array(case.labels),
-        "caseProvenance": case.provenance,
-        "requestDigest": request.digest(),
-        "huToDensityTable": "pytps.materials.DEFAULT_HU_TO_DENSITY (generic, not scanner-specific)",
-    }
-    if case_path is not None and Path(case_path).exists():
-        inputs["caseFile"] = Path(case_path).name
-        inputs["caseFileDigest"] = sha256_file(case_path)
-    provenance = build_record(inputs)
-    provenance["planID"] = sha256_json(
-        {"case": inputs["caseCTDigest"], "request": request.digest(), "time": provenance["generatedUTC"]}
-    )[:32]
+    dvhs, scoring_warnings = evaluate_dose(case, request, dose)
+    warnings.extend(scoring_warnings)
+    provenance = plan_provenance(case, request, case_path)
 
     return PlanResult(
         case=case,

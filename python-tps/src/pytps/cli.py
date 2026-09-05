@@ -7,6 +7,14 @@
     python -m pytps report   work/plan
     python -m pytps verify   work/plan --case work/case.npz
     python -m pytps selftest
+
+External research codes, each a separately installed MATLAB dependency:
+
+    python -m pytps tools
+    python -m pytps matrad  --case work/case.npz --request work/request.json --out work/plan-matrad
+    python -m pytps cerr    --plan work/plan --case work/case.npz
+    python -m pytps compare --reference work/plan --evaluation work/plan-matrad --case work/case.npz
+    python -m pytps engines --case work/case.npz --out work/engines.json
 """
 
 from __future__ import annotations
@@ -228,6 +236,208 @@ def command_selftest(args: argparse.Namespace) -> int:
     return 0
 
 
+# --- external research codes ------------------------------------------------
+
+def _load_plan_dose(directory: Path) -> tuple[np.ndarray, dict[str, Any]]:
+    """Read a plan artifact's dose and its plan.json."""
+    plan_path = directory / "plan.json"
+    if not plan_path.exists():
+        raise SystemExit(f"no plan.json in {directory}")
+    plan = json.loads(plan_path.read_text(encoding="utf-8"))
+    with np.load(directory / "dose.npz", allow_pickle=False) as payload:
+        dose = payload["dose"]
+    if sha256_array(dose.reshape(-1)) != plan["dose"]["digest"]:
+        raise SystemExit(f"{directory}/dose.npz does not match its recorded digest; refusing to use it")
+    return dose.reshape(-1).astype(np.float32), plan
+
+
+def command_tools(args: argparse.Namespace) -> int:
+    """Report which external installations were found, without running them."""
+    from .external.matlab import find_library, find_matlab
+
+    found: dict[str, Any] = {}
+    problems = 0
+    for name, resolve in (
+        ("matlab", lambda: find_matlab(args.matlab)),
+        ("matrad", lambda: find_library("matrad", args.matrad)),
+        ("cerr", lambda: find_library("cerr", args.cerr)),
+    ):
+        try:
+            found[name] = str(resolve())
+        except Exception as exc:  # noqa: BLE001 - the message is the output
+            found[name] = f"NOT FOUND: {exc}"
+            problems += 1
+    for name, value in found.items():
+        print(f"{name:8s}: {value}")
+    if args.version and "NOT FOUND" not in found["matlab"]:
+        from .external.matlab import MatlabRunner
+
+        print(f"{'version':8s}: {MatlabRunner(args.matlab).version()}")
+    print(
+        "\nmatRad and CERR are separately installed MATLAB codes used under their own licences. "
+        "This package bundles neither and writes to neither checkout."
+    )
+    return 1 if problems else 0
+
+
+def command_matrad(args: argparse.Namespace) -> int:
+    from .external.matrad import MatRadSettings, run_matrad_plan
+
+    case = PlanningCase.load(args.case)
+    request = _request_from_args(args)
+    settings = MatRadSettings(
+        matlab=args.matlab,
+        library=args.matrad,
+        timeout_s=args.timeout,
+        max_iterations=args.matrad_iterations,
+    )
+    result, job = run_matrad_plan(
+        case, request, args.jobs, settings, case_path=args.case, progress=_progress(True)
+    )
+    directory = result.save(args.out)
+    print((directory / "report.txt").read_text(encoding="utf-8"))
+    print(f"artifact written to {directory}")
+    print(f"matRad job retained at {job.path}")
+    return 0
+
+
+def command_cerr(args: argparse.Namespace) -> int:
+    from .external.cerr import CerrSettings, run_cerr_analysis
+
+    case = PlanningCase.load(args.case)
+    dose, _ = _load_plan_dose(Path(args.plan))
+    settings = CerrSettings(
+        matlab=args.matlab, library=args.cerr, timeout_s=args.timeout, bin_width_gy=args.bin_width
+    )
+    analysis, job = run_cerr_analysis(case, dose, args.jobs, settings, progress=_progress(True))
+
+    print(f"\nCERR cross-check of {args.plan}")
+    print(f"  geometry round trip : {'exact' if analysis.sampling_is_voxel_exact else 'FAILED'}")
+    print(f"  metric agreement    : {'within tolerance' if analysis.agrees else 'DISCREPANT'}")
+    header = f"{'structure':12s} {'metric':6s} {'pytps':>10s} {'CERR':>10s} {'difference':>12s}"
+    print("\n" + header)
+    print("-" * len(header))
+    for item in analysis.comparisons:
+        for name, row in item.metrics.items():
+            print(
+                f"{item.structure:12s} {name:6s} {row['pytps']:10.4f} {row['cerr']:10.4f} "
+                f"{row['difference']:+12.2e}"
+            )
+    for warning in analysis.warnings:
+        print(f"WARNING: {warning}")
+    output = Path(args.out) if args.out else Path(args.plan) / "cerr-analysis.json"
+    _write_json(output, analysis.to_dict())
+    print(f"\nwrote {output}")
+    print(f"CERR job retained at {job.path}")
+    return 0 if analysis.agrees else 2
+
+
+def command_compare(args: argparse.Namespace) -> int:
+    from .compare import compare_doses
+
+    case = PlanningCase.load(args.case)
+    reference, reference_plan = _load_plan_dose(Path(args.reference))
+    evaluation, evaluation_plan = _load_plan_dose(Path(args.evaluation))
+
+    left = reference_plan["provenance"]["inputs"]["caseCTDigest"]
+    right = evaluation_plan["provenance"]["inputs"]["caseCTDigest"]
+    if left != right:
+        raise SystemExit(
+            "the two plans were computed on different cases "
+            f"({left[:12]} vs {right[:12]}); they cannot be compared"
+        )
+    if sha256_array(case.ct_hu) != left:
+        raise SystemExit(f"{args.case} is not the case these plans were computed from")
+
+    request = PlanRequest.from_dict(reference_plan["request"])
+    comparison = compare_doses(
+        case,
+        reference,
+        evaluation,
+        reference_label=reference_plan.get("provider", "reference"),
+        evaluation_label=evaluation_plan.get("provider", "evaluation"),
+        request=request,
+        gamma_criteria=(args.gamma_dose, args.gamma_distance) if not args.no_gamma else None,
+    )
+    print(f"reference : {comparison.reference_label}  ({args.reference})")
+    print(f"evaluation: {comparison.evaluation_label}  ({args.evaluation})")
+    header = f"\n{'structure':12s} {'metric':8s} {'reference':>10s} {'evaluation':>11s} {'difference':>11s}"
+    print(header)
+    print("-" * (len(header) - 1))
+    for name, metrics in comparison.structures.items():
+        for key, row in metrics.items():
+            print(
+                f"{name:12s} {key:8s} {row['reference']:10.3f} {row['evaluation']:11.3f} "
+                f"{row['difference']:+11.3f}"
+            )
+    if comparison.objective_values:
+        print("\nObjective value of the shared objective set, evaluated on each dose:")
+        for label, value in comparison.objective_values.items():
+            print(f"  {label:22s} {value:12.4f}")
+        print("  (lower is better; this says which plan better satisfies what was asked)")
+    print("\nVoxel difference:")
+    for key, value in comparison.difference.items():
+        print(f"  {key:26s} {value:10.4f}")
+    if comparison.gamma:
+        gamma = comparison.gamma
+        print(f"\nGamma {gamma.criterion}: {gamma.pass_rate:.1%} pass over {gamma.evaluated_voxels:,} voxels")
+        print(f"  mean {gamma.mean_gamma:.3f}, max {gamma.max_gamma:.3f}, {gamma.normalization}")
+    for warning in comparison.warnings:
+        print(f"\nWARNING: {warning}")
+    if args.out:
+        _write_json(Path(args.out), comparison.to_dict())
+        print(f"\nwrote {args.out}")
+    return 0
+
+
+def command_engines(args: argparse.Namespace) -> int:
+    from .external.matrad import MatRadSettings, compare_engines
+
+    case = PlanningCase.load(args.case)
+    request = _request_from_args(args)
+    settings = MatRadSettings(matlab=args.matlab, library=args.matrad, timeout_s=args.timeout)
+    comparison, job = compare_engines(
+        case,
+        request,
+        args.jobs,
+        settings,
+        gamma_criteria=(args.gamma_dose, args.gamma_distance),
+        progress=_progress(True),
+    )
+    print("\nDose-engine comparison on one uniform open field (no optimisation involved).")
+    print("Both doses normalised to their own mean in a 10 mm sphere at the isocentre.\n")
+    for key, value in comparison.difference.items():
+        print(f"  {key:26s} {value:10.4f}")
+    gamma = comparison.gamma
+    if gamma:
+        print(f"\nGamma {gamma.criterion}: {gamma.pass_rate:.1%} pass over {gamma.evaluated_voxels:,} voxels")
+        print(f"  mean {gamma.mean_gamma:.3f}, max {gamma.max_gamma:.3f}")
+    for warning in comparison.warnings:
+        print(f"\nWARNING: {warning}")
+    output = Path(args.out)
+    _write_json(output, comparison.to_dict())
+    print(f"\nwrote {output}")
+    print(f"matRad job retained at {job.path}")
+    return 0
+
+
+def _request_from_args(args: argparse.Namespace) -> PlanRequest:
+    """A plan request from --request, or from the inline options."""
+    if getattr(args, "request", None):
+        return PlanRequest.load(args.request)
+    if args.target is None or args.prescription is None or args.fractions is None:
+        raise SystemExit("without --request you must give --target, --prescription and --fractions")
+    return PlanRequest(
+        target=args.target,
+        prescription_gy=float(args.prescription),
+        fractions=int(args.fractions),
+        gantry_angles=tuple(float(angle) for angle in args.angles),
+        bixel_width_mm=float(args.bixel_width),
+        field_margin_mm=float(args.margin),
+        plan_label=getattr(args, "label", "research plan"),
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="pytps",
@@ -284,6 +494,75 @@ def build_parser() -> argparse.ArgumentParser:
     verify.add_argument("--case", default=None, help="also check the artifact against this case file")
     verify.set_defaults(handler=command_verify)
 
+    def add_external_options(parser: argparse.ArgumentParser, tools: str = "both") -> None:
+        parser.add_argument("--matlab", default=None, help="MATLAB launcher (else $PYTPS_MATLAB, else discovery)")
+        if tools in ("matrad", "both"):
+            parser.add_argument("--matrad", default=None, help="matRad checkout (else $PYTPS_MATRAD)")
+        if tools in ("cerr", "both"):
+            parser.add_argument("--cerr", default=None, help="CERR checkout (else $PYTPS_CERR)")
+        parser.add_argument("--jobs", default="work/jobs", help="where to keep external job folders")
+        parser.add_argument("--timeout", type=int, default=3600, help="MATLAB timeout in seconds")
+
+    tools = subparsers.add_parser("tools", help="report which external installations were found")
+    tools.add_argument("--matlab", default=None)
+    tools.add_argument("--matrad", default=None)
+    tools.add_argument("--cerr", default=None)
+    tools.add_argument("--version", action="store_true", help="also start MATLAB to read its version")
+    tools.set_defaults(handler=command_tools)
+
+    matrad = subparsers.add_parser("matrad", help="plan with matRad through a bridge")
+    matrad.add_argument("--case", required=True)
+    matrad.add_argument("--request", default=None)
+    matrad.add_argument("--out", default="work/plan-matrad")
+    matrad.add_argument("--target", default=None)
+    matrad.add_argument("--prescription", type=float, default=None, help="total-course Gy")
+    matrad.add_argument("--fractions", type=int, default=None)
+    matrad.add_argument("--angles", type=float, nargs="+", default=[0, 72, 144, 216, 288])
+    matrad.add_argument("--bixel-width", type=float, default=6.0)
+    matrad.add_argument("--margin", type=float, default=10.0)
+    matrad.add_argument("--label", default="matRad research plan")
+    matrad.add_argument(
+        "--matrad-iterations", type=int, default=3000,
+        help="matRad's own optimiser iteration cap; its default of 500 often fails to converge",
+    )
+    add_external_options(matrad, "matrad")
+    matrad.set_defaults(handler=command_matrad)
+
+    cerr = subparsers.add_parser("cerr", help="cross-check a plan's DVHs with CERR")
+    cerr.add_argument("--plan", required=True, help="a plan artifact directory")
+    cerr.add_argument("--case", required=True)
+    cerr.add_argument("--out", default=None, help="where to write the analysis JSON")
+    cerr.add_argument("--bin-width", type=float, default=0.1, help="CERR histogram bin width in Gy")
+    add_external_options(cerr, "cerr")
+    cerr.set_defaults(handler=command_cerr)
+
+    compare = subparsers.add_parser("compare", help="compare two plan artifacts on one case")
+    compare.add_argument("--reference", required=True)
+    compare.add_argument("--evaluation", required=True)
+    compare.add_argument("--case", required=True)
+    compare.add_argument("--out", default=None)
+    compare.add_argument("--gamma-dose", type=float, default=3.0, help="gamma dose criterion, percent")
+    compare.add_argument("--gamma-distance", type=float, default=3.0, help="gamma distance criterion, mm")
+    compare.add_argument("--no-gamma", action="store_true")
+    compare.set_defaults(handler=command_compare)
+
+    engines = subparsers.add_parser(
+        "engines", help="compare this dose engine against matRad's on one open field"
+    )
+    engines.add_argument("--case", required=True)
+    engines.add_argument("--request", default=None)
+    engines.add_argument("--out", default="work/engine-comparison.json")
+    engines.add_argument("--target", default=None)
+    engines.add_argument("--prescription", type=float, default=None)
+    engines.add_argument("--fractions", type=int, default=None)
+    engines.add_argument("--angles", type=float, nargs="+", default=[0])
+    engines.add_argument("--bixel-width", type=float, default=6.0)
+    engines.add_argument("--margin", type=float, default=10.0)
+    engines.add_argument("--gamma-dose", type=float, default=3.0)
+    engines.add_argument("--gamma-distance", type=float, default=3.0)
+    add_external_options(engines, "matrad")
+    engines.set_defaults(handler=command_engines)
+
     selftest = subparsers.add_parser("selftest", help="run a small end-to-end planning check")
     selftest.add_argument("--verbose", action="store_true")
     selftest.set_defaults(handler=command_selftest)
@@ -295,7 +574,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         return int(args.handler(args))
-    except (ValueError, KeyError, FileNotFoundError, MemoryError) as exc:
+    except (ValueError, KeyError, FileNotFoundError, MemoryError, RuntimeError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 

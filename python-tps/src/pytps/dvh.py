@@ -17,6 +17,25 @@ import numpy as np
 DEFAULT_BINS = 1024
 
 
+def nearest_rank_dose(values: np.ndarray, volume_fraction: float) -> float:
+    """``Dx`` by nearest rank on descending samples, with equal voxel volumes.
+
+    This is the definition CERR's DVH tooling uses. :meth:`StructureDVH.
+    dose_at_volume_fraction` instead interpolates a binned cumulative
+    histogram. The two answer the same question and disagree by up to a bin
+    width, so a comparison against an external tool has to state which one it
+    used - :mod:`pytps.external.cerr` reports both.
+    """
+    samples = np.asarray(values, dtype=np.float64).reshape(-1)
+    if samples.size == 0:
+        raise ValueError("cannot take a dose percentile of an empty structure")
+    if not 0.0 <= volume_fraction <= 1.0:
+        raise ValueError("volume fraction must be between 0 and 1")
+    ordered = np.sort(samples)[::-1]
+    rank = max(1, int(np.ceil(volume_fraction * ordered.size)))
+    return float(ordered[rank - 1])
+
+
 @dataclass(frozen=True)
 class StructureDVH:
     """A cumulative DVH plus scalar metrics for one structure."""

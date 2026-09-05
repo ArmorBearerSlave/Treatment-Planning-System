@@ -43,6 +43,25 @@ On the default 4 mm grid that is significant for a 36 cm3 target.
 sensible-looking plan. They are not protocol constraints and were not derived
 from any published dose-constraint set.
 
+## Measured against other research codes
+
+`docs/EXTERNAL.md` records what the matRad and CERR bridges established on
+2026-09-05. Two results belong here.
+
+**The dose model costs plan quality.** Planning one synthetic case with the
+same objectives through both engines, then evaluating the shared objective
+function on both doses, gave 233.5 for matRad against 377.7 for this package.
+This package's optimiser had converged, so the gap is the dose model, not the
+solver: a single Gaussian gives a broader penumbra than matRad's photon kernel
+and cannot spare organs as sharply at the same target coverage. Do not read
+this package's DVHs as what a better engine would achieve on the same case.
+
+**The DVH code is independently confirmed.** CERR, working from its own planC
+in a different coordinate convention, sampled exactly the same voxels and
+reproduced every metric to within 1.3 × 10⁻⁶ Gy. The dose-volume measurement
+and the coordinate handling are as good as CERR's. That says nothing about
+whether the dose being measured is right.
+
 ## Not implemented at all
 
 Deliverability and MLC sequencing; machine and beam data; DICOM RT import or

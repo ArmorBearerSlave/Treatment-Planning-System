@@ -20,9 +20,22 @@ dvh          cumulative histograms, Dx / Vx / HI
 provenance   content digests, engine and environment record
    |
 plan         PlanRequest, run_plan, PlanResult, the artifact
+compare      DVH deltas, difference statistics, gamma index
 report       the text report
+   |
+external/    bridges to separately installed research codes
+  matlab       locating and running a batch MATLAB process
+  jobs         frozen, hashed job folders and result binding
+  matrad       matRad planning and forward dose
+  cerr         CERR dose-volume analysis and reconciliation
+   |
 cli          argparse front end
 ```
+
+`matlab/` holds the MATLAB adapters (`pytps_matrad_plan.m`,
+`pytps_cerr_analyze.m` and three helpers). They are data as far as Python is
+concerned: copied into each job folder and hashed, so a job records the exact
+adapter that ran.
 
 ## Design decisions worth knowing
 
@@ -47,6 +60,17 @@ explicit entry budget rather than an out-of-memory crash.
 structures they name; DVHs are computed for every structure in the case. A
 structure with no objective is still reported.
 
+**A plan is a plan, whoever computed the dose.** `PlanResult` carries a
+`provider`. A dose from matRad becomes the same artifact type as one computed
+here, scored by the same DVH code, so `verify`, `report` and `compare` do not
+need to know where it came from — and any difference between two plans is a
+difference in dose, never in scoring.
+
+**External results must bind to their inputs.** A bridge freezes and hashes
+everything before MATLAB starts, and refuses a result that does not carry those
+hashes back. That is what makes an imported dose traceable to the case and
+request it was actually computed from.
+
 **State lives in dataclasses, not in the engine.** `PencilBeamSettings`,
 `OptimizerSettings`, `PlanRequest` and `Beam` are frozen. `run_plan` takes a
 case and a request and returns a `PlanResult`; nothing is mutated in place, so
@@ -64,3 +88,8 @@ two runs from the same inputs give identical output.
   synthetic-only and clinical-use refusals.
 - **A new solver**: `optimize_fluence` needs only `influence.dose`,
   `influence.transpose_dot` and `objectives.value_and_gradient`.
+- **Another external code**: write a `.m` adapter following the job contract in
+  `external/jobs.py`, and a module that exports a job, runs it through
+  `MatlabRunner`, and binds the result. `tests/fake_matlab.py` shows the
+  contract from the other side and lets the new bridge be tested without the
+  tool installed.

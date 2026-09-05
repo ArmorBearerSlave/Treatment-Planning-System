@@ -24,3 +24,8 @@ where = ["src"]
 
 [tool.setuptools.package-dir]
 "" = "src"
+
+[tool.setuptools.package-data]
+# The MATLAB adapters are executed by the matRad and CERR bridges, so they have
+# to ship with an install, not only exist in a source checkout.
+pytps = ["matlab/*.m"]
