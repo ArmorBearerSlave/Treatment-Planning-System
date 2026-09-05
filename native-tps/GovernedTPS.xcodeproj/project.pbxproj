@@ -1,0 +1,48 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+		34E826551D8C7F1279F4C944 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sources/GovernedTPS/AppStore.swift"; sourceTree = "<group>"; };
+		2CC88E9BF5ACD56EC0FF4F15 = { isa = PBXBuildFile; fileRef = 34E826551D8C7F1279F4C944; };
+		48D4F99CFA6186746DA7E567 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sources/GovernedTPS/GovernedTPSApp.swift"; sourceTree = "<group>"; };
+		66872CDB159DAE7F7296D81A = { isa = PBXBuildFile; fileRef = 48D4F99CFA6186746DA7E567; };
+		3FD8E78150CF6B38F5BFE0DF = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sources/GovernedTPS/RootView.swift"; sourceTree = "<group>"; };
+		E0CFC1856213B0173AF898FE = { isa = PBXBuildFile; fileRef = 3FD8E78150CF6B38F5BFE0DF; };
+		33715B4E60A61BF51BE1CB59 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sources/GovernedTPS/WorkflowViews.swift"; sourceTree = "<group>"; };
+		67C36555CBCE1AA8DC2247A9 = { isa = PBXBuildFile; fileRef = 33715B4E60A61BF51BE1CB59; };
+		74A193D91E89AA580E6BC97D = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sources/GovernedTPS/WorkstationView.swift"; sourceTree = "<group>"; };
+		E42DD29D5C1DE2454A43A4E0 = { isa = PBXBuildFile; fileRef = 74A193D91E89AA580E6BC97D; };
+		6E391531C5D85DEC5A448328 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tests/TPSCoreTests/TPSCoreTests.swift"; sourceTree = "<group>"; };
+		D3B8721551E0A1F31E8A0947 = { isa = PBXBuildFile; fileRef = 6E391531C5D85DEC5A448328; };
+		763D774377779C412BB71F6F = { isa = PBXFileReference; explicitFileType = wrapper.application; path = GovernedTPS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00444E2C37DD529B70E931A2 = { isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = TPSCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A3E27B8CA818264D75C8D81 = { isa = PBXGroup; children = (763D774377779C412BB71F6F, 00444E2C37DD529B70E931A2,); name = Products; sourceTree = "<group>"; };
+		0035FE99EA2940F7FA633A58 = { isa = PBXGroup; children = (34E826551D8C7F1279F4C944, 48D4F99CFA6186746DA7E567, 3FD8E78150CF6B38F5BFE0DF, 33715B4E60A61BF51BE1CB59, 74A193D91E89AA580E6BC97D, 6E391531C5D85DEC5A448328, 0A3E27B8CA818264D75C8D81,); sourceTree = "<group>"; };
+		BC4A71180870F7945155FBB0 = { isa = XCLocalSwiftPackageReference; relativePath = .; };
+		97CDF3DF6087AB0B63707401 = { isa = XCSwiftPackageProductDependency; package = BC4A71180870F7945155FBB0; productName = TPSCore; };
+		2A17F7716F0E6B4A54BA03B0 = { isa = PBXBuildFile; productRef = 97CDF3DF6087AB0B63707401; };
+		D8AFF257B45D0C513672EC45 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (2CC88E9BF5ACD56EC0FF4F15, 66872CDB159DAE7F7296D81A, E0CFC1856213B0173AF898FE, 67C36555CBCE1AA8DC2247A9, E42DD29D5C1DE2454A43A4E0,); runOnlyForDeploymentPostprocessing = 0; };
+		91024282FFD499F5807DB5BC = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (2A17F7716F0E6B4A54BA03B0,); runOnlyForDeploymentPostprocessing = 0; };
+		DC549ACCB7C726C62ECFD4E2 = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		B00CCDD09424E369308D67FA = { isa = XCBuildConfiguration; buildSettings = { CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; SWIFT_VERSION = 6.0; ONLY_ACTIVE_ARCH = YES; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; PRODUCT_BUNDLE_IDENTIFIER = org.gcpl.native.research; INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools"; INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking = YES; ENABLE_APP_SANDBOX = NO; COMBINE_HIDPI_IMAGES = YES; }; name = Debug; };
+		1B104479E55E37CF8A63CBDF = { isa = XCBuildConfiguration; buildSettings = { CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; SWIFT_VERSION = 6.0; ONLY_ACTIVE_ARCH = YES; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_OPTIMIZATION_LEVEL = "-O"; PRODUCT_BUNDLE_IDENTIFIER = org.gcpl.native.research; INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools"; INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking = YES; ENABLE_APP_SANDBOX = NO; COMBINE_HIDPI_IMAGES = YES; }; name = Release; };
+		952F4DF8105729797025EDD4 = { isa = XCConfigurationList; buildConfigurations = (B00CCDD09424E369308D67FA, 1B104479E55E37CF8A63CBDF,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A172CEDCAE47474B615C54D5 = { isa = PBXNativeTarget; buildConfigurationList = 952F4DF8105729797025EDD4; buildPhases = (D8AFF257B45D0C513672EC45, 91024282FFD499F5807DB5BC, DC549ACCB7C726C62ECFD4E2,); buildRules = (); dependencies = (); name = GovernedTPS; packageProductDependencies = (97CDF3DF6087AB0B63707401,); productName = GovernedTPS; productReference = 763D774377779C412BB71F6F; productType = "com.apple.product-type.application"; };
+		8A1FCAFF8B0ED81BCE70DAFD = { isa = XCSwiftPackageProductDependency; package = BC4A71180870F7945155FBB0; productName = TPSCore; };
+		6A5B9CD44F090BF61F01A8E1 = { isa = PBXBuildFile; productRef = 8A1FCAFF8B0ED81BCE70DAFD; };
+		E6ED56AB314E3DD3E605699F = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (D3B8721551E0A1F31E8A0947,); runOnlyForDeploymentPostprocessing = 0; };
+		50382C61F2DA5E3FC37FEF78 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (6A5B9CD44F090BF61F01A8E1,); runOnlyForDeploymentPostprocessing = 0; };
+		0CDFFED32319A39D08F3F8AA = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		22341BB87F410D35D057D37C = { isa = XCBuildConfiguration; buildSettings = { CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; SWIFT_VERSION = 6.0; ONLY_ACTIVE_ARCH = YES; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; PRODUCT_BUNDLE_IDENTIFIER = org.gcpl.native.research.tests; }; name = Debug; };
+		A188B1844D481F2A55033242 = { isa = XCBuildConfiguration; buildSettings = { CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; SWIFT_VERSION = 6.0; ONLY_ACTIVE_ARCH = YES; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_OPTIMIZATION_LEVEL = "-O"; PRODUCT_BUNDLE_IDENTIFIER = org.gcpl.native.research.tests; }; name = Release; };
+		DC704E90BA7CBF8FD17ED803 = { isa = XCConfigurationList; buildConfigurations = (22341BB87F410D35D057D37C, A188B1844D481F2A55033242,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		59830EBC3A4184110566BF1A = { isa = PBXNativeTarget; buildConfigurationList = DC704E90BA7CBF8FD17ED803; buildPhases = (E6ED56AB314E3DD3E605699F, 50382C61F2DA5E3FC37FEF78, 0CDFFED32319A39D08F3F8AA,); buildRules = (); dependencies = (); name = TPSCoreTests; packageProductDependencies = (8A1FCAFF8B0ED81BCE70DAFD,); productName = TPSCoreTests; productReference = 00444E2C37DD529B70E931A2; productType = "com.apple.product-type.bundle.unit-test"; };
+		73EBF6644258C120893E685D = { isa = XCBuildConfiguration; buildSettings = { SDKROOT = macosx; CLANG_ENABLE_MODULES = YES; }; name = Debug; };
+		0B0C687DF8B6B8DC790B519C = { isa = XCBuildConfiguration; buildSettings = { SDKROOT = macosx; CLANG_ENABLE_MODULES = YES; }; name = Release; };
+		AAB2723FF2C8E6D1C298C1E4 = { isa = XCConfigurationList; buildConfigurations = (73EBF6644258C120893E685D, 0B0C687DF8B6B8DC790B519C,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		244210E48437B6556980A702 = { isa = PBXProject; attributes = { LastUpgradeCheck = 2630; }; buildConfigurationList = AAB2723FF2C8E6D1C298C1E4; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = 0035FE99EA2940F7FA633A58; packageReferences = (BC4A71180870F7945155FBB0,); productRefGroup = 0A3E27B8CA818264D75C8D81; projectDirPath = ""; projectRoot = ""; targets = (A172CEDCAE47474B615C54D5, 59830EBC3A4184110566BF1A,); };
+	};
+	rootObject = 244210E48437B6556980A702;
+}

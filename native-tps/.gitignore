@@ -1,0 +1,12 @@
+.build/
+.swiftpm/
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.DS_Store
+local-config.json
+workspace-data/
+*.log
+__pycache__/
+.venv/
