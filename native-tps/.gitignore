@@ -10,3 +10,4 @@ workspace-data/
 *.log
 __pycache__/
 .venv/
+data/spark-cases/*.json

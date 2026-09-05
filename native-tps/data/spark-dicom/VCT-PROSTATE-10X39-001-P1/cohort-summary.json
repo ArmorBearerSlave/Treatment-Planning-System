@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "synthetic_only": true,
+  "anatomical_site": "prostate",
+  "patient_count": 10,
+  "dicom_file_count": 1950,
+  "all_pet_finite_nonnegative": true,
+  "records": [
+    {
+      "patient_id": "VCT-PROSTATE-001",
+      "dicom_file_count": 195,
+      "pet_centroid_error_mm": 4.730528581138529,
+      "pet_contrast_recovery_coefficient": 0.9724455661106743,
+      "pet_finite": true,
+      "pet_nonnegative": true
+    },
+    {
+      "patient_id": "VCT-PROSTATE-002",
+      "dicom_file_count": 195,
+      "pet_centroid_error_mm": 4.75696947838013,
+      "pet_contrast_recovery_coefficient": 0.925312030061063,
+      "pet_finite": true,
+      "pet_nonnegative": true
+    },
+    {
+      "patient_id": "VCT-PROSTATE-003",
+      "dicom_file_count": 195,
+      "pet_centroid_error_mm": 3.5217330616480744,
+      "pet_contrast_recovery_coefficient": 0.949107482743214,
+      "pet_finite": true,
+      "pet_nonnegative": true
+    },
+    {
+      "patient_id": "VCT-PROSTATE-004",
+      "dicom_file_count": 195,
+      "pet_centroid_error_mm": 4.600298810201103,
+      "pet_contrast_recovery_coefficient": 0.8402894086204202,
+      "pet_finite": true,
+      "pet_nonnegative": true
+    },
+    {
+      "patient_id": "VCT-PROSTATE-005",
+      "dicom_file_count": 195,
+      "pet_centroid_error_mm": 4.0465127982011895,
+      "pet_contrast_recovery_coefficient": 0.9777175849771823,
+      "pet_finite": true,
+      "pet_nonnegative": true
+    },
+    {
+      "patient_id": "VCT-PROSTATE-006",
+      "dicom_file_count": 195,
+      "pet_centroid_error_mm": 4.831848562084874,
+      "pet_contrast_recovery_coefficient": 0.8873672700500964,
+      "pet_finite": true,
+      "pet_nonnegative": true
+    },
+    {
+      "patient_id": "VCT-PROSTATE-007",
+      "dicom_file_count": 195,
+      "pet_centroid_error_mm": 5.360522546669943,
+      "pet_contrast_recovery_coefficient": 0.9049638950996745,
+      "pet_finite": true,
+      "pet_nonnegative": true
+    },
+    {
+      "patient_id": "VCT-PROSTATE-008",
+      "dicom_file_count": 195,
+      "pet_centroid_error_mm": 5.736419561128958,
+      "pet_contrast_recovery_coefficient": 1.0064272790729387,
+      "pet_finite": true,
+      "pet_nonnegative": true
+    },
+    {
+      "patient_id": "VCT-PROSTATE-009",
+      "dicom_file_count": 195,
+      "pet_centroid_error_mm": 5.286027342222265,
+      "pet_contrast_recovery_coefficient": 0.957758691626769,
+      "pet_finite": true,
+      "pet_nonnegative": true
+    },
+    {
+      "patient_id": "VCT-PROSTATE-010",
+      "dicom_file_count": 195,
+      "pet_centroid_error_mm": 5.1480316778806765,
+      "pet_contrast_recovery_coefficient": 0.8586539178618066,
+      "pet_finite": true,
+      "pet_nonnegative": true
+    }
+  ]
+}

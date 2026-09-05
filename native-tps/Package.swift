@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "GovernedTPS",
-    platforms: [.macOS(.v14)],
+    platforms: [.macOS(.v14), .iOS(.v17)],
     products: [
         .library(name: "TPSCore", targets: ["TPSCore"]),
         .executable(name: "GovernedTPS", targets: ["GovernedTPS"]),

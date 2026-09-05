@@ -1,0 +1,46 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+		D3B109B5C3CDBBB48DFE7E0A = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sources/CTCanvas.swift"; sourceTree = "<group>"; };
+		71515FBCB27C954A0985F117 = { isa = PBXBuildFile; fileRef = D3B109B5C3CDBBB48DFE7E0A; };
+		2F8D441939A02361C1C22CFE = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sources/ReviewModel.swift"; sourceTree = "<group>"; };
+		5B1E6B8D8D5A588591218245 = { isa = PBXBuildFile; fileRef = 2F8D441939A02361C1C22CFE; };
+		FA8BCC7E4B09F3840B00B8FF = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sources/TabletApp.swift"; sourceTree = "<group>"; };
+		276D8A21F18C086A6BAE028D = { isa = PBXBuildFile; fileRef = FA8BCC7E4B09F3840B00B8FF; };
+		6D343610DDF2E7B3D8671F0B = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sources/TabletStore.swift"; sourceTree = "<group>"; };
+		349C9A371A3BA8D73EC160FE = { isa = PBXBuildFile; fileRef = 6D343610DDF2E7B3D8671F0B; };
+		EC686EEFC4B573ECCD5E4422 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tests/TabletReviewTests.swift"; sourceTree = "<group>"; };
+		955820476F21AD55BC094C72 = { isa = PBXBuildFile; fileRef = EC686EEFC4B573ECCD5E4422; };
+		763D774377779C412BB71F6F = { isa = PBXFileReference; explicitFileType = wrapper.application; path = GovernedTPSiPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00444E2C37DD529B70E931A2 = { isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = TPSCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A3E27B8CA818264D75C8D81 = { isa = PBXGroup; children = (763D774377779C412BB71F6F, 00444E2C37DD529B70E931A2,); name = Products; sourceTree = "<group>"; };
+		0035FE99EA2940F7FA633A58 = { isa = PBXGroup; children = (D3B109B5C3CDBBB48DFE7E0A, 2F8D441939A02361C1C22CFE, FA8BCC7E4B09F3840B00B8FF, 6D343610DDF2E7B3D8671F0B, EC686EEFC4B573ECCD5E4422, 2F8D441939A02361C1C22CFE, 0A3E27B8CA818264D75C8D81,); sourceTree = "<group>"; };
+		BC4A71180870F7945155FBB0 = { isa = XCLocalSwiftPackageReference; relativePath = ..; };
+		97CDF3DF6087AB0B63707401 = { isa = XCSwiftPackageProductDependency; package = BC4A71180870F7945155FBB0; productName = TPSCore; };
+		2A17F7716F0E6B4A54BA03B0 = { isa = PBXBuildFile; productRef = 97CDF3DF6087AB0B63707401; };
+		D8AFF257B45D0C513672EC45 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (71515FBCB27C954A0985F117, 5B1E6B8D8D5A588591218245, 276D8A21F18C086A6BAE028D, 349C9A371A3BA8D73EC160FE,); runOnlyForDeploymentPostprocessing = 0; };
+		91024282FFD499F5807DB5BC = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (2A17F7716F0E6B4A54BA03B0,); runOnlyForDeploymentPostprocessing = 0; };
+		DC549ACCB7C726C62ECFD4E2 = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		B00CCDD09424E369308D67FA = { isa = XCBuildConfiguration; buildSettings = { CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = 2; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO; SWIFT_VERSION = 6.0; ONLY_ACTIVE_ARCH = YES; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; PRODUCT_BUNDLE_IDENTIFIER = org.gcpl.native.ipad; INFOPLIST_KEY_UILaunchScreen_Generation = YES; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"; }; name = Debug; };
+		1B104479E55E37CF8A63CBDF = { isa = XCBuildConfiguration; buildSettings = { CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = 2; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO; SWIFT_VERSION = 6.0; ONLY_ACTIVE_ARCH = YES; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_OPTIMIZATION_LEVEL = "-O"; PRODUCT_BUNDLE_IDENTIFIER = org.gcpl.native.ipad; INFOPLIST_KEY_UILaunchScreen_Generation = YES; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"; }; name = Release; };
+		952F4DF8105729797025EDD4 = { isa = XCConfigurationList; buildConfigurations = (B00CCDD09424E369308D67FA, 1B104479E55E37CF8A63CBDF,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A172CEDCAE47474B615C54D5 = { isa = PBXNativeTarget; buildConfigurationList = 952F4DF8105729797025EDD4; buildPhases = (D8AFF257B45D0C513672EC45, 91024282FFD499F5807DB5BC, DC549ACCB7C726C62ECFD4E2,); buildRules = (); dependencies = (); name = GovernedTPSiPad; packageProductDependencies = (97CDF3DF6087AB0B63707401,); productName = GovernedTPSiPad; productReference = 763D774377779C412BB71F6F; productType = "com.apple.product-type.application"; };
+		8A1FCAFF8B0ED81BCE70DAFD = { isa = XCSwiftPackageProductDependency; package = BC4A71180870F7945155FBB0; productName = TPSCore; };
+		6A5B9CD44F090BF61F01A8E1 = { isa = PBXBuildFile; productRef = 8A1FCAFF8B0ED81BCE70DAFD; };
+		E6ED56AB314E3DD3E605699F = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (955820476F21AD55BC094C72, 5B1E6B8D8D5A588591218245,); runOnlyForDeploymentPostprocessing = 0; };
+		50382C61F2DA5E3FC37FEF78 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (6A5B9CD44F090BF61F01A8E1,); runOnlyForDeploymentPostprocessing = 0; };
+		0CDFFED32319A39D08F3F8AA = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		22341BB87F410D35D057D37C = { isa = XCBuildConfiguration; buildSettings = { CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = 2; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO; SWIFT_VERSION = 6.0; ONLY_ACTIVE_ARCH = YES; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; PRODUCT_BUNDLE_IDENTIFIER = org.gcpl.native.ipad.tests; }; name = Debug; };
+		A188B1844D481F2A55033242 = { isa = XCBuildConfiguration; buildSettings = { CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = 2; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO; SWIFT_VERSION = 6.0; ONLY_ACTIVE_ARCH = YES; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_OPTIMIZATION_LEVEL = "-O"; PRODUCT_BUNDLE_IDENTIFIER = org.gcpl.native.ipad.tests; }; name = Release; };
+		DC704E90BA7CBF8FD17ED803 = { isa = XCConfigurationList; buildConfigurations = (22341BB87F410D35D057D37C, A188B1844D481F2A55033242,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		59830EBC3A4184110566BF1A = { isa = PBXNativeTarget; buildConfigurationList = DC704E90BA7CBF8FD17ED803; buildPhases = (E6ED56AB314E3DD3E605699F, 50382C61F2DA5E3FC37FEF78, 0CDFFED32319A39D08F3F8AA,); buildRules = (); dependencies = (); name = TPSCoreTests; packageProductDependencies = (8A1FCAFF8B0ED81BCE70DAFD,); productName = TPSCoreTests; productReference = 00444E2C37DD529B70E931A2; productType = "com.apple.product-type.bundle.unit-test"; };
+		73EBF6644258C120893E685D = { isa = XCBuildConfiguration; buildSettings = { SDKROOT = iphoneos; CLANG_ENABLE_MODULES = YES; }; name = Debug; };
+		0B0C687DF8B6B8DC790B519C = { isa = XCBuildConfiguration; buildSettings = { SDKROOT = iphoneos; CLANG_ENABLE_MODULES = YES; }; name = Release; };
+		AAB2723FF2C8E6D1C298C1E4 = { isa = XCConfigurationList; buildConfigurations = (73EBF6644258C120893E685D, 0B0C687DF8B6B8DC790B519C,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		244210E48437B6556980A702 = { isa = PBXProject; attributes = { LastUpgradeCheck = 2630; }; buildConfigurationList = AAB2723FF2C8E6D1C298C1E4; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = 0035FE99EA2940F7FA633A58; packageReferences = (BC4A71180870F7945155FBB0,); productRefGroup = 0A3E27B8CA818264D75C8D81; projectDirPath = ""; projectRoot = ""; targets = (A172CEDCAE47474B615C54D5, 59830EBC3A4184110566BF1A,); };
+	};
+	rootObject = 244210E48437B6556980A702;
+}

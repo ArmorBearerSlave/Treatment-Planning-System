@@ -125,3 +125,10 @@ reference dose, even when fixtures are permitted.
 No changes, commits, deployments, or approval records are made in the parent
 application by this project. Third-party models and XCAT2 remain subject to
 their own licenses. The parent repository's licensing notice remains applicable.
+
+## iPad field review
+
+A separate touch-first iPad prototype is in [iPad/README.md](iPad/README.md).
+Open `iPad/GovernedTPSiPad.xcodeproj` for CT review, slice-bound Pencil markup,
+offline notes and compact review handoff. Mac inference and Spark simulation
+remain in their existing environments.

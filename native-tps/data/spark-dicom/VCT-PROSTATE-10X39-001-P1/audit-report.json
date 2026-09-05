@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "synthetic_only": true,
+  "patient_count": 10,
+  "dicom_file_count": 1950,
+  "all_hashes_verified": true,
+  "all_identity_removed": true,
+  "all_plans_unapproved_zero_beam": true,
+  "all_doses_analytic_not_transport": true,
+  "clinical_import_authorized": false,
+  "records": [
+    {
+      "patient_id": "VCT-PROSTATE-001",
+      "dicom_file_count": 195,
+      "hashes_verified": true,
+      "patient_identity_removed": true,
+      "plan_approval_status": "UNAPPROVED",
+      "number_of_beams": 0,
+      "dose_role": "ANALYTIC QA GRID; NO BEAM TRANSPORT OR PLAN CALCULATION"
+    },
+    {
+      "patient_id": "VCT-PROSTATE-002",
+      "dicom_file_count": 195,
+      "hashes_verified": true,
+      "patient_identity_removed": true,
+      "plan_approval_status": "UNAPPROVED",
+      "number_of_beams": 0,
+      "dose_role": "ANALYTIC QA GRID; NO BEAM TRANSPORT OR PLAN CALCULATION"
+    },
+    {
+      "patient_id": "VCT-PROSTATE-003",
+      "dicom_file_count": 195,
+      "hashes_verified": true,
+      "patient_identity_removed": true,
+      "plan_approval_status": "UNAPPROVED",
+      "number_of_beams": 0,
+      "dose_role": "ANALYTIC QA GRID; NO BEAM TRANSPORT OR PLAN CALCULATION"
+    },
+    {
+      "patient_id": "VCT-PROSTATE-004",
+      "dicom_file_count": 195,
+      "hashes_verified": true,
+      "patient_identity_removed": true,
+      "plan_approval_status": "UNAPPROVED",
+      "number_of_beams": 0,
+      "dose_role": "ANALYTIC QA GRID; NO BEAM TRANSPORT OR PLAN CALCULATION"
+    },
+    {
+      "patient_id": "VCT-PROSTATE-005",
+      "dicom_file_count": 195,
+      "hashes_verified": true,
+      "patient_identity_removed": true,
+      "plan_approval_status": "UNAPPROVED",
+      "number_of_beams": 0,
+      "dose_role": "ANALYTIC QA GRID; NO BEAM TRANSPORT OR PLAN CALCULATION"
+    },
+    {
+      "patient_id": "VCT-PROSTATE-006",
+      "dicom_file_count": 195,
+      "hashes_verified": true,
+      "patient_identity_removed": true,
+      "plan_approval_status": "UNAPPROVED",
+      "number_of_beams": 0,
+      "dose_role": "ANALYTIC QA GRID; NO BEAM TRANSPORT OR PLAN CALCULATION"
+    },
+    {
+      "patient_id": "VCT-PROSTATE-007",
+      "dicom_file_count": 195,
+      "hashes_verified": true,
+      "patient_identity_removed": true,
+      "plan_approval_status": "UNAPPROVED",
+      "number_of_beams": 0,
+      "dose_role": "ANALYTIC QA GRID; NO BEAM TRANSPORT OR PLAN CALCULATION"
+    },
+    {
+      "patient_id": "VCT-PROSTATE-008",
+      "dicom_file_count": 195,
+      "hashes_verified": true,
+      "patient_identity_removed": true,
+      "plan_approval_status": "UNAPPROVED",
+      "number_of_beams": 0,
+      "dose_role": "ANALYTIC QA GRID; NO BEAM TRANSPORT OR PLAN CALCULATION"
+    },
+    {
+      "patient_id": "VCT-PROSTATE-009",
+      "dicom_file_count": 195,
+      "hashes_verified": true,
+      "patient_identity_removed": true,
+      "plan_approval_status": "UNAPPROVED",
+      "number_of_beams": 0,
+      "dose_role": "ANALYTIC QA GRID; NO BEAM TRANSPORT OR PLAN CALCULATION"
+    },
+    {
+      "patient_id": "VCT-PROSTATE-010",
+      "dicom_file_count": 195,
+      "hashes_verified": true,
+      "patient_identity_removed": true,
+      "plan_approval_status": "UNAPPROVED",
+      "number_of_beams": 0,
+      "dose_role": "ANALYTIC QA GRID; NO BEAM TRANSPORT OR PLAN CALCULATION"
+    }
+  ]
+}

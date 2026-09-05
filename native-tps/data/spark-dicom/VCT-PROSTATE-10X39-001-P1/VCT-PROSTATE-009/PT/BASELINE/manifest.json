@@ -1,0 +1,632 @@
+{
+  "schema_version": "1.0",
+  "synthetic_only": true,
+  "source_spec": {
+    "schema_version": "1.0",
+    "cohort_id": "VCT-PROSTATE-10X39-001",
+    "case_id": "VCT-PROSTATE-009",
+    "synthetic_only": true,
+    "sex_model": "male",
+    "modality": "PT",
+    "fraction_number": 0,
+    "timepoint_role": "baseline",
+    "series_description": "XCAT-DERIVED ANALYTIC PET RECON",
+    "geometry": {
+      "spacing_zyx_mm": [
+        2.5,
+        2.5,
+        2.5
+      ],
+      "origin_lps_mm": [
+        -223.75,
+        -223.75,
+        -118.75
+      ],
+      "image_orientation_patient": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "coordinate_system": "DICOM-LPS",
+      "frame_id": "vct-prostate-009-xcat-registered-frame-v1"
+    },
+    "pixel_units": "CNTS",
+    "image_status": "test-fixture",
+    "ct_kvp": 120.0,
+    "intended_use": "research-method-development-only"
+  },
+  "source_content_sha256": "9d2819fcb53115ed737954037272b6e1ca5b6143ef98a8206bcc3f3394c1b683",
+  "shape_zyx": [
+    96,
+    180,
+    180
+  ],
+  "study_instance_uid": "2.25.115705376376851130810352604072410455725",
+  "series_instance_uid": "2.25.297792647391858598405692354541257183580",
+  "frame_of_reference_uid": "2.25.7204391042186459260544284643392680724",
+  "sop_class_uid": "1.2.840.10008.5.1.4.1.1.128",
+  "rescale_slope": 0.002246644170040341,
+  "rescale_intercept": 0.0,
+  "files": [
+    {
+      "path": "IM00001.dcm",
+      "instance_number": 1,
+      "sop_instance_uid": "2.25.308471278988860286898968584132117033485",
+      "sha256": "8508ae1c966de991da3aa184a376e9f9daf1a3104cd44ae858068501282738c2"
+    },
+    {
+      "path": "IM00002.dcm",
+      "instance_number": 2,
+      "sop_instance_uid": "2.25.154472187580357566901070167881905474898",
+      "sha256": "e5892bae21029ef65f793ab82657b87e1c186c993a5e8a90c4f6d10b2989c638"
+    },
+    {
+      "path": "IM00003.dcm",
+      "instance_number": 3,
+      "sop_instance_uid": "2.25.224457389870003605492576105158946477706",
+      "sha256": "f9e4fab43b1eb82cec98c3f2bac6a7fa69a3c4285c764e048a58bb86f0551a53"
+    },
+    {
+      "path": "IM00004.dcm",
+      "instance_number": 4,
+      "sop_instance_uid": "2.25.289630379711556578285518721935679767258",
+      "sha256": "406d5837951d1e95371814e77f6656b5c88d92d434fe63d5d510ebb26caf4ae7"
+    },
+    {
+      "path": "IM00005.dcm",
+      "instance_number": 5,
+      "sop_instance_uid": "2.25.39349714256379225666429830226749188060",
+      "sha256": "d522ab04f2569f6596cb12f77592f8ed9f3f672efdd98759c13c243ca9f6c195"
+    },
+    {
+      "path": "IM00006.dcm",
+      "instance_number": 6,
+      "sop_instance_uid": "2.25.270661591098683749433122499850903989023",
+      "sha256": "685ae027540fac0295f08e2959b783956f950427320c621443c8705e2ec96102"
+    },
+    {
+      "path": "IM00007.dcm",
+      "instance_number": 7,
+      "sop_instance_uid": "2.25.240588960075483500268200503349923568166",
+      "sha256": "f141be5ae2b9c902df085b9b4b24a42b0f7ce5b1071ab0ba216a584133f2ce24"
+    },
+    {
+      "path": "IM00008.dcm",
+      "instance_number": 8,
+      "sop_instance_uid": "2.25.267292856151820666552232196701143753455",
+      "sha256": "c70ff004489e8edad5389c31a963f5b4439b29679e2ebed86ce539f506dd216f"
+    },
+    {
+      "path": "IM00009.dcm",
+      "instance_number": 9,
+      "sop_instance_uid": "2.25.176756484399223493805466367930287420390",
+      "sha256": "6ba6e4071807cdbaa2c6d4b24b752fbb39c0eff426ba819772fcda60f356d65f"
+    },
+    {
+      "path": "IM00010.dcm",
+      "instance_number": 10,
+      "sop_instance_uid": "2.25.333379281866982814270946412302989599504",
+      "sha256": "5309a59f783ae741acc0a721869c158acdd44969305e44dd5e4abfc9ca56b4c5"
+    },
+    {
+      "path": "IM00011.dcm",
+      "instance_number": 11,
+      "sop_instance_uid": "2.25.31646872442555177560373078398302621221",
+      "sha256": "11633531f9fad13d4c4880f66bef83efbbfc79bc67830d5ddc33523f13dc15e4"
+    },
+    {
+      "path": "IM00012.dcm",
+      "instance_number": 12,
+      "sop_instance_uid": "2.25.91775410654417004475599818269438783999",
+      "sha256": "cf4b7464d97992dac4faa43fded7bebac7644d6dbd82d2fc4abb870781fd61e7"
+    },
+    {
+      "path": "IM00013.dcm",
+      "instance_number": 13,
+      "sop_instance_uid": "2.25.27341439082997717650106940262810850142",
+      "sha256": "7cce2d5a1958c43a9a5f20bf8a4b90e65f74c773a1f83065422b7f6137926c7d"
+    },
+    {
+      "path": "IM00014.dcm",
+      "instance_number": 14,
+      "sop_instance_uid": "2.25.254191871521356730064395374978747091016",
+      "sha256": "d9d223e5a4558ce5531689c4f7146d3271c67958f43ad073862e5ae428b53828"
+    },
+    {
+      "path": "IM00015.dcm",
+      "instance_number": 15,
+      "sop_instance_uid": "2.25.40997366301458588215785860174019685599",
+      "sha256": "1de2fea4712025220f63ecf92567590cfb30a65b4c64ede8e49c55026550bd3a"
+    },
+    {
+      "path": "IM00016.dcm",
+      "instance_number": 16,
+      "sop_instance_uid": "2.25.7048843156866867468428664378822479989",
+      "sha256": "5e1b900a1746d940e5b94d7b65aad356dad25eb101fa4099096fba2e5ec9be4b"
+    },
+    {
+      "path": "IM00017.dcm",
+      "instance_number": 17,
+      "sop_instance_uid": "2.25.43235193427063863786336795733183479246",
+      "sha256": "eb4686277731a2e1d19eec062e3deb2b58101689eda6b3999122ad267b91e5ca"
+    },
+    {
+      "path": "IM00018.dcm",
+      "instance_number": 18,
+      "sop_instance_uid": "2.25.31864993012223959033848618708970939117",
+      "sha256": "0df7dbb98c155a9ad086f9038d552a35c76b77eb177b5290681e627e1e6c5972"
+    },
+    {
+      "path": "IM00019.dcm",
+      "instance_number": 19,
+      "sop_instance_uid": "2.25.250721285664602280357615990730570261488",
+      "sha256": "b709abf00d377a4a6be749bba33cc0d11a248caee6cc66bb7457bcaec187db08"
+    },
+    {
+      "path": "IM00020.dcm",
+      "instance_number": 20,
+      "sop_instance_uid": "2.25.240868498885899147758065303253990298523",
+      "sha256": "5660583844c5d1dc992974f4471685b43e733dca5344b073ba3fca67e77f09e7"
+    },
+    {
+      "path": "IM00021.dcm",
+      "instance_number": 21,
+      "sop_instance_uid": "2.25.258129790128310479328127117282479203459",
+      "sha256": "bad9d226ace350fb445b5b51cdd8fc81c3abaac3011c6989f9c904f99deb7001"
+    },
+    {
+      "path": "IM00022.dcm",
+      "instance_number": 22,
+      "sop_instance_uid": "2.25.175635739357747330858268076322569965810",
+      "sha256": "91a72b9d857fb28a03e565e57c48991ebf27dcc59406a21390f92b7fbab1f2a3"
+    },
+    {
+      "path": "IM00023.dcm",
+      "instance_number": 23,
+      "sop_instance_uid": "2.25.327726710192223876851618608678410180462",
+      "sha256": "72cca196168da8f27a711ceb84f5a30289cf2f6591613d1e825e6c117c9b022a"
+    },
+    {
+      "path": "IM00024.dcm",
+      "instance_number": 24,
+      "sop_instance_uid": "2.25.307899853080454217899735462099845069065",
+      "sha256": "316c55d3f9ad034fa8724418e1ea69ea9d284ae0c9518787aa93a259fcf81050"
+    },
+    {
+      "path": "IM00025.dcm",
+      "instance_number": 25,
+      "sop_instance_uid": "2.25.238861377561393331142778170108784782502",
+      "sha256": "c623f5cc15f3bdf3715bd40f0f98f7bf2fda324bfefa0cee669ae30907ee8eca"
+    },
+    {
+      "path": "IM00026.dcm",
+      "instance_number": 26,
+      "sop_instance_uid": "2.25.137272608667215485742779836723620952175",
+      "sha256": "25c60cf5a7b1661ff17230ae779858a615c65db5ee0a214b2c06812422ab6357"
+    },
+    {
+      "path": "IM00027.dcm",
+      "instance_number": 27,
+      "sop_instance_uid": "2.25.154603432258643624261630388651139463244",
+      "sha256": "0ad0804ecfdb1b627f8a62309633be30b35b4fae546fffd83ba25222aabcd7fc"
+    },
+    {
+      "path": "IM00028.dcm",
+      "instance_number": 28,
+      "sop_instance_uid": "2.25.193568296049050444733859347032917222499",
+      "sha256": "354c5e35140929542f2e445528ac9d605614103a56df91d53374d481244d8779"
+    },
+    {
+      "path": "IM00029.dcm",
+      "instance_number": 29,
+      "sop_instance_uid": "2.25.147881488948302113932918498769804387068",
+      "sha256": "db700ac5dfe404e0c60a7f665ea981e292daf71c0d463068cba615775493374c"
+    },
+    {
+      "path": "IM00030.dcm",
+      "instance_number": 30,
+      "sop_instance_uid": "2.25.210640576941664688810479698875381874067",
+      "sha256": "f326135d50d65e5d23728a58810c845a9f25d63c66efc9b0dda8c85dc8f8b57f"
+    },
+    {
+      "path": "IM00031.dcm",
+      "instance_number": 31,
+      "sop_instance_uid": "2.25.242482697219724855191577870053234937437",
+      "sha256": "2272e73a4fd6ff1e058fd87a83f3ad2d8037317b0f0d06fcb0dbca093551882e"
+    },
+    {
+      "path": "IM00032.dcm",
+      "instance_number": 32,
+      "sop_instance_uid": "2.25.49319645720750067259565570761717102146",
+      "sha256": "fe582fdedf52cf161bb0cb37a7471382f098c04c71fad95a17b9954800fe62ce"
+    },
+    {
+      "path": "IM00033.dcm",
+      "instance_number": 33,
+      "sop_instance_uid": "2.25.335282042268777336546837707383709932209",
+      "sha256": "82475823e609be21147af34fd9fedcb3b7b4b090200cde29da0c80c20db95b52"
+    },
+    {
+      "path": "IM00034.dcm",
+      "instance_number": 34,
+      "sop_instance_uid": "2.25.109741287174488747541099135283176193109",
+      "sha256": "0ad038212fa0a69151276b50008394d6223bc4347388e4e809908a48901e3689"
+    },
+    {
+      "path": "IM00035.dcm",
+      "instance_number": 35,
+      "sop_instance_uid": "2.25.322223563932264677516051502241653915651",
+      "sha256": "2f8a2a667621829fc80fd928097db410a0f9d4809736ec8e9e66fce3d5340590"
+    },
+    {
+      "path": "IM00036.dcm",
+      "instance_number": 36,
+      "sop_instance_uid": "2.25.212234580531756675685868629743788761450",
+      "sha256": "2a8195ada0f7a231a3dbb100d1563e7786ff92c1852f23db5152fb24197aee45"
+    },
+    {
+      "path": "IM00037.dcm",
+      "instance_number": 37,
+      "sop_instance_uid": "2.25.22430237648208796485717593857360393165",
+      "sha256": "63a3616b6477679cbe5de026a3c6c82b5d3bff3fe7426401d2171bbdabea1808"
+    },
+    {
+      "path": "IM00038.dcm",
+      "instance_number": 38,
+      "sop_instance_uid": "2.25.282661137754221118668736624809504418825",
+      "sha256": "e448e06413652dc3d2ee4043756f848eeeb718453ac7f6fb482bd15c65a7bb71"
+    },
+    {
+      "path": "IM00039.dcm",
+      "instance_number": 39,
+      "sop_instance_uid": "2.25.77249094529612207801543126963680599429",
+      "sha256": "65ed8a8bfd04eaa6bf6ac0dad8a41c8fe064dd8de1c24813b41c28251455a060"
+    },
+    {
+      "path": "IM00040.dcm",
+      "instance_number": 40,
+      "sop_instance_uid": "2.25.220273862001315597324199297338442939020",
+      "sha256": "fc9ca05fb5caa264589546bc93a7fa1c9b0d034424a3ff5fe64d8cbf7f9c31f5"
+    },
+    {
+      "path": "IM00041.dcm",
+      "instance_number": 41,
+      "sop_instance_uid": "2.25.110790709342286915579585466420028522639",
+      "sha256": "8a1bfc0ff048ccb11fe13750696f12d55b996370cc4ef579d6f11cf1832274d0"
+    },
+    {
+      "path": "IM00042.dcm",
+      "instance_number": 42,
+      "sop_instance_uid": "2.25.278956714807611522751608227516954769604",
+      "sha256": "d1af1ce52245d7a705deceaa50c86fa39cb88491bb76793287158e9dc3f2ff16"
+    },
+    {
+      "path": "IM00043.dcm",
+      "instance_number": 43,
+      "sop_instance_uid": "2.25.262342656508839440183139939193446926703",
+      "sha256": "101244458b5f46a9861cf8988c6d53af881887bbaba6ade84513054c5f88eaa8"
+    },
+    {
+      "path": "IM00044.dcm",
+      "instance_number": 44,
+      "sop_instance_uid": "2.25.91107184890191242025491659222454976928",
+      "sha256": "0c53b417dc6dc5737a0bb086931cb716f967e6ea46de2a0847d78a6a6684f040"
+    },
+    {
+      "path": "IM00045.dcm",
+      "instance_number": 45,
+      "sop_instance_uid": "2.25.232664120669996587290780134817768516309",
+      "sha256": "95ab9711280f24170085575833e4f623fca3b8cd0cd6a05502442a246db3a188"
+    },
+    {
+      "path": "IM00046.dcm",
+      "instance_number": 46,
+      "sop_instance_uid": "2.25.231928004599869313201443839643482590142",
+      "sha256": "2255ca5e6a1e1cce1aacf44bd9d29145d925588cc41200865b2eed1db13f9e75"
+    },
+    {
+      "path": "IM00047.dcm",
+      "instance_number": 47,
+      "sop_instance_uid": "2.25.56004653677955401868683991124969922008",
+      "sha256": "d1485423cf5b4f672904ff38698559d8e43b983a8a2241ea844af3f710e9a936"
+    },
+    {
+      "path": "IM00048.dcm",
+      "instance_number": 48,
+      "sop_instance_uid": "2.25.282297693473947013364492291344032411581",
+      "sha256": "6a302c82b2c2baddc033c94ed5a90999b935b9b8d4fe22b58918f523c67c50e0"
+    },
+    {
+      "path": "IM00049.dcm",
+      "instance_number": 49,
+      "sop_instance_uid": "2.25.284703655195569723203869042577835337197",
+      "sha256": "f8f10ce45955e6d433fe494c02aa85d0443889b833c22e1cbc6cdb46ea6b296b"
+    },
+    {
+      "path": "IM00050.dcm",
+      "instance_number": 50,
+      "sop_instance_uid": "2.25.229454697666106023620908486044325840926",
+      "sha256": "80b91d8b11fc2028edc1a5435bc806881b0fea9f37c40c6f495426c4f653ebad"
+    },
+    {
+      "path": "IM00051.dcm",
+      "instance_number": 51,
+      "sop_instance_uid": "2.25.138059005474766762633585107473764679929",
+      "sha256": "581bc6352984a3f693f7d821144220fa5a9857bb0d3ac7d10303b8ea2ddb7c21"
+    },
+    {
+      "path": "IM00052.dcm",
+      "instance_number": 52,
+      "sop_instance_uid": "2.25.108019899226896257921981610104583527787",
+      "sha256": "6840995c230de5b43f8e283a8f42d3eaa97abe6fd95a638d0337f1bf7b8e771a"
+    },
+    {
+      "path": "IM00053.dcm",
+      "instance_number": 53,
+      "sop_instance_uid": "2.25.264151757594657128714795358956624990848",
+      "sha256": "28be8f2d3f8c77732535eacb6a10f9b141ec09c5f075afa53d445818ff4ea2f2"
+    },
+    {
+      "path": "IM00054.dcm",
+      "instance_number": 54,
+      "sop_instance_uid": "2.25.132066482911943474612739802769468123192",
+      "sha256": "411c5f4cce5c5f93d50195849d9946789553fe1917ee3239938c21242bc61b35"
+    },
+    {
+      "path": "IM00055.dcm",
+      "instance_number": 55,
+      "sop_instance_uid": "2.25.43438699625613962613373585688464870188",
+      "sha256": "d0c7042325a6df6ff5049734ea020627a7e75a97d76362841828c232061f1473"
+    },
+    {
+      "path": "IM00056.dcm",
+      "instance_number": 56,
+      "sop_instance_uid": "2.25.249766349875371124751507804706465123168",
+      "sha256": "1a0a6469a4af8baa511019020dd784595f2701ea98965c6d779928b40e803f7a"
+    },
+    {
+      "path": "IM00057.dcm",
+      "instance_number": 57,
+      "sop_instance_uid": "2.25.85214271255925557099946252914244410652",
+      "sha256": "a5880b21c055160dbb3f0fe4f51467a3bf37c41fede3349162937633d0cfb2d2"
+    },
+    {
+      "path": "IM00058.dcm",
+      "instance_number": 58,
+      "sop_instance_uid": "2.25.215923658528202513496735364595584380702",
+      "sha256": "68cbb6409872b53931ce12cd3c80f7f0bf4c26f8bcc608fcacc3d91ab4eaa114"
+    },
+    {
+      "path": "IM00059.dcm",
+      "instance_number": 59,
+      "sop_instance_uid": "2.25.255105404439754890268080272528872647240",
+      "sha256": "f894dda3fd5c4ec31212ee86ce7b6e03b5ccb7ccc471bff37e6a49a33df6da8b"
+    },
+    {
+      "path": "IM00060.dcm",
+      "instance_number": 60,
+      "sop_instance_uid": "2.25.257264077941539343256330800596181296941",
+      "sha256": "3d1a25b37e68dc67e320b22e02576179899a932e94cbba7e6f074564ecc85c95"
+    },
+    {
+      "path": "IM00061.dcm",
+      "instance_number": 61,
+      "sop_instance_uid": "2.25.36694174925390338201805521771116908662",
+      "sha256": "c9b82a17fcf47d8afbb256a837806135819bf5022e2c2cc8a5edc92c681bf855"
+    },
+    {
+      "path": "IM00062.dcm",
+      "instance_number": 62,
+      "sop_instance_uid": "2.25.230927028154827338170341342414652486140",
+      "sha256": "6243a86bdbc1dd352d09e1c27b3515118aba6a2add2f7c67d36f6ce53e77f004"
+    },
+    {
+      "path": "IM00063.dcm",
+      "instance_number": 63,
+      "sop_instance_uid": "2.25.30152650098949711671887959805386497142",
+      "sha256": "d8a6c4bbd22018623ec356124bea51f7a25e898bffc3dba45ae47e25ffa1c03f"
+    },
+    {
+      "path": "IM00064.dcm",
+      "instance_number": 64,
+      "sop_instance_uid": "2.25.58957441639530652887180684738238162597",
+      "sha256": "95dca5a5a2b0331709320d439b002d718515764b9431fadf8abd2b77f5b24338"
+    },
+    {
+      "path": "IM00065.dcm",
+      "instance_number": 65,
+      "sop_instance_uid": "2.25.309605487047824974542901772436388473387",
+      "sha256": "3e668c7648f2bcfd1c02ed359de8da6ea299c98ff0aa2506b4f6e588be574abc"
+    },
+    {
+      "path": "IM00066.dcm",
+      "instance_number": 66,
+      "sop_instance_uid": "2.25.168272714469597466252857597657998146282",
+      "sha256": "61d107a2c330ec7244695f48e2b3d2a39f457fec82b321e2969e81b34c410e20"
+    },
+    {
+      "path": "IM00067.dcm",
+      "instance_number": 67,
+      "sop_instance_uid": "2.25.241279176286924719639824202470265671094",
+      "sha256": "5b1b605d5ddf862f520b3d6ab2a80f9e462101ac85e8ffe9e7545161669d52fc"
+    },
+    {
+      "path": "IM00068.dcm",
+      "instance_number": 68,
+      "sop_instance_uid": "2.25.150514749741850222864287038538603334969",
+      "sha256": "64fce16bde450abb1d52cb8125702c4de5a764153a909a3d13175f0e4c4470ac"
+    },
+    {
+      "path": "IM00069.dcm",
+      "instance_number": 69,
+      "sop_instance_uid": "2.25.116327061798240311711610020846647842194",
+      "sha256": "e636eef9d2bdccc7ea14a5f8ecd57ba89906009237fe0791442f007841314039"
+    },
+    {
+      "path": "IM00070.dcm",
+      "instance_number": 70,
+      "sop_instance_uid": "2.25.84341716754810775270561797038467232165",
+      "sha256": "991fa29987f7ef4bae48d05b2cefed4b5927ea5b64ce8e5d4019f5a07dc69710"
+    },
+    {
+      "path": "IM00071.dcm",
+      "instance_number": 71,
+      "sop_instance_uid": "2.25.289823655332759207781000703695994174108",
+      "sha256": "93854112ed727535a5ec0eced708fc300972ac0daf543752cac6a2c58788c25b"
+    },
+    {
+      "path": "IM00072.dcm",
+      "instance_number": 72,
+      "sop_instance_uid": "2.25.53733256710711421695280123270619781511",
+      "sha256": "d5d845c90f601562529e83e2aa9091ba81ee97a7c4f5feec55d71c13f6c57174"
+    },
+    {
+      "path": "IM00073.dcm",
+      "instance_number": 73,
+      "sop_instance_uid": "2.25.144114999357524542107136864202949676510",
+      "sha256": "71c4666c5eaec67e48455d6071b6e2b5f265a4ed7e4aca301856d4da430f3958"
+    },
+    {
+      "path": "IM00074.dcm",
+      "instance_number": 74,
+      "sop_instance_uid": "2.25.95396446973902794560703239949454323146",
+      "sha256": "7eb91c640c01284e61e5255804e9e6d18bf2db52dafbedd3031d26a7f391873b"
+    },
+    {
+      "path": "IM00075.dcm",
+      "instance_number": 75,
+      "sop_instance_uid": "2.25.183693545664620470576394525049033318379",
+      "sha256": "02d7e3e7908e0f85ec5f363a9e5e1ea6f87a8fefe9c174cb49c45d26dd2ea150"
+    },
+    {
+      "path": "IM00076.dcm",
+      "instance_number": 76,
+      "sop_instance_uid": "2.25.249961170885847475794171534686765795713",
+      "sha256": "1a53bc56b0a9257a1b30a7ce6f3aec9cf0568e1cc289874628d73502b24e3cb3"
+    },
+    {
+      "path": "IM00077.dcm",
+      "instance_number": 77,
+      "sop_instance_uid": "2.25.65469702162795336622637084081465521652",
+      "sha256": "131a150107aec9eac34d593432e715fb81d824853619f4247f7206b9c4dd8b87"
+    },
+    {
+      "path": "IM00078.dcm",
+      "instance_number": 78,
+      "sop_instance_uid": "2.25.130320714112827097110457764460227728451",
+      "sha256": "bbf32e14df6c3504e223767cb84f61e330c6d2c887a58021f1470c170980849d"
+    },
+    {
+      "path": "IM00079.dcm",
+      "instance_number": 79,
+      "sop_instance_uid": "2.25.62579497471850973777310221561420375968",
+      "sha256": "26abceee46accdb64ed1eb40f89fb34d51418579132544f2409a212ca1f33092"
+    },
+    {
+      "path": "IM00080.dcm",
+      "instance_number": 80,
+      "sop_instance_uid": "2.25.284488425410925114501962573669994941376",
+      "sha256": "9ba840ef6773ce68a2bdc712b715bae26b85a26576c9908c44f68bae77ffd353"
+    },
+    {
+      "path": "IM00081.dcm",
+      "instance_number": 81,
+      "sop_instance_uid": "2.25.248596870369344915743073619976192961483",
+      "sha256": "0f2648db548fec8ce05302ae0e2360fdb7fb8fe3231b38d568cb720103817333"
+    },
+    {
+      "path": "IM00082.dcm",
+      "instance_number": 82,
+      "sop_instance_uid": "2.25.166698023490559919378418480621909228074",
+      "sha256": "81b418b98b15e739884610f0d48f905e9d30cb0772e9edd49c718079491f899f"
+    },
+    {
+      "path": "IM00083.dcm",
+      "instance_number": 83,
+      "sop_instance_uid": "2.25.13561143928107010658769821124640871324",
+      "sha256": "148e35ece2dbba6326c334d345d16ab6abc91e8ac4737ed7b7a1b3c0ac6cdcf4"
+    },
+    {
+      "path": "IM00084.dcm",
+      "instance_number": 84,
+      "sop_instance_uid": "2.25.52437890495996946135593588518808681942",
+      "sha256": "c4943ac715c53ad668b6955ab820725d1ae1c1a9ba33adfc0d1194ce644b6adb"
+    },
+    {
+      "path": "IM00085.dcm",
+      "instance_number": 85,
+      "sop_instance_uid": "2.25.241086638745188317812711145112366931690",
+      "sha256": "aa9ba8af1aece7e2c80a5a13708c490b187f5168eb235a31d26cb11542f6155e"
+    },
+    {
+      "path": "IM00086.dcm",
+      "instance_number": 86,
+      "sop_instance_uid": "2.25.309901456411638235917390833140450317419",
+      "sha256": "7fd287df36392c4d424ce5e93c632a805600340236a7ef34bf4d072de68dce16"
+    },
+    {
+      "path": "IM00087.dcm",
+      "instance_number": 87,
+      "sop_instance_uid": "2.25.297860297107049860376472597784063900653",
+      "sha256": "239edefe39cfc888fc6cac37b9f03f5031d37a3e636e48f88a63bce279d65d22"
+    },
+    {
+      "path": "IM00088.dcm",
+      "instance_number": 88,
+      "sop_instance_uid": "2.25.251669344748994461128830820784528903081",
+      "sha256": "daf6f242d91fc79b084e2ef8fdf6fc61e9ba9018eb95dabdc6b2cbb5d7903994"
+    },
+    {
+      "path": "IM00089.dcm",
+      "instance_number": 89,
+      "sop_instance_uid": "2.25.322197555918222078518303142184368864441",
+      "sha256": "54a53016b30c6e39d02494ec8ec98e69c4a4640ade4f315428494d59e7023637"
+    },
+    {
+      "path": "IM00090.dcm",
+      "instance_number": 90,
+      "sop_instance_uid": "2.25.224160137354920936754960439398239909850",
+      "sha256": "53243288f078ac5fae74742741781b66d18a46ae133cd3664aa855440d65721b"
+    },
+    {
+      "path": "IM00091.dcm",
+      "instance_number": 91,
+      "sop_instance_uid": "2.25.172599611989737985882010329958620086828",
+      "sha256": "949032788738ba7b50c156513729a996100b5b48575dd8f95ad75291f3981728"
+    },
+    {
+      "path": "IM00092.dcm",
+      "instance_number": 92,
+      "sop_instance_uid": "2.25.22184023510142361227857692328304437972",
+      "sha256": "626bfbc82001e956d04be23b5e4822a255ed74e234bdcc9d2d04f7a40762b30a"
+    },
+    {
+      "path": "IM00093.dcm",
+      "instance_number": 93,
+      "sop_instance_uid": "2.25.330616294631658249871248264013736354897",
+      "sha256": "1a69415e52dbc03d91dcb40fec3062ec2e03825a57aa5a298b9a70e841c7479c"
+    },
+    {
+      "path": "IM00094.dcm",
+      "instance_number": 94,
+      "sop_instance_uid": "2.25.78483853198425291761245604900397122038",
+      "sha256": "a44df6bce188fd9d55ea9f0b6e8b49f813ee70b9c01a42ea7681e2889e113aa2"
+    },
+    {
+      "path": "IM00095.dcm",
+      "instance_number": 95,
+      "sop_instance_uid": "2.25.112301798157419024595711299986845859034",
+      "sha256": "78064d214677e49fd658c2fad1765edfc3a657b13cd192034a3b8aac9c1e2cd6"
+    },
+    {
+      "path": "IM00096.dcm",
+      "instance_number": 96,
+      "sop_instance_uid": "2.25.13664704538370389771872788279346967911",
+      "sha256": "a3318e98ae0d52a1bdbe1ae7ba911a012f38bcbbd8c11a9abdbbfcd844bc6d4b"
+    }
+  ],
+  "validation_state": "pydicom-round-trip-only; full IOD and clinical conformance pending"
+}

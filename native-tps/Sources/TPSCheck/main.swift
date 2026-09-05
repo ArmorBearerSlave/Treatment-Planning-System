@@ -11,6 +11,15 @@ import TPSCore
         }
     }
     static func run() async throws {
+        if let flag = CommandLine.arguments.firstIndex(of: "--validate-case"), CommandLine.arguments.count > flag+1 {
+            let url = URL(fileURLWithPath: CommandLine.arguments[flag+1])
+            guard (try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0) <= 96_000_000 else { throw TPSError.invalid("Case exceeds 96 MB.") }
+            let source = try JSONDecoder().decode(PhantomCase.self, from: Data(contentsOf: url))
+            try source.validate()
+            print("PASS: \(source.name), \(source.ct.grid.count) voxels; MR present: \(source.mr != nil); native case contract verified.")
+            print("This checks encoded data consistency, not source calibration or independent spatial registration.")
+            return
+        }
         if let flag = CommandLine.arguments.firstIndex(of: "--validate-bundle"), CommandLine.arguments.count > flag+1 {
             let url = URL(fileURLWithPath: CommandLine.arguments[flag+1])
             guard (try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0) <= 256_000_000 else { throw TPSError.invalid("Bundle exceeds 256 MB.") }

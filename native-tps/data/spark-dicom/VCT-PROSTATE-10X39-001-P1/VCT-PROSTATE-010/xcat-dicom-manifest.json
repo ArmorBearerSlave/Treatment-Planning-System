@@ -1,0 +1,843 @@
+{
+  "schema_version": "1.0",
+  "patient_id": "VCT-PROSTATE-010",
+  "anatomical_site": "prostate",
+  "synthetic_only": true,
+  "package_role": "xcat-source-derived-dicom-interoperability-fixture",
+  "not_study_data": true,
+  "not_for_clinical_import": true,
+  "not_deliverable": true,
+  "image_sources": {
+    "ct_proxy": "licensed XCAT2 120-keV attenuation converted with a declared water reference; not DukeSim CT",
+    "pet": "parallelproj analytic reconstruction from registered XCAT2 activity and 511-keV attenuation; not detector-physics qualified"
+  },
+  "rt_sources": {
+    "rtstruct": "source-informed ellipsoid/proxy contours; not approved anatomy",
+    "rt_ion_plan": "UNAPPROVED zero-beam conformance fixture",
+    "rtdose": "analytic distance-falloff grid; not OpenTOPAS or delivered dose"
+  },
+  "source_sha256": {
+    "xcat_120_combined_attenuation": "17e2e423f9d8d053808cbc327171ee35c2d56bda5eb48f62383c284916ebf573",
+    "xcat_511_base_attenuation": "c02acc175884d40047fbb4e7fc7a6f5ab9f1673214fa57e1cb09000343dec62e",
+    "xcat_511_lesion_activity": "2eaea715b41f651d46b21ff01340c5044b7ed2314224f693a3ba5f1488e5831a",
+    "analytic_pet_reconstruction": "9d7d13623d3bb762811fe494f8ed28d7662127b45a4a7f717382c8fc94362404",
+    "xcat_511_base_activity": "15a616f4fce458c737af87b61d66adda171d63dcf996f2df2637f4b3ddae91f6"
+  },
+  "shape_zyx": [
+    96,
+    180,
+    180
+  ],
+  "spacing_zyx_mm": [
+    2.5,
+    2.5,
+    2.5
+  ],
+  "water_attenuation_120kev_1_cm": 0.1613015137,
+  "lesion_center_zyx": [
+    48,
+    101,
+    85
+  ],
+  "lesion_equivalent_radius_mm": 7.712801886010188,
+  "contour_counts": {
+    "BODY": 96,
+    "PROSTATE_PROXY": 14,
+    "GTV_ANALYTIC": 6,
+    "PTV_ANALYTIC": 8,
+    "BLADDER_PROXY": 24,
+    "RECTUM_PROXY": 28,
+    "FEMORAL_HEAD_L_PROXY": 20,
+    "FEMORAL_HEAD_R_PROXY": 20
+  },
+  "uids": {
+    "study": "2.25.82365487449115815628996612512370036189",
+    "frame_of_reference": "2.25.120393571582694925705264133419979872256",
+    "rtstruct": "2.25.106883285954957739082951113707747701544",
+    "rt_ion_plan": "2.25.34018327088170739926399728286371850842",
+    "rtdose": "2.25.279851305789099956062662514017155736862"
+  },
+  "dicom_file_count": 195,
+  "dicom_files": [
+    {
+      "path": "CT/BASELINE/IM00001.dcm",
+      "sha256": "b50d0059750006bf16f1b74abd5c35c4e14c02dbbe027a7ed3cfc6bfcca6aa69"
+    },
+    {
+      "path": "CT/BASELINE/IM00002.dcm",
+      "sha256": "9918c79e3f91b61e5313796e7ad8860f217650bbe946ac14b029e23ef4c7ace8"
+    },
+    {
+      "path": "CT/BASELINE/IM00003.dcm",
+      "sha256": "3070be4be08baf815e79e541c3424be7c7995d6e56df258d804515abd4ae7cde"
+    },
+    {
+      "path": "CT/BASELINE/IM00004.dcm",
+      "sha256": "69ea5f5acee8936ce54f3b2ffad9569f57e08c6c103541911d5c9d174e2ac5fa"
+    },
+    {
+      "path": "CT/BASELINE/IM00005.dcm",
+      "sha256": "5e0d90fb2a7e40631b08f6638717865c22cbb59dee6ca39b42cac34edac75726"
+    },
+    {
+      "path": "CT/BASELINE/IM00006.dcm",
+      "sha256": "78e0adc745be2f5507340a89b598a137d4ab45f1a3050bc5b5350419110cdc7a"
+    },
+    {
+      "path": "CT/BASELINE/IM00007.dcm",
+      "sha256": "09b2bfbabe3c536edfb967f887f5eeb7e0666da8a0cff4615ff6a59363e04a21"
+    },
+    {
+      "path": "CT/BASELINE/IM00008.dcm",
+      "sha256": "608bf708edf6064af742ea58149fc484aa93f3916fb0f511fc55abfbd28d8829"
+    },
+    {
+      "path": "CT/BASELINE/IM00009.dcm",
+      "sha256": "bfd9781ca4637e0b65d7e12a9e2271207f424c8291665b72e5867f85d9b10f1a"
+    },
+    {
+      "path": "CT/BASELINE/IM00010.dcm",
+      "sha256": "633c42c3700b20e6a05c4dfd8ed03bbcb201c42039a54d7569b7c26af453066c"
+    },
+    {
+      "path": "CT/BASELINE/IM00011.dcm",
+      "sha256": "e579a5924d89eac208c20f2192e545a5e65d00bc7b4c62e42fba8acf4f4b04d5"
+    },
+    {
+      "path": "CT/BASELINE/IM00012.dcm",
+      "sha256": "a8ea170d958e5eafdf8de5189f11092ce4b71292fe3d41d7bac703057c4eb359"
+    },
+    {
+      "path": "CT/BASELINE/IM00013.dcm",
+      "sha256": "9176281e091a12d62c53b52603a358e30de9981b9e6c06e9abca9b535f10a0d4"
+    },
+    {
+      "path": "CT/BASELINE/IM00014.dcm",
+      "sha256": "66b68a3f77a7fa6a89966aa3617fac820972b5f08db6d847808bbb1f9c5c1112"
+    },
+    {
+      "path": "CT/BASELINE/IM00015.dcm",
+      "sha256": "53403a5eabdeb71790c3d017b1ba9609038e2bc51a065b56669bd5e1082587a6"
+    },
+    {
+      "path": "CT/BASELINE/IM00016.dcm",
+      "sha256": "45f0d267a2feac36c23daff743d5f656267556051a0280beec97f74fc502d66b"
+    },
+    {
+      "path": "CT/BASELINE/IM00017.dcm",
+      "sha256": "e415df05e8d37c89ac7fa327951eaddf6d159fc35365b3453def2b7d6af1a98d"
+    },
+    {
+      "path": "CT/BASELINE/IM00018.dcm",
+      "sha256": "531edfed51867e9845036beeed0dd9bea78aa51de4e51addfde969d864c1c2c2"
+    },
+    {
+      "path": "CT/BASELINE/IM00019.dcm",
+      "sha256": "ce09fd3d12ec9e160451d039c5814e131a80e39bdfd38a6f8b90eebd4c6926e7"
+    },
+    {
+      "path": "CT/BASELINE/IM00020.dcm",
+      "sha256": "0c14be2ba756651e931c839c4bad1ae420fd44fbfedb4936e617ed400c72a6ba"
+    },
+    {
+      "path": "CT/BASELINE/IM00021.dcm",
+      "sha256": "cf7c22d483d361a5450e3e4198d3284017219a9f0d8ceea82fdf58482982cc67"
+    },
+    {
+      "path": "CT/BASELINE/IM00022.dcm",
+      "sha256": "02fe7e05cf5f5bf3b3f66b5efec75ca8e4a0b33a06d916c25f554cc4e41d5a77"
+    },
+    {
+      "path": "CT/BASELINE/IM00023.dcm",
+      "sha256": "ba2494aa582e6eb75be63996ea6de3508d861ad342cd11c5b1613d6fbf8ababc"
+    },
+    {
+      "path": "CT/BASELINE/IM00024.dcm",
+      "sha256": "714dbb214c0081bf1e29224e8c9f4eb5cb4ff321e724ed0f5dccaea8519b96ab"
+    },
+    {
+      "path": "CT/BASELINE/IM00025.dcm",
+      "sha256": "3a2d329a3ab1610a14621c72179d580c6a0ebb1629326560d1da040113e42127"
+    },
+    {
+      "path": "CT/BASELINE/IM00026.dcm",
+      "sha256": "f3223b7c523813314ba209e3893ec980034019e880c7b3fbb44267626e02cd52"
+    },
+    {
+      "path": "CT/BASELINE/IM00027.dcm",
+      "sha256": "2cbc88dc5907c6684a1cdd0f3d5758ce0a11076255ab1e5b95d07e395cfe490b"
+    },
+    {
+      "path": "CT/BASELINE/IM00028.dcm",
+      "sha256": "fc94074d0b9bfbde223858e268b7c1bc4e5e68ebcd057309d613663041b8339e"
+    },
+    {
+      "path": "CT/BASELINE/IM00029.dcm",
+      "sha256": "68fab5990b7f159571637be15109945175060da2be88293b7ee14c6221b7e2f8"
+    },
+    {
+      "path": "CT/BASELINE/IM00030.dcm",
+      "sha256": "dc25c93ca8298c57d9bd2d9d00b2ef001e80d12350c5644c37350cf212644c26"
+    },
+    {
+      "path": "CT/BASELINE/IM00031.dcm",
+      "sha256": "1619e6546709b13137f14712570ca070033fd1fcb6cf1227e78e817052400770"
+    },
+    {
+      "path": "CT/BASELINE/IM00032.dcm",
+      "sha256": "d7dca7dddcb8c3efbfde01954e1e03e81a34ba6700a1a84beab2851d15426734"
+    },
+    {
+      "path": "CT/BASELINE/IM00033.dcm",
+      "sha256": "b9135599f95e4798045be26c0f7b69ce7a5670e0b11c60f27ba555be4cfa0610"
+    },
+    {
+      "path": "CT/BASELINE/IM00034.dcm",
+      "sha256": "e1ff01496d7d3b4a58fc612104cf4a9258fc9d1062eb66c797cbe49d758487a3"
+    },
+    {
+      "path": "CT/BASELINE/IM00035.dcm",
+      "sha256": "8c7e98abb0d91b96696eb4391230d8fad41ef1a433aae9d1677b7104cfc49c4a"
+    },
+    {
+      "path": "CT/BASELINE/IM00036.dcm",
+      "sha256": "24276368f28ba54a510d671047a7ab18c8f77343b71fb43fcc5e088a5301200b"
+    },
+    {
+      "path": "CT/BASELINE/IM00037.dcm",
+      "sha256": "e21acc540d037f79c0ab3979d04563a10f9aa426d48560ba3b3888b0a5d00ca8"
+    },
+    {
+      "path": "CT/BASELINE/IM00038.dcm",
+      "sha256": "43383e78fa5f82192eb3079c5519069c5fe9eafe0bb06b3f441bf62112ef051f"
+    },
+    {
+      "path": "CT/BASELINE/IM00039.dcm",
+      "sha256": "2cf654f8f9e2a0780c9bdf8f7b207760853de14b148b69477d9c8c21c4bf37ce"
+    },
+    {
+      "path": "CT/BASELINE/IM00040.dcm",
+      "sha256": "653f0786f26cde70a3234950008152853aa8c51fd8278ff4c0b08d2d29c88529"
+    },
+    {
+      "path": "CT/BASELINE/IM00041.dcm",
+      "sha256": "ea572698959b0bde762dca17faf341e9c6953ebbe5901ab5334ef10507f26711"
+    },
+    {
+      "path": "CT/BASELINE/IM00042.dcm",
+      "sha256": "1f6457456900c8a627717021db5e2809f714134acd4983cc0794619c727d8232"
+    },
+    {
+      "path": "CT/BASELINE/IM00043.dcm",
+      "sha256": "29da1ef73d6a5048bd191034a9430de6888f17f6ff412bfef3fdde945b2f039e"
+    },
+    {
+      "path": "CT/BASELINE/IM00044.dcm",
+      "sha256": "8fe1365aefc34b47ebfb7f4bbe68c97ff01389a369f69af3f02b3a74061e04b8"
+    },
+    {
+      "path": "CT/BASELINE/IM00045.dcm",
+      "sha256": "ba3c8f47bb859bc845d35b673fe490f520894e4f273bf08ad0f521e72947c6ab"
+    },
+    {
+      "path": "CT/BASELINE/IM00046.dcm",
+      "sha256": "86431459bc1699a366d8c771b74ad69cb308044fe1e59b1977532e62e020b5e9"
+    },
+    {
+      "path": "CT/BASELINE/IM00047.dcm",
+      "sha256": "a48fec5855c902a1ad6d6461ce39f9ee7317797ddb8721f4c72567cd63e65b2e"
+    },
+    {
+      "path": "CT/BASELINE/IM00048.dcm",
+      "sha256": "55cc9f621b0e60935f1a0941379c78d79c0e2741686b9859cd9cb2baec036bba"
+    },
+    {
+      "path": "CT/BASELINE/IM00049.dcm",
+      "sha256": "9671ec70ae1fea1b8d1a8d0077621f1a816371cc5dabf649c70395e228849e57"
+    },
+    {
+      "path": "CT/BASELINE/IM00050.dcm",
+      "sha256": "f654c5fc4078e679ef19e4bb491177a0d5518cfac887256fae1e3c18201cf746"
+    },
+    {
+      "path": "CT/BASELINE/IM00051.dcm",
+      "sha256": "657823c192d03fb045aab9cd2e8528d41d162c9e921466557a978257a11f8de5"
+    },
+    {
+      "path": "CT/BASELINE/IM00052.dcm",
+      "sha256": "e2346001bbd85f3bd3dcb80de2078bb7744b7af013d17c4ef8377ffb388b6e1c"
+    },
+    {
+      "path": "CT/BASELINE/IM00053.dcm",
+      "sha256": "d16d757e9194545853265d9686a9de6aa43c62c04299bc31ddf678bc4fb5dbfa"
+    },
+    {
+      "path": "CT/BASELINE/IM00054.dcm",
+      "sha256": "d9cedbc512bf208aabe22e8b29da1079c3b2890f2657aa195d22b6e51723d40e"
+    },
+    {
+      "path": "CT/BASELINE/IM00055.dcm",
+      "sha256": "5de9916f1e42ea5962c8ef5f0748c708bda06020a2d14f0019ffbf46eb0f9b5a"
+    },
+    {
+      "path": "CT/BASELINE/IM00056.dcm",
+      "sha256": "b9076374974e4e944a89b2b3d6778706904cd912594dfaf5760da542e4ccf024"
+    },
+    {
+      "path": "CT/BASELINE/IM00057.dcm",
+      "sha256": "8b55a5d0e0a8e9dc106874ddf026b740e51c465e4ac588a1a68a5aba4286f861"
+    },
+    {
+      "path": "CT/BASELINE/IM00058.dcm",
+      "sha256": "47d1a2a46c23ca4bd56001714c1639421382d8d6c7f5aa4b9506f846d65b99ce"
+    },
+    {
+      "path": "CT/BASELINE/IM00059.dcm",
+      "sha256": "856da849c920a9ba3baed844af01ff9238f752649a89e0bda19b0e152bad5fc4"
+    },
+    {
+      "path": "CT/BASELINE/IM00060.dcm",
+      "sha256": "272e8e495cda5e7325e5dcec17131a4e906f4752bc11e641208711a90c761489"
+    },
+    {
+      "path": "CT/BASELINE/IM00061.dcm",
+      "sha256": "fee67406fa4401f664acc7eacc6ea3ce250e69c67be3d17e2984a62a117759c3"
+    },
+    {
+      "path": "CT/BASELINE/IM00062.dcm",
+      "sha256": "bd8fc2f7011ecaa40d02e3bbd91f2054bce271c1428a151139b124590fd2b5d5"
+    },
+    {
+      "path": "CT/BASELINE/IM00063.dcm",
+      "sha256": "a4c3713b9a9546b72e9e6f35357fdc885ac06ae6cbbcce4fb313f67fcbdb39a1"
+    },
+    {
+      "path": "CT/BASELINE/IM00064.dcm",
+      "sha256": "5d71bdc5e4a0836187b5218576a3947b6e539391b54f189235784c7b9740f679"
+    },
+    {
+      "path": "CT/BASELINE/IM00065.dcm",
+      "sha256": "9b519207d6ad294a845f24913c2632a35ef86f561b708d89ce2c92c747fc9a02"
+    },
+    {
+      "path": "CT/BASELINE/IM00066.dcm",
+      "sha256": "7ce6a822bae5a476a653ab4c8d8d71264cb2a3c8817f016f6d735fbdf2aee326"
+    },
+    {
+      "path": "CT/BASELINE/IM00067.dcm",
+      "sha256": "5ce87fb3b2d1b6b8b424821dadefb708354d6b89e440b21989cc07946eb32890"
+    },
+    {
+      "path": "CT/BASELINE/IM00068.dcm",
+      "sha256": "db5eebee45f73d2eddb39046b545e4c93f741b87cdfc9b82001fc20931627f66"
+    },
+    {
+      "path": "CT/BASELINE/IM00069.dcm",
+      "sha256": "eb88c2fc4648cd0328bcde70342a98ea1006ebe5ca6821d3ef4760c8aecda452"
+    },
+    {
+      "path": "CT/BASELINE/IM00070.dcm",
+      "sha256": "afb917d9158ce2e0e46b7e91970bffa3ac7e65a40a1f6d562033bc259db554d7"
+    },
+    {
+      "path": "CT/BASELINE/IM00071.dcm",
+      "sha256": "7dedc9c444f14a044a52ac085e7da43c859c6b2754334369801e56592f3164ed"
+    },
+    {
+      "path": "CT/BASELINE/IM00072.dcm",
+      "sha256": "2b1d07035d7378505a21415a12a0460eae7443548b7b374f3a670d6659d2f1a4"
+    },
+    {
+      "path": "CT/BASELINE/IM00073.dcm",
+      "sha256": "0d7e38edcbae77aab2b951a41531ca1930bc9c546ced210cc3a652cea1547644"
+    },
+    {
+      "path": "CT/BASELINE/IM00074.dcm",
+      "sha256": "f35b3811fa0f00576efb070d31e98838122b8d4635747422c11ecf50c12db4da"
+    },
+    {
+      "path": "CT/BASELINE/IM00075.dcm",
+      "sha256": "95ce37d90c9bf36da6a57fc6b54db15f7bbea4ed213f68c4d585305a0c25caec"
+    },
+    {
+      "path": "CT/BASELINE/IM00076.dcm",
+      "sha256": "1aa5060c7f7e26836ed187ce7bed2c2722fc6042c9d3a33efa2e49f3d3b73188"
+    },
+    {
+      "path": "CT/BASELINE/IM00077.dcm",
+      "sha256": "9bb600b265e4d18c293e01fec73fa4cfb9f9bb0aab249d673b39bb6856adb26d"
+    },
+    {
+      "path": "CT/BASELINE/IM00078.dcm",
+      "sha256": "ac7f9e1d343151cb5a1aea6e917c975be058d7f90fdc14f9c44542df79ca9833"
+    },
+    {
+      "path": "CT/BASELINE/IM00079.dcm",
+      "sha256": "74c3dd88a8692f9a3571824212742f7a595efb7b55fb4c43759c8db32980c740"
+    },
+    {
+      "path": "CT/BASELINE/IM00080.dcm",
+      "sha256": "c7a9c919d7346352778646ca4c63e156016ce47285f94d1ba84b43162251f41a"
+    },
+    {
+      "path": "CT/BASELINE/IM00081.dcm",
+      "sha256": "5f0758821c54212dd8820d87dc440a919e8747d62de1ab33c6d8b5d5e07fb3a5"
+    },
+    {
+      "path": "CT/BASELINE/IM00082.dcm",
+      "sha256": "60825c657789babfd275470f25de8caf1e64f27a7f7b6932c3d861ec46ee8fc1"
+    },
+    {
+      "path": "CT/BASELINE/IM00083.dcm",
+      "sha256": "bbbaab9c0d6415cac437b259da9854385e735350e3572de02b65f261243eb0b0"
+    },
+    {
+      "path": "CT/BASELINE/IM00084.dcm",
+      "sha256": "bc252a68a6e8a154dd528a2bfa4eef8b0c0aba662d91684875b26dd7aa272ec5"
+    },
+    {
+      "path": "CT/BASELINE/IM00085.dcm",
+      "sha256": "1eb5465b1db8fdd8e25258b7d56108dd7501c936811daf3f017bca8b4715b150"
+    },
+    {
+      "path": "CT/BASELINE/IM00086.dcm",
+      "sha256": "a7dd2bf6899fea2ba34c2b619c7599ffb88ed14fae2409b2cf5d5ecb09e7195f"
+    },
+    {
+      "path": "CT/BASELINE/IM00087.dcm",
+      "sha256": "e94a77667876f20b2937a67bf8dc3f29d1578cffbddfe4066dc5e058786c417e"
+    },
+    {
+      "path": "CT/BASELINE/IM00088.dcm",
+      "sha256": "160ef3d8d809e5b329901db1b3fa914e3a4d4ec0631ebeabd957743298fbfbbe"
+    },
+    {
+      "path": "CT/BASELINE/IM00089.dcm",
+      "sha256": "dbffbcca6428b42aaa56b5c4f79898c77736eafd5edf3d9eb6fc818d6f8bd1b7"
+    },
+    {
+      "path": "CT/BASELINE/IM00090.dcm",
+      "sha256": "490fbedcccf95c842fa6587e446af6cb604cca581afdc21fdcaf3904a2a2d592"
+    },
+    {
+      "path": "CT/BASELINE/IM00091.dcm",
+      "sha256": "979cd4790e68ac3883c485d498ddfa336a0a4701fe6ba1e4b9db890586d5ccd4"
+    },
+    {
+      "path": "CT/BASELINE/IM00092.dcm",
+      "sha256": "7bbece3d804dcd8841c6a21391daaeb611e5c21784b4fb890e42015e39196fd7"
+    },
+    {
+      "path": "CT/BASELINE/IM00093.dcm",
+      "sha256": "19efaab05b9ed315f759ba866d67af4b7bf58177fc7dbc30d9930b847b2e2a6f"
+    },
+    {
+      "path": "CT/BASELINE/IM00094.dcm",
+      "sha256": "eb1005693c25126c35e1596cb46bcbbb8eea202d037ff92fcf5a98c57e520c60"
+    },
+    {
+      "path": "CT/BASELINE/IM00095.dcm",
+      "sha256": "c3a7a34606f026c01c1756f566605a8fe4d85fb02ecb3992a574f0863e0b0cca"
+    },
+    {
+      "path": "CT/BASELINE/IM00096.dcm",
+      "sha256": "a194d1b263ee467f6e452cca86cb93ef1201e386b85d49582bf439be413a5db5"
+    },
+    {
+      "path": "PT/BASELINE/IM00001.dcm",
+      "sha256": "38575fbee895abd1541d5364268a799beaf84e5f473628219a2c101b6aaa1cf3"
+    },
+    {
+      "path": "PT/BASELINE/IM00002.dcm",
+      "sha256": "f5db0a5b2ec2a404a3e26b423005161b5031cb78da035e2290d0c5cfc8904097"
+    },
+    {
+      "path": "PT/BASELINE/IM00003.dcm",
+      "sha256": "5f18eb3f47d54697cb8b4cb2d1a999581a5b7deb7dc39a6f8e5c60e35d2eb210"
+    },
+    {
+      "path": "PT/BASELINE/IM00004.dcm",
+      "sha256": "79d563924e5ed556f546f9e70aff02e6921cc3593e98f66bb002071d0dcaa082"
+    },
+    {
+      "path": "PT/BASELINE/IM00005.dcm",
+      "sha256": "6ae3baa8414c4294ff02c84873b786ccb2b0e3c515feabba2e58c477a6995198"
+    },
+    {
+      "path": "PT/BASELINE/IM00006.dcm",
+      "sha256": "0b5ac656e8db7700e97bd6e8e7bee2937dfbc7743b5bfad4ec6f10f500be10b0"
+    },
+    {
+      "path": "PT/BASELINE/IM00007.dcm",
+      "sha256": "9f75932b7a6ca4d193fcd15c56d0afd564b75a1f70723ca86f33ef77c8f4556c"
+    },
+    {
+      "path": "PT/BASELINE/IM00008.dcm",
+      "sha256": "14f09dc8dc4c3a1317cf33430f734d190d6dd84ca478089afad467eeb263f414"
+    },
+    {
+      "path": "PT/BASELINE/IM00009.dcm",
+      "sha256": "440c1774f97967c46e156029d25ef7ba4678cc2267adb74b2b0d873f6b8912c3"
+    },
+    {
+      "path": "PT/BASELINE/IM00010.dcm",
+      "sha256": "f11ccccdd6cc6949b1aa3fb1a0d2121faac32e8f0f1d38bc54629c2412e241b1"
+    },
+    {
+      "path": "PT/BASELINE/IM00011.dcm",
+      "sha256": "7f14c4c93041731a4ddca79308d37735ada8615e06dacf83b1361a9862fe5cba"
+    },
+    {
+      "path": "PT/BASELINE/IM00012.dcm",
+      "sha256": "941cb649e22aa5dab86e4ca616f9fb0acd5d1d97133c493361facf1b5b46239b"
+    },
+    {
+      "path": "PT/BASELINE/IM00013.dcm",
+      "sha256": "bc972df970848a6f55e75237199966777f22b9539666c45c3604068d8c07fe72"
+    },
+    {
+      "path": "PT/BASELINE/IM00014.dcm",
+      "sha256": "09dfd8e2ee6112506f46dd591a2df0d3dce87e3e97a82047413cd1138c671930"
+    },
+    {
+      "path": "PT/BASELINE/IM00015.dcm",
+      "sha256": "5cf82b64d2c2fe678f7a9ab25a9bfc381d46e55964430e67d901777abe7d5f8a"
+    },
+    {
+      "path": "PT/BASELINE/IM00016.dcm",
+      "sha256": "93eb3e0b27d9702e3ac064c425c54c0ae570a8bdfdb0bb2bfc251b925a780cf3"
+    },
+    {
+      "path": "PT/BASELINE/IM00017.dcm",
+      "sha256": "86bef2a77d75a7eb3756a5ce167f458e387f6557df84d64658d4ca3ca3ed6499"
+    },
+    {
+      "path": "PT/BASELINE/IM00018.dcm",
+      "sha256": "e6116f1f136db56cb1c7fa7e65beecae445e0ef177aad99cb966d56d44f9df6b"
+    },
+    {
+      "path": "PT/BASELINE/IM00019.dcm",
+      "sha256": "6b9d63e4918d99c4e676b965cd1bcad13145d12e995ca3a95b1072647392948e"
+    },
+    {
+      "path": "PT/BASELINE/IM00020.dcm",
+      "sha256": "8ebcc0766474f99cfb5935c1c318fa8815374c8c0ea1160d961f883d345d316d"
+    },
+    {
+      "path": "PT/BASELINE/IM00021.dcm",
+      "sha256": "e0175827955d0f6681ef4829ffd331d15e890af57efd07c8d235319baf44628e"
+    },
+    {
+      "path": "PT/BASELINE/IM00022.dcm",
+      "sha256": "fe73e6c08440709b178d9183f41712d072d12806610f4847779826d5d46d2359"
+    },
+    {
+      "path": "PT/BASELINE/IM00023.dcm",
+      "sha256": "58936610cb0ca03e9887b3535a9c01da916d51bf3ae0eae8b2373d6f8a488466"
+    },
+    {
+      "path": "PT/BASELINE/IM00024.dcm",
+      "sha256": "5e52891cc8ab8866b6a73a5029bb063cd5967b46f984cc4b1d15bdf4386cfa15"
+    },
+    {
+      "path": "PT/BASELINE/IM00025.dcm",
+      "sha256": "3bb38f10b898f4f98c79889031b4ba0ac43a1b09f15eb89c1c46d87f5fd40fb0"
+    },
+    {
+      "path": "PT/BASELINE/IM00026.dcm",
+      "sha256": "44aef0afb746cbb84c184e7eae3703f9f05b4bc35bb2e37165d3e0705c8b3c70"
+    },
+    {
+      "path": "PT/BASELINE/IM00027.dcm",
+      "sha256": "9dfde37a15e994a800350864228bee22ef682c2b39e16039d090652cf6f03fd4"
+    },
+    {
+      "path": "PT/BASELINE/IM00028.dcm",
+      "sha256": "bf95f90ce285517991ea742b8836d90883c1e10b489d6f322191214629318328"
+    },
+    {
+      "path": "PT/BASELINE/IM00029.dcm",
+      "sha256": "205ed2b41b6f2929b5e99484aac330f567d2a14cf7d0bbfa9bcf0ada0386b632"
+    },
+    {
+      "path": "PT/BASELINE/IM00030.dcm",
+      "sha256": "6a263020fde4dbaee20bd0043a3712559b99486f0331d1806b931c4826f1e0fe"
+    },
+    {
+      "path": "PT/BASELINE/IM00031.dcm",
+      "sha256": "d6c1a2283ee674305dd47f08a6483ccaf4d40b22f67ee3a5a0cacde46037c4d8"
+    },
+    {
+      "path": "PT/BASELINE/IM00032.dcm",
+      "sha256": "e0bfef09e3dcaa9d284fa35bc211aff33f36cc8e890db7bb77aecefb6f726fa2"
+    },
+    {
+      "path": "PT/BASELINE/IM00033.dcm",
+      "sha256": "84729f35415e43d6ac725399bcfee6268e0bed71db673c61ba8ba632c884bc69"
+    },
+    {
+      "path": "PT/BASELINE/IM00034.dcm",
+      "sha256": "12598968772e681d99a243f1f8ca9980712c7c0ab3dd4124bbb135f379b216d1"
+    },
+    {
+      "path": "PT/BASELINE/IM00035.dcm",
+      "sha256": "13ebbbb508b209b19f7c75964cbbc4a482c1eda7ca5a3ddc88bd754794125dc1"
+    },
+    {
+      "path": "PT/BASELINE/IM00036.dcm",
+      "sha256": "f1b7061267a4253742049da97c128a76a3fecb8c67bda0d430891b8c592f1fe7"
+    },
+    {
+      "path": "PT/BASELINE/IM00037.dcm",
+      "sha256": "2cb3a48ae9806d7eeb1c3e938b80b4db9363c24ff72b2892f0bd0f542d681275"
+    },
+    {
+      "path": "PT/BASELINE/IM00038.dcm",
+      "sha256": "bd6055cfdece62f7f2b9466e9ab249718cf5b0235cc7ff63cea500bb68ab8f64"
+    },
+    {
+      "path": "PT/BASELINE/IM00039.dcm",
+      "sha256": "dfb5ede97f7a64de36a5693589a06d68a81fd0f5b0ecea74ecaf0281ed552dc1"
+    },
+    {
+      "path": "PT/BASELINE/IM00040.dcm",
+      "sha256": "659394c15d4baf6e293dca17beff30ba948b61086a9c760c22f78b472bd8bf7b"
+    },
+    {
+      "path": "PT/BASELINE/IM00041.dcm",
+      "sha256": "7cae4f72bc1834ce149fc932d70de36df4c9a02e928c5e444e7b45de4dd9fd92"
+    },
+    {
+      "path": "PT/BASELINE/IM00042.dcm",
+      "sha256": "b57303def0b2251e364817668513eedefdfe77f0fd1cedc088432da1e1712073"
+    },
+    {
+      "path": "PT/BASELINE/IM00043.dcm",
+      "sha256": "6861b69ea315574c2526354271aa33d5db281aec1a1143772ebf5f7f7ec11257"
+    },
+    {
+      "path": "PT/BASELINE/IM00044.dcm",
+      "sha256": "bc7a08910124863c7129de94ae04a629e4d7a619afe70371d1f9e675691a3103"
+    },
+    {
+      "path": "PT/BASELINE/IM00045.dcm",
+      "sha256": "d2cc084543183d59c3fe1747eb1eb7b679273faceb07d0d6a95039a93b878fc9"
+    },
+    {
+      "path": "PT/BASELINE/IM00046.dcm",
+      "sha256": "84cc1548a750ae62c1e75d70959090f82ce075813b73ad21ae885fdb8c904a22"
+    },
+    {
+      "path": "PT/BASELINE/IM00047.dcm",
+      "sha256": "1b0e154dbd3162ec2fde441e708a20566178cdc6a0140daa7dadf85991315536"
+    },
+    {
+      "path": "PT/BASELINE/IM00048.dcm",
+      "sha256": "64f2876cd0ec6d90979134783c2dee23882aeca87b29b3a4ee7e6ed0bec4810a"
+    },
+    {
+      "path": "PT/BASELINE/IM00049.dcm",
+      "sha256": "892791c4cb279add3868bb368b89384de034fe0630ecad4c081e213f536e1b80"
+    },
+    {
+      "path": "PT/BASELINE/IM00050.dcm",
+      "sha256": "7ff6938f72db93a0249732e8ad90a5cbbb56b3338c3d3d91e37a71054e2164ef"
+    },
+    {
+      "path": "PT/BASELINE/IM00051.dcm",
+      "sha256": "bfa8339fbb6803831d53c42f37bf615f0f06494d778be36522a69dacb70a92a5"
+    },
+    {
+      "path": "PT/BASELINE/IM00052.dcm",
+      "sha256": "3bfab07a6cc1fc30714f8c85361e53bbb7a68643f1eac17bfac5f0607f89bd95"
+    },
+    {
+      "path": "PT/BASELINE/IM00053.dcm",
+      "sha256": "5738992e18595147928b077eab3e60eea73821597d442dae718a7c98ecd65a7c"
+    },
+    {
+      "path": "PT/BASELINE/IM00054.dcm",
+      "sha256": "bcf94da3b4c25be3cdc03813e4d224d1de65f5301476d9742b19d36404c70cca"
+    },
+    {
+      "path": "PT/BASELINE/IM00055.dcm",
+      "sha256": "5cfcb8485efe21ae60d3ae404b5b0247b0a9e33f382275332c1f045b1aac6247"
+    },
+    {
+      "path": "PT/BASELINE/IM00056.dcm",
+      "sha256": "c7c27c47df1fea139abfc89c70b0197f9cb8345c63b5a5ce7e01587666a8f214"
+    },
+    {
+      "path": "PT/BASELINE/IM00057.dcm",
+      "sha256": "e024e3d6900154ad57fb4577ce0994d689590333f7593bceebfc48a0a2726eba"
+    },
+    {
+      "path": "PT/BASELINE/IM00058.dcm",
+      "sha256": "1d72d3bf19eb014a71489212910fc23170756058bce368fe8748968bd5048dd2"
+    },
+    {
+      "path": "PT/BASELINE/IM00059.dcm",
+      "sha256": "a6637266e2bf5dea9f53b27f1437b393533658fde869cabdab24b9c366c2c365"
+    },
+    {
+      "path": "PT/BASELINE/IM00060.dcm",
+      "sha256": "d2e639a1640c0d023effddf72e03fee10ed3b035251d68b09e252befc57c8638"
+    },
+    {
+      "path": "PT/BASELINE/IM00061.dcm",
+      "sha256": "8c993553d5c031e28a39ecf597cf202a49199629a22e31d5c456c42257c256ff"
+    },
+    {
+      "path": "PT/BASELINE/IM00062.dcm",
+      "sha256": "2895bb280608b3a19143777bab6b766bcb09eaa0692de93a2de0fbae3f741c52"
+    },
+    {
+      "path": "PT/BASELINE/IM00063.dcm",
+      "sha256": "8cdf858aca9e0879654a65d5f04e0e15b46fc63d4d7c959cc2cfa7b5560cf5f0"
+    },
+    {
+      "path": "PT/BASELINE/IM00064.dcm",
+      "sha256": "144ee9bf4950b24e08fb4088b7863d6ac850f615b0c0fbcd210c38252f1151a3"
+    },
+    {
+      "path": "PT/BASELINE/IM00065.dcm",
+      "sha256": "0a3f28a2e47fd3ccfa13ceee32ef0c4301060b9edb982a5509b4f43ab295ecf2"
+    },
+    {
+      "path": "PT/BASELINE/IM00066.dcm",
+      "sha256": "688f1cc591b78709eb910f40ddf2bf9c1357f04d73f940924ccf0f372c683baf"
+    },
+    {
+      "path": "PT/BASELINE/IM00067.dcm",
+      "sha256": "89203bde6c1e2eece0cfbbeea6ae03aec9c058d1db3b8bc01623a6eafc6e463a"
+    },
+    {
+      "path": "PT/BASELINE/IM00068.dcm",
+      "sha256": "984bcc2286f30f1c1a7ac13716ea0ea32793a47ccd2aab52643d0a3fa510747a"
+    },
+    {
+      "path": "PT/BASELINE/IM00069.dcm",
+      "sha256": "31bbab9a048bf19d59c0d81c31c23470017be56e1ec9322e566d101cace4f5bb"
+    },
+    {
+      "path": "PT/BASELINE/IM00070.dcm",
+      "sha256": "aa7fb27d6ee1c1e9b30b8a835f7a52248230332de8842efb5505c4da989101d1"
+    },
+    {
+      "path": "PT/BASELINE/IM00071.dcm",
+      "sha256": "00acea9a8d6f82d9cdadd8326e0cb52d51c30a4bcd1483771e4afc0cfad958d9"
+    },
+    {
+      "path": "PT/BASELINE/IM00072.dcm",
+      "sha256": "6209f3f961f1517d0b4038989f980f407918a8e0b546c65bf4f637ecda691b6c"
+    },
+    {
+      "path": "PT/BASELINE/IM00073.dcm",
+      "sha256": "0368d2a99e4c37258e56772bcfb967f117da32f051ebcd86ef0d962cc9c8b248"
+    },
+    {
+      "path": "PT/BASELINE/IM00074.dcm",
+      "sha256": "63ebfaeb41ce5b8c70c88d23137a0c14cc59c3a30e1949ae458637b596e88d15"
+    },
+    {
+      "path": "PT/BASELINE/IM00075.dcm",
+      "sha256": "b3eb0aef3bc7611b631bc5157aaf16a7ccdd12aa074113e81e289ebe02983032"
+    },
+    {
+      "path": "PT/BASELINE/IM00076.dcm",
+      "sha256": "f5eb043894119ae4a4d7f7bf4c9182b52739febe2789f50161f383feb5f3be28"
+    },
+    {
+      "path": "PT/BASELINE/IM00077.dcm",
+      "sha256": "2c7dc6c4a2714c60100a4e674ee2439afa676ef27371f28cb49ff26d7e833278"
+    },
+    {
+      "path": "PT/BASELINE/IM00078.dcm",
+      "sha256": "3b144ce7d136eac27aade4572756313e01ad414812fae6b90b64f4c06e6c22a6"
+    },
+    {
+      "path": "PT/BASELINE/IM00079.dcm",
+      "sha256": "3a71c174c3d50ae235ed665f3a17eb13d0596c9a9c4992eec846784c689df932"
+    },
+    {
+      "path": "PT/BASELINE/IM00080.dcm",
+      "sha256": "8cc9b4623a95ae6386784390046b30356c7f20f047d170aba0a4c041d2372e84"
+    },
+    {
+      "path": "PT/BASELINE/IM00081.dcm",
+      "sha256": "b13f75880333d4d913bbd7e7dd01e5ca86a50b1035fe813b533e24a8ec38be00"
+    },
+    {
+      "path": "PT/BASELINE/IM00082.dcm",
+      "sha256": "2b9f77a10d886b5d534581ee7934c91def01c5f5af456e4fcaa0d6101b02f475"
+    },
+    {
+      "path": "PT/BASELINE/IM00083.dcm",
+      "sha256": "baed9956b815835de9c612a827c90272dbc6218d011f95a9b2b6aaf91d173822"
+    },
+    {
+      "path": "PT/BASELINE/IM00084.dcm",
+      "sha256": "2612c9e3e508e34dd45d9816c0268dcb55e109b9b02a1286b8005ae3a0773f03"
+    },
+    {
+      "path": "PT/BASELINE/IM00085.dcm",
+      "sha256": "b93e0d82010b3369c9e3b560ec13e4414ecaf7b97e21f36b8851889132d618ee"
+    },
+    {
+      "path": "PT/BASELINE/IM00086.dcm",
+      "sha256": "28b1f5b579a7bcb63c0a8d4c77600a3d5ad9be95f8e9760a489e3ddadf13eff6"
+    },
+    {
+      "path": "PT/BASELINE/IM00087.dcm",
+      "sha256": "e78da2b870016feff11a7b4684e31c8223cda46c27a4bc445f06d3a8b8c2887b"
+    },
+    {
+      "path": "PT/BASELINE/IM00088.dcm",
+      "sha256": "124b05caae2501a54028184bbfa542bcbe17063ed7f055b4c111338cb555db2e"
+    },
+    {
+      "path": "PT/BASELINE/IM00089.dcm",
+      "sha256": "34d4b08e9b2f64097976b73cb3c8a609c3bf949b4a16d41a94bd8ae920cf9c96"
+    },
+    {
+      "path": "PT/BASELINE/IM00090.dcm",
+      "sha256": "fe7caccaf5e247987cc2253e39593069218fc248c9794778b3dc52546e4f15aa"
+    },
+    {
+      "path": "PT/BASELINE/IM00091.dcm",
+      "sha256": "e23008f3e75bfd97831b2c5f98b7965028efeb07ea0c4f139c6a75c3b92df1ab"
+    },
+    {
+      "path": "PT/BASELINE/IM00092.dcm",
+      "sha256": "5787b2d300009baac21dce0c1806f4d0335660213a1b7b797fb71c07f98b240c"
+    },
+    {
+      "path": "PT/BASELINE/IM00093.dcm",
+      "sha256": "dc5929a911d46e49284c47cf788860d5041816e3325e139990fb33ecd565e3fd"
+    },
+    {
+      "path": "PT/BASELINE/IM00094.dcm",
+      "sha256": "21573c47206aa11f6c98cdce84f94be08eb2ab05bd78b5ca5c58ec30cbe11e63"
+    },
+    {
+      "path": "PT/BASELINE/IM00095.dcm",
+      "sha256": "c0bc41857287ae1c60caea7efb5194992ef3533fd57cad42b4de6c5429697e46"
+    },
+    {
+      "path": "PT/BASELINE/IM00096.dcm",
+      "sha256": "6a465d84156a48d713a407838ca1338499d7b54bc3f368c365f67ecd5e11c849"
+    },
+    {
+      "path": "RT/RTDOSE.dcm",
+      "sha256": "a06f19c43975bb20cda230b5367550ff028bbc43598df31bd98427b78ac4dcbd"
+    },
+    {
+      "path": "RT/RTIONPLAN.dcm",
+      "sha256": "d853c0a594c2a455e2339084cc8259e041aa61a85e9f3ffee86cedde98faea20"
+    },
+    {
+      "path": "RT/RTSTRUCT.dcm",
+      "sha256": "7e78e36e13750681b8f58c79cf477992ae630173395aa5eabda75e8a42a4bef9"
+    }
+  ]
+}
