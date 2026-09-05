@@ -150,9 +150,28 @@ export function DicomViewer() {
     ctFrameOfReferenceUidRef.current = metaData.get('imagePlaneModule', imageIds[0])?.frameOfReferenceUID ?? '';
 
     const volume = await volumeLoader.createAndCacheVolume(CT_VOLUME_ID, { imageIds });
+    const fitLoadedVolume = () => {
+      const loadedViewport = renderingEngine.getViewport(VIEWPORT_ID) as Types.IVolumeViewport;
+      loadedViewport.resetCamera();
+      const canvas = elementRef.current?.querySelector<HTMLCanvasElement>('canvas');
+      if (canvas) {
+        canvas.style.left = '0px';
+        canvas.style.top = '0px';
+      }
+      renderingEngine.render();
+    };
+    (volume as unknown as { loadStatus: { callbacks: Array<() => void> } }).loadStatus.callbacks.push(
+      fitLoadedVolume,
+    );
     volume.load();
     await setVolumesForViewports(renderingEngine, [{ volumeId: CT_VOLUME_ID }], [VIEWPORT_ID]);
     const viewport = renderingEngine.getViewport(VIEWPORT_ID) as Types.IVolumeViewport;
+    renderingEngine.resize(true, true);
+    const canvas = elementRef.current?.querySelector<HTMLCanvasElement>('canvas');
+    if (canvas) {
+      canvas.style.left = '0px';
+      canvas.style.top = '0px';
+    }
     // Cornerstone3D's default volume opacity is a flat 1.0 across the whole
     // range. In the joint multi-volume raycast this saturates ray alpha at
     // the very first sample, so a later-added overlay volume (e.g. RTDOSE)
@@ -373,7 +392,9 @@ export function DicomViewer() {
       if (!ds) continue;
       roiNames.set(ds.intString('x30060022') ?? -1, ds.string('x30060026') ?? '');
     }
-    const frameOfReferenceUID = dataSet.string('x00200052') ?? '';
+    const referencedFrame = dataSet.elements['x30060010']?.items?.[0]?.dataSet;
+    const frameOfReferenceUID =
+      dataSet.string('x00200052') ?? referencedFrame?.string('x00200052') ?? '';
 
     // One geometryId (contour set) per ROI, each carrying its own
     // segmentIndex/color -- referenced together by a single segmentation.
