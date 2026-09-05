@@ -38,12 +38,16 @@ def training_pair(bundle, task, allow_fixture=False):
         raise ValueError("Analytic fixtures are excluded; --allow-fixture is for pipeline tests only")
     ct = volume_array(source["ct"], "ct", "HU")
     labels = volume_array(source["truth"], "labels", "label")
-    mr = volume_array(source["mr"], "mr", "a.u.")
-    if source["ct"]["grid"] != source["truth"]["grid"] or source["ct"]["grid"] != source["mr"]["grid"]:
+    if source["ct"]["grid"] != source["truth"]["grid"]:
         raise ValueError("Spatial grid mismatch")
     if task == "contour":
         image, target = ct, labels
     elif task == "syntheticCT":
+        if source.get("mr") is None:
+            raise ValueError("Synthetic CT training requires MR input; this case is CT-only")
+        mr = volume_array(source["mr"], "mr", "a.u.")
+        if source["ct"]["grid"] != source["mr"]["grid"]:
+            raise ValueError("Spatial grid mismatch")
         note = source.get("sourceNotes", {}).get("mr", "").lower()
         if source.get("mrIsPlaceholder") is True or "placeholder" in note or not np.any(mr):
             raise ValueError("Placeholder MR is excluded from syntheticCT training, including fixture runs")

@@ -38,7 +38,7 @@ public struct PhantomCase: Codable, Sendable, Identifiable {
     public var syntheticOnly: Bool
     public var recipe: PhantomRecipe
     public var ct: Volume
-    public var mr: Volume
+    public var mr: Volume?
     public var truth: Volume
     public var structures: [Structure]
     public var simulation: SimulationEvidence? = nil
@@ -47,17 +47,21 @@ public struct PhantomCase: Codable, Sendable, Identifiable {
     public func validateInput(for operation: TPSOperation) throws {
         try validate()
         let note = sourceNotes?["mr"]?.lowercased() ?? ""
-        if operation == .syntheticCT && (mrIsPlaceholder == true || note.contains("placeholder") || mr.values.allSatisfy({ $0 == 0 })) {
-            throw TPSError.invalid("Synthetic CT requires meaningful MR input; this case contains a placeholder MR channel.")
+        if operation == .syntheticCT && (mr == nil || mrIsPlaceholder == true || note.contains("placeholder") || mr?.values.allSatisfy({ $0 == 0 }) == true) {
+            throw TPSError.invalid("Synthetic CT requires meaningful MR input. This case has no usable MR channel.")
         }
     }
     public func validate() throws {
         guard schemaVersion == 1, syntheticOnly, !generator.isEmpty, !generatorVersion.isEmpty else {
             throw TPSError.invalid("Only version 1 synthetic research cases with generator provenance are supported.")
         }
-        try recipe.validate(); try ct.validate(); try mr.validate(); try truth.validate()
-        guard ct.modality == .ct, mr.modality == .mr, truth.modality == .labels,
-              ct.grid == mr.grid, ct.grid == truth.grid else { throw TPSError.invalid("Case modalities or grids disagree.") }
+        try recipe.validate(); try ct.validate(); try truth.validate()
+        guard ct.modality == .ct, truth.modality == .labels,
+              ct.grid == truth.grid else { throw TPSError.invalid("Case modalities or grids disagree.") }
+        if let mr {
+            try mr.validate()
+            guard mr.modality == .mr, ct.grid == mr.grid else { throw TPSError.invalid("MR modality or grid disagrees with CT.") }
+        }
         guard Set(structures.map(\.id)).count == structures.count, !structures.isEmpty,
               structures.allSatisfy({ $0.id > 0 && !$0.name.isEmpty && $0.color.count == 3 && $0.color.allSatisfy { $0.isFinite && (0...1).contains($0) } }) else {
             throw TPSError.invalid("Invalid structure dictionary.")

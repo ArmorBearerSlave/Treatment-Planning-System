@@ -66,6 +66,10 @@ struct RootView: View {
             Image(systemName: "chevron.right").font(.system(size: 9)).foregroundStyle(Theme.muted)
             Text(store.screen.rawValue).font(.system(size: 12)).foregroundStyle(Theme.muted)
             Spacer()
+            Button { store.importCase() } label: {
+                Label("Import case…", systemImage: "square.and.arrow.down")
+            }.buttonStyle(.bordered).disabled(store.busy)
+                .help("Import a converted native case JSON from this Mac (⌘O)")
             Badge(text: "Inference · this Mac")
             Badge(text: "Clinical release unavailable", color: Theme.amber)
         }.padding(.horizontal, 26).padding(.top, 25).padding(.bottom, 20)

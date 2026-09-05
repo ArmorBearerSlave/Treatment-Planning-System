@@ -73,7 +73,9 @@ public enum CoreMLInference {
         let d = source.ct.grid.dimensions
         let shape = [1,1,d[2],d[1],d[0]].map { NSNumber(value: $0) }
         let input = try MLMultiArray(shape: shape, dataType: .float32)
-        let sourceVolume = operation == .syntheticCT ? source.mr : source.ct
+        guard let sourceVolume = operation == .syntheticCT ? source.mr : source.ct else {
+            throw TPSError.invalid("Synthetic CT requires MR input.")
+        }
         for i in sourceVolume.values.indices {
             input[i] = NSNumber(value: (min(max(sourceVolume.values[i], manifest.inputClip[0]), manifest.inputClip[1]) + manifest.inputOffset) * manifest.inputScale)
         }

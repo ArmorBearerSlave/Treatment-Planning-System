@@ -11,7 +11,8 @@ public enum AnalyticInference {
             values = source.ct.values.map { $0 < -300 ? 0 : $0 > 400 ? 2 : 1 }
         case .syntheticCT:
             // Deliberately crude MR signal mapping, for integration tests only.
-            values = source.mr.values.map { signal in signal < 2 ? -1000 : signal < 25 ? 700 : signal < 105 ? -80 : 40 }
+            guard let mr = source.mr else { throw TPSError.invalid("Synthetic CT requires MR input.") }
+            values = mr.values.map { signal in signal < 2 ? -1000 : signal < 25 ? 700 : signal < 105 ? -80 : 40 }
         case .predictDose:
             let grid = source.ct.grid
             for z in 0..<grid.dimensions[2] { for y in 0..<grid.dimensions[1] { for x in 0..<grid.dimensions[0] {

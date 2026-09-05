@@ -184,17 +184,36 @@ enum InferenceMode: String, CaseIterable, Identifiable {
         } catch { self.error = error.localizedDescription }
     }
     func importCase() {
-        let panel = NSOpenPanel(); panel.allowedContentTypes = [.json]; panel.message = "Import a synthetic case matching the TPS case contract. DICOM import is not implemented."
+        guard !busy else { return }
+        let panel = NSOpenPanel(); panel.allowedContentTypes = [.json]
+        panel.canChooseDirectories = false; panel.allowsMultipleSelection = false
+        panel.prompt = "Import case"
+        panel.message = "Choose the converted native case JSON on this Mac. Copy Spark output to this Mac first. DICOM folders and NPZ arrays require conversion."
         guard panel.runModal() == .OK, let url = panel.url else { return }
+        let previous = workspace, destination = workspaceURL
         perform("Importing synthetic case") { [self] in
-            let size = try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0
-            guard size <= 96_000_000 else { throw TPSError.invalid("Case file exceeds 96 MB.") }
-            let source = try JSONDecoder().decode(PhantomCase.self, from: Data(contentsOf: url))
-            try source.validate()
-            guard !workspace.cases.contains(where: { $0.id == source.id }) else { throw TPSError.invalid("Case is already in the workspace.") }
-            var next = workspace; next.cases.append(source)
-            try next.ledger.append(actor: "operator", action: "case.imported", detail: "\(source.id) · \(try Canonical.hash(source))")
-            try commit(next); selectedCaseID = source.id; selectedArtifactID = nil; proposal = nil
+            let (next, source) = try await Task.detached(priority: .userInitiated) {
+                let scoped = url.startAccessingSecurityScopedResource()
+                defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+                let size = try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0
+                guard size <= 96_000_000 else { throw TPSError.invalid("Case file exceeds 96 MB.") }
+                let source = try JSONDecoder().decode(PhantomCase.self, from: Data(contentsOf: url))
+                try source.validate()
+                if let existing = previous.cases.first(where: { $0.id == source.id }) {
+                    guard try Canonical.hash(existing) == Canonical.hash(source) else {
+                        throw TPSError.invalid("A different version of this case is already in the workspace. Use a new case identifier for revised data.")
+                    }
+                    return (previous, existing)
+                }
+                var next = previous; next.cases.append(source)
+                try next.ledger.append(actor: "operator", action: "case.imported", detail: "\(source.id) · \(try Canonical.hash(source))")
+                try FileManager.default.createDirectory(at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
+                try WorkspaceFile.save(next, to: destination)
+                return (next, source)
+            }.value
+            workspace = next; selectedCaseID = source.id; selectedArtifactID = nil; proposal = nil
+            slice = Double(source.ct.grid.dimensions[2] / 2); screen = .workspace
+            persistenceDescription = "Saved locally · \(Date().formatted(date: .omitted, time: .shortened))"
         }
     }
     func exportResearch() {
@@ -208,6 +227,32 @@ enum InferenceMode: String, CaseIterable, Identifiable {
             try next.ledger.append(actor: "operator", action: "research.exported", detail: "\(source.id) · \(try Canonical.hash(bundle))")
             try commit(next); activity = "Research bundle exported"
         } catch { self.error = error.localizedDescription }
+    }
+    func removePlaceholderMR() {
+        guard let source else { return }
+        let previous = workspace, destination = workspaceURL
+        perform("Removing placeholder MR") { [self] in
+            let next = try await Task.detached(priority: .userInitiated) {
+                guard source.mr != nil,
+                      source.mrIsPlaceholder == true || source.sourceNotes?["mr"]?.lowercased().contains("placeholder") == true else {
+                    throw TPSError.invalid("The selected case has no explicitly identified placeholder MR.")
+                }
+                guard !previous.artifacts.contains(where: { $0.caseID == source.id }) else {
+                    throw TPSError.invalid("This case has derived artifacts. Import a new CT-only revision to preserve their source provenance.")
+                }
+                var revised = source
+                revised.mr = nil; revised.mrIsPlaceholder = nil
+                revised.sourceNotes?["mr"] = "Not provided. CT-only case; placeholder removed."
+                var next = previous
+                guard let index = next.cases.firstIndex(where: { $0.id == source.id }) else { throw TPSError.invalid("Case is unavailable.") }
+                next.cases[index] = revised
+                try next.ledger.append(actor: "operator", action: "case.placeholderMR.removed",
+                                      detail: "\(source.id) · previous=\(try Canonical.hash(source)) · revised=\(try Canonical.hash(revised))")
+                try WorkspaceFile.save(next, to: destination)
+                return next
+            }.value
+            workspace = next; proposal = nil
+        }
     }
     func saveCopy() {
         let panel = NSSavePanel(); panel.allowedContentTypes = [.json]; panel.nameFieldStringValue = "governed-tps-workspace.json"
