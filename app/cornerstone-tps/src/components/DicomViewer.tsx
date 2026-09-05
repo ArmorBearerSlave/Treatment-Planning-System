@@ -379,9 +379,10 @@ export function DicomViewer() {
 
   const onRtstructFileSelected = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return;
-    rtstructFileRef.current = files[0];
-    const file = files[0];
-    setStatus('Loading RTSTRUCT...');
+    try {
+      rtstructFileRef.current = files[0];
+      const file = files[0];
+      setStatus('Loading RTSTRUCT...');
 
     const fileId = wadouri.fileManager.add(file);
     const dataSet = await wadouri.dataSetCacheManager.load(fileId, wadouri.loadFileRequest, fileId);
@@ -466,8 +467,13 @@ export function DicomViewer() {
 
     roiNameToSegmentIndexRef.current = new Map(segmentColors.map(({ name, segmentIndex: idx }) => [name, idx]));
     setLoadedRoiNames(segmentColors.map(({ name }) => name));
-    setStructuresLoaded(true);
-    setStatus(`Loaded RTSTRUCT with ${geometryIds.length} ROI contour(s).`);
+      setStructuresLoaded(true);
+      const names = segmentColors.map(({ name }) => name).join(', ');
+      setStatus(`Loaded RTSTRUCT with ${geometryIds.length} ROI contour(s): ${names}.`);
+    } catch (error) {
+      setStructuresLoaded(false);
+      setStatus(`RTSTRUCT load failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }, []);
 
   const onLoadNativeTrainingContours = useCallback(async () => {
