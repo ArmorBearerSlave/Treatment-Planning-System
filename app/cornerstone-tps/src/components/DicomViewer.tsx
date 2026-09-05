@@ -147,9 +147,14 @@ export function DicomViewer() {
     // once here before the volume loader can compute the volume's geometry.
     await Promise.all(imageLoader.loadAndCacheImages(imageIds));
     await primeDataSetCache(imageIds);
-    ctFrameOfReferenceUidRef.current = metaData.get('imagePlaneModule', imageIds[0])?.frameOfReferenceUID ?? '';
+    const sortedImageIds = [...imageIds].sort((left, right) => {
+      const leftPosition = metaData.get('imagePlaneModule', left)?.imagePositionPatient?.[2] ?? 0;
+      const rightPosition = metaData.get('imagePlaneModule', right)?.imagePositionPatient?.[2] ?? 0;
+      return leftPosition - rightPosition;
+    });
+    ctFrameOfReferenceUidRef.current = metaData.get('imagePlaneModule', sortedImageIds[0])?.frameOfReferenceUID ?? '';
 
-    const volume = await volumeLoader.createAndCacheVolume(CT_VOLUME_ID, { imageIds });
+    const volume = await volumeLoader.createAndCacheVolume(CT_VOLUME_ID, { imageIds: sortedImageIds });
     const fitLoadedVolume = () => {
       const loadedViewport = renderingEngine.getViewport(VIEWPORT_ID) as Types.IVolumeViewport;
       loadedViewport.resetCamera();
@@ -157,6 +162,11 @@ export function DicomViewer() {
       if (canvas) {
         canvas.style.left = '0px';
         canvas.style.top = '0px';
+      }
+      const svgLayer = elementRef.current?.querySelector<SVGElement>('svg.svg-layer');
+      if (svgLayer) {
+        svgLayer.style.left = '0px';
+        svgLayer.style.top = '0px';
       }
       renderingEngine.render();
     };
@@ -171,6 +181,11 @@ export function DicomViewer() {
     if (canvas) {
       canvas.style.left = '0px';
       canvas.style.top = '0px';
+    }
+    const svgLayer = elementRef.current?.querySelector<SVGElement>('svg.svg-layer');
+    if (svgLayer) {
+      svgLayer.style.left = '0px';
+      svgLayer.style.top = '0px';
     }
     // Cornerstone3D's default volume opacity is a flat 1.0 across the whole
     // range. In the joint multi-volume raycast this saturates ray alpha at
