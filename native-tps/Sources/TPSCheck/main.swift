@@ -23,11 +23,11 @@ import TPSCore
         if let flag = CommandLine.arguments.firstIndex(of: "--coreml-fixture"), CommandLine.arguments.count > flag+1 {
             let url = URL(fileURLWithPath: CommandLine.arguments[flag+1])
             let result = try await CoreMLInference.run(manifestURL: url, operation: .syntheticCT, source: source)
-            let maximumError = zip(result.volume.values, source.mr.values).map { abs($0 - $1) }.max() ?? 0
+            let maximumError = zip(result.volume.values, source.mr!.values).map { abs($0 - $1) }.max() ?? 0
             // ANE/GPU may round to Float16 internally even with Float32 IO.
             // Accept only exact or IEEE Float16-rounded identity values, not arbitrary error.
             var preservesOrder = true
-            for (actual, expected) in zip(result.volume.values, source.mr.values) {
+            for (actual, expected) in zip(result.volume.values, source.mr!.values) {
                 let rounded = Float(Float16(expected))
                 let exactMatch = abs(actual - expected) < Float(0.0001)
                 let roundedMatch = abs(actual - rounded) < Float(0.0001)

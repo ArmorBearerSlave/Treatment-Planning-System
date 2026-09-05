@@ -2,8 +2,7 @@
 """Convert one Spark XCAT/DICOM/NPZ case to the native PhantomCase JSON contract.
 
 The Spark pipeline does not provide a meaningful MR acquisition. Conversion
-therefore rejects by default; --synthetic-mr creates an explicitly labelled
-placeholder MR channel for pipeline/display tests only.
+therefore emits CT, labels and dose only. No MR channel is fabricated.
 """
 
 from __future__ import annotations
@@ -83,7 +82,6 @@ def main():
     parser.add_argument("--masks", type=Path, required=True, help="NPZ with named native masks")
     parser.add_argument("--dose", type=Path, required=True, help="TOPAS combined_dose.npy")
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--synthetic-mr", action="store_true")
     parser.add_argument("--plan-json", type=Path, required=True)
     parser.add_argument("--parameter-file", type=Path, required=True)
     parser.add_argument("--image-digest", required=True)
@@ -91,8 +89,6 @@ def main():
     parser.add_argument("--transport-version", default="OpenTOPAS 4.2.p3 exploratory")
     parser.add_argument("--nbio-version", default="TOPAS-nBio 4.1.0 exploratory")
     args = parser.parse_args()
-    if not args.synthetic_mr:
-        raise SystemExit("Refusing conversion: Spark XCAT has no meaningful MR acquisition; pass --synthetic-mr only for explicit pipeline fixtures")
     if args.histories <= 0:
         raise ValueError("histories must be positive")
     if len(args.image_digest) < 16:
@@ -121,7 +117,6 @@ def main():
         raise ValueError("dose has no positive peak")
     scale = 70.2 / raw_peak
     dose_gy = dose_zyx * scale
-    mr = np.zeros_like(ct_zyx, dtype=np.float32)
     case_uuid = str(uuid.uuid5(uuid.NAMESPACE_URL, f"nltps:spark:{args.case_id}"))
     bundle = {
         "schemaVersion": 1,
@@ -134,8 +129,6 @@ def main():
         "intendedUse": "synthetic-research-only",
         "recipe": {"anatomyID": args.case_id, "seed": 0, "bodyScale": 1, "targetRadiusMM": 8, "motionPhase": 0, "nBioProfile": "unbound"},
         "ct": volume(grid, "ct", "HU", ct_zyx),
-        "mr": volume(grid, "mr", "a.u.", mr),
-        "mrIsPlaceholder": True,
         "truth": volume(grid, "labels", "label", labels),
         "structures": structures,
         "simulation": {
@@ -149,7 +142,7 @@ def main():
             "observations": [],
         },
         "sourceNotes": {
-            "mr": "Synthetic zero placeholder; not an acquisition and not suitable for MR training.",
+            "mr": "Not provided. CT-only case.",
             "dose": "Exploratory OpenTOPAS Monte Carlo, not commissioned clinical dose.",
             "lymphNodes": "Excluded by design.",
             "xcatPlanSHA256": hashlib.sha256(args.plan_json.read_bytes()).hexdigest(),

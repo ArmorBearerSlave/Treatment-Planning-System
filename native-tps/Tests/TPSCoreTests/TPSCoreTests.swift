@@ -3,6 +3,16 @@ import XCTest
 
 final class TPSCoreTests: XCTestCase {
     func source() throws -> PhantomCase { try PhantomFactory.analytic(PhantomRecipe(), size: 16) }
+    func testCTOnlyCaseRoundTripAndOperations() throws {
+        var value = try source(); value.mr = nil
+        let data = try Canonical.data(value)
+        let restored = try JSONDecoder().decode(PhantomCase.self, from: data)
+        XCTAssertNil(restored.mr)
+        XCTAssertNoThrow(try restored.validate())
+        XCTAssertNoThrow(try AnalyticInference.run(.contour, source: restored))
+        XCTAssertNoThrow(try AnalyticInference.run(.predictDose, source: restored))
+        XCTAssertThrowsError(try AnalyticInference.run(.syntheticCT, source: restored))
+    }
     func testPlaceholderMRProvenanceSurvivesRoundTripAndBlocksSCT() throws {
         var value = try source()
         value.sourceNotes = ["mr": "Synthetic zero placeholder", "xcatPlanSHA256": String(repeating: "a", count: 64)]
@@ -13,7 +23,7 @@ final class TPSCoreTests: XCTestCase {
         XCTAssertThrowsError(try restored.validateInput(for: .syntheticCT))
         XCTAssertNoThrow(try restored.validateInput(for: .contour))
         value.sourceNotes = nil; value.mrIsPlaceholder = nil
-        value.mr.values = Array(repeating: 0, count: value.mr.values.count)
+        value.mr?.values = Array(repeating: 0, count: value.ct.values.count)
         XCTAssertThrowsError(try AnalyticInference.run(.syntheticCT, source: value))
     }
     func testGridRejectsOversizedAndDegenerateDimensions() {
@@ -44,7 +54,7 @@ final class TPSCoreTests: XCTestCase {
     }
     func testRecipeIsReproducible() throws {
         let a = try source(), b = try source()
-        XCTAssertEqual(a.ct.values, b.ct.values); XCTAssertEqual(a.mr.values, b.mr.values)
+        XCTAssertEqual(a.ct.values, b.ct.values); XCTAssertEqual(a.mr?.values, b.mr?.values)
         XCTAssertNotEqual(a.id, b.id)
     }
     func testRecipeChangesVolume() throws {

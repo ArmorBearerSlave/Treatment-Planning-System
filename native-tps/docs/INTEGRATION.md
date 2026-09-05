@@ -115,14 +115,13 @@ runtime/anatomy paths, image digest, case-001 base/lesion arguments and pipeline
 conversion contracts have been supplied. `scripts/convert_spark_case.py` converts
 the Spark CT DICOM, native XCAT mask NPZ and OpenTOPAS dose array into a native
 case JSON while recording the XCAT plan, parameter-file and image digests. The
-existing source pipeline produces DICOM/NPZ rather than the paired CT/MR/truth
-native case contract. Since it does not produce a meaningful MR acquisition,
-the converter refuses to run unless `--synthetic-mr` is explicitly supplied;
-that mode writes a zero-valued MR placeholder marked as unsuitable for MR
-training. Native import now retains `sourceNotes` and the optional
-`mrIsPlaceholder` flag. Synthetic-CT inference and training reject flagged,
-placeholder-described, or all-zero MR, even with `--allow-fixture`; CT-based
-contour workflows remain available. Notes are retained in dataset metadata.
+existing source pipeline produces CT, labels and dose. MR is optional in the
+native case contract. The converter emits no MR channel and no longer accepts
+`--synthetic-mr`. CT-only cases support contour and dose workflows; synthetic-CT
+inference/training requires usable MR input. Native import retains
+`sourceNotes`; legacy placeholder MR remains blocked from synthetic-CT workflows.
+The File menu can remove an explicitly marked placeholder from a case with no
+derived artifacts, recording the previous and revised source hashes in the audit.
 Lymph nodes are intentionally excluded. `scripts/spark_phantom_adapter.py`
 is a runnable loopback-only wrapper around an explicitly configured local command.
 
@@ -137,7 +136,6 @@ python3 scripts/convert_spark_case.py \
   --plan-json /spark/plans/VCT-PROSTATE-001.json \
   --parameter-file /spark/xcat/XCAT_latest/general.samp.par \
   --image-digest ubuntu@sha256:<pinned-digest> \
-  --synthetic-mr \
   --output /spark/native-cases/VCT-PROSTATE-001.json
 ```
 
@@ -186,7 +184,7 @@ Spark is connected until a real response is received.
 format without pretending to be XCAT/nBio output.
 
 Top-level fields: `schemaVersion: 1`, UUID `id`, `name`, `generator`,
-`generatorVersion`, `syntheticOnly: true`, `recipe`, `ct`, `mr`, `truth`,
+`generatorVersion`, `syntheticOnly: true`, `recipe`, `ct`, optional `mr`, `truth`,
 `structures`, and optional `simulation`.
 
 Volumes have `grid`, `modality`, `units`, and a flat `values` array. Grid fields
@@ -196,10 +194,9 @@ matrix maps scaled voxel XYZ into LPS. All case grids must agree exactly.
 Valid units are CT `HU`, MR `a.u.`, dose `Gy`, labels `label`. Background is 0;
 every positive label must exist in the structure dictionary.
 
-The first version requires paired CT/MR/truth on the same grid. A generator
-without a meaningful MR simulation must not fabricate an acquisition or use
-its CT as MR; import support for partial modalities needs an explicit schema
-extension. JSON cases are limited to 8,388,608 voxels and 96 MB at the HTTP/import
+CT and truth must share a grid; MR, when provided, must match it. Generators
+without MR should omit `mr` entirely. Do not fabricate an MR channel to satisfy
+import. JSON cases are limited to 8,388,608 voxels and 96 MB at the HTTP/import
 boundary, so this is a small-volume prototype rather than production DICOM I/O.
 
 Optional simulation evidence has:

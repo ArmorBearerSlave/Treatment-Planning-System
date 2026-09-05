@@ -16,6 +16,7 @@ import SwiftUI
             CommandGroup(replacing: .newItem) {
                 Button("New analytic phantom") { store.createPhantom() }.keyboardShortcut("n").disabled(store.busy)
                 Button("Import synthetic case…") { store.importCase() }.keyboardShortcut("o").disabled(store.busy)
+                Button("Remove placeholder MR from case") { store.removePlaceholderMR() }.disabled(store.busy || store.source?.mr == nil)
                 Button("Save workspace copy…") { store.saveCopy() }.keyboardShortcut("s").disabled(store.busy)
             }
         }

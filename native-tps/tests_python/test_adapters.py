@@ -26,6 +26,15 @@ def bundle():
 
 
 class DatasetTests(unittest.TestCase):
+    def test_ct_only_supports_contours_and_transport_dose(self):
+        value = bundle(); del value["source"]["mr"]
+        dataset.training_pair(value, "contour", True)
+        dose = dict(value["source"]["ct"], modality="dose", units="Gy")
+        value["source"]["simulation"] = dict(referenceDose=dose, histories=100, normalization="test")
+        dataset.training_pair(value, "predictDose", True)
+        with self.assertRaisesRegex(ValueError, "CT-only"):
+            dataset.training_pair(value, "syntheticCT", True)
+
     def test_placeholder_mr_never_enters_sct_training(self):
         for marker in ["flag", "note", "zeros"]:
             value = bundle()

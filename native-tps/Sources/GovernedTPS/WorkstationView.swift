@@ -50,7 +50,9 @@ struct WorkstationView: View {
                             }
                             Card(title: "Source provenance", subtitle: "Generator identity") {
                                 Text(source.generator).font(.system(size: 12))
-                                if let note = source.sourceNotes?["mr"] {
+                                if source.mr == nil {
+                                    Text("CT only · no MR acquisition").font(.system(size: 12)).foregroundStyle(Theme.muted)
+                                } else if let note = source.sourceNotes?["mr"] {
                                     Text("MR: \(note)").font(.system(size: 12)).foregroundStyle(.orange)
                                 }
                                 Text("nBio profile: \(source.recipe.nBioProfile)").font(.system(size: 11)).foregroundStyle(Theme.muted)
@@ -92,7 +94,7 @@ struct WorkstationView: View {
                         Button { store.run(operation) } label: {
                             HStack { Image(systemName: operation == .contour ? "lasso" : operation == .predictDose ? "waveform.path" : "square.3.layers.3d"); Text(operation.title); Spacer(); Image(systemName: "arrow.up.right") }
                                 .font(.system(size: 12)).padding(10).frame(maxWidth: .infinity)
-                        }.buttonStyle(.bordered).disabled(store.busy)
+                        }.buttonStyle(.bordered).disabled(store.busy || (operation == .syntheticCT && source.mr == nil))
                     }
                     Text(store.inferenceMode == .fixture ? "Fixture mode tests the pipeline. It does not run a trained AI model." : "Requires a checksum-pinned local model manifest.")
                         .font(.system(size: 11)).foregroundStyle(Theme.amber).lineSpacing(3)
