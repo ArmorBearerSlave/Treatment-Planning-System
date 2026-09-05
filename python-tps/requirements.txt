@@ -1,0 +1,5 @@
+# The dose engine, optimiser and DVH code depend on numpy alone. There is no
+# scipy, torch, pydicom or plotting dependency: everything the planner needs is
+# implemented here (see src/pytps/special.py for the error function, and
+# src/pytps/optimize.py for the solver).
+numpy>=1.24

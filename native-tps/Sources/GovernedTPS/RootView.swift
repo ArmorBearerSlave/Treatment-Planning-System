@@ -2,6 +2,8 @@ import SwiftUI
 import TPSCore
 
 struct RootView: View {
+    @StateObject private var cerr = CERRStore()
+    @StateObject private var matrad = MatRadStore()
     @StateObject private var topas = TopasStore()
     @StateObject private var learning = LearningStore()
     @EnvironmentObject var store: AppStore
@@ -12,6 +14,8 @@ struct RootView: View {
                 topBar
                 Group {
                     switch store.screen {
+                    case .cerr: CERRView(analysis: cerr)
+                    case .matrad: MatRadView(planning: matrad)
                     case .topas: TopasView(simulation: topas)
                     case .learning: LearningView(lab: learning)
                     case .workspace: WorkstationView()

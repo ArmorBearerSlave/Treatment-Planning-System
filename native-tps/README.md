@@ -9,7 +9,8 @@ modified or claimed as realized by this prototype.
 
 **Status:** runnable research foundation, not a complete or commissioned TPS.
 Only synthetic data is supported. There is no clinical approval, prescription,
-beam optimization, machine delivery, or DICOM RTPLAN export path.
+machine delivery, or DICOM RTPLAN export path. Optional matRad research fluence
+optimization and CERR dose-volume analysis run in local MATLAB.
 
 ## Open in Xcode
 
@@ -141,3 +142,13 @@ reports through Results. See [the learning workflow](docs/LEARNING.md) for the
 completed-cohort contract and the scope of the initial baseline.
 
 Desktop Monte Carlo workflow: [OpenTOPAS integration](docs/OPENTOPAS.md) documents prepared Spark jobs, parameter review, transport logs, raw-result download, and the current nBio component blocker.
+
+Local inverse planning: [matRad integration](docs/MATRAD.md) describes CT/label transfer, reviewed photon objectives, MATLAB optimization, dose/DVH import, and portable planning evidence.
+
+## CERR analysis
+
+The desktop **CERR analysis** screen freezes a selected CT, truth labels and dose
+proposal (or simulation reference dose), runs local MATLAB/CERR, and compares
+CERR DVH samples with native mean dose, D95 and volume. Jobs preserve a research
+`planC.mat`, hashed inputs, logs and portable JSON reports. See [CERR integration](docs/CERR.md)
+for setup, coordinate conventions, verification and scope.

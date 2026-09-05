@@ -12,6 +12,66 @@ import TPSCore
         }
     }
     static func run() async throws {
+        if let flag = CommandLine.arguments.firstIndex(of: "--cerr-input"), CommandLine.arguments.count > flag+3 {
+            let sourceURL = URL(fileURLWithPath: CommandLine.arguments[flag+1])
+            let resultURL = URL(fileURLWithPath: CommandLine.arguments[flag+2])
+            let folder = URL(fileURLWithPath: CommandLine.arguments[flag+3])
+            guard !FileManager.default.fileExists(atPath: folder.path) else { throw TPSError.invalid("Use a new CERR job folder.") }
+            let source = try JSONDecoder().decode(PhantomCase.self, from: Data(contentsOf: sourceURL))
+            let result = try JSONDecoder().decode(MatRadResult.self, from: Data(contentsOf: resultURL))
+            let request = try CERRRequest(source: source, dose: result.volume, doseDescription: "matRad geometry software fixture")
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            try Canonical.data(source).write(to: folder.appendingPathComponent("source.json"))
+            try Canonical.data(result.volume).write(to: folder.appendingPathComponent("dose.json"))
+            try Canonical.data(request).write(to: folder.appendingPathComponent("request.json"))
+            print("PASS: canonical CT, labels and dose frozen for CERR software verification.")
+            return
+        }
+        if let flag = CommandLine.arguments.firstIndex(of: "--validate-cerr"), CommandLine.arguments.count > flag+1 {
+            let folder = URL(fileURLWithPath: CommandLine.arguments[flag+1])
+            let source = try JSONDecoder().decode(PhantomCase.self, from: Data(contentsOf: folder.appendingPathComponent("source.json")))
+            let dose = try JSONDecoder().decode(Volume.self, from: Data(contentsOf: folder.appendingPathComponent("dose.json")))
+            let request = try JSONDecoder().decode(CERRRequest.self, from: Data(contentsOf: folder.appendingPathComponent("request.json")))
+            let report = try JSONDecoder().decode(CERRReport.self, from: Data(contentsOf: folder.appendingPathComponent("report.json")))
+            let rows = try report.compare(source: source, dose: dose, request: request)
+            for row in rows {
+                print("\(row.cerr.name): n=\(row.cerr.sampleCount) ΔmeanGy=\(row.cerr.meanGy-row.nativeMeanGy) ΔD95Gy=\(row.cerr.d95Gy-row.nativeD95Gy) Δcc=\(row.cerr.volumeCC-row.nativeVolumeCC) maxSampleΔGy=\(row.cerr.maxSampleDifferenceGy)")
+            }
+            print("PASS: CERR provenance, structure coverage, sample counts and histogram volumes; native comparisons computed.")
+            return
+        }
+        if let flag = CommandLine.arguments.firstIndex(of: "--validate-matrad"), CommandLine.arguments.count > flag+1 {
+            let folder = URL(fileURLWithPath: CommandLine.arguments[flag+1])
+            let source = try JSONDecoder().decode(PhantomCase.self, from: Data(contentsOf: folder.appendingPathComponent("source.json")))
+            let request = try JSONDecoder().decode(MatRadRequest.self, from: Data(contentsOf: folder.appendingPathComponent("request.json")))
+            let result = try JSONDecoder().decode(MatRadResult.self, from: Data(contentsOf: folder.appendingPathComponent("result.json")))
+            let artifact = try result.artifact(source: source, request: request)
+            try artifact.validate(for: source)
+            let dvhs = try DVH.calculate(dose: result.volume, labels: source.truth, structures: source.structures)
+            print("PASS: matRad source/request binding, converged optimizer, exact CT grid and physical course Gy. \(dvhs.count) DVHs computed.")
+            return
+        }
+        if let flag = CommandLine.arguments.firstIndex(of: "--matrad-smoke-input"), CommandLine.arguments.count > flag+1 {
+            let folder = URL(fileURLWithPath: CommandLine.arguments[flag+1])
+            guard !FileManager.default.fileExists(atPath: folder.path) else { throw TPSError.invalid("Use a new smoke folder.") }
+            var source = try PhantomFactory.analytic(PhantomRecipe(), size: 16)
+            source.name = "MATRAD-GEOMETRY-FIXTURE"; source.mr = nil
+            let oldCT = source.ct, oldLabels = source.truth
+            let grid = Grid(dimensions: [12,14,10], spacing: [2,3,4], origin: [-11,-19.5,-18], frameID: source.ct.grid.frameID)
+            var indices: [Int] = []
+            for z in 0..<10 { for y in 0..<14 { for x in 0..<12 { indices.append(oldCT.grid.index(x,y,z)) } } }
+            source.ct = Volume(grid: grid, modality: .ct, units: "HU", values: indices.map { oldCT.values[$0] })
+            source.truth = Volume(grid: grid, modality: .labels, units: "label", values: indices.map { oldLabels.values[$0] })
+            source.sourceNotes = ["reference":"Cropped analytic fixture with asymmetric spacing for adapter software verification only."]
+            var settings = MatRadSettings(targetID: 2)
+            settings.gantryAngles = [0]; settings.bixelWidthMM = 20; settings.fractions = 5
+            let request = try MatRadRequest(source: source, settings: settings)
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            try Canonical.data(source).write(to: folder.appendingPathComponent("source.json"))
+            try Canonical.data(request).write(to: folder.appendingPathComponent("request.json"))
+            print("PASS: asymmetric CT-only fixture prepared for matRad; five fractions, one generic photon beam.")
+            return
+        }
         if let flag = CommandLine.arguments.firstIndex(of: "--learning-smoke"), CommandLine.arguments.count > flag+1 {
             let directory = URL(fileURLWithPath: CommandLine.arguments[flag+1], isDirectory: true)
             guard !FileManager.default.fileExists(atPath: directory.path) else { throw TPSError.invalid("Choose a new smoke-test directory.") }

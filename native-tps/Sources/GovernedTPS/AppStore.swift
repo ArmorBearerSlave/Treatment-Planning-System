@@ -4,9 +4,9 @@ import UniformTypeIdentifiers
 import TPSCore
 
 enum Screen: String, CaseIterable, Identifiable {
-    case topas = "OpenTOPAS", learning = "Dataset & learning", workspace = "Workspace", agents = "Agent workbench", phantoms = "Phantom lab", models = "Local models", governance = "Review & evidence"
+    case cerr = "CERR analysis", matrad = "matRad planning", topas = "OpenTOPAS", learning = "Dataset & learning", workspace = "Workspace", agents = "Agent workbench", phantoms = "Phantom lab", models = "Local models", governance = "Review & evidence"
     var id: String { rawValue }
-    var icon: String { switch self { case .topas: "atom"; case .learning: "chart.bar.xaxis"; case .workspace: "square.stack.3d.up"; case .agents: "point.3.connected.trianglepath.dotted"; case .phantoms: "figure.stand"; case .models: "cpu"; case .governance: "checkmark.shield" } }
+    var icon: String { switch self { case .cerr: "chart.xyaxis.line"; case .matrad: "slider.horizontal.3"; case .topas: "atom"; case .learning: "chart.bar.xaxis"; case .workspace: "square.stack.3d.up"; case .agents: "point.3.connected.trianglepath.dotted"; case .phantoms: "figure.stand"; case .models: "cpu"; case .governance: "checkmark.shield" } }
 }
 enum InferenceMode: String, CaseIterable, Identifiable {
     case fixture = "Analytic fixture", coreML = "Core ML on this Mac"
@@ -110,6 +110,33 @@ enum InferenceMode: String, CaseIterable, Identifiable {
             try artifact.validate(for: source)
             var next = workspace; next.artifacts.append(artifact)
             try next.ledger.append(actor: "operator", action: "learned-baseline.proposed", detail: "\(artifact.id) · experiment=\(experiment.id) · \(try Canonical.hash(artifact))")
+            try commit(next); selectedArtifactID = artifact.id; screen = .workspace
+        }
+    }
+    func recordCERR(_ report: CERRReport, request: CERRRequest, jobURL: URL) {
+        guard let source else { error = "Select the analysis source CT first."; return }
+        perform("Recording CERR research analysis") { [self] in
+            let detail = try await Task.detached {
+                let dose = try JSONDecoder().decode(Volume.self, from: Data(contentsOf: jobURL.appendingPathComponent("dose.json")))
+                _ = try report.compare(source: source, dose: dose, request: request)
+                return "job=\(request.id) source=\(request.sourceHash) dose=\(request.doseHash) request=\(try Canonical.hash(request)) report=\(try Canonical.hash(report)) files=\(jobURL.path) · analysis only"
+            }.value
+            var next = workspace
+            try next.ledger.append(actor: "operator", action: "cerr.analysis-recorded", detail: detail)
+            try commit(next)
+        }
+    }
+    func importMatRad(_ result: MatRadResult, request: MatRadRequest, jobURL: URL?) {
+        guard let source else { error = "Select the job's source CT in Workspace first."; return }
+        perform("Importing matRad research plan") { [self] in
+            let artifact = try await Task.detached { try result.artifact(source: source, request: request) }.value
+            guard !workspace.artifacts.contains(where: { $0.modelID == artifact.modelID }) else {
+                throw TPSError.invalid("This matRad job is already in the workspace.")
+            }
+            try artifact.validate(for: source)
+            var next = workspace; next.artifacts.append(artifact)
+            try next.ledger.append(actor: "operator", action: "matrad.plan-proposed",
+                                  detail: "job=\(request.id) request=\(try Canonical.hash(request)) result=\(try Canonical.hash(result)) files=\(jobURL?.path ?? "unknown")")
             try commit(next); selectedArtifactID = artifact.id; screen = .workspace
         }
     }

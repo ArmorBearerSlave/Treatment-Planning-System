@@ -1,0 +1,10 @@
+# Local planning products. Cases, dose grids and plan artifacts are generated,
+# can be large, and are never controlled inputs.
+work/
+*.npz
+__pycache__/
+*.py[cod]
+.pytest_cache/
+build/
+dist/
+*.egg-info/

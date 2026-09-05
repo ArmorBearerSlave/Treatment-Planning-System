@@ -56,6 +56,7 @@ public struct Artifact: Codable, Sendable, Identifiable {
     public var volume: Volume
     public var structures: [Structure]
     public var createdAt: Date
+    public var planningEvidence: [String: String]? = nil
     public init(caseID: UUID, inputHash: String, operation: TPSOperation, modelID: String,
                 modelVersion: String, isDemo: Bool, volume: Volume, structures: [Structure] = []) {
         self.id = UUID(); self.caseID = caseID; self.inputHash = inputHash; self.operation = operation
